@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260618152025
+  version: 1.1.20260618165259
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -35752,15 +35752,21 @@ paths:
                             format: int32
                             description: 'Order number of the asset.'
                           k_resource:
-                            type: integer
-                            format: int32
+                            type: string
                             description: 'Asset key.'
                         required:
                           - i_index
                           - k_resource
                       k_login_promotion:
                         type: string
-                        description: 'Specify only if you want to pay by already purchased option.'
+                        description: |-
+                          Login promotion key.
+                              Specify only if you want to pay by already purchased option.
+                      k_login_promotion_guest_pass:
+                        type: string
+                        description: |-
+                          Guest pass login promotion key.
+                              Specify only if you want to pay with guest pass granted by this login promotion.
                       k_session_pass:
                         type: string
                         description: 'Session pass to be used to book a session.'
@@ -86918,6 +86924,9 @@ paths:
                           description: |-
                             `true` if the guest may only enter when the inviting member is checked in.
                             `null` if no guest pass settings are configured for the promotion.
+                        is_visit_future:
+                          type: boolean
+                          description: '`true` if associated visit in future, `false` otherwise.'
                         k_login_promotion_guest:
                           type:
                             - string
@@ -86994,6 +87003,7 @@ paths:
                         - dtu_reject
                         - id_status
                         - is_checkin
+                        - is_visit_future
                         - k_login_promotion_guest
                         - k_login_promotion_host
                         - k_promotion
