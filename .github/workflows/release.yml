@@ -31,7 +31,12 @@ jobs:
       - name: Detect changed files
         id: changed
         run: |
-          git diff --name-only HEAD~1 HEAD > changed.txt
+          BASE="${{ github.event.before }}"
+          if [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            git show --name-only --format='' HEAD > changed.txt
+          else
+            git diff --name-only "$BASE" HEAD > changed.txt
+          fi
           echo "production=$(grep -c 'production/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
           echo "stable=$(grep -c 'stable/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
           echo "dev=$(grep -c 'dev/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
