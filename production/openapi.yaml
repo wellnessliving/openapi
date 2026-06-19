@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260619124930
+  version: 1.1.20260619124931
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -14,11 +14,11 @@ info:
   termsOfService: 'https://www.wellnessliving.com/knowledge-sharing/terms-of-use/'
 servers:
   -
-    url: 'https://staging.wellnessliving.com'
-    description: 'WellnessLiving server for businesses served from the United States data center'
+    url: 'https://us.wellnessliving.com'
+    description: 'WellnessLiving server for businesses served from the United States data center.'
   -
-    url: 'https://demo.wellnessliving.com'
-    description: 'WellnessLiving server for businesses served from the Australia data center'
+    url: 'https://au.wellnessliving.com'
+    description: 'WellnessLiving server for businesses served from the Australia data center.'
 security:
   -
     BearerAuth: []
@@ -2378,7 +2378,7 @@ paths:
                             a_domain_token:
                               type: object
                               description: |-
-                                List of email domain tokens: 
+                                List of email domain tokens:
 
                                 Empty array if the business does not have a mail domain set up.
                               properties:
@@ -4174,7 +4174,7 @@ paths:
                     description: |-
                       An array of service resources.
 
-                      The key refers to the `k_resource_type`. 
+                      The key refers to the `k_resource_type`.
                       The value is an array with the following key: `k_resource`. .
                       The array element contains a nested array with `i_index` and `i_quantity`. .
 
@@ -5348,7 +5348,7 @@ paths:
                     description: |-
                       List of available enrollment blocks matching the requested parameters.
 
-                      Key is the enrollment block key. 
+                      Key is the enrollment block key.
                       Value is the title of the first event found in that enrollment block.
                     items:
                       type: string
@@ -11171,7 +11171,7 @@ paths:
             This variable supports two structures:
 
             New structure:
-            Each element key has the format `[id_purchase_item]::[k_id]`, where: 
+            Each element key has the format `[id_purchase_item]::[k_id]`, where:
 
             Old structure:
             Each element is a string in the format `[id_purchase_item]::[k_id]`.
@@ -15357,7 +15357,7 @@ paths:
             This variable supports two structures:
 
             New structure:
-            Each element key has the format `[id_purchase_item]::[k_id]`, where: 
+            Each element key has the format `[id_purchase_item]::[k_id]`, where:
 
             Old structure:
             Each element is a string in the format `[id_purchase_item]::[k_id]`.
@@ -17565,7 +17565,7 @@ paths:
 
             *Be careful, when use this property in code, use `k_video_binary` instead.*
             In this property can be key in next format:
-            * [Deprecated] String key in old format. 
+            * [Deprecated] String key in old format.
             * String key in new format.
       x-rate-limit:
         -
@@ -17870,7 +17870,7 @@ paths:
 
             *Be careful, when use this property in code, use `k_video_binary` instead.*
             In this property can be key in next format:
-            * [Deprecated] String key in old format. 
+            * [Deprecated] String key in old format.
             * String key in new format.
       x-rate-limit:
         -
@@ -17893,7 +17893,7 @@ paths:
 
                       *Be careful, when use this property in code, use `k_video_binary` instead.*
                       In this property can be key in next format:
-                      * [Deprecated] String key in old format. 
+                      * [Deprecated] String key in old format.
                       * String key in new format.
                 required:
                   - k_video
@@ -17954,7 +17954,7 @@ paths:
 
             *Be careful, when use this property in code, use `k_video_binary` instead.*
             In this property can be key in next format:
-            * [Deprecated] String key in old format. 
+            * [Deprecated] String key in old format.
             * String key in new format.
       requestBody:
         required: true
@@ -23124,7 +23124,7 @@ paths:
                         a_class_tab:
                           type: array
                           description: |-
-                            Keys are class key. 
+                            Keys are class key.
                               Values are class tab key.
                           items:
                             type: string
@@ -23405,7 +23405,7 @@ paths:
                             a_class_tab:
                               type: array
                               description: |-
-                                Keys are class key. 
+                                Keys are class key.
                                   Values are class tab key.
                               items:
                                 type: string
@@ -23951,7 +23951,7 @@ paths:
                         a_class_tab:
                           type: array
                           description: |-
-                            Keys are class key. 
+                            Keys are class key.
                               Values are class tab key.
                           items:
                             type: string
@@ -24232,7 +24232,7 @@ paths:
                             a_class_tab:
                               type: array
                               description: |-
-                                Keys are class key. 
+                                Keys are class key.
                                   Values are class tab key.
                               items:
                                 type: string
@@ -26129,8 +26129,8 @@ paths:
                         description: |-
                           Answers for questions.
                               Required if the service requires answers for questions.
-                              Keys are quiz keys. 
-                              Values are response keys. 
+                              Keys are quiz keys.
+                              Values are response keys.
                               Or the `skip` to skip the quiz.
                         items:
                           type: string
@@ -26138,7 +26138,7 @@ paths:
                         type: object
                         description: |-
                           Recurring booking configuration:
-                              
+
                               You can test this key only in a case of `1` client.
                         properties:
                           a_day:
@@ -32350,14 +32350,14 @@ paths:
                         a_class_tab:
                           type: array
                           description: |-
-                            List of class book now tabs, where this class is presented. Each element is 
+                            List of class book now tabs, where this class is presented. Each element is
                              or `null` if class is presented in default system tab Classes. Events can also be added in class tabs.
                           items:
                             type: string
                         a_event_tab:
                           type: array
                           description: |-
-                            List of event book now tabs, where this event is presented. Each element is 
+                            List of event book now tabs, where this event is presented. Each element is
                               or `null` if event is presented in default system tab Enrollments. Classes cannot be added in event tabs.
                           items:
                             type: string
@@ -34686,7 +34686,7 @@ paths:
                         k_skin:
                           type: string
                           description: |-
-                            Key of the lead skin. 
+                            Key of the lead skin.
                             Not available if current user is not a staff member or admin.
                         text_title:
                           type: string
@@ -34842,7 +34842,7 @@ paths:
                       k_skin:
                         type: string
                         description: |-
-                          Key of the lead skin. 
+                          Key of the lead skin.
                           Will be set only in case if `id_lead_source` is [ModeSid::WIDGET](#/components/schemas/Wl.Mode.ModeSid) and
                           widget can't be used for "Add Lead" form. `false` - otherwise.
                       text_title:
@@ -36724,7 +36724,7 @@ paths:
                               type: string
                               description: |-
                                 Currency of business `$k_business`.
-                                   
+
                                    It is currency of amount `m_credit`.
                             m_credit:
                               type: string
@@ -37306,7 +37306,7 @@ paths:
                               type: string
                               description: |-
                                 Currency of business `$k_business`.
-                                   
+
                                    It is currency of amount `m_credit`.
                             m_credit:
                               type: string
@@ -37888,7 +37888,7 @@ paths:
                               type: string
                               description: |-
                                 Currency of business `$k_business`.
-                                   
+
                                    It is currency of amount `m_credit`.
                             m_credit:
                               type: string
@@ -38522,7 +38522,7 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            The default Purchase Option key. 
+                            The default Purchase Option key.
                             This will be `null` if the class has no default Purchase Option, or it sets to "Drop-in rate".
                         is_single_default:
                           type: boolean
@@ -38883,7 +38883,7 @@ paths:
                               type: string
                               description: |-
                                 Currency of business `$k_business`.
-                                   
+
                                    It is currency of amount `m_credit`.
                             m_credit:
                               type: string
@@ -39465,7 +39465,7 @@ paths:
                               type: string
                               description: |-
                                 Currency of business `$k_business`.
-                                   
+
                                    It is currency of amount `m_credit`.
                             m_credit:
                               type: string
@@ -40047,7 +40047,7 @@ paths:
                               type: string
                               description: |-
                                 Currency of business `$k_business`.
-                                   
+
                                    It is currency of amount `m_credit`.
                             m_credit:
                               type: string
@@ -40688,7 +40688,7 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            The default Purchase Option key. 
+                            The default Purchase Option key.
                             This will be `null` if the class has no default Purchase Option, or it sets to "Drop-in rate".
                         is_single_default:
                           type: boolean
@@ -50597,8 +50597,8 @@ paths:
                   type: array
                   description: |-
                     The list of quiz response keys.
-                    Keys refer to quiz keys. 
-                    And values refer to responses. 
+                    Keys refer to quiz keys.
+                    And values refer to responses.
                     Or special values from the `skip` constant.
                   items:
                     type: string
@@ -50687,7 +50687,7 @@ paths:
                           description: |-
                             The sale item key.
                               Note:
-                                 
+
                                  You need to specify the product option key in the `k_shop_product_option` field or the first available
                                      option will be used automatically.
                         k_login_prize:
@@ -50890,7 +50890,7 @@ paths:
                   description: |-
                     The sale item key.
                       Note:
-                         
+
                          You need to specify the product option key in the `k_shop_product_option` field or the first available
                              option will be used automatically.
                 k_login_prize:
@@ -51142,7 +51142,7 @@ paths:
                   type: string
                   description: |-
                     The video string key:
-                    * [Deprecated] String key in old format. 
+                    * [Deprecated] String key in old format.
                     * String key in new format.
               required:
                 - i_current_time
@@ -51588,7 +51588,7 @@ paths:
                     A list of shared video category keys displayed in the order to be saved.
 
                     Values can be:
-                    * <b>[Deprecated]</b> String keys in old format. 
+                    * <b>[Deprecated]</b> String keys in old format.
                     * String keys in new format.
                   items:
                     type: string
@@ -52983,7 +52983,7 @@ paths:
                           type: string
                           description: |-
                             Currency of business `$k_business`.
-                               
+
                                It is currency of amount `m_credit`.
                         m_credit:
                           type: string
@@ -53192,7 +53192,7 @@ paths:
                               type: string
                               description: |-
                                 Currency of business `$k_business`.
-                                   
+
                                    It is currency of amount `m_credit`.
                             m_credit:
                               type: string
@@ -53299,14 +53299,14 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Appointment key. 
+                            Appointment key.
                             `null` if it is not service or asset session.
                         k_class_period:
                           type:
                             - string
                             - 'null'
                           description: |-
-                            Class period key. 
+                            Class period key.
                             `null` if it is not class or event session.
                         k_location:
                           type: string
@@ -53329,14 +53329,14 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Appointment key. 
+                            Appointment key.
                             `null` if it is not service or asset session.
                         k_class_period:
                           type:
                             - string
                             - 'null'
                           description: |-
-                            Class period key. 
+                            Class period key.
                             `null` if it is not class or event session.
                         k_location:
                           type: string
@@ -54662,7 +54662,7 @@ paths:
                         k_staff:
                           type: string
                           description: |-
-                            The staff key. 
+                            The staff key.
                             deprecated Use `uid_staff` instead. Returned only for backward-compatible applications.
                         s_name:
                           type: string
@@ -57368,7 +57368,7 @@ paths:
                           type: string
                           description: |-
                             Currency of business `$k_business`.
-                               
+
                                It is currency of amount `m_credit`.
                         m_credit:
                           type: string
@@ -57547,7 +57547,7 @@ paths:
                               type: string
                               description: |-
                                 Currency of business `$k_business`.
-                                   
+
                                    It is currency of amount `m_credit`.
                             m_credit:
                               type: string
@@ -57654,14 +57654,14 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Appointment key. 
+                            Appointment key.
                             `null` if it is not service or asset session.
                         k_class_period:
                           type:
                             - string
                             - 'null'
                           description: |-
-                            Class period key. 
+                            Class period key.
                             `null` if it is not class or event session.
                         k_location:
                           type: string
@@ -57684,14 +57684,14 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Appointment key. 
+                            Appointment key.
                             `null` if it is not service or asset session.
                         k_class_period:
                           type:
                             - string
                             - 'null'
                           description: |-
-                            Class period key. 
+                            Class period key.
                             `null` if it is not class or event session.
                         k_location:
                           type: string
@@ -61195,9 +61195,9 @@ paths:
                   description: |-
                     The primary keys of the shared objects. Depends on `id_share_object`.
                     If `id_share_object` is:
-                    * [ShareObjectSid::BOOK](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the visit. 
-                    * [ShareObjectSid::LOCATION](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the location. 
-                    * [ShareObjectSid::PURCHASE](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the purchase. 
+                    * [ShareObjectSid::BOOK](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the visit.
+                    * [ShareObjectSid::LOCATION](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the location.
+                    * [ShareObjectSid::PURCHASE](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the purchase.
                     * [ShareObjectSid::REVIEW](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the review.
                   items:
                     $ref: '#/components/schemas/Wl.Social.Share.ShareObjectSid'
@@ -62275,7 +62275,7 @@ paths:
                             k_staff:
                               type: string
                               description: |-
-                                Staff key. 
+                                Staff key.
                                 Returned only for applications in the `APPS_USE_OLD_K_STAFF` allow-list.
                             uid_staff:
                               type: string
@@ -62370,7 +62370,7 @@ paths:
                         k_appointment:
                           type: string
                           description: |-
-                            The appointment key. 
+                            The appointment key.
                             If the session isn't an appointment, this will be `0`.
                         dt_confirm:
                           type: string
@@ -62380,12 +62380,12 @@ paths:
                         k_class:
                           type: string
                           description: |-
-                            The class key. 
+                            The class key.
                             If the session isn't a class, this will be `0`.
                         k_class_period:
                           type: string
                           description: |-
-                            The class period key. 
+                            The class period key.
                             If the session isn't a class, this will be `0`.
                         k_location:
                           type: string
@@ -62742,7 +62742,7 @@ paths:
                         k_appointment:
                           type: string
                           description: |-
-                            The appointment key. 
+                            The appointment key.
                             If the session isn't an appointment, this will be `0`.
                         dt_confirm:
                           type: string
@@ -62752,12 +62752,12 @@ paths:
                         k_class:
                           type: string
                           description: |-
-                            The class key. 
+                            The class key.
                             If the session isn't a class, this will be `0`.
                         k_class_period:
                           type: string
                           description: |-
-                            The class period key. 
+                            The class period key.
                             If the session isn't a class, this will be `0`.
                         k_location:
                           type: string
@@ -63041,14 +63041,14 @@ paths:
                         a_login_type_restriction:
                           type: array
                           description: |-
-                            Keys are login type keys. 
+                            Keys are login type keys.
                             Values - List of login types' titles for current service. Clients that have one of these types can book service.
                           items:
                             type: string
                         a_member_group_restriction:
                           type: array
                           description: |-
-                            Keys are member group keys. 
+                            Keys are member group keys.
                             Values - list of member groups' titles for current service. Clients that belongs to these groups can book service.
                           items:
                             type: string
@@ -63597,14 +63597,14 @@ paths:
                         a_login_type_restriction:
                           type: array
                           description: |-
-                            Keys are login type keys. 
+                            Keys are login type keys.
                             Values - List of login types' titles for current service. Clients that have one of these types can book service.
                           items:
                             type: string
                         a_member_group_restriction:
                           type: array
                           description: |-
-                            Keys are member group keys. 
+                            Keys are member group keys.
                             Values - list of member groups' titles for current service. Clients that belongs to these groups can book service.
                           items:
                             type: string
@@ -64384,7 +64384,7 @@ paths:
                           uid:
                             type: string
                             description: |-
-                              User key. 
+                              User key.
                               Specify only in a case of booking for a lof of different users.
                         required:
                           - dt_date
@@ -64790,7 +64790,7 @@ paths:
                   type: object
                   description: |-
                     Add-ons to the appointment. Specify this for appointment bookings only.
-                    Old format: array keys refer to primary keys. 
+                    Old format: array keys refer to primary keys.
                     New format: each element is an array:
                   properties:
                     i_count:
@@ -65561,7 +65561,7 @@ paths:
                         type: object
                         description: |-
                           Add-ons to the appointment. Specify this for appointment bookings only.
-                          Old format: array keys refer to primary keys. 
+                          Old format: array keys refer to primary keys.
                           New format: each element is an array:
                         properties:
                           i_count:
@@ -66374,7 +66374,7 @@ paths:
                     - string
                     - 'null'
                   description: |-
-                    Login prize key. 
+                    Login prize key.
                        `null` if no login prize used to pay for this service.
                 k_login_promotion:
                   type:
@@ -66393,7 +66393,7 @@ paths:
 
                        Can be `null` if timezone is not selected.
                        If not selected, the default client timezone will be used.
-                       
+
 
                        In any case, the timezone will be used if the business allows client timezones.
               required:
@@ -67081,7 +67081,7 @@ paths:
                     - string
                     - 'null'
                   description: |-
-                    Login prize key. 
+                    Login prize key.
                        `null` if no login prize used to pay for this service.
                 k_login_promotion:
                   type:
@@ -67100,7 +67100,7 @@ paths:
 
                        Can be `null` if timezone is not selected.
                        If not selected, the default client timezone will be used.
-                       
+
 
                        In any case, the timezone will be used if the business allows client timezones.
               required:
@@ -67203,7 +67203,7 @@ paths:
               - string
               - 'null'
           description: |-
-            Appointment key. 
+            Appointment key.
             Not empty in case when we return payment options for rescheduling existing appointment.
         -
           name: k_location
@@ -68323,7 +68323,7 @@ paths:
                           type: array
                           description: |-
                             The key of service.
-                              Keys are service key. 
+                              Keys are service key.
                               Values are class tab key.
                           items:
                             type: string
@@ -69347,7 +69347,7 @@ paths:
                   type: array
                   description: |-
                     List of quiz response keys.
-                    Keys are quiz keys. 
+                    Keys are quiz keys.
                     Values are quiz response keys.
                   items:
                     type: string
@@ -69513,7 +69513,7 @@ paths:
                     a_product:
                       type: object
                       description: |-
-                        The add-on list. Keys are add-on option keys. 
+                        The add-on list. Keys are add-on option keys.
                         Values are quantities:
                       properties:
                         k_shop_product_option:
@@ -69581,7 +69581,7 @@ paths:
                     uid:
                       type: string
                       description: |-
-                        User's key. 
+                        User's key.
                         Specify only in a case of booking for a lof of different users.
                   required:
                     - a_product
@@ -69816,7 +69816,7 @@ paths:
                           a_product:
                             type: object
                             description: |-
-                              The add-on list. Keys are add-on option keys. 
+                              The add-on list. Keys are add-on option keys.
                               Values are quantities:
                             properties:
                               k_shop_product_option:
@@ -69884,7 +69884,7 @@ paths:
                           uid:
                             type: string
                             description: |-
-                              User's key. 
+                              User's key.
                               Specify only in a case of booking for a lof of different users.
                         required:
                           - a_product
@@ -70003,7 +70003,7 @@ paths:
                   type: array
                   description: |-
                     List of quiz response keys.
-                    Keys are quiz keys. 
+                    Keys are quiz keys.
                     Values are quiz response keys.
                   items:
                     type: string
@@ -70570,7 +70570,7 @@ paths:
                   type: array
                   description: |-
                     List of quiz response keys.
-                    Keys are quiz keys. 
+                    Keys are quiz keys.
                     Values are quiz response keys.
                   items:
                     type: string
@@ -71609,7 +71609,7 @@ paths:
           description: |-
             The list of sessions being booked.
 
-            Keys are class period keys. 
+            Keys are class period keys.
             Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
         -
           name: a_session_wait_list_unpaid
@@ -71622,7 +71622,7 @@ paths:
           description: |-
             The selected sessions on the wait list that are unpaid.
 
-            Keys are class period keys. 
+            Keys are class period keys.
             Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
         -
           name: dt_date_gmt
@@ -71828,9 +71828,9 @@ paths:
                     - string
                     - 'null'
                   description: |-
-                    Installment template key. 
+                    Installment template key.
                      This property is optional.
-                     * can only be set for the purchase option which supports installment plan. 
+                     * can only be set for the purchase option which supports installment plan.
                      * `null` if installment plan doesn't exist for bought item;
                      * `0` if installment plan doesn't selected for bought item from the list of installment plans.
                      NOTE:
@@ -72391,7 +72391,7 @@ paths:
           description: |-
             The list of sessions being booked.
 
-            Keys are class period keys. 
+            Keys are class period keys.
             Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
         -
           name: a_session_wait_list_unpaid
@@ -72404,7 +72404,7 @@ paths:
           description: |-
             The selected sessions on the wait list that are unpaid.
 
-            Keys are class period keys. 
+            Keys are class period keys.
             Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
         -
           name: dt_date_gmt
@@ -72691,7 +72691,7 @@ paths:
             This property is optional.
 
             * can only be set for the purchase option which supports installment plan.
-              
+
             * `null` if installment plan doesn't exist for bought item;
             * `0` if installment plan doesn't selected for bought item from the list of installment plans.
 
@@ -73098,7 +73098,7 @@ paths:
                           type: array
                           description: |-
                             A list of clients who have already occupied assets for this session.
-                            1st level keys are asset keys. 
+                            1st level keys are asset keys.
                             2nd level keys are asset index numbers (starting from 1).
                             Values are `true` if the asset spot is occupied.
                             For example, to check if asset spot 10 with key '125' is occupied,
@@ -73285,7 +73285,7 @@ paths:
             Only makes sense for session events.
             Optional parameter for GET request: if not passed, all available sessions will be used.
 
-            Keys are class period keys. 
+            Keys are class period keys.
             Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
         -
           name: dt_date_gmt
@@ -73419,7 +73419,7 @@ paths:
             Only makes sense for session events.
             Optional parameter for GET request: if not passed, all available sessions will be used.
 
-            Keys are class period keys. 
+            Keys are class period keys.
             Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
         -
           name: dt_date_gmt
@@ -73578,7 +73578,7 @@ paths:
                   description: |-
                     The selected sessions on the wait list that are unpaid.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -73640,7 +73640,7 @@ paths:
                           type: array
                           description: |-
                             A list of clients who have already occupied assets for this session.
-                            1st level keys are asset keys. 
+                            1st level keys are asset keys.
                             2nd level keys are asset index numbers (starting from 1).
                             Values are `true` if the asset spot is occupied.
                             For example, to check if asset spot 10 with key '125' is occupied,
@@ -73826,7 +73826,7 @@ paths:
             Only makes sense for session events.
             Optional parameter for GET request: if not passed, all available sessions will be used.
 
-            Keys are class period keys. 
+            Keys are class period keys.
             Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
         -
           name: dt_date_gmt
@@ -73972,7 +73972,7 @@ paths:
             Only makes sense for session events.
             Optional parameter for GET request: if not passed, all available sessions will be used.
 
-            Keys are class period keys. 
+            Keys are class period keys.
             Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
         -
           name: dt_date_gmt
@@ -74146,7 +74146,7 @@ paths:
                   description: |-
                     The selected sessions on the wait list that are unpaid.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -74426,8 +74426,8 @@ paths:
                   description: |-
                     List of quiz response keys.
 
-                    Keys are quiz keys. 
-                    Values are response keys. 
+                    Keys are quiz keys.
+                    Values are response keys.
                     Or the `skip` to skip the quiz.
                   items:
                     type: string
@@ -74523,7 +74523,7 @@ paths:
                   description: |-
                     A list of sessions being booked.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -74532,7 +74532,7 @@ paths:
                   description: |-
                     Selected sessions on the waiting list without pay.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT
                   items:
                     type: string
@@ -74919,7 +74919,7 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Login promotion key. 
+                            Login promotion key.
                               The same as in `a_login_promotion`.
                               `null` if not applicable.
                         k_session_pass:
@@ -74927,7 +74927,7 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Session pass key. 
+                            Session pass key.
                               The same as in `a_session_pass`.
                               `null` if not applicable.
                         s_value:
@@ -75857,7 +75857,7 @@ paths:
                   description: |-
                     The selected sessions.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -75866,7 +75866,7 @@ paths:
                   description: |-
                     Selected sessions on the waiting list without pay.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of dates/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -76594,7 +76594,7 @@ paths:
                   description: |-
                     The selected sessions.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -76603,7 +76603,7 @@ paths:
                   description: |-
                     Selected sessions on the waiting list without pay.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of dates/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -76953,7 +76953,7 @@ paths:
                 - id_purchase_item
                 - k_id
           description: |-
-            The list of purchase items. Each element has the format `[id_purchase_item]::[k_id]`, where: 
+            The list of purchase items. Each element has the format `[id_purchase_item]::[k_id]`, where:
 
             This will be empty if no purchases are made for the booking.
         -
@@ -77137,8 +77137,8 @@ paths:
                   description: |-
                     The list of quiz response keys.
 
-                    Keys are quiz keys. 
-                    Values are response keys. 
+                    Keys are quiz keys.
+                    Values are response keys.
                     Or the `skip` to skip the quiz.
                   items:
                     type: string
@@ -77234,7 +77234,7 @@ paths:
                   description: |-
                     The selected sessions.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -77243,7 +77243,7 @@ paths:
                   description: |-
                     The selected sessions on the wait list that are unpaid.
 
-                    Keys are class period keys. 
+                    Keys are class period keys.
                     Values are index arrays of date/time strings when the session occurred, in MySQL format and in GMT.
                   items:
                     type: string
@@ -78432,7 +78432,7 @@ paths:
                           type: array
                           description: |-
                             List of visit keys associated with uncompleted response.
-                               Key is visit key. 
+                               Key is visit key.
                                Value is date of visit.
                           items:
                             type: string
@@ -78459,7 +78459,7 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Key of the response. 
+                            Key of the response.
                                Not `null` in case when response in draft status.
                         text_title:
                           type: string
@@ -78482,7 +78482,7 @@ paths:
                           type: array
                           description: |-
                             List of visit keys associated with uncompleted response.
-                               Key is visit key. 
+                               Key is visit key.
                                Value is date of visit.
                           items:
                             type: string
@@ -79809,7 +79809,7 @@ paths:
                       Unavailable events are those that cannot be booked,
                        but they can be shown to the client (for example, under the "not available" filter).
 
-                      Key is the event class key. 
+                      Key is the event class key.
                       Value is `true` if the event is available for booking, `false` if it is unavailable.
                     items:
                       type: boolean
@@ -83449,7 +83449,7 @@ paths:
                   description: |-
                     List of fields that the user has filled in for enrollment.
 
-                    Keys refer specifically to field keys. 
+                    Keys refer specifically to field keys.
                     Values refer specifically to values entered by the user.
                   items:
                     type: string
@@ -86559,7 +86559,7 @@ paths:
                                 - string
                                 - 'null'
                               description: |-
-                                Guest user key. 
+                                Guest user key.
                                 `null` if the guest did not have an account when the invitation was sent.
                           required:
                             - text_mail
