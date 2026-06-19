@@ -1,13 +1,16 @@
 name: Notify SDK repositories
 
 on:
-  release:
+  workflow_run:
+    workflows:
+      - Release
     types:
-      - published
+      - completed
 
 jobs:
   notify:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Notify wl-openapi-js
