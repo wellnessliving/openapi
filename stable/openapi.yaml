@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260619113150
+  version: 1.1.20260619114746
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -200,7 +200,7 @@ tags:
 paths:
   /Thoth/ExplorerSearch/ClassSession/ClassSessionSearch.json:
     get:
-      operationId: Thoth.ExplorerSearch.ClassSession.ClassSessionSearchApi.get
+      operationId: Thoth.ExplorerSearch.ClassSession.ClassSessionSearch.get
       responses:
         '200':
           description: 'Successful response.'
@@ -441,7 +441,7 @@ paths:
           period: 3600
   /Thoth/ReportCore/Generator/Query.json:
     post:
-      operationId: Wl.Report.Generator.QueryApi.post
+      operationId: Wl.Report.Generator.Query.post
       responses:
         '200':
           description: 'Successful response.'
@@ -812,7 +812,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Account/Account.json:
     get:
-      operationId: Wl.Pay.Account.AccountApi.get
+      operationId: Wl.Pay.Account.Account.get
       responses:
         '200':
           description: 'Successful response.'
@@ -918,7 +918,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Form/EnvironmentUser.json:
     get:
-      operationId: Wl.Pay.Form.EnvironmentUserApi.get
+      operationId: Wl.Pay.Form.EnvironmentUser.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1153,7 +1153,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Form/Environment.json:
     get:
-      operationId: Wl.Pay.Form.EnvironmentApi.get
+      operationId: Wl.Pay.Form.Environment.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1390,7 +1390,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Method/List.json:
     get:
-      operationId: Wl.Pay.Method.ListApi.get
+      operationId: Wl.Pay.Method.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1473,7 +1473,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Owner/Owner.json:
     get:
-      operationId: Wl.Pay.Owner.OwnerApi.get
+      operationId: Wl.Pay.Owner.Owner.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1543,7 +1543,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Address/Address.json:
     get:
-      operationId: Wl.Pay.Address.AddressApi.get
+      operationId: Wl.Pay.Address.Address.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1606,7 +1606,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Address/Profile.json:
     get:
-      operationId: Wl.Pay.Address.ProfileApi.get
+      operationId: Wl.Pay.Address.Profile.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1715,7 +1715,7 @@ paths:
           period: 3600
   /Core/Request/Example.json:
     get:
-      operationId: Core.Request.ExampleApi.get
+      operationId: Core.Request.Example.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1770,7 +1770,7 @@ paths:
           period: 3600
   /Core/Geo/Combobox.json:
     get:
-      operationId: Core.Geo.ComboboxApi.get
+      operationId: Core.Geo.Combobox.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1842,7 +1842,7 @@ paths:
           period: 3600
   /Core/Google/GoogleCaptcha.json:
     put:
-      operationId: Core.Google.GoogleCaptchaApi.put
+      operationId: Core.Google.GoogleCaptcha.put
       responses:
         '200':
           description: 'Successful response.'
@@ -1899,7 +1899,7 @@ paths:
           period: 3600
   /Core/WebSocket/Subscribe.json:
     post:
-      operationId: Core.WebSocket.SubscribeApi.post
+      operationId: Core.WebSocket.Subscribe.post
       responses:
         '200':
           description: 'Successful response.'
@@ -3382,7 +3382,7 @@ paths:
           period: 3600
   /Core/Sid/CoreSid.json:
     get:
-      operationId: Core.Sid.CoreSidApi.get
+      operationId: Core.Sid.CoreSid.get
       responses:
         '200':
           description: 'Successful response.'
@@ -3443,7 +3443,7 @@ paths:
           period: 3600
   /Core/Captcha/CaptchaRequire.json:
     get:
-      operationId: Core.Captcha.CaptchaRequireApi.get
+      operationId: Core.Captcha.CaptchaRequire.get
       responses:
         '200':
           description: 'Successful response.'
@@ -3568,7 +3568,7 @@ paths:
           period: 3600
   /Social/Microsoft/Login.json:
     delete:
-      operationId: Social.Microsoft.LoginApi.delete
+      operationId: Social.Microsoft.Login.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -3605,7 +3605,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Social.Microsoft.LoginApi.get
+      operationId: Social.Microsoft.Login.get
       responses:
         '200':
           description: 'Successful response.'
@@ -3673,7 +3673,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Social.Microsoft.LoginApi.post
+      operationId: Social.Microsoft.Login.post
       responses:
         '200':
           description: 'Successful response.'
@@ -3746,7 +3746,7 @@ paths:
           period: 3600
   /Wl/Schedule/Cancel.json:
     get:
-      operationId: Wl.Schedule.CancelApi.get
+      operationId: Wl.Schedule.Cancel.get
       responses:
         '200':
           description: 'Successful response.'
@@ -3840,7 +3840,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Schedule.CancelApi.post
+      operationId: Wl.Schedule.Cancel.post
       responses:
         '200':
           description: 'Successful response.'
@@ -3935,7 +3935,7 @@ paths:
           period: 3600
   /Wl/Schedule/ScheduleAvailableDate.json:
     get:
-      operationId: Wl.Schedule.ScheduleAvailableDateApi.get
+      operationId: Wl.Schedule.ScheduleAvailableDate.get
       responses:
         '200':
           description: 'Successful response.'
@@ -4114,7 +4114,7 @@ paths:
           period: 3600
   /Wl/Visit/VisitStatus.json:
     get:
-      operationId: Wl.Visit.VisitStatusApi.get
+      operationId: Wl.Visit.VisitStatus.get
       responses:
         '200':
           description: 'Successful response.'
@@ -4412,7 +4412,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Visit.VisitStatusApi.post
+      operationId: Wl.Visit.VisitStatus.post
       responses:
         '200':
           description: 'Successful response.'
@@ -4541,7 +4541,7 @@ paths:
           period: 3600
   /Wl/Location/ListBulk.json:
     get:
-      operationId: Wl.Location.ListBulkApi.get
+      operationId: Wl.Location.ListBulk.get
       responses:
         '200':
           description: 'Successful response.'
@@ -4909,7 +4909,7 @@ paths:
           period: 3600
   /Wl/Location/Location.json:
     post:
-      operationId: Wl.Location.LocationApi.post
+      operationId: Wl.Location.Location.post
       responses:
         '200':
           description: 'Successful response.'
@@ -5018,7 +5018,7 @@ paths:
           period: 3600
   /Wl/Location/List.json:
     get:
-      operationId: Wl.Location.ListApi.get
+      operationId: Wl.Location.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -5182,7 +5182,7 @@ paths:
       security: []
   /Wl/Profile/ProfileCreate.json:
     post:
-      operationId: Wl.Profile.ProfileCreateApi.post
+      operationId: Wl.Profile.ProfileCreate.post
       responses:
         '200':
           description: 'Successful response.'
@@ -5334,7 +5334,7 @@ paths:
           period: 3600
   /Wl/Event/EventList.json:
     get:
-      operationId: Wl.Event.EventListApi.get
+      operationId: Wl.Event.EventList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -5960,7 +5960,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Event.EventListApi.put
+      operationId: Wl.Event.EventList.put
       responses:
         '200':
           description: 'Successful response.'
@@ -6026,7 +6026,7 @@ paths:
           period: 3600
   /Wl/Event/EventCancelWhole.json:
     post:
-      operationId: Wl.Event.EventCancelWholeApi.post
+      operationId: Wl.Event.EventCancelWhole.post
       responses:
         '200':
           description: 'Successful response.'
@@ -6078,7 +6078,7 @@ paths:
           period: 3600
   /Wl/Business/Data.json:
     get:
-      operationId: Wl.Business.DataApi.get
+      operationId: Wl.Business.Data.get
       responses:
         '200':
           description: 'Successful response.'
@@ -6352,7 +6352,7 @@ paths:
           period: 3600
   /Wl/Business/Business.json:
     post:
-      operationId: Wl.Business.BusinessApi.post
+      operationId: Wl.Business.Business.post
       responses:
         '200':
           description: 'Successful response.'
@@ -6510,7 +6510,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Business.BusinessApi.put
+      operationId: Wl.Business.Business.put
       responses:
         '200':
           description: 'Successful response.'
@@ -6642,7 +6642,7 @@ paths:
           period: 3600
   /Wl/Business/BusinessAccess.json:
     get:
-      operationId: Wl.Business.BusinessAccessApi.get
+      operationId: Wl.Business.BusinessAccess.get
       responses:
         '200':
           description: 'Successful response.'
@@ -6779,7 +6779,7 @@ paths:
           period: 3600
   /Wl/Report/Data.json:
     get:
-      operationId: Wl.Report.DataApi.get
+      operationId: Wl.Report.Data.get
       responses:
         '200':
           description: 'Successful response.'
@@ -6898,7 +6898,7 @@ paths:
           period: 3600
   /Wl/Report/Access.json:
     get:
-      operationId: Wl.Report.AccessApi.get
+      operationId: Wl.Report.Access.get
       responses:
         '200':
           description: 'Successful response.'
@@ -6972,7 +6972,7 @@ paths:
           period: 3600
   /Wl/Report/PageData.json:
     get:
-      operationId: Wl.Report.PageDataApi.get
+      operationId: Wl.Report.PageData.get
       responses:
         '200':
           description: 'Successful response.'
@@ -7078,7 +7078,7 @@ paths:
           period: 3600
   /Wl/Collector/DebtList.json:
     get:
-      operationId: Wl.Collector.DebtListApi.get
+      operationId: Wl.Collector.DebtList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -7269,7 +7269,7 @@ paths:
           period: 3600
   /Wl/Collector/DebtPay.json:
     post:
-      operationId: Wl.Collector.DebtPayApi.post
+      operationId: Wl.Collector.DebtPay.post
       responses:
         '200':
           description: 'Successful response.'
@@ -7359,7 +7359,7 @@ paths:
           period: 3600
   /Wl/Collector/DebtTransaction.json:
     get:
-      operationId: Wl.Collector.DebtTransactionApi.get
+      operationId: Wl.Collector.DebtTransaction.get
       responses:
         '200':
           description: 'Successful response.'
@@ -7488,7 +7488,7 @@ paths:
           period: 3600
   /Wl/Announcement/AnnouncementList.json:
     get:
-      operationId: Wl.Announcement.AnnouncementListApi.get
+      operationId: Wl.Announcement.AnnouncementList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -7696,7 +7696,7 @@ paths:
           period: 3600
   /Wl/Lead/Lead.json:
     get:
-      operationId: Wl.Lead.LeadApi.get
+      operationId: Wl.Lead.Lead.get
       responses:
         '200':
           description: 'Successful response.'
@@ -7944,7 +7944,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Lead.LeadApi.post
+      operationId: Wl.Lead.Lead.post
       responses:
         '200':
           description: 'Successful response.'
@@ -8121,7 +8121,7 @@ paths:
           period: 3600
   /Wl/Promotion/PromotionList.json:
     get:
-      operationId: Wl.Promotion.PromotionListApi.get
+      operationId: Wl.Promotion.PromotionList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -8201,7 +8201,7 @@ paths:
           period: 3600
   /Wl/Promotion/Promotion.json:
     delete:
-      operationId: Wl.Promotion.PromotionApi.delete
+      operationId: Wl.Promotion.Promotion.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -8243,7 +8243,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Promotion.PromotionApi.get
+      operationId: Wl.Promotion.Promotion.get
       responses:
         '200':
           description: 'Successful response.'
@@ -8544,7 +8544,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Promotion.PromotionApi.post
+      operationId: Wl.Promotion.Promotion.post
       responses:
         '200':
           description: 'Successful response.'
@@ -8848,7 +8848,7 @@ paths:
           period: 3600
   /Wl/Login/Login.json:
     get:
-      operationId: Wl.Login.LoginApi.get
+      operationId: Wl.Login.Login.get
       responses:
         '200':
           description: 'Successful response.'
@@ -9005,7 +9005,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Login.LoginApi.post
+      operationId: Wl.Login.Login.post
       responses:
         '200':
           description: 'Successful response.'
@@ -9146,7 +9146,7 @@ paths:
           period: 3600
   /Wl/Quiz/QuizElement.json:
     delete:
-      operationId: Wl.Quiz.QuizElementApi.delete
+      operationId: Wl.Quiz.QuizElement.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -9197,7 +9197,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Quiz.QuizElementApi.get
+      operationId: Wl.Quiz.QuizElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -11212,7 +11212,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Quiz.QuizElementApi.post
+      operationId: Wl.Quiz.QuizElement.post
       responses:
         '200':
           description: 'Successful response.'
@@ -13089,7 +13089,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Quiz.QuizElementApi.put
+      operationId: Wl.Quiz.QuizElement.put
       responses:
         '200':
           description: 'Successful response.'
@@ -13334,7 +13334,7 @@ paths:
           period: 3600
   /Wl/Quiz/QuizElement72.json:
     delete:
-      operationId: Wl.Quiz.QuizElement72Api.delete
+      operationId: Wl.Quiz.QuizElement72.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -13383,7 +13383,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Quiz.QuizElement72Api.get
+      operationId: Wl.Quiz.QuizElement72.get
       responses:
         '200':
           description: 'Successful response.'
@@ -15396,7 +15396,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Quiz.QuizElement72Api.post
+      operationId: Wl.Quiz.QuizElement72.post
       responses:
         '200':
           description: 'Successful response.'
@@ -17271,7 +17271,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Quiz.QuizElement72Api.put
+      operationId: Wl.Quiz.QuizElement72.put
       responses:
         '200':
           description: 'Successful response.'
@@ -17514,7 +17514,7 @@ paths:
           period: 3600
   /Wl/Video/VideoElement.json:
     delete:
-      operationId: Wl.Video.VideoElementApi.delete
+      operationId: Wl.Video.VideoElement.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -17572,7 +17572,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Video.VideoElementApi.get
+      operationId: Wl.Video.VideoElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -17877,7 +17877,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Video.VideoElementApi.post
+      operationId: Wl.Video.VideoElement.post
       responses:
         '200':
           description: 'Successful response.'
@@ -18115,7 +18115,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Video.VideoElementApi.put
+      operationId: Wl.Video.VideoElement.put
       responses:
         '200':
           description: 'Successful response.'
@@ -18187,7 +18187,7 @@ paths:
           period: 3600
   /Wl/Video/VideoList.json:
     get:
-      operationId: Wl.Video.VideoListApi.get
+      operationId: Wl.Video.VideoList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -18618,7 +18618,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Video.VideoListApi.put
+      operationId: Wl.Video.VideoList.put
       responses:
         '200':
           description: 'Successful response.'
@@ -18706,7 +18706,7 @@ paths:
           period: 3600
   /Wl/Fitbuilder/Message.json:
     post:
-      operationId: Wl.Fitbuilder.MessageApi.post
+      operationId: Wl.Fitbuilder.Message.post
       responses:
         '200':
           description: 'Successful response.'
@@ -18803,7 +18803,7 @@ paths:
           period: 3600
   /Wl/Mail/SendMail.json:
     post:
-      operationId: Wl.Mail.SendMailApi.post
+      operationId: Wl.Mail.SendMail.post
       responses:
         '200':
           description: 'Successful response.'
@@ -18881,7 +18881,7 @@ paths:
           period: 3600
   /Wl/Staff/StaffElement.json:
     post:
-      operationId: Wl.Staff.StaffElementApi.post
+      operationId: Wl.Staff.StaffElement.post
       responses:
         '200':
           description: 'Successful response.'
@@ -19158,7 +19158,7 @@ paths:
           period: 3600
   /Wl/Skin/SkinForeign.json:
     delete:
-      operationId: Wl.Skin.SkinForeignApi.delete
+      operationId: Wl.Skin.SkinForeign.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -19220,7 +19220,7 @@ paths:
           period: 3600
       security: []
     post:
-      operationId: Wl.Skin.SkinForeignApi.post
+      operationId: Wl.Skin.SkinForeign.post
       responses:
         '200':
           description: 'Successful response.'
@@ -19341,7 +19341,7 @@ paths:
           period: 3600
       security: []
     put:
-      operationId: Wl.Skin.SkinForeignApi.put
+      operationId: Wl.Skin.SkinForeign.put
       responses:
         '200':
           description: 'Successful response.'
@@ -19463,7 +19463,7 @@ paths:
       security: []
   /Wl/Tag/TagList.json:
     get:
-      operationId: Wl.Tag.TagListApi.get
+      operationId: Wl.Tag.TagList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -19535,7 +19535,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Tag.TagListApi.post
+      operationId: Wl.Tag.TagList.post
       responses:
         '200':
           description: 'Successful response.'
@@ -19637,7 +19637,7 @@ paths:
           period: 3600
   /Wl/Tax/Tax.json:
     get:
-      operationId: Wl.Tax.TaxApi.get
+      operationId: Wl.Tax.Tax.get
       responses:
         '200':
           description: 'Successful response.'
@@ -19685,7 +19685,7 @@ paths:
           period: 3600
   /Wl/Tax/TaxList.json:
     get:
-      operationId: Wl.Tax.TaxListApi.get
+      operationId: Wl.Tax.TaxList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -19750,7 +19750,7 @@ paths:
           period: 3600
   /Wl/Review/Review.json:
     post:
-      operationId: Wl.Review.ReviewApi.post
+      operationId: Wl.Review.Review.post
       responses:
         '200':
           description: 'Successful response.'
@@ -19877,7 +19877,7 @@ paths:
           period: 3600
   /Wl/Review/ReviewFeature.json:
     post:
-      operationId: Wl.Review.ReviewFeatureApi.post
+      operationId: Wl.Review.ReviewFeature.post
       responses:
         '200':
           description: 'Successful response.'
@@ -19928,7 +19928,7 @@ paths:
           period: 3600
   /Wl/Review/ReviewReply.json:
     post:
-      operationId: Wl.Review.ReviewReplyApi.post
+      operationId: Wl.Review.ReviewReply.post
       responses:
         '200':
           description: 'Successful response.'
@@ -19991,7 +19991,7 @@ paths:
           period: 3600
   /Wl/Rank/Rank.json:
     get:
-      operationId: Wl.Rank.RankApi.get
+      operationId: Wl.Rank.Rank.get
       responses:
         '200':
           description: 'Successful response.'
@@ -20067,7 +20067,7 @@ paths:
           period: 3600
   /Wl/Holiday/Holiday.json:
     get:
-      operationId: Wl.Holiday.HolidayApi.get
+      operationId: Wl.Holiday.Holiday.get
       responses:
         '200':
           description: 'Successful response.'
@@ -20139,7 +20139,7 @@ paths:
           period: 3600
   /Wl/Holiday/BulkBusinessHoliday.json:
     get:
-      operationId: Wl.Holiday.BulkBusinessHolidayApi.get
+      operationId: Wl.Holiday.BulkBusinessHoliday.get
       responses:
         '200':
           description: 'Successful response.'
@@ -20259,7 +20259,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Account/Charge/Charge.json:
     post:
-      operationId: Thoth.WlPay.Account.Charge.ChargeApi.post
+      operationId: Thoth.WlPay.Account.Charge.Charge.post
       responses:
         '200':
           description: 'Successful response.'
@@ -20452,7 +20452,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Transaction/Report/TransactionAllPayment.json:
     get:
-      operationId: Wl.Pay.Transaction.Report.TransactionAllPaymentApi.get
+      operationId: Wl.Pay.Transaction.Report.TransactionAllPayment.get
       responses:
         '200':
           description: 'Successful response.'
@@ -20597,7 +20597,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Card/List.json:
     get:
-      operationId: Wl.Pay.Bank.Card.ListApi.get
+      operationId: Wl.Pay.Bank.Card.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -20719,7 +20719,7 @@ paths:
           period: 3600
   /Core/Drive/ImageUpload/ImageUpload.json:
     get:
-      operationId: Core.Drive.ImageUpload.ImageUploadApi.get
+      operationId: Core.Drive.ImageUpload.ImageUpload.get
       responses:
         '200':
           description: 'Successful response.'
@@ -20891,7 +20891,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Core.Drive.ImageUpload.ImageUploadApi.post
+      operationId: Core.Drive.ImageUpload.ImageUpload.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21042,7 +21042,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Core.Drive.ImageUpload.ImageUploadApi.put
+      operationId: Core.Drive.ImageUpload.ImageUpload.put
       responses:
         '200':
           description: 'Successful response.'
@@ -21226,7 +21226,7 @@ paths:
           period: 3600
   /Core/Drive/ImageUpload/ImageUploadTemporary.json:
     post:
-      operationId: Core.Drive.ImageUpload.ImageUploadTemporaryApi.post
+      operationId: Core.Drive.ImageUpload.ImageUploadTemporary.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21342,7 +21342,7 @@ paths:
           period: 3600
   /Core/Request/Api/KeySecret.json:
     get:
-      operationId: Core.Request.Api.KeySecretApi.get
+      operationId: Core.Request.Api.KeySecret.get
       responses:
         '200':
           description: 'Successful response.'
@@ -21415,7 +21415,7 @@ paths:
           period: 3600
   /Core/Request/Token/TokenPin.json:
     get:
-      operationId: Core.Request.Token.TokenPinApi.get
+      operationId: Core.Request.Token.TokenPin.get
       responses:
         '200':
           description: 'Successful response.'
@@ -21469,7 +21469,7 @@ paths:
           period: 3600
   /Core/Geo/Region/Region.json:
     get:
-      operationId: Core.Geo.Region.RegionApi.get
+      operationId: Core.Geo.Region.Region.get
       responses:
         '200':
           description: 'Successful response.'
@@ -21561,7 +21561,7 @@ paths:
           period: 3600
   /Core/Google/Captcha/GoogleCaptcha.json:
     put:
-      operationId: Core.Google.Captcha.GoogleCaptchaApi.put
+      operationId: Core.Google.Captcha.GoogleCaptcha.put
       responses:
         '200':
           description: 'Successful response.'
@@ -21616,7 +21616,7 @@ paths:
           period: 3600
   /Core/Google/Captcha/CaptchaScore.json:
     get:
-      operationId: Core.Google.Captcha.CaptchaScoreApi.get
+      operationId: Core.Google.Captcha.CaptchaScore.get
       responses:
         '200':
           description: 'Successful response.'
@@ -21660,7 +21660,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Core.Google.Captcha.CaptchaScoreApi.post
+      operationId: Core.Google.Captcha.CaptchaScore.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21712,7 +21712,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Core.Google.Captcha.CaptchaScoreApi.put
+      operationId: Core.Google.Captcha.CaptchaScore.put
       responses:
         '200':
           description: 'Successful response.'
@@ -21760,7 +21760,7 @@ paths:
           period: 3600
   /Core/Passport/Login/Info.json:
     get:
-      operationId: Core.Passport.Login.InfoApi.get
+      operationId: Core.Passport.Login.Info.get
       responses:
         '200':
           description: 'Successful response.'
@@ -21814,7 +21814,7 @@ paths:
           period: 3600
   /Core/Passport/ChangePassword/ChangePasswordApply.json:
     post:
-      operationId: Core.Passport.ChangePassword.ChangePasswordApplyApi.post
+      operationId: Core.Passport.ChangePassword.ChangePasswordApply.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21879,7 +21879,7 @@ paths:
           period: 3600
   /Core/Passport/ChangePassword/ChangePasswordBegin.json:
     post:
-      operationId: Core.Passport.ChangePassword.ChangePasswordBeginApi.post
+      operationId: Core.Passport.ChangePassword.ChangePasswordBegin.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21948,7 +21948,7 @@ paths:
           period: 3600
   /Social/Apple/Login/AppleLogin.json:
     delete:
-      operationId: Social.Apple.Login.AppleLoginApi.delete
+      operationId: Social.Apple.Login.AppleLogin.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -21992,7 +21992,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Social.Apple.Login.AppleLoginApi.post
+      operationId: Social.Apple.Login.AppleLogin.post
       responses:
         '200':
           description: 'Successful response.'
@@ -22048,7 +22048,7 @@ paths:
           period: 3600
   /Social/Facebook/Login/Login.json:
     post:
-      operationId: Social.Facebook.Login.LoginApi.post
+      operationId: Social.Facebook.Login.Login.post
       responses:
         '200':
           description: 'Successful response.'
@@ -22104,7 +22104,7 @@ paths:
           period: 3600
   /Social/Google/Plus/Login.json:
     post:
-      operationId: Social.Google.Plus.LoginApi.post
+      operationId: Social.Google.Plus.Login.post
       responses:
         '200':
           description: 'Successful response.'
@@ -22159,7 +22159,7 @@ paths:
           period: 3600
   /Wl/Schedule/ClassList/ClassList68.json:
     post:
-      operationId: Wl.Schedule.ClassList.ClassList68Api.post
+      operationId: Wl.Schedule.ClassList.ClassList68.post
       responses:
         '200':
           description: 'Successful response.'
@@ -22561,7 +22561,7 @@ paths:
           period: 300
   /Wl/Schedule/ClassList/ClassList.json:
     get:
-      operationId: Wl.Schedule.ClassList.ClassListApi.get
+      operationId: Wl.Schedule.ClassList.ClassList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -22949,7 +22949,7 @@ paths:
           period: 300
   /Wl/Schedule/Tab/Tab.json:
     get:
-      operationId: Wl.Schedule.Tab.TabApi.get
+      operationId: Wl.Schedule.Tab.Tab.get
       responses:
         '200':
           description: 'Successful response.'
@@ -23055,7 +23055,7 @@ paths:
           period: 3600
   /Wl/Schedule/ClassView/ClassView.json:
     get:
-      operationId: Wl.Schedule.ClassView.ClassViewApi.get
+      operationId: Wl.Schedule.ClassView.ClassView.get
       responses:
         '200':
           description: 'Successful response.'
@@ -23882,7 +23882,7 @@ paths:
           limit: 3000
           period: 300
     post:
-      operationId: Wl.Schedule.ClassView.ClassViewApi.post
+      operationId: Wl.Schedule.ClassView.ClassView.post
       responses:
         '200':
           description: 'Successful response.'
@@ -24701,7 +24701,7 @@ paths:
           period: 300
   /Wl/Schedule/Page/PageElement.json:
     get:
-      operationId: Wl.Schedule.Page.PageElementApi.get
+      operationId: Wl.Schedule.Page.PageElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -25093,7 +25093,7 @@ paths:
           period: 3600
   /Wl/Schedule/Page/PageList.json:
     get:
-      operationId: Wl.Schedule.Page.PageListApi.get
+      operationId: Wl.Schedule.Page.PageList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -25205,7 +25205,7 @@ paths:
           period: 3600
   /Wl/Appointment/Edit/AddonUpdate.json:
     get:
-      operationId: Wl.Appointment.Edit.AddonUpdateApi.get
+      operationId: Wl.Appointment.Edit.AddonUpdate.get
       responses:
         '200':
           description: 'Successful response.'
@@ -25492,7 +25492,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Appointment.Edit.AddonUpdateApi.put
+      operationId: Wl.Appointment.Edit.AddonUpdate.put
       responses:
         '200':
           description: 'Successful response.'
@@ -25568,7 +25568,7 @@ paths:
           period: 3600
   /Wl/Appointment/Info/Info.json:
     get:
-      operationId: Wl.Appointment.Info.InfoApi.get
+      operationId: Wl.Appointment.Info.Info.get
       responses:
         '200':
           description: 'Successful response.'
@@ -25876,7 +25876,7 @@ paths:
           period: 3600
   /Wl/Appointment/Recent/RecentService.json:
     get:
-      operationId: Wl.Appointment.Recent.RecentServiceApi.get
+      operationId: Wl.Appointment.Recent.RecentService.get
       responses:
         '200':
           description: 'Successful response.'
@@ -25949,7 +25949,7 @@ paths:
           period: 3600
   /Wl/Book/Process/ProcessGroup.json:
     post:
-      operationId: Wl.Book.Process.ProcessGroupApi.post
+      operationId: Wl.Book.Process.ProcessGroup.post
       responses:
         '200':
           description: 'Successful response.'
@@ -26331,7 +26331,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Process.json:
     get:
-      operationId: Wl.Book.Process.ProcessApi.get
+      operationId: Wl.Book.Process.Process.get
       responses:
         '200':
           description: 'Successful response.'
@@ -26511,7 +26511,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Process54.json:
     get:
-      operationId: Wl.Book.Process.Process54Api.get
+      operationId: Wl.Book.Process.Process54.get
       responses:
         '200':
           description: 'Successful response.'
@@ -26690,7 +26690,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Process59.json:
     get:
-      operationId: Wl.Book.Process.Process59Api.get
+      operationId: Wl.Book.Process.Process59.get
       responses:
         '200':
           description: 'Successful response.'
@@ -26867,7 +26867,7 @@ paths:
           period: 3600
   /Wl/Book/Cancel/CancelCan.json:
     get:
-      operationId: Wl.Book.Cancel.CancelCanApi.get
+      operationId: Wl.Book.Cancel.CancelCan.get
       responses:
         '200':
           description: 'Successful response.'
@@ -26972,7 +26972,7 @@ paths:
           period: 3600
   /Wl/Location/Flag/Flag.json:
     get:
-      operationId: Wl.Location.Flag.FlagApi.get
+      operationId: Wl.Location.Flag.Flag.get
       responses:
         '200':
           description: 'Successful response.'
@@ -27100,7 +27100,7 @@ paths:
           period: 3600
   /Wl/Location/WorkTime/LocationWorkTime.json:
     post:
-      operationId: Wl.Location.WorkTime.LocationWorkTimeApi.post
+      operationId: Wl.Location.WorkTime.LocationWorkTime.post
       responses:
         '200':
           description: 'Successful response.'
@@ -27167,7 +27167,7 @@ paths:
           period: 3600
   /Wl/Location/View/View.json:
     get:
-      operationId: Wl.Location.View.ViewApi.get
+      operationId: Wl.Location.View.View.get
       responses:
         '200':
           description: 'Successful response.'
@@ -27449,7 +27449,7 @@ paths:
           period: 3600
   /Wl/Location/Facility/FacilitySid.json:
     get:
-      operationId: Wl.Location.Facility.FacilitySidApi.get
+      operationId: Wl.Location.Facility.FacilitySid.get
       responses:
         '200':
           description: 'Successful response.'
@@ -27510,7 +27510,7 @@ paths:
           period: 3600
   /Wl/Profile/Edit/Edit.json:
     get:
-      operationId: Wl.Profile.Edit.EditApi.get
+      operationId: Wl.Profile.Edit.Edit.get
       responses:
         '200':
           description: 'Successful response.'
@@ -27723,7 +27723,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Profile.Edit.EditApi.post
+      operationId: Wl.Profile.Edit.Edit.post
       responses:
         '200':
           description: 'Successful response.'
@@ -28041,7 +28041,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Profile.Edit.EditApi.put
+      operationId: Wl.Profile.Edit.Edit.put
       responses:
         '200':
           description: 'Successful response.'
@@ -28194,7 +28194,7 @@ paths:
           period: 3600
   /Wl/Profile/Edit/Create.json:
     post:
-      operationId: Wl.Profile.Edit.CreateApi.post
+      operationId: Wl.Profile.Edit.Create.post
       responses:
         '200':
           description: 'Successful response.'
@@ -28260,7 +28260,7 @@ paths:
           period: 3600
   /Wl/Profile/Edit/EditByToken.json:
     get:
-      operationId: Wl.Profile.Edit.EditByTokenApi.get
+      operationId: Wl.Profile.Edit.EditByToken.get
       responses:
         '200':
           description: 'Successful response.'
@@ -28480,7 +28480,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Profile.Edit.EditByTokenApi.post
+      operationId: Wl.Profile.Edit.EditByToken.post
       responses:
         '200':
           description: 'Successful response.'
@@ -28798,7 +28798,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Profile.Edit.EditByTokenApi.put
+      operationId: Wl.Profile.Edit.EditByToken.put
       responses:
         '200':
           description: 'Successful response.'
@@ -28951,7 +28951,7 @@ paths:
           period: 3600
   /Wl/Profile/Edit/EditPassword.json:
     post:
-      operationId: Wl.Profile.Edit.EditPasswordApi.post
+      operationId: Wl.Profile.Edit.EditPassword.post
       responses:
         '200':
           description: 'Successful response.'
@@ -29017,7 +29017,7 @@ paths:
           period: 3600
   /Wl/Profile/Attach/AttachList.json:
     get:
-      operationId: Wl.Profile.Attach.AttachListApi.get
+      operationId: Wl.Profile.Attach.AttachList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -29188,7 +29188,7 @@ paths:
           period: 3600
   /Wl/Profile/Attach/AttachElement.json:
     delete:
-      operationId: Wl.Profile.Attach.AttachElementApi.delete
+      operationId: Wl.Profile.Attach.AttachElement.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -29239,7 +29239,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Profile.Attach.AttachElementApi.get
+      operationId: Wl.Profile.Attach.AttachElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -29347,7 +29347,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Profile.Attach.AttachElementApi.post
+      operationId: Wl.Profile.Attach.AttachElement.post
       responses:
         '200':
           description: 'Successful response.'
@@ -29447,7 +29447,7 @@ paths:
           period: 3600
   /Wl/Profile/Purchase/PurchaseElement.json:
     get:
-      operationId: Wl.Profile.Purchase.PurchaseElementApi.get
+      operationId: Wl.Profile.Purchase.PurchaseElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -29974,7 +29974,7 @@ paths:
           period: 3600
   /Wl/Profile/Purchase/PurchaseList.json:
     get:
-      operationId: Wl.Profile.Purchase.PurchaseListApi.get
+      operationId: Wl.Profile.Purchase.PurchaseList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -30131,7 +30131,7 @@ paths:
           period: 3600
   /Wl/Profile/PurchaseList/PurchaseList.json:
     get:
-      operationId: Wl.Profile.PurchaseList.PurchaseListApi.get
+      operationId: Wl.Profile.PurchaseList.PurchaseList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -30286,7 +30286,7 @@ paths:
           period: 3600
   /Wl/Profile/PurchaseList/PurchaseListElement.json:
     get:
-      operationId: Wl.Profile.PurchaseList.PurchaseListElementApi.get
+      operationId: Wl.Profile.PurchaseList.PurchaseListElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -30916,7 +30916,7 @@ paths:
           period: 3600
   /Wl/Profile/Alert/Alert.json:
     get:
-      operationId: Wl.Profile.Alert.AlertApi.get
+      operationId: Wl.Profile.Alert.Alert.get
       responses:
         '200':
           description: 'Successful response.'
@@ -31056,7 +31056,7 @@ paths:
           period: 3600
   /Wl/Profile/Alert/AlertEdit.json:
     delete:
-      operationId: Wl.Profile.Alert.AlertEditApi.delete
+      operationId: Wl.Profile.Alert.AlertEdit.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -31102,7 +31102,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Profile.Alert.AlertEditApi.get
+      operationId: Wl.Profile.Alert.AlertEdit.get
       responses:
         '200':
           description: 'Successful response.'
@@ -31266,7 +31266,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Profile.Alert.AlertEditApi.post
+      operationId: Wl.Profile.Alert.AlertEdit.post
       responses:
         '200':
           description: 'Successful response.'
@@ -31367,7 +31367,7 @@ paths:
           period: 3600
   /Wl/Profile/Term/Term.json:
     get:
-      operationId: Wl.Profile.Term.TermApi.get
+      operationId: Wl.Profile.Term.Term.get
       responses:
         '200':
           description: 'Successful response.'
@@ -31463,7 +31463,7 @@ paths:
           period: 3600
   /Wl/Profile/Attendance/AttendanceOverlap.json:
     get:
-      operationId: Wl.Profile.Attendance.AttendanceOverlapApi.get
+      operationId: Wl.Profile.Attendance.AttendanceOverlap.get
       responses:
         '200':
           description: 'Successful response.'
@@ -31632,7 +31632,7 @@ paths:
           period: 3600
   /Wl/Profile/Setting/Setting.json:
     get:
-      operationId: Wl.Profile.Setting.SettingApi.get
+      operationId: Wl.Profile.Setting.Setting.get
       responses:
         '200':
           description: 'Successful response.'
@@ -31711,7 +31711,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Profile.Setting.SettingApi.post
+      operationId: Wl.Profile.Setting.Setting.post
       responses:
         '200':
           description: 'Successful response.'
@@ -31788,7 +31788,7 @@ paths:
           period: 3600
   /Wl/Profile/Activity/Element.json:
     get:
-      operationId: Wl.Profile.Activity.ElementApi.get
+      operationId: Wl.Profile.Activity.Element.get
       responses:
         '200':
           description: 'Successful response.'
@@ -31900,7 +31900,7 @@ paths:
           period: 3600
   /Wl/Profile/Activity/List.json:
     get:
-      operationId: Wl.Profile.Activity.ListApi.get
+      operationId: Wl.Profile.Activity.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -31983,7 +31983,7 @@ paths:
           period: 3600
   /Wl/Profile/Contract/Contract.json:
     get:
-      operationId: Wl.Profile.Contract.ContractApi.get
+      operationId: Wl.Profile.Contract.Contract.get
       responses:
         '200':
           description: 'Successful response.'
@@ -32116,7 +32116,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Profile.Contract.ContractApi.post
+      operationId: Wl.Profile.Contract.Contract.post
       responses:
         '200':
           description: 'Successful response.'
@@ -32190,7 +32190,7 @@ paths:
           period: 3600
   /Wl/Classes/ClassList/BookList.json:
     get:
-      operationId: Wl.Classes.ClassList.BookListApi.get
+      operationId: Wl.Classes.ClassList.BookList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -32333,7 +32333,7 @@ paths:
           period: 3600
   /Wl/Classes/ClassList/List.json:
     get:
-      operationId: Wl.Classes.ClassList.ListApi.get
+      operationId: Wl.Classes.ClassList.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -32516,7 +32516,7 @@ paths:
           period: 3600
   /Wl/Classes/ClassView/Element.json:
     get:
-      operationId: Wl.Classes.ClassView.ElementApi.get
+      operationId: Wl.Classes.ClassView.Element.get
       responses:
         '200':
           description: 'Successful response.'
@@ -32854,7 +32854,7 @@ paths:
           period: 3600
   /Wl/Classes/Promotion/ClassPromotion.json:
     get:
-      operationId: Wl.Classes.Promotion.ClassPromotionApi.get
+      operationId: Wl.Classes.Promotion.ClassPromotion.get
       responses:
         '200':
           description: 'Successful response.'
@@ -32971,7 +32971,7 @@ paths:
           period: 3600
   /Wl/Business/Partner/PartnerCode.json:
     get:
-      operationId: Wl.Business.Partner.PartnerCodeApi.get
+      operationId: Wl.Business.Partner.PartnerCode.get
       responses:
         '200':
           description: 'Successful response.'
@@ -33018,7 +33018,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Business.Partner.PartnerCodeApi.post
+      operationId: Wl.Business.Partner.PartnerCode.post
       responses:
         '200':
           description: 'Successful response.'
@@ -33068,7 +33068,7 @@ paths:
           period: 3600
   /Wl/Business/Partner/PartnerSettings.json:
     get:
-      operationId: Wl.Business.Partner.PartnerSettingsApi.get
+      operationId: Wl.Business.Partner.PartnerSettings.get
       responses:
         '200':
           description: 'Successful response.'
@@ -33155,7 +33155,7 @@ paths:
           period: 3600
   /Wl/Business/Account/BusinessAccount.json:
     get:
-      operationId: Wl.Business.Account.BusinessAccountApi.get
+      operationId: Wl.Business.Account.BusinessAccount.get
       responses:
         '200':
           description: 'Successful response.'
@@ -33218,7 +33218,7 @@ paths:
           period: 3600
   /Wl/Business/Claim/BusinessClaim.json:
     get:
-      operationId: Wl.Business.Claim.BusinessClaimApi.get
+      operationId: Wl.Business.Claim.BusinessClaim.get
       responses:
         '200':
           description: 'Successful response.'
@@ -33268,7 +33268,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Business.Claim.BusinessClaimApi.post
+      operationId: Wl.Business.Claim.BusinessClaim.post
       responses:
         '200':
           description: 'Successful response.'
@@ -33329,7 +33329,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Business.Claim.BusinessClaimApi.put
+      operationId: Wl.Business.Claim.BusinessClaim.put
       responses:
         '200':
           description: 'Successful response.'
@@ -33382,7 +33382,7 @@ paths:
           period: 3600
   /Wl/Business/Design/BusinessDesign.json:
     get:
-      operationId: Wl.Business.Design.BusinessDesignApi.get
+      operationId: Wl.Business.Design.BusinessDesign.get
       responses:
         '200':
           description: 'Successful response.'
@@ -33541,7 +33541,7 @@ paths:
       security: []
   /Wl/Business/Lead/BusinessLead.json:
     post:
-      operationId: Wl.Business.Lead.BusinessLeadApi.post
+      operationId: Wl.Business.Lead.BusinessLead.post
       responses:
         '200':
           description: 'Successful response.'
@@ -33609,7 +33609,7 @@ paths:
           period: 3600
   /Wl/Business/Phone/Phone.json:
     delete:
-      operationId: Wl.Business.Phone.PhoneApi.delete
+      operationId: Wl.Business.Phone.Phone.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -33659,7 +33659,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Business.Phone.PhoneApi.get
+      operationId: Wl.Business.Phone.Phone.get
       responses:
         '200':
           description: 'Successful response.'
@@ -33723,7 +33723,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Business.Phone.PhoneApi.post
+      operationId: Wl.Business.Phone.Phone.post
       responses:
         '200':
           description: 'Successful response.'
@@ -33775,7 +33775,7 @@ paths:
           period: 3600
   /Wl/Business/Search/BusinessSearchUser.json:
     get:
-      operationId: Wl.Business.Search.BusinessSearchUserApi.get
+      operationId: Wl.Business.Search.BusinessSearchUser.get
       responses:
         '200':
           description: 'Successful response.'
@@ -33840,7 +33840,7 @@ paths:
           period: 3600
   /Wl/Business/Search/BusinessSearch.json:
     get:
-      operationId: Wl.Business.Search.BusinessSearchApi.get
+      operationId: Wl.Business.Search.BusinessSearch.get
       responses:
         '200':
           description: 'Successful response.'
@@ -33905,7 +33905,7 @@ paths:
           period: 3600
   /Wl/Business/Config/BusinessConfig.json:
     get:
-      operationId: Wl.Business.Config.BusinessConfigApi.get
+      operationId: Wl.Business.Config.BusinessConfig.get
       responses:
         '200':
           description: 'Successful response.'
@@ -34211,7 +34211,7 @@ paths:
       security: []
   /Wl/Business/AmazonRegion/AmazonRegion.json:
     get:
-      operationId: Wl.Business.AmazonRegion.AmazonRegionApi.get
+      operationId: Wl.Business.AmazonRegion.AmazonRegion.get
       responses:
         '200':
           description: 'Successful response.'
@@ -34270,7 +34270,7 @@ paths:
           period: 3600
   /Wl/Business/AuthorizePartner/AuthorizePartner.json:
     get:
-      operationId: Wl.Business.AuthorizePartner.AuthorizePartnerApi.get
+      operationId: Wl.Business.AuthorizePartner.AuthorizePartner.get
       responses:
         '200':
           description: 'Successful response.'
@@ -34326,7 +34326,7 @@ paths:
           period: 3600
   /Wl/Business/Select/BusinessSelect.json:
     get:
-      operationId: Wl.Business.Select.BusinessSelectApi.get
+      operationId: Wl.Business.Select.BusinessSelect.get
       responses:
         '200':
           description: 'Successful response.'
@@ -34443,7 +34443,7 @@ paths:
           period: 3600
   /Wl/Business/Type/BusinessTypeList.json:
     get:
-      operationId: Wl.Business.Type.BusinessTypeListApi.get
+      operationId: Wl.Business.Type.BusinessTypeList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -34568,7 +34568,7 @@ paths:
           period: 3600
   /Wl/Business/Waiver/Waiver.json:
     get:
-      operationId: Wl.Business.Waiver.WaiverApi.get
+      operationId: Wl.Business.Waiver.Waiver.get
       responses:
         '200':
           description: 'Successful response.'
@@ -34641,7 +34641,7 @@ paths:
           period: 3600
   /Wl/Lead/Source/LeadSourceList.json:
     get:
-      operationId: Wl.Lead.Source.LeadSourceListApi.get
+      operationId: Wl.Lead.Source.LeadSourceList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -34737,7 +34737,7 @@ paths:
           period: 3600
   /Wl/Lead/Source/LeadSourceElement.json:
     delete:
-      operationId: Wl.Lead.Source.LeadSourceElementApi.delete
+      operationId: Wl.Lead.Source.LeadSourceElement.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -34790,7 +34790,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Lead.Source.LeadSourceElementApi.post
+      operationId: Wl.Lead.Source.LeadSourceElement.post
       responses:
         '200':
           description: 'Successful response.'
@@ -34866,7 +34866,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Lead.Source.LeadSourceElementApi.put
+      operationId: Wl.Lead.Source.LeadSourceElement.put
       responses:
         '200':
           description: 'Successful response.'
@@ -34923,7 +34923,7 @@ paths:
           period: 3600
   /Wl/Promotion/Index/PromotionIndex.json:
     get:
-      operationId: Wl.Promotion.Index.PromotionIndexApi.get
+      operationId: Wl.Promotion.Index.PromotionIndex.get
       responses:
         '200':
           description: 'Successful response.'
@@ -35299,7 +35299,7 @@ paths:
           period: 3600
   /Wl/Login/Mail/MailUse.json:
     get:
-      operationId: Wl.Login.Mail.MailUseApi.get
+      operationId: Wl.Login.Mail.MailUse.get
       responses:
         '200':
           description: 'Successful response.'
@@ -35361,7 +35361,7 @@ paths:
           period: 3600
   /Wl/Login/Promotion/PromotionPayPause.json:
     delete:
-      operationId: Wl.Login.Promotion.PromotionPayPauseApi.delete
+      operationId: Wl.Login.Promotion.PromotionPayPause.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -35431,7 +35431,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Login.Promotion.PromotionPayPauseApi.get
+      operationId: Wl.Login.Promotion.PromotionPayPause.get
       responses:
         '200':
           description: 'Successful response.'
@@ -35689,7 +35689,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Login.Promotion.PromotionPayPauseApi.post
+      operationId: Wl.Login.Promotion.PromotionPayPause.post
       responses:
         '200':
           description: 'Successful response.'
@@ -35839,7 +35839,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Login.Promotion.PromotionPayPauseApi.put
+      operationId: Wl.Login.Promotion.PromotionPayPause.put
       responses:
         '200':
           description: 'Successful response.'
@@ -35975,7 +35975,7 @@ paths:
           period: 3600
   /Wl/Login/Member/MemberValidate.json:
     get:
-      operationId: Wl.Login.Member.MemberValidateApi.get
+      operationId: Wl.Login.Member.MemberValidate.get
       responses:
         '200':
           description: 'Successful response.'
@@ -36072,7 +36072,7 @@ paths:
           period: 3600
   /Wl/Login/Member/Member.json:
     get:
-      operationId: Wl.Login.Member.MemberApi.get
+      operationId: Wl.Login.Member.Member.get
       responses:
         '200':
           description: 'Successful response.'
@@ -36147,7 +36147,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Login.Member.MemberApi.post
+      operationId: Wl.Login.Member.Member.post
       responses:
         '200':
           description: 'Successful response.'
@@ -36197,7 +36197,7 @@ paths:
           period: 3600
   /Wl/Login/Member/LoginMember.json:
     get:
-      operationId: Wl.Login.Member.LoginMemberApi.get
+      operationId: Wl.Login.Member.LoginMember.get
       responses:
         '200':
           description: 'Successful response.'
@@ -36251,7 +36251,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Login.Member.LoginMemberApi.post
+      operationId: Wl.Login.Member.LoginMember.post
       responses:
         '200':
           description: 'Successful response.'
@@ -36314,7 +36314,7 @@ paths:
           period: 3600
   /Wl/Login/Member/MemberValidate63.json:
     get:
-      operationId: Wl.Login.Member.MemberValidate63Api.get
+      operationId: Wl.Login.Member.MemberValidate63.get
       responses:
         '200':
           description: 'Successful response.'
@@ -36453,7 +36453,7 @@ paths:
           period: 3600
   /Wl/Login/Member/LoginMemberListAll.json:
     get:
-      operationId: Wl.Login.Member.LoginMemberListAllApi.get
+      operationId: Wl.Login.Member.LoginMemberListAll.get
       responses:
         '200':
           description: 'Successful response.'
@@ -36524,7 +36524,7 @@ paths:
           period: 3600
   /Wl/Login/Add/MailUseOk.json:
     post:
-      operationId: Wl.Login.Add.MailUseOkApi.post
+      operationId: Wl.Login.Add.MailUseOk.post
       responses:
         '200':
           description: 'Successful response.'
@@ -36610,7 +36610,7 @@ paths:
           period: 3600
   /Wl/Login/Attendance/AttendanceList.json:
     get:
-      operationId: Wl.Login.Attendance.AttendanceListApi.get
+      operationId: Wl.Login.Attendance.AttendanceList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -38462,7 +38462,7 @@ paths:
           period: 3600
   /Wl/Login/Attendance/AttendanceInfo.json:
     get:
-      operationId: Wl.Login.Attendance.AttendanceInfoApi.get
+      operationId: Wl.Login.Attendance.AttendanceInfo.get
       responses:
         '200':
           description: 'Successful response.'
@@ -38769,7 +38769,7 @@ paths:
           period: 3600
   /Wl/Login/Attendance/AttendanceListByToken.json:
     get:
-      operationId: Wl.Login.Attendance.AttendanceListByTokenApi.get
+      operationId: Wl.Login.Attendance.AttendanceListByToken.get
       responses:
         '200':
           description: 'Successful response.'
@@ -40628,7 +40628,7 @@ paths:
           period: 3600
   /Wl/Login/Attendance/AttendanceInfoByToken.json:
     get:
-      operationId: Wl.Login.Attendance.AttendanceInfoByTokenApi.get
+      operationId: Wl.Login.Attendance.AttendanceInfoByToken.get
       responses:
         '200':
           description: 'Successful response.'
@@ -40942,7 +40942,7 @@ paths:
           period: 3600
   /Wl/Login/Search/Concerto.json:
     get:
-      operationId: Wl.Login.Search.ConcertoApi.get
+      operationId: Wl.Login.Search.Concerto.get
       responses:
         '200':
           description: 'Successful response.'
@@ -41005,7 +41005,7 @@ paths:
           period: 3600
   /Wl/Login/Type/LoginType.json:
     get:
-      operationId: Wl.Login.Type.LoginTypeApi.get
+      operationId: Wl.Login.Type.LoginType.get
       responses:
         '200':
           description: 'Successful response.'
@@ -41088,7 +41088,7 @@ paths:
           period: 3600
   /Wl/Login/Permission/Permission.json:
     post:
-      operationId: Wl.Login.Permission.PermissionApi.post
+      operationId: Wl.Login.Permission.Permission.post
       responses:
         '200':
           description: 'Successful response.'
@@ -41138,7 +41138,7 @@ paths:
           period: 3600
   /Wl/Login/Agree/Agree.json:
     get:
-      operationId: Wl.Login.Agree.AgreeApi.get
+      operationId: Wl.Login.Agree.Agree.get
       responses:
         '200':
           description: 'Successful response.'
@@ -41193,7 +41193,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Login.Agree.AgreeApi.post
+      operationId: Wl.Login.Agree.Agree.post
       responses:
         '200':
           description: 'Successful response.'
@@ -41258,7 +41258,7 @@ paths:
           period: 3600
   /Wl/Login/Coupon/Coupon.json:
     get:
-      operationId: Wl.Login.Coupon.CouponApi.get
+      operationId: Wl.Login.Coupon.Coupon.get
       responses:
         '200':
           description: 'Successful response.'
@@ -41320,7 +41320,7 @@ paths:
           period: 3600
   /Wl/Login/Product/Product.json:
     get:
-      operationId: Wl.Login.Product.ProductApi.get
+      operationId: Wl.Login.Product.Product.get
       responses:
         '200':
           description: 'Successful response.'
@@ -41475,7 +41475,7 @@ paths:
           period: 3600
   /Wl/Quiz/Response/Response65.json:
     delete:
-      operationId: Wl.Quiz.Response.Response65Api.delete
+      operationId: Wl.Quiz.Response.Response65.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -41560,7 +41560,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Quiz.Response.Response65Api.get
+      operationId: Wl.Quiz.Response.Response65.get
       responses:
         '200':
           description: 'Successful response.'
@@ -43354,7 +43354,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Quiz.Response.Response65Api.post
+      operationId: Wl.Quiz.Response.Response65.post
       responses:
         '200':
           description: 'Successful response.'
@@ -45150,7 +45150,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Quiz.Response.Response65Api.put
+      operationId: Wl.Quiz.Response.Response65.put
       responses:
         '200':
           description: 'Successful response.'
@@ -45239,7 +45239,7 @@ paths:
           period: 3600
   /Wl/Quiz/Response/Response.json:
     delete:
-      operationId: Wl.Quiz.Response.ResponseApi.delete
+      operationId: Wl.Quiz.Response.Response.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -45326,7 +45326,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Quiz.Response.ResponseApi.get
+      operationId: Wl.Quiz.Response.Response.get
       responses:
         '200':
           description: 'Successful response.'
@@ -47116,7 +47116,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Quiz.Response.ResponseApi.post
+      operationId: Wl.Quiz.Response.Response.post
       responses:
         '200':
           description: 'Successful response.'
@@ -48912,7 +48912,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Quiz.Response.ResponseApi.put
+      operationId: Wl.Quiz.Response.Response.put
       responses:
         '200':
           description: 'Successful response.'
@@ -49003,7 +49003,7 @@ paths:
           period: 3600
   /Wl/Catalog/CatalogList/Element.json:
     get:
-      operationId: Wl.Catalog.CatalogList.ElementApi.get
+      operationId: Wl.Catalog.CatalogList.Element.get
       responses:
         '200':
           description: 'Successful response.'
@@ -49783,7 +49783,7 @@ paths:
           period: 3600
   /Wl/Catalog/CatalogList/List.json:
     get:
-      operationId: Wl.Catalog.CatalogList.ListApi.get
+      operationId: Wl.Catalog.CatalogList.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -50006,7 +50006,7 @@ paths:
           period: 3600
   /Wl/Catalog/CatalogList/CatalogProduct.json:
     get:
-      operationId: Wl.Catalog.CatalogList.CatalogProductApi.get
+      operationId: Wl.Catalog.CatalogList.CatalogProduct.get
       responses:
         '200':
           description: 'Successful response.'
@@ -50203,7 +50203,7 @@ paths:
           period: 3600
   /Wl/Catalog/Payment/Payment.json:
     post:
-      operationId: Wl.Catalog.Payment.PaymentApi.post
+      operationId: Wl.Catalog.Payment.Payment.post
       responses:
         '200':
           description: 'Successful response.'
@@ -50650,7 +50650,7 @@ paths:
           period: 3600
   /Wl/Catalog/Cart/Cart.json:
     get:
-      operationId: Wl.Catalog.Cart.CartApi.get
+      operationId: Wl.Catalog.Cart.Cart.get
       responses:
         '200':
           description: 'Successful response.'
@@ -50959,7 +50959,7 @@ paths:
           period: 3600
   /Wl/Catalog/Cart/LimitQuantity.json:
     get:
-      operationId: Wl.Catalog.Cart.LimitQuantityApi.get
+      operationId: Wl.Catalog.Cart.LimitQuantity.get
       responses:
         '200':
           description: 'Successful response.'
@@ -51084,7 +51084,7 @@ paths:
           period: 3600
   /Wl/Video/Watch/Watch.json:
     post:
-      operationId: Wl.Video.Watch.WatchApi.post
+      operationId: Wl.Video.Watch.Watch.post
       responses:
         '200':
           description: 'Successful response.'
@@ -51154,7 +51154,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Video.Watch.WatchApi.put
+      operationId: Wl.Video.Watch.Watch.put
       responses:
         '200':
           description: 'Successful response.'
@@ -51212,7 +51212,7 @@ paths:
           period: 3600
   /Wl/Video/Category/CategoryElement.json:
     delete:
-      operationId: Wl.Video.Category.CategoryElementApi.delete
+      operationId: Wl.Video.Category.CategoryElement.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -51256,7 +51256,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Video.Category.CategoryElementApi.get
+      operationId: Wl.Video.Category.CategoryElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -51347,7 +51347,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Video.Category.CategoryElementApi.put
+      operationId: Wl.Video.Category.CategoryElement.put
       responses:
         '200':
           description: 'Successful response.'
@@ -51443,7 +51443,7 @@ paths:
           period: 3600
   /Wl/Video/Category/CategoryList.json:
     get:
-      operationId: Wl.Video.Category.CategoryListApi.get
+      operationId: Wl.Video.Category.CategoryList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -51536,7 +51536,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Video.Category.CategoryListApi.put
+      operationId: Wl.Video.Category.CategoryList.put
       responses:
         '200':
           description: 'Successful response.'
@@ -51600,7 +51600,7 @@ paths:
           period: 3600
   /Wl/Video/Level/Level.json:
     delete:
-      operationId: Wl.Video.Level.LevelApi.delete
+      operationId: Wl.Video.Level.Level.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -51652,7 +51652,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Video.Level.LevelApi.post
+      operationId: Wl.Video.Level.Level.post
       responses:
         '200':
           description: 'Successful response.'
@@ -51719,7 +51719,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Video.Level.LevelApi.put
+      operationId: Wl.Video.Level.Level.put
       responses:
         '200':
           description: 'Successful response.'
@@ -51776,7 +51776,7 @@ paths:
           period: 3600
   /Wl/Video/Level/LevelList.json:
     get:
-      operationId: Wl.Video.Level.LevelListApi.get
+      operationId: Wl.Video.Level.LevelList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -51834,7 +51834,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Video.Level.LevelListApi.put
+      operationId: Wl.Video.Level.LevelList.put
       responses:
         '200':
           description: 'Successful response.'
@@ -51886,7 +51886,7 @@ paths:
           period: 3600
   /Wl/Video/Tag/Tag.json:
     delete:
-      operationId: Wl.Video.Tag.TagApi.delete
+      operationId: Wl.Video.Tag.Tag.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -51938,7 +51938,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Video.Tag.TagApi.post
+      operationId: Wl.Video.Tag.Tag.post
       responses:
         '200':
           description: 'Successful response.'
@@ -52004,7 +52004,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Video.Tag.TagApi.put
+      operationId: Wl.Video.Tag.Tag.put
       responses:
         '200':
           description: 'Successful response.'
@@ -52061,7 +52061,7 @@ paths:
           period: 3600
   /Wl/Video/Tag/TagList.json:
     get:
-      operationId: Wl.Video.Tag.TagListApi.get
+      operationId: Wl.Video.Tag.TagList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -52120,7 +52120,7 @@ paths:
           period: 3600
   /Wl/Google/Login/GoogleLogin.json:
     post:
-      operationId: Wl.Google.Login.GoogleLoginApi.post
+      operationId: Wl.Google.Login.GoogleLogin.post
       responses:
         '200':
           description: 'Successful response.'
@@ -52179,7 +52179,7 @@ paths:
           period: 3600
   /Wl/Reception/Roster/AttendanceListNotAttend.json:
     post:
-      operationId: Wl.Reception.Roster.AttendanceListNotAttendApi.post
+      operationId: Wl.Reception.Roster.AttendanceListNotAttend.post
       responses:
         '200':
           description: 'Successful response.'
@@ -52230,7 +52230,7 @@ paths:
           period: 3600
   /Wl/Reception/Roster/AttendanceListAttend.json:
     post:
-      operationId: Wl.Reception.Roster.AttendanceListAttendApi.post
+      operationId: Wl.Reception.Roster.AttendanceListAttend.post
       responses:
         '200':
           description: 'Successful response.'
@@ -52311,7 +52311,7 @@ paths:
           period: 3600
   /Wl/Reception/Roster/AttendanceListBook.json:
     post:
-      operationId: Wl.Reception.Roster.AttendanceListBookApi.post
+      operationId: Wl.Reception.Roster.AttendanceListBook.post
       responses:
         '200':
           description: 'Successful response.'
@@ -52387,7 +52387,7 @@ paths:
           period: 3600
   /Wl/Reception/Roster/AttendanceSecret.json:
     get:
-      operationId: Wl.Reception.Roster.AttendanceSecretApi.get
+      operationId: Wl.Reception.Roster.AttendanceSecret.get
       responses:
         '200':
           description: 'Successful response.'
@@ -52442,7 +52442,7 @@ paths:
           period: 3600
   /Wl/Reception/Application/ReceptionSchedule.json:
     get:
-      operationId: Wl.Reception.Application.ReceptionScheduleApi.get
+      operationId: Wl.Reception.Application.ReceptionSchedule.get
       responses:
         '200':
           description: 'Successful response.'
@@ -52608,7 +52608,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Reception.Application.ReceptionScheduleApi.post
+      operationId: Wl.Reception.Application.ReceptionSchedule.post
       responses:
         '200':
           description: 'Successful response.'
@@ -52871,7 +52871,7 @@ paths:
           period: 3600
   /Wl/Reception/Application/MemberInfo.json:
     get:
-      operationId: Wl.Reception.Application.MemberInfoApi.get
+      operationId: Wl.Reception.Application.MemberInfo.get
       responses:
         '200':
           description: 'Successful response.'
@@ -53517,7 +53517,7 @@ paths:
           period: 3600
   /Wl/Reception/Application/ReceptionAuthorize.json:
     post:
-      operationId: Wl.Reception.Application.ReceptionAuthorizeApi.post
+      operationId: Wl.Reception.Application.ReceptionAuthorize.post
       responses:
         '200':
           description: 'Successful response.'
@@ -53621,7 +53621,7 @@ paths:
           period: 3600
   /Wl/Reception/Design/ReceptionDesign.json:
     get:
-      operationId: Wl.Reception.Design.ReceptionDesignApi.get
+      operationId: Wl.Reception.Design.ReceptionDesign.get
       responses:
         '200':
           description: 'Successful response.'
@@ -53784,7 +53784,7 @@ paths:
           period: 3600
   /Wl/Purchase/Receipt/PurchaseReceipt.json:
     get:
-      operationId: Wl.Purchase.Receipt.PurchaseReceiptApi.get
+      operationId: Wl.Purchase.Receipt.PurchaseReceipt.get
       responses:
         '200':
           description: 'Successful response.'
@@ -54135,7 +54135,7 @@ paths:
           period: 3600
   /Wl/Purchase/Mail/PurchaseMail.json:
     post:
-      operationId: Wl.Purchase.Mail.PurchaseMailApi.post
+      operationId: Wl.Purchase.Mail.PurchaseMail.post
       responses:
         '200':
           description: 'Successful response.'
@@ -54182,7 +54182,7 @@ paths:
           period: 3600
   /Wl/Purchase/Share/PurchaseShare.json:
     post:
-      operationId: Wl.Purchase.Share.PurchaseShareApi.post
+      operationId: Wl.Purchase.Share.PurchaseShare.post
       responses:
         '200':
           description: 'Successful response.'
@@ -54239,7 +54239,7 @@ paths:
           period: 3600
   /Wl/Insurance/Catalog/ProgramList.json:
     get:
-      operationId: Wl.Insurance.Catalog.ProgramListApi.get
+      operationId: Wl.Insurance.Catalog.ProgramList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -54321,7 +54321,7 @@ paths:
           period: 3600
   /Wl/Service/ServiceList/List.json:
     get:
-      operationId: Wl.Service.ServiceList.ListApi.get
+      operationId: Wl.Service.ServiceList.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -54401,7 +54401,7 @@ paths:
           period: 3600
   /Wl/Sms/Phone/BusinessPhone.json:
     get:
-      operationId: Wl.Sms.Phone.BusinessPhoneApi.get
+      operationId: Wl.Sms.Phone.BusinessPhone.get
       responses:
         '200':
           description: 'Successful response.'
@@ -54453,7 +54453,7 @@ paths:
           period: 3600
   /Wl/AiAgent/Link/SendMail.json:
     post:
-      operationId: Wl.AiAgent.Link.SendMailApi.post
+      operationId: Wl.AiAgent.Link.SendMail.post
       responses:
         '200':
           description: 'Successful response.'
@@ -54531,7 +54531,7 @@ paths:
           period: 3600
   /Wl/Staff/Privilege/PrivilegeList.json:
     get:
-      operationId: Wl.Staff.Privilege.PrivilegeListApi.get
+      operationId: Wl.Staff.Privilege.PrivilegeList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -54609,7 +54609,7 @@ paths:
           period: 3600
   /Wl/Staff/StaffList/StaffList.json:
     get:
-      operationId: Wl.Staff.StaffList.StaffListApi.get
+      operationId: Wl.Staff.StaffList.StaffList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -54782,7 +54782,7 @@ paths:
           period: 3600
   /Wl/Staff/StaffView/StaffView.json:
     get:
-      operationId: Wl.Staff.StaffView.StaffViewApi.get
+      operationId: Wl.Staff.StaffView.StaffView.get
       responses:
         '200':
           description: 'Successful response.'
@@ -55342,7 +55342,7 @@ paths:
       security: []
   /Wl/Staff/StaffView/StaffView74.json:
     get:
-      operationId: Wl.Staff.StaffView.StaffView74Api.get
+      operationId: Wl.Staff.StaffView.StaffView74.get
       responses:
         '200':
           description: 'Successful response.'
@@ -55873,7 +55873,7 @@ paths:
       security: []
   /Wl/Reward/Action/Action.json:
     get:
-      operationId: Wl.Reward.Action.ActionApi.get
+      operationId: Wl.Reward.Action.Action.get
       responses:
         '200':
           description: 'Successful response.'
@@ -55950,7 +55950,7 @@ paths:
           period: 3600
   /Wl/Reward/Action/ActionWrite.json:
     post:
-      operationId: Wl.Reward.Action.ActionWriteApi.post
+      operationId: Wl.Reward.Action.ActionWrite.post
       responses:
         '200':
           description: 'Successful response.'
@@ -56099,7 +56099,7 @@ paths:
           period: 3600
   /Wl/Reward/Action/Element.json:
     get:
-      operationId: Wl.Reward.Action.ElementApi.get
+      operationId: Wl.Reward.Action.Element.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56172,7 +56172,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Reward.Action.ElementApi.post
+      operationId: Wl.Reward.Action.Element.post
       responses:
         '200':
           description: 'Successful response.'
@@ -56224,7 +56224,7 @@ paths:
           period: 3600
   /Wl/Reward/Action/ActionType.json:
     get:
-      operationId: Wl.Reward.Action.ActionTypeApi.get
+      operationId: Wl.Reward.Action.ActionType.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56287,7 +56287,7 @@ paths:
           period: 3600
   /Wl/Reward/Score/Score.json:
     get:
-      operationId: Wl.Reward.Score.ScoreApi.get
+      operationId: Wl.Reward.Score.Score.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56345,7 +56345,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Reward.Score.ScoreApi.post
+      operationId: Wl.Reward.Score.Score.post
       responses:
         '200':
           description: 'Successful response.'
@@ -56388,7 +56388,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Reward.Score.ScoreApi.put
+      operationId: Wl.Reward.Score.Score.put
       responses:
         '200':
           description: 'Successful response.'
@@ -56448,7 +56448,7 @@ paths:
           period: 3600
   /Wl/Reward/Board/Element.json:
     get:
-      operationId: Wl.Reward.Board.ElementApi.get
+      operationId: Wl.Reward.Board.Element.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56558,7 +56558,7 @@ paths:
           period: 3600
   /Wl/Reward/Board/List.json:
     get:
-      operationId: Wl.Reward.Board.ListApi.get
+      operationId: Wl.Reward.Board.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56616,7 +56616,7 @@ paths:
           period: 3600
   /Wl/Reward/Prize/Element.json:
     get:
-      operationId: Wl.Reward.Prize.ElementApi.get
+      operationId: Wl.Reward.Prize.Element.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56680,7 +56680,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Reward.Prize.ElementApi.post
+      operationId: Wl.Reward.Prize.Element.post
       responses:
         '200':
           description: 'Successful response.'
@@ -56742,7 +56742,7 @@ paths:
           period: 3600
   /Wl/Reward/Prize/Prize.json:
     get:
-      operationId: Wl.Reward.Prize.PrizeApi.get
+      operationId: Wl.Reward.Prize.Prize.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56799,7 +56799,7 @@ paths:
           period: 3600
   /Wl/Notification/Send/NotificationSend.json:
     post:
-      operationId: Wl.Notification.Send.NotificationSendApi.post
+      operationId: Wl.Notification.Send.NotificationSend.post
       responses:
         '200':
           description: 'Successful response.'
@@ -56879,7 +56879,7 @@ paths:
           period: 3600
   /Wl/Notification/Send/NotificationInfo.json:
     get:
-      operationId: Wl.Notification.Send.NotificationInfoApi.get
+      operationId: Wl.Notification.Send.NotificationInfo.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56934,7 +56934,7 @@ paths:
           period: 3600
   /Wl/Notification/Otp/PhoneOtp.json:
     get:
-      operationId: Wl.Notification.Otp.PhoneOtpApi.get
+      operationId: Wl.Notification.Otp.PhoneOtp.get
       responses:
         '200':
           description: 'Successful response.'
@@ -56971,7 +56971,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Notification.Otp.PhoneOtpApi.post
+      operationId: Wl.Notification.Otp.PhoneOtp.post
       responses:
         '200':
           description: 'Successful response.'
@@ -57021,7 +57021,7 @@ paths:
           period: 3600
   /Wl/Passport/Login/Info.json:
     get:
-      operationId: Wl.Passport.Login.InfoApi.get
+      operationId: Wl.Passport.Login.Info.get
       responses:
         '200':
           description: 'Successful response.'
@@ -57081,7 +57081,7 @@ paths:
           period: 3600
   /Wl/Skin/Application/Skin.json:
     delete:
-      operationId: Wl.Skin.Application.SkinApi.delete
+      operationId: Wl.Skin.Application.Skin.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -57140,7 +57140,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Skin.Application.SkinApi.get
+      operationId: Wl.Skin.Application.Skin.get
       responses:
         '200':
           description: 'Successful response.'
@@ -57197,7 +57197,7 @@ paths:
           period: 3600
   /Wl/Skin/Widget/SkinWidgetList.json:
     get:
-      operationId: Wl.Skin.Widget.SkinWidgetListApi.get
+      operationId: Wl.Skin.Widget.SkinWidgetList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -57256,7 +57256,7 @@ paths:
           period: 3600
   /Wl/Member/Info/Info.json:
     get:
-      operationId: Wl.Member.Info.InfoApi.get
+      operationId: Wl.Member.Info.Info.get
       responses:
         '200':
           description: 'Successful response.'
@@ -57858,7 +57858,7 @@ paths:
           period: 3600
   /Wl/Member/Purchase/MemberByPromotion.json:
     get:
-      operationId: Wl.Member.Purchase.MemberByPromotionApi.get
+      operationId: Wl.Member.Purchase.MemberByPromotion.get
       responses:
         '200':
           description: 'Successful response.'
@@ -57964,7 +57964,7 @@ paths:
           period: 3600
   /Wl/User/Info/UserInfo.json:
     get:
-      operationId: Wl.User.Info.UserInfoApi.get
+      operationId: Wl.User.Info.UserInfo.get
       responses:
         '200':
           description: 'Successful response.'
@@ -58342,7 +58342,7 @@ paths:
           period: 3600
   /Wl/User/Info/UserIntegration.json:
     get:
-      operationId: Wl.User.Info.UserIntegrationApi.get
+      operationId: Wl.User.Info.UserIntegration.get
       responses:
         '200':
           description: 'Successful response.'
@@ -58413,7 +58413,7 @@ paths:
           period: 3600
   /Wl/User/Referrer/Referrer.json:
     get:
-      operationId: Wl.User.Referrer.ReferrerApi.get
+      operationId: Wl.User.Referrer.Referrer.get
       responses:
         '200':
           description: 'Successful response.'
@@ -58517,7 +58517,7 @@ paths:
           period: 3600
   /Wl/Discount/Code/DiscountCode.json:
     get:
-      operationId: Wl.Discount.Code.DiscountCodeApi.get
+      operationId: Wl.Discount.Code.DiscountCode.get
       responses:
         '200':
           description: 'Successful response.'
@@ -58576,7 +58576,7 @@ paths:
           period: 3600
   /Wl/Shop/Category/Category.json:
     get:
-      operationId: Wl.Shop.Category.CategoryApi.get
+      operationId: Wl.Shop.Category.Category.get
       responses:
         '200':
           description: 'Successful response.'
@@ -58648,7 +58648,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Shop.Category.CategoryApi.post
+      operationId: Wl.Shop.Category.Category.post
       responses:
         '200':
           description: 'Successful response.'
@@ -58708,7 +58708,7 @@ paths:
           period: 3600
   /Wl/Resource/Layout/Layout.json:
     get:
-      operationId: Wl.Resource.Layout.LayoutApi.get
+      operationId: Wl.Resource.Layout.Layout.get
       responses:
         '200':
           description: 'Successful response.'
@@ -59012,7 +59012,7 @@ paths:
           period: 3600
   /Wl/Resource/ResourceList/List.json:
     get:
-      operationId: Wl.Resource.ResourceList.ListApi.get
+      operationId: Wl.Resource.ResourceList.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -59136,7 +59136,7 @@ paths:
           period: 3600
   /Wl/Family/Relation/Relation.json:
     delete:
-      operationId: Wl.Family.Relation.RelationApi.delete
+      operationId: Wl.Family.Relation.Relation.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -59243,7 +59243,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Family.Relation.RelationApi.get
+      operationId: Wl.Family.Relation.Relation.get
       responses:
         '200':
           description: 'Successful response.'
@@ -59329,7 +59329,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Family.Relation.RelationApi.post
+      operationId: Wl.Family.Relation.Relation.post
       responses:
         '200':
           description: 'Successful response.'
@@ -59447,7 +59447,7 @@ paths:
           period: 3600
   /Wl/Family/Relation/FamilyRelation.json:
     get:
-      operationId: Wl.Family.Relation.FamilyRelationApi.get
+      operationId: Wl.Family.Relation.FamilyRelation.get
       responses:
         '200':
           description: 'Successful response.'
@@ -59500,7 +59500,7 @@ paths:
           period: 3600
   /Wl/Family/Relation/Relation72.json:
     delete:
-      operationId: Wl.Family.Relation.Relation72Api.delete
+      operationId: Wl.Family.Relation.Relation72.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -59607,7 +59607,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Family.Relation.Relation72Api.get
+      operationId: Wl.Family.Relation.Relation72.get
       responses:
         '200':
           description: 'Successful response.'
@@ -59693,7 +59693,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Family.Relation.Relation72Api.post
+      operationId: Wl.Family.Relation.Relation72.post
       responses:
         '200':
           description: 'Successful response.'
@@ -59811,7 +59811,7 @@ paths:
           period: 3600
   /Wl/Integration/Autymate/AutymateActivate.json:
     get:
-      operationId: Wl.Integration.Autymate.AutymateActivateApi.get
+      operationId: Wl.Integration.Autymate.AutymateActivate.get
       responses:
         '200':
           description: 'Successful response.'
@@ -59899,7 +59899,7 @@ paths:
           period: 3600
   /Wl/Integration/Autymate/Report.json:
     get:
-      operationId: Wl.Integration.Autymate.ReportApi.get
+      operationId: Wl.Integration.Autymate.Report.get
       responses:
         '200':
           description: 'Successful response.'
@@ -60071,7 +60071,7 @@ paths:
           period: 3600
   /Wl/Integration/Saml/SamlUserDeactivation.json:
     post:
-      operationId: Wl.Integration.Saml.SamlUserDeactivationApi.post
+      operationId: Wl.Integration.Saml.SamlUserDeactivation.post
       responses:
         '200':
           description: 'Successful response.'
@@ -60132,7 +60132,7 @@ paths:
           period: 3600
   /Wl/Integration/Curves/CurvesFranchiseLocation.json:
     get:
-      operationId: Wl.Integration.Curves.CurvesFranchiseLocationApi.get
+      operationId: Wl.Integration.Curves.CurvesFranchiseLocation.get
       responses:
         '200':
           description: 'Successful response.'
@@ -60318,7 +60318,7 @@ paths:
           period: 3600
   /Wl/Integration/DragonFly/Access.json:
     get:
-      operationId: Wl.Integration.DragonFly.AccessApi.get
+      operationId: Wl.Integration.DragonFly.Access.get
       responses:
         '200':
           description: 'Successful response.'
@@ -60390,7 +60390,7 @@ paths:
           period: 3600
   /Wl/Coupon/CouponList/List.json:
     get:
-      operationId: Wl.Coupon.CouponList.ListApi.get
+      operationId: Wl.Coupon.CouponList.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -60476,7 +60476,7 @@ paths:
           period: 3600
   /Wl/Microsoft/Login/MicrosoftLogin.json:
     delete:
-      operationId: Wl.Microsoft.Login.MicrosoftLoginApi.delete
+      operationId: Wl.Microsoft.Login.MicrosoftLogin.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -60513,7 +60513,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Microsoft.Login.MicrosoftLoginApi.get
+      operationId: Wl.Microsoft.Login.MicrosoftLogin.get
       responses:
         '200':
           description: 'Successful response.'
@@ -60581,7 +60581,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Microsoft.Login.MicrosoftLoginApi.post
+      operationId: Wl.Microsoft.Login.MicrosoftLogin.post
       responses:
         '200':
           description: 'Successful response.'
@@ -60657,7 +60657,7 @@ paths:
           period: 3600
   /Wl/Search/Tag/SearchTagList.json:
     get:
-      operationId: Wl.Search.Tag.SearchTagListApi.get
+      operationId: Wl.Search.Tag.SearchTagList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -60718,7 +60718,7 @@ paths:
           period: 3600
   /Wl/Review/ReviewList/ReviewElement.json:
     delete:
-      operationId: Wl.Review.ReviewList.ReviewElementApi.delete
+      operationId: Wl.Review.ReviewList.ReviewElement.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -60755,7 +60755,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Review.ReviewList.ReviewElementApi.get
+      operationId: Wl.Review.ReviewList.ReviewElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -60874,7 +60874,7 @@ paths:
           period: 3600
   /Wl/Review/ReviewList/ReviewList.json:
     get:
-      operationId: Wl.Review.ReviewList.ReviewListApi.get
+      operationId: Wl.Review.ReviewList.ReviewList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -61042,7 +61042,7 @@ paths:
           period: 3600
   /Wl/Gym/Visit/VisitAdd.json:
     post:
-      operationId: Wl.Gym.Visit.VisitAddApi.post
+      operationId: Wl.Gym.Visit.VisitAdd.post
       responses:
         '200':
           description: 'Successful response.'
@@ -61147,7 +61147,7 @@ paths:
           period: 3600
   /Wl/Social/Share/SocialShare.json:
     post:
-      operationId: Wl.Social.Share.SocialShareApi.post
+      operationId: Wl.Social.Share.SocialShare.post
       responses:
         '200':
           description: 'Successful response.'
@@ -61225,7 +61225,7 @@ paths:
           period: 3600
   /Wl/Facebook/Login/FacebookLogin.json:
     post:
-      operationId: Wl.Facebook.Login.FacebookLoginApi.post
+      operationId: Wl.Facebook.Login.FacebookLogin.post
       responses:
         '200':
           description: 'Successful response.'
@@ -61284,7 +61284,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Card/Add/Add.json:
     delete:
-      operationId: Wl.Pay.Bank.Card.Add.AddApi.delete
+      operationId: Wl.Pay.Bank.Card.Add.Add.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -61323,7 +61323,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Pay.Bank.Card.Add.AddApi.get
+      operationId: Wl.Pay.Bank.Card.Add.Add.get
       responses:
         '200':
           description: 'Successful response.'
@@ -61383,7 +61383,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Pay.Bank.Card.Add.AddApi.post
+      operationId: Wl.Pay.Bank.Card.Add.Add.post
       responses:
         '200':
           description: 'Successful response.'
@@ -61526,7 +61526,7 @@ paths:
           period: 3600
   /Core/Request/Api/Application/Origin.json:
     delete:
-      operationId: Core.Request.Api.Application.OriginApi.delete
+      operationId: Core.Request.Api.Application.Origin.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -61575,7 +61575,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Core.Request.Api.Application.OriginApi.get
+      operationId: Core.Request.Api.Application.Origin.get
       responses:
         '200':
           description: 'Successful response.'
@@ -61622,7 +61622,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Core.Request.Api.Application.OriginApi.put
+      operationId: Core.Request.Api.Application.Origin.put
       responses:
         '200':
           description: 'Successful response.'
@@ -61672,7 +61672,7 @@ paths:
           period: 3600
   /Core/Passport/Login/Enter/Enter.json:
     post:
-      operationId: Core.Passport.Login.Enter.EnterApi.post
+      operationId: Core.Passport.Login.Enter.Enter.post
       responses:
         '200':
           description: 'Successful response.'
@@ -61764,7 +61764,7 @@ paths:
           period: 3600
   /Core/Passport/Login/Enter/Notepad.json:
     get:
-      operationId: Core.Passport.Login.Enter.NotepadApi.get
+      operationId: Core.Passport.Login.Enter.Notepad.get
       responses:
         '200':
           description: 'Successful response.'
@@ -61854,7 +61854,7 @@ paths:
           period: 3600
   /Core/Passport/Login/Register/Register.json:
     post:
-      operationId: Core.Passport.Login.Register.RegisterApi.post
+      operationId: Core.Passport.Login.Register.Register.post
       responses:
         '200':
           description: 'Successful response.'
@@ -61962,7 +61962,7 @@ paths:
           period: 3600
   /Core/Passport/Login/Register/RegisterConfirm.json:
     post:
-      operationId: Core.Passport.Login.Register.RegisterConfirmApi.post
+      operationId: Core.Passport.Login.Register.RegisterConfirm.post
       responses:
         '200':
           description: 'Successful response.'
@@ -62024,7 +62024,7 @@ paths:
           period: 3600
   /Core/Passport/Login/SignOut/SignOut.json:
     post:
-      operationId: Core.Passport.Login.SignOut.SignOutApi.post
+      operationId: Core.Passport.Login.SignOut.SignOut.post
       responses:
         '200':
           description: 'Successful response.'
@@ -62056,7 +62056,7 @@ paths:
           period: 3600
   /Core/Passport/Enter/Jwt/JwtToken.json:
     get:
-      operationId: Core.Passport.Enter.Jwt.JwtTokenApi.get
+      operationId: Core.Passport.Enter.Jwt.JwtToken.get
       responses:
         '200':
           description: 'Successful response.'
@@ -62097,7 +62097,7 @@ paths:
           period: 3600
   /Core/Passport/User/Email/EmailExist.json:
     get:
-      operationId: Core.Passport.User.Email.EmailExistApi.get
+      operationId: Core.Passport.User.Email.EmailExist.get
       responses:
         '200':
           description: 'Successful response.'
@@ -62146,7 +62146,7 @@ paths:
           period: 3600
   /Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json:
     get:
-      operationId: Wl.Schedule.ScheduleList.StaffApp.ScheduleListApi.get
+      operationId: Wl.Schedule.ScheduleList.StaffApp.ScheduleList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -62586,7 +62586,7 @@ paths:
           period: 3600
   /Wl/Schedule/ScheduleList/StaffApp/ScheduleListByToken.json:
     get:
-      operationId: Wl.Schedule.ScheduleList.StaffApp.ScheduleListByTokenApi.get
+      operationId: Wl.Schedule.ScheduleList.StaffApp.ScheduleListByToken.get
       responses:
         '200':
           description: 'Successful response.'
@@ -62942,7 +62942,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Service/ServiceList52.json:
     get:
-      operationId: Wl.Appointment.Book.Service.ServiceList52Api.get
+      operationId: Wl.Appointment.Book.Service.ServiceList52.get
       responses:
         '200':
           description: 'Successful response.'
@@ -63355,7 +63355,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Service/Category.json:
     get:
-      operationId: Wl.Appointment.Book.Service.CategoryApi.get
+      operationId: Wl.Appointment.Book.Service.Category.get
       responses:
         '200':
           description: 'Successful response.'
@@ -63498,7 +63498,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Service/ServiceList.json:
     get:
-      operationId: Wl.Appointment.Book.Service.ServiceListApi.get
+      operationId: Wl.Appointment.Book.Service.ServiceList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -63920,7 +63920,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Service/ServiceCheck.json:
     get:
-      operationId: Wl.Appointment.Book.Service.ServiceCheckApi.get
+      operationId: Wl.Appointment.Book.Service.ServiceCheck.get
       responses:
         '200':
           description: 'Successful response.'
@@ -63987,7 +63987,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Finish/FinishMultiple.json:
     post:
-      operationId: Wl.Appointment.Book.Finish.FinishMultipleApi.post
+      operationId: Wl.Appointment.Book.Finish.FinishMultiple.post
       responses:
         '200':
           description: 'Successful response.'
@@ -64559,7 +64559,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Finish/Finish.json:
     get:
-      operationId: Wl.Appointment.Book.Finish.FinishApi.get
+      operationId: Wl.Appointment.Book.Finish.Finish.get
       responses:
         '200':
           description: 'Successful response.'
@@ -64662,7 +64662,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Appointment.Book.Finish.FinishApi.post
+      operationId: Wl.Appointment.Book.Finish.Finish.post
       responses:
         '200':
           description: 'Successful response.'
@@ -65210,7 +65210,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Finish/Finish47.json:
     get:
-      operationId: Wl.Appointment.Book.Finish.Finish47Api.get
+      operationId: Wl.Appointment.Book.Finish.Finish47.get
       responses:
         '200':
           description: 'Successful response.'
@@ -65311,7 +65311,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Appointment.Book.Finish.Finish47Api.post
+      operationId: Wl.Appointment.Book.Finish.Finish47.post
       responses:
         '200':
           description: 'Successful response.'
@@ -65853,7 +65853,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Purchase/Purchase.json:
     get:
-      operationId: Wl.Appointment.Book.Purchase.PurchaseApi.get
+      operationId: Wl.Appointment.Book.Purchase.Purchase.get
       responses:
         '200':
           description: 'Successful response.'
@@ -66559,7 +66559,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Purchase/Purchase72.json:
     get:
-      operationId: Wl.Appointment.Book.Purchase.Purchase72Api.get
+      operationId: Wl.Appointment.Book.Purchase.Purchase72.get
       responses:
         '200':
           description: 'Successful response.'
@@ -67275,7 +67275,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Schedule/DayTime.json:
     get:
-      operationId: Wl.Appointment.Book.Schedule.DayTimeApi.get
+      operationId: Wl.Appointment.Book.Schedule.DayTime.get
       responses:
         '200':
           description: 'Successful response.'
@@ -67587,7 +67587,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Schedule/Calendar.json:
     get:
-      operationId: Wl.Appointment.Book.Schedule.CalendarApi.get
+      operationId: Wl.Appointment.Book.Schedule.Calendar.get
       responses:
         '200':
           description: 'Successful response.'
@@ -68029,7 +68029,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Schedule/NextAvailableDay.json:
     get:
-      operationId: Wl.Appointment.Book.Schedule.NextAvailableDayApi.get
+      operationId: Wl.Appointment.Book.Schedule.NextAvailableDay.get
       responses:
         '200':
           description: 'Successful response.'
@@ -68277,7 +68277,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Asset/AssetList.json:
     get:
-      operationId: Wl.Appointment.Book.Asset.AssetListApi.get
+      operationId: Wl.Appointment.Book.Asset.AssetList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -68619,7 +68619,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Asset/Category.json:
     get:
-      operationId: Wl.Appointment.Book.Asset.CategoryApi.get
+      operationId: Wl.Appointment.Book.Asset.Category.get
       responses:
         '200':
           description: 'Successful response.'
@@ -68712,7 +68712,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Payment/Payment.json:
     get:
-      operationId: Wl.Appointment.Book.Payment.PaymentApi.get
+      operationId: Wl.Appointment.Book.Payment.Payment.get
       responses:
         '200':
           description: 'Successful response.'
@@ -69041,7 +69041,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Appointment.Book.Payment.PaymentApi.post
+      operationId: Wl.Appointment.Book.Payment.Payment.post
       responses:
         '200':
           description: 'Successful response.'
@@ -69362,7 +69362,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Payment/PaymentMultiple.json:
     get:
-      operationId: Wl.Appointment.Book.Payment.PaymentMultipleApi.get
+      operationId: Wl.Appointment.Book.Payment.PaymentMultiple.get
       responses:
         '200':
           description: 'Successful response.'
@@ -69676,7 +69676,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Appointment.Book.Payment.PaymentMultipleApi.post
+      operationId: Wl.Appointment.Book.Payment.PaymentMultiple.post
       responses:
         '200':
           description: 'Successful response.'
@@ -70017,7 +70017,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Payment/PaymentPost.json:
     get:
-      operationId: Wl.Appointment.Book.Payment.PaymentPostApi.get
+      operationId: Wl.Appointment.Book.Payment.PaymentPost.get
       responses:
         '200':
           description: 'Successful response.'
@@ -70269,7 +70269,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Appointment.Book.Payment.PaymentPostApi.post
+      operationId: Wl.Appointment.Book.Payment.PaymentPost.post
       responses:
         '200':
           description: 'Successful response.'
@@ -70584,7 +70584,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Question/Question.json:
     get:
-      operationId: Wl.Appointment.Book.Question.QuestionApi.get
+      operationId: Wl.Appointment.Book.Question.Question.get
       responses:
         '200':
           description: 'Successful response.'
@@ -70653,7 +70653,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Staff/List.json:
     get:
-      operationId: Wl.Appointment.Book.Staff.ListApi.get
+      operationId: Wl.Appointment.Book.Staff.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -70838,7 +70838,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Product/Product62.json:
     get:
-      operationId: Wl.Appointment.Book.Product.Product62Api.get
+      operationId: Wl.Appointment.Book.Product.Product62.get
       responses:
         '200':
           description: 'Successful response.'
@@ -70989,7 +70989,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Product/Product.json:
     get:
-      operationId: Wl.Appointment.Book.Product.ProductApi.get
+      operationId: Wl.Appointment.Book.Product.Product.get
       responses:
         '200':
           description: 'Successful response.'
@@ -71116,7 +71116,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Purchase/Purchase.json:
     get:
-      operationId: Wl.Book.Process.Purchase.PurchaseApi.get
+      operationId: Wl.Book.Process.Purchase.Purchase.get
       responses:
         '200':
           description: 'Successful response.'
@@ -71729,7 +71729,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Purchase/PurchaseElementGroup.json:
     get:
-      operationId: Wl.Book.Process.Purchase.PurchaseElementGroupApi.get
+      operationId: Wl.Book.Process.Purchase.PurchaseElementGroup.get
       responses:
         '200':
           description: 'Successful response.'
@@ -71899,7 +71899,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Purchase/Purchase56.json:
     get:
-      operationId: Wl.Book.Process.Purchase.Purchase56Api.get
+      operationId: Wl.Book.Process.Purchase.Purchase56.get
       responses:
         '200':
           description: 'Successful response.'
@@ -72548,7 +72548,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Purchase/PurchaseElement.json:
     get:
-      operationId: Wl.Book.Process.Purchase.PurchaseElementApi.get
+      operationId: Wl.Book.Process.Purchase.PurchaseElement.get
       responses:
         '200':
           description: 'Successful response.'
@@ -72729,7 +72729,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Purchase/PurchaseElementList.json:
     get:
-      operationId: Wl.Book.Process.Purchase.PurchaseElementListApi.get
+      operationId: Wl.Book.Process.Purchase.PurchaseElementList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -72868,7 +72868,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Relation/Relation.json:
     get:
-      operationId: Wl.Book.Process.Relation.RelationApi.get
+      operationId: Wl.Book.Process.Relation.Relation.get
       responses:
         '200':
           description: 'Successful response.'
@@ -72950,7 +72950,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Book.Process.Relation.RelationApi.post
+      operationId: Wl.Book.Process.Relation.Relation.post
       responses:
         '200':
           description: 'Successful response.'
@@ -73080,7 +73080,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Resource/Resource.json:
     get:
-      operationId: Wl.Book.Process.Resource.ResourceApi.get
+      operationId: Wl.Book.Process.Resource.Resource.get
       responses:
         '200':
           description: 'Successful response.'
@@ -73352,7 +73352,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Book.Process.Resource.ResourceApi.post
+      operationId: Wl.Book.Process.Resource.Resource.post
       responses:
         '200':
           description: 'Successful response.'
@@ -73622,7 +73622,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Resource/Resource54.json:
     get:
-      operationId: Wl.Book.Process.Resource.Resource54Api.get
+      operationId: Wl.Book.Process.Resource.Resource54.get
       responses:
         '200':
           description: 'Successful response.'
@@ -73906,7 +73906,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Book.Process.Resource.Resource54Api.post
+      operationId: Wl.Book.Process.Resource.Resource54.post
       responses:
         '200':
           description: 'Successful response.'
@@ -74188,7 +74188,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Payment/Payment.json:
     post:
-      operationId: Wl.Book.Process.Payment.PaymentApi.post
+      operationId: Wl.Book.Process.Payment.Payment.post
       responses:
         '200':
           description: 'Successful response.'
@@ -74594,7 +74594,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Store/Store.json:
     post:
-      operationId: Wl.Book.Process.Store.StoreApi.post
+      operationId: Wl.Book.Process.Store.Store.post
       responses:
         '200':
           description: 'Successful response.'
@@ -74885,7 +74885,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Store/StoreGroup.json:
     post:
-      operationId: Wl.Book.Process.Store.StoreGroupApi.post
+      operationId: Wl.Book.Process.Store.StoreGroup.post
       responses:
         '200':
           description: 'Successful response.'
@@ -75182,7 +75182,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Info/Info.json:
     get:
-      operationId: Wl.Book.Process.Info.InfoApi.get
+      operationId: Wl.Book.Process.Info.Info.get
       responses:
         '200':
           description: 'Successful response.'
@@ -75610,7 +75610,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Book.Process.Info.InfoApi.post
+      operationId: Wl.Book.Process.Info.Info.post
       responses:
         '200':
           description: 'Successful response.'
@@ -75922,7 +75922,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Info/Info54.json:
     get:
-      operationId: Wl.Book.Process.Info.Info54Api.get
+      operationId: Wl.Book.Process.Info.Info54.get
       responses:
         '200':
           description: 'Successful response.'
@@ -76347,7 +76347,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Book.Process.Info.Info54Api.post
+      operationId: Wl.Book.Process.Info.Info54.post
       responses:
         '200':
           description: 'Successful response.'
@@ -76657,7 +76657,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Info/InfoCanComplete.json:
     get:
-      operationId: Wl.Book.Process.Info.InfoCanCompleteApi.get
+      operationId: Wl.Book.Process.Info.InfoCanComplete.get
       responses:
         '200':
           description: 'Successful response.'
@@ -76779,7 +76779,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Book.Process.Info.InfoCanCompleteApi.post
+      operationId: Wl.Book.Process.Info.InfoCanComplete.post
       responses:
         '200':
           description: 'Successful response.'
@@ -76888,7 +76888,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Quiz/Quiz.json:
     get:
-      operationId: Wl.Book.Process.Quiz.QuizApi.get
+      operationId: Wl.Book.Process.Quiz.Quiz.get
       responses:
         '200':
           description: 'Successful response.'
@@ -77019,7 +77019,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Book.Process.Quiz.QuizApi.post
+      operationId: Wl.Book.Process.Quiz.Quiz.post
       responses:
         '200':
           description: 'Successful response.'
@@ -77287,7 +77287,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Frequency/Repeat.json:
     get:
-      operationId: Wl.Book.Process.Frequency.RepeatApi.get
+      operationId: Wl.Book.Process.Frequency.Repeat.get
       responses:
         '200':
           description: 'Successful response.'
@@ -77542,7 +77542,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Frequency/RepeatParallel.json:
     get:
-      operationId: Wl.Book.Process.Frequency.RepeatParallelApi.get
+      operationId: Wl.Book.Process.Frequency.RepeatParallel.get
       responses:
         '200':
           description: 'Successful response.'
@@ -77810,7 +77810,7 @@ paths:
           period: 3600
   /Wl/Book/Process/Guest/GuestProfile.json:
     get:
-      operationId: Wl.Book.Process.Guest.GuestProfileApi.get
+      operationId: Wl.Book.Process.Guest.GuestProfile.get
       responses:
         '200':
           description: 'Successful response.'
@@ -77914,7 +77914,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Book.Process.Guest.GuestProfileApi.post
+      operationId: Wl.Book.Process.Guest.GuestProfile.post
       responses:
         '200':
           description: 'Successful response.'
@@ -78026,7 +78026,7 @@ paths:
           period: 3600
   /Wl/Profile/Edit/Email/EditEmail67.json:
     get:
-      operationId: Wl.Profile.Edit.Email.EditEmail67Api.get
+      operationId: Wl.Profile.Edit.Email.EditEmail67.get
       responses:
         '200':
           description: 'Successful response.'
@@ -78158,7 +78158,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Profile.Edit.Email.EditEmail67Api.post
+      operationId: Wl.Profile.Edit.Email.EditEmail67.post
       responses:
         '200':
           description: 'Successful response.'
@@ -78218,7 +78218,7 @@ paths:
           period: 3600
   /Wl/Profile/Edit/Email/EditEmail.json:
     get:
-      operationId: Wl.Profile.Edit.Email.EditEmailApi.get
+      operationId: Wl.Profile.Edit.Email.EditEmail.get
       responses:
         '200':
           description: 'Successful response.'
@@ -78352,7 +78352,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Profile.Edit.Email.EditEmailApi.post
+      operationId: Wl.Profile.Edit.Email.EditEmail.post
       responses:
         '200':
           description: 'Successful response.'
@@ -78414,7 +78414,7 @@ paths:
           period: 3600
   /Wl/Profile/Form/Response/ResponseList.json:
     get:
-      operationId: Wl.Profile.Form.Response.ResponseListApi.get
+      operationId: Wl.Profile.Form.Response.ResponseList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -78629,7 +78629,7 @@ paths:
           period: 3600
   /Wl/Event/Book/EventView/Element.json:
     get:
-      operationId: Wl.Event.Book.EventView.ElementApi.get
+      operationId: Wl.Event.Book.EventView.Element.get
       responses:
         '200':
           description: 'Successful response.'
@@ -79784,7 +79784,7 @@ paths:
           period: 3600
   /Wl/Event/Book/EventList/List.json:
     get:
-      operationId: Wl.Event.Book.EventList.ListApi.get
+      operationId: Wl.Event.Book.EventList.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -79889,7 +79889,7 @@ paths:
           period: 3600
   /Wl/Classes/Period/Modify/Modify.json:
     get:
-      operationId: Wl.Classes.Period.Modify.ModifyApi.get
+      operationId: Wl.Classes.Period.Modify.Modify.get
       responses:
         '200':
           description: 'Successful response.'
@@ -80008,7 +80008,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Classes.Period.Modify.ModifyApi.post
+      operationId: Wl.Classes.Period.Modify.Modify.post
       responses:
         '200':
           description: 'Successful response.'
@@ -80232,7 +80232,7 @@ paths:
           period: 3600
   /Wl/Business/Account/Subscription/SubscriptionInfo.json:
     get:
-      operationId: Wl.Business.Account.Subscription.SubscriptionInfoApi.get
+      operationId: Wl.Business.Account.Subscription.SubscriptionInfo.get
       responses:
         '200':
           description: 'Successful response.'
@@ -80560,7 +80560,7 @@ paths:
           period: 3600
   /Wl/Business/AuthorizeSupport/Response/Response.json:
     get:
-      operationId: Wl.Business.AuthorizeSupport.Response.ResponseApi.get
+      operationId: Wl.Business.AuthorizeSupport.Response.Response.get
       responses:
         '200':
           description: 'Successful response.'
@@ -80617,7 +80617,7 @@ paths:
           period: 3600
   /Wl/Business/Franchise/Location/BusinessFranchiseLocation.json:
     get:
-      operationId: Wl.Business.Franchise.Location.BusinessFranchiseLocationApi.get
+      operationId: Wl.Business.Franchise.Location.BusinessFranchiseLocation.get
       responses:
         '200':
           description: 'Successful response.'
@@ -80801,7 +80801,7 @@ paths:
           period: 3600
   /Wl/Business/Reward/Config/RewardConfig.json:
     get:
-      operationId: Wl.Business.Reward.Config.RewardConfigApi.get
+      operationId: Wl.Business.Reward.Config.RewardConfig.get
       responses:
         '200':
           description: 'Successful response.'
@@ -80848,7 +80848,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Business.Reward.Config.RewardConfigApi.post
+      operationId: Wl.Business.Reward.Config.RewardConfig.post
       responses:
         '200':
           description: 'Successful response.'
@@ -80898,7 +80898,7 @@ paths:
           period: 3600
   /Wl/Business/User/Subscribe/Subscribe.json:
     get:
-      operationId: Wl.Business.User.Subscribe.SubscribeApi.get
+      operationId: Wl.Business.User.Subscribe.Subscribe.get
       responses:
         '200':
           description: 'Successful response.'
@@ -80971,7 +80971,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Business.User.Subscribe.SubscribeApi.put
+      operationId: Wl.Business.User.Subscribe.Subscribe.put
       responses:
         '200':
           description: 'Successful response.'
@@ -81048,7 +81048,7 @@ paths:
           period: 3600
   /Wl/Login/Promotion/Convert/Convert.json:
     delete:
-      operationId: Wl.Login.Promotion.Convert.ConvertApi.delete
+      operationId: Wl.Login.Promotion.Convert.Convert.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -81092,7 +81092,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Login.Promotion.Convert.ConvertApi.get
+      operationId: Wl.Login.Promotion.Convert.Convert.get
       responses:
         '200':
           description: 'Successful response.'
@@ -81237,7 +81237,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Login.Promotion.Convert.ConvertApi.post
+      operationId: Wl.Login.Promotion.Convert.Convert.post
       responses:
         '200':
           description: 'Successful response.'
@@ -81325,7 +81325,7 @@ paths:
           period: 3600
   /Wl/Login/Promotion/GuestPass/GuestPassList.json:
     get:
-      operationId: Wl.Login.Promotion.GuestPass.GuestPassListApi.get
+      operationId: Wl.Login.Promotion.GuestPass.GuestPassList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -81621,7 +81621,7 @@ paths:
           period: 3600
   /Wl/Login/Promotion/GuestPass/GuestPass.json:
     get:
-      operationId: Wl.Login.Promotion.GuestPass.GuestPassApi.get
+      operationId: Wl.Login.Promotion.GuestPass.GuestPass.get
       responses:
         '200':
           description: 'Successful response.'
@@ -81892,7 +81892,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Login.Promotion.GuestPass.GuestPassApi.put
+      operationId: Wl.Login.Promotion.GuestPass.GuestPass.put
       responses:
         '200':
           description: 'Successful response.'
@@ -81950,7 +81950,7 @@ paths:
           period: 3600
   /Wl/Login/Member/DynamicId/DynamicId.json:
     get:
-      operationId: Wl.Login.Member.DynamicId.DynamicIdApi.get
+      operationId: Wl.Login.Member.DynamicId.DynamicId.get
       responses:
         '200':
           description: 'Successful response.'
@@ -82031,7 +82031,7 @@ paths:
           period: 3600
   /Wl/Login/Attendance/Add/Add.json:
     get:
-      operationId: Wl.Login.Attendance.Add.AddApi.get
+      operationId: Wl.Login.Attendance.Add.Add.get
       responses:
         '200':
           description: 'Successful response.'
@@ -82159,7 +82159,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Login.Attendance.Add.AddApi.post
+      operationId: Wl.Login.Attendance.Add.Add.post
       responses:
         '200':
           description: 'Successful response.'
@@ -82297,7 +82297,7 @@ paths:
           period: 3600
   /Wl/Login/Search/StaffApp/List.json:
     get:
-      operationId: Wl.Login.Search.StaffApp.ListApi.get
+      operationId: Wl.Login.Search.StaffApp.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -82391,7 +82391,7 @@ paths:
           period: 3600
   /Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json:
     get:
-      operationId: Wl.Catalog.StaffApp.CatalogCart.CatalogCartApi.get
+      operationId: Wl.Catalog.StaffApp.CatalogCart.CatalogCart.get
       responses:
         '200':
           description: 'Successful response.'
@@ -82717,7 +82717,7 @@ paths:
           period: 3600
   /Wl/Catalog/StaffApp/CatalogList/CatalogList.json:
     get:
-      operationId: Wl.Catalog.StaffApp.CatalogList.CatalogListApi.get
+      operationId: Wl.Catalog.StaffApp.CatalogList.CatalogList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -82861,7 +82861,7 @@ paths:
           period: 3600
   /Wl/Catalog/StaffApp/CatalogView/CatalogView.json:
     get:
-      operationId: Wl.Catalog.StaffApp.CatalogView.CatalogViewApi.get
+      operationId: Wl.Catalog.StaffApp.CatalogView.CatalogView.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83058,7 +83058,7 @@ paths:
           period: 3600
   /Wl/Reception/Roster/Design/ReceptionRosterDesign.json:
     get:
-      operationId: Wl.Reception.Roster.Design.ReceptionRosterDesignApi.get
+      operationId: Wl.Reception.Roster.Design.ReceptionRosterDesign.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83219,7 +83219,7 @@ paths:
           period: 3600
   /Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json:
     get:
-      operationId: Wl.Insurance.Enrollment.Field.EnrollmentFieldListApi.get
+      operationId: Wl.Insurance.Enrollment.Field.EnrollmentFieldList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83389,7 +83389,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Insurance.Enrollment.Field.EnrollmentFieldListApi.post
+      operationId: Wl.Insurance.Enrollment.Field.EnrollmentFieldList.post
       responses:
         '200':
           description: 'Successful response.'
@@ -83462,7 +83462,7 @@ paths:
           period: 3600
   /Wl/Reward/Action/CategoryList/CategoryList.json:
     get:
-      operationId: Wl.Reward.Action.CategoryList.CategoryListApi.get
+      operationId: Wl.Reward.Action.CategoryList.CategoryList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83527,7 +83527,7 @@ paths:
           period: 3600
   /Wl/Reward/Score/Current/Current.json:
     get:
-      operationId: Wl.Reward.Score.Current.CurrentApi.get
+      operationId: Wl.Reward.Score.Current.Current.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83592,7 +83592,7 @@ paths:
           period: 3600
   /Wl/Reward/Board/BoardList/List.json:
     get:
-      operationId: Wl.Reward.Board.BoardList.ListApi.get
+      operationId: Wl.Reward.Board.BoardList.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83660,7 +83660,7 @@ paths:
           period: 3600
   /Wl/Passport/Login/Enter/PassportOtp.json:
     get:
-      operationId: Wl.Passport.Login.Enter.PassportOtpApi.get
+      operationId: Wl.Passport.Login.Enter.PassportOtp.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83724,7 +83724,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Passport.Login.Enter.PassportOtpApi.post
+      operationId: Wl.Passport.Login.Enter.PassportOtp.post
       responses:
         '200':
           description: 'Successful response.'
@@ -83791,7 +83791,7 @@ paths:
           period: 3600
   /Wl/Passport/Login/Register/RegisterOtp.json:
     get:
-      operationId: Wl.Passport.Login.Register.RegisterOtpApi.get
+      operationId: Wl.Passport.Login.Register.RegisterOtp.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83842,7 +83842,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Passport.Login.Register.RegisterOtpApi.post
+      operationId: Wl.Passport.Login.Register.RegisterOtp.post
       responses:
         '200':
           description: 'Successful response.'
@@ -83915,7 +83915,7 @@ paths:
           period: 3600
   /Wl/Skin/Application/Connect/ApplicationConnect.json:
     post:
-      operationId: Wl.Skin.Application.Connect.ApplicationConnectApi.post
+      operationId: Wl.Skin.Application.Connect.ApplicationConnect.post
       responses:
         '200':
           description: 'Successful response.'
@@ -84046,7 +84046,7 @@ paths:
           period: 3600
   /Wl/Skin/Application/Resource/ApplicationResource.json:
     get:
-      operationId: Wl.Skin.Application.Resource.ApplicationResourceApi.get
+      operationId: Wl.Skin.Application.Resource.ApplicationResource.get
       responses:
         '200':
           description: 'Successful response.'
@@ -84219,7 +84219,7 @@ paths:
           period: 3600
   /Wl/Skin/Application/Resource/ApplicationResourceMaterial.json:
     post:
-      operationId: Wl.Skin.Application.Resource.ApplicationResourceMaterialApi.post
+      operationId: Wl.Skin.Application.Resource.ApplicationResourceMaterial.post
       responses:
         '200':
           description: 'Successful response.'
@@ -84356,7 +84356,7 @@ paths:
           period: 3600
   /Wl/Skin/Application/Resource/ApplicationResourceUpload.json:
     post:
-      operationId: Wl.Skin.Application.Resource.ApplicationResourceUploadApi.post
+      operationId: Wl.Skin.Application.Resource.ApplicationResourceUpload.post
       responses:
         '200':
           description: 'Successful response.'
@@ -84408,7 +84408,7 @@ paths:
           period: 3600
   /Wl/Member/Group/Edit/Edit.json:
     get:
-      operationId: Wl.Member.Group.Edit.EditApi.get
+      operationId: Wl.Member.Group.Edit.Edit.get
       responses:
         '200':
           description: 'Successful response.'
@@ -84530,7 +84530,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Member.Group.Edit.EditApi.post
+      operationId: Wl.Member.Group.Edit.Edit.post
       responses:
         '200':
           description: 'Successful response.'
@@ -84730,7 +84730,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Member.Group.Edit.EditApi.put
+      operationId: Wl.Member.Group.Edit.Edit.put
       responses:
         '200':
           description: 'Successful response.'
@@ -84897,7 +84897,7 @@ paths:
           period: 3600
   /Wl/Member/Group/User/UserGroup.json:
     delete:
-      operationId: Wl.Member.Group.User.UserGroupApi.delete
+      operationId: Wl.Member.Group.User.UserGroup.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -84955,7 +84955,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Member.Group.User.UserGroupApi.get
+      operationId: Wl.Member.Group.User.UserGroup.get
       responses:
         '200':
           description: 'Successful response.'
@@ -85017,7 +85017,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Member.Group.User.UserGroupApi.post
+      operationId: Wl.Member.Group.User.UserGroup.post
       responses:
         '200':
           description: 'Successful response.'
@@ -85076,7 +85076,7 @@ paths:
           period: 3600
   /Wl/Member/Group/GroupList/List.json:
     delete:
-      operationId: Wl.Member.Group.GroupList.ListApi.delete
+      operationId: Wl.Member.Group.GroupList.List.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -85125,7 +85125,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Member.Group.GroupList.ListApi.get
+      operationId: Wl.Member.Group.GroupList.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -85211,7 +85211,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Member.Group.GroupList.ListApi.put
+      operationId: Wl.Member.Group.GroupList.List.put
       responses:
         '200':
           description: 'Successful response.'
@@ -85263,7 +85263,7 @@ paths:
           period: 3600
   /Wl/Member/Progress/Field/State.json:
     put:
-      operationId: Wl.Member.Progress.Field.StateApi.put
+      operationId: Wl.Member.Progress.Field.State.put
       responses:
         '200':
           description: 'Successful response.'
@@ -85369,7 +85369,7 @@ paths:
           period: 3600
   /Wl/Member/Progress/Log/Verify.json:
     put:
-      operationId: Wl.Member.Progress.Log.VerifyApi.put
+      operationId: Wl.Member.Progress.Log.Verify.put
       responses:
         '200':
           description: 'Successful response.'
@@ -85422,7 +85422,7 @@ paths:
           period: 3600
   /Wl/Discount/Code/Edit/DiscountCodeEdit.json:
     get:
-      operationId: Wl.Discount.Code.Edit.DiscountCodeEditApi.get
+      operationId: Wl.Discount.Code.Edit.DiscountCodeEdit.get
       responses:
         '200':
           description: 'Successful response.'
@@ -85612,7 +85612,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Discount.Code.Edit.DiscountCodeEditApi.post
+      operationId: Wl.Discount.Code.Edit.DiscountCodeEdit.post
       responses:
         '200':
           description: 'Successful response.'
@@ -85788,7 +85788,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Discount.Code.Edit.DiscountCodeEditApi.put
+      operationId: Wl.Discount.Code.Edit.DiscountCodeEdit.put
       responses:
         '200':
           description: 'Successful response.'
@@ -85843,7 +85843,7 @@ paths:
           period: 3600
   /Core/Request/Api/Application/Credential/Credential.json:
     delete:
-      operationId: Core.Request.Api.Application.Credential.CredentialApi.delete
+      operationId: Core.Request.Api.Application.Credential.Credential.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -85880,7 +85880,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Core.Request.Api.Application.Credential.CredentialApi.get
+      operationId: Core.Request.Api.Application.Credential.Credential.get
       responses:
         '200':
           description: 'Successful response.'
@@ -85927,7 +85927,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Core.Request.Api.Application.Credential.CredentialApi.put
+      operationId: Core.Request.Api.Application.Credential.Credential.put
       responses:
         '200':
           description: 'Successful response.'
@@ -85977,7 +85977,7 @@ paths:
           period: 3600
   /Wl/Appointment/Book/Asset/Service/Service.json:
     get:
-      operationId: Wl.Appointment.Book.Asset.Service.ServiceApi.get
+      operationId: Wl.Appointment.Book.Asset.Service.Service.get
       responses:
         '200':
           description: 'Successful response.'
@@ -86263,7 +86263,7 @@ paths:
           period: 3600
   /Wl/Profile/Attendance/Schedule/Frontend/LifetimeTotals.json:
     get:
-      operationId: Wl.Profile.Attendance.Schedule.Frontend.LifetimeTotalsApi.get
+      operationId: Wl.Profile.Attendance.Schedule.Frontend.LifetimeTotals.get
       responses:
         '200':
           description: 'Successful response.'
@@ -86331,7 +86331,7 @@ paths:
           period: 3600
   /Wl/Business/Account/Subscription/Achieve/AchieveSubscription.json:
     get:
-      operationId: Wl.Business.Account.Subscription.Achieve.AchieveSubscriptionApi.get
+      operationId: Wl.Business.Account.Subscription.Achieve.AchieveSubscription.get
       responses:
         '200':
           description: 'Successful response.'
@@ -86384,7 +86384,7 @@ paths:
           period: 3600
   /Wl/Login/Promotion/GuestPass/Claim/Claim.json:
     post:
-      operationId: Wl.Login.Promotion.GuestPass.Claim.ClaimApi.post
+      operationId: Wl.Login.Promotion.GuestPass.Claim.Claim.post
       responses:
         '200':
           description: 'Successful response.'
@@ -86433,7 +86433,7 @@ paths:
           period: 3600
   /Wl/Login/Promotion/GuestPass/Invite/Invite.json:
     delete:
-      operationId: Wl.Login.Promotion.GuestPass.Invite.InviteApi.delete
+      operationId: Wl.Login.Promotion.GuestPass.Invite.Invite.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -86477,7 +86477,7 @@ paths:
           limit: 200000
           period: 3600
     put:
-      operationId: Wl.Login.Promotion.GuestPass.Invite.InviteApi.put
+      operationId: Wl.Login.Promotion.GuestPass.Invite.Invite.put
       responses:
         '200':
           description: 'Successful response.'
@@ -86522,7 +86522,7 @@ paths:
           period: 3600
   /Wl/Login/Promotion/GuestPass/Invite/InviteList.json:
     get:
-      operationId: Wl.Login.Promotion.GuestPass.Invite.InviteListApi.get
+      operationId: Wl.Login.Promotion.GuestPass.Invite.InviteList.get
       responses:
         '200':
           description: 'Successful response.'
@@ -86846,7 +86846,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Login.Promotion.GuestPass.Invite.InviteListApi.post
+      operationId: Wl.Login.Promotion.GuestPass.Invite.InviteList.post
       responses:
         '200':
           description: 'Successful response.'
@@ -86933,7 +86933,7 @@ paths:
           period: 3600
   /Wl/Login/Promotion/GuestPass/Apply/Apply.json:
     post:
-      operationId: Wl.Login.Promotion.GuestPass.Apply.ApplyApi.post
+      operationId: Wl.Login.Promotion.GuestPass.Apply.Apply.post
       responses:
         '200':
           description: 'Successful response.'
@@ -86989,7 +86989,7 @@ paths:
           period: 3600
   /Wl/Member/Progress/Field/Edit/Field.json:
     get:
-      operationId: Wl.Member.Progress.Field.Edit.FieldApi.get
+      operationId: Wl.Member.Progress.Field.Edit.Field.get
       responses:
         '200':
           description: 'Successful response.'
@@ -87092,7 +87092,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Member.Progress.Field.Edit.FieldApi.post
+      operationId: Wl.Member.Progress.Field.Edit.Field.post
       responses:
         '200':
           description: 'Successful response.'
@@ -87197,7 +87197,7 @@ paths:
           period: 3600
   /Wl/Member/Progress/Log/Edit/Log.json:
     get:
-      operationId: Wl.Member.Progress.Log.Edit.LogApi.get
+      operationId: Wl.Member.Progress.Log.Edit.Log.get
       responses:
         '200':
           description: 'Successful response.'
@@ -87301,7 +87301,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Member.Progress.Log.Edit.LogApi.post
+      operationId: Wl.Member.Progress.Log.Edit.Log.post
       responses:
         '200':
           description: 'Successful response.'
@@ -87419,7 +87419,7 @@ paths:
           period: 3600
   /Wl/Member/Progress/Log/Image/Image.json:
     delete:
-      operationId: Wl.Member.Progress.Log.Image.ImageApi.delete
+      operationId: Wl.Member.Progress.Log.Image.Image.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -87486,7 +87486,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Member.Progress.Log.Image.ImageApi.get
+      operationId: Wl.Member.Progress.Log.Image.Image.get
       responses:
         '200':
           description: 'Successful response.'
@@ -87637,7 +87637,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Member.Progress.Log.Image.ImageApi.post
+      operationId: Wl.Member.Progress.Log.Image.Image.post
       responses:
         '200':
           description: 'Successful response.'
@@ -87720,7 +87720,7 @@ paths:
           period: 3600
   /Wl/Member/Progress/Log/Compare/Compare.json:
     get:
-      operationId: Wl.Member.Progress.Log.Compare.CompareApi.get
+      operationId: Wl.Member.Progress.Log.Compare.Compare.get
       responses:
         '200':
           description: 'Successful response.'
@@ -87778,7 +87778,7 @@ paths:
           period: 3600
   /Wl/Member/Progress/Goal/Edit/Goal.json:
     get:
-      operationId: Wl.Member.Progress.Goal.Edit.GoalApi.get
+      operationId: Wl.Member.Progress.Goal.Edit.Goal.get
       responses:
         '200':
           description: 'Successful response.'
@@ -87865,7 +87865,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Member.Progress.Goal.Edit.GoalApi.post
+      operationId: Wl.Member.Progress.Goal.Edit.Goal.post
       responses:
         '200':
           description: 'Successful response.'
@@ -87968,7 +87968,7 @@ paths:
           period: 3600
   /Wl/Shop/Product/Option/Inventory/Count/InventoryCount.json:
     get:
-      operationId: Wl.Shop.Product.Option.Inventory.Count.InventoryCountApi.get
+      operationId: Wl.Shop.Product.Option.Inventory.Count.InventoryCount.get
       responses:
         '200':
           description: 'Successful response.'
@@ -88118,7 +88118,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Shop.Product.Option.Inventory.Count.InventoryCountApi.post
+      operationId: Wl.Shop.Product.Option.Inventory.Count.InventoryCount.post
       responses:
         '200':
           description: 'Successful response.'
