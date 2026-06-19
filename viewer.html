@@ -4,6 +4,7 @@
   <title>WellnessLiving API</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
   <style>
     body { margin: 0; padding: 0; }
     #switcher {
@@ -58,6 +59,9 @@
     <div id="swagger-ui"></div>
   </div>
 
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const branch = params.get('branch') || 'stable';
@@ -75,42 +79,20 @@
     document.getElementById('btn-' + viewer).classList.add('active');
     document.getElementById('container-' + viewer).style.display = '';
 
-    function loadScript(src, onload)
-    {
-      const s = document.createElement('script');
-      s.src = src;
-      s.onload = onload;
-      document.head.appendChild(s);
-    }
-
     if (viewer === 'swagger')
     {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/swagger-ui-dist/swagger-ui.css';
-      document.head.appendChild(link);
-
-      loadScript('https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js', function()
-      {
-        loadScript('https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js', function()
-        {
-          SwaggerUIBundle({
-            url: specUrl,
-            dom_id: '#swagger-ui',
-            deepLinking: true,
-            presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-            plugins: [SwaggerUIBundle.plugins.DownloadUrl],
-            layout: 'StandaloneLayout'
-          });
-        });
+      SwaggerUIBundle({
+        url: specUrl,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+        plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+        layout: 'StandaloneLayout'
       });
     }
     else
     {
-      loadScript('https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js', function()
-      {
-        Redoc.init(specUrl, {}, document.getElementById('container-redoc'));
-      });
+      Redoc.init(specUrl, {}, document.getElementById('container-redoc'));
     }
   </script>
 </body>
