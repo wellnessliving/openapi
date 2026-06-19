@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - stable/openapi.yaml
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=$(grep -m1 'version:' stable/openapi.yaml | awk '{print $2}' | tr -d "'")
+          echo "value=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.value }}
+          name: v${{ steps.version.outputs.value }}
+          files: |
+            stable/openapi.yaml
+            dev/openapi.yaml
