@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'production/openapi.yaml'
       - 'stable/openapi.yaml'
       - 'dev/openapi.yaml'
 
