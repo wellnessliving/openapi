@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260619070704
+  version: 1.1.20260619090040
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -21,7 +21,7 @@ servers:
     description: 'WellnessLiving server for businesses served from the Australia data center'
 security:
   -
-    BearerAuth: {  }
+    BearerAuth: []
 tags:
   -
     name: 'AI Agent'
@@ -22306,6 +22306,9 @@ paths:
                         k_location:
                           type: string
                           description: "The key of the session's location."
+                        k_resource_location:
+                          type: string
+                          description: 'Off-site location asset key. Empty if off-site location is not assigned to this class.'
                         s_title:
                           type: string
                           description: 'The title of the session.'
@@ -22337,6 +22340,7 @@ paths:
                         - k_class
                         - k_class_period
                         - k_location
+                        - k_resource_location
                         - s_title
                         - url_book
                   is_timezone_different:
@@ -23251,6 +23255,9 @@ paths:
                         is_wait_list_enabled:
                           type: boolean
                           description: '`true` if wait list is enabled for class; `false` otherwise.'
+                        k_resource_location:
+                          type: string
+                          description: 'Off-site location asset key. Empty if off-site location is not assigned to this class.'
                         m_price:
                           type: string
                           description: 'Session price.'
@@ -23291,6 +23298,7 @@ paths:
                         - is_virtual
                         - is_wait_list
                         - is_wait_list_enabled
+                        - k_resource_location
                         - m_price
                         - s_duration
                         - s_title
@@ -23528,6 +23536,9 @@ paths:
                             is_wait_list_enabled:
                               type: boolean
                               description: '`true` if wait list is enabled for class; `false` otherwise.'
+                            k_resource_location:
+                              type: string
+                              description: 'Off-site location asset key. Empty if off-site location is not assigned to this class.'
                             m_price:
                               type: string
                               description: 'Session price.'
@@ -23568,6 +23579,7 @@ paths:
                             - is_virtual
                             - is_wait_list
                             - is_wait_list_enabled
+                            - k_resource_location
                             - m_price
                             - s_duration
                             - s_title
@@ -24070,6 +24082,9 @@ paths:
                         is_wait_list_enabled:
                           type: boolean
                           description: '`true` if wait list is enabled for class; `false` otherwise.'
+                        k_resource_location:
+                          type: string
+                          description: 'Off-site location asset key. Empty if off-site location is not assigned to this class.'
                         m_price:
                           type: string
                           description: 'Session price.'
@@ -24110,6 +24125,7 @@ paths:
                         - is_virtual
                         - is_wait_list
                         - is_wait_list_enabled
+                        - k_resource_location
                         - m_price
                         - s_duration
                         - s_title
@@ -24347,6 +24363,9 @@ paths:
                             is_wait_list_enabled:
                               type: boolean
                               description: '`true` if wait list is enabled for class; `false` otherwise.'
+                            k_resource_location:
+                              type: string
+                              description: 'Off-site location asset key. Empty if off-site location is not assigned to this class.'
                             m_price:
                               type: string
                               description: 'Session price.'
@@ -24387,6 +24406,7 @@ paths:
                             - is_virtual
                             - is_wait_list
                             - is_wait_list_enabled
+                            - k_resource_location
                             - m_price
                             - s_duration
                             - s_title
@@ -84929,7 +84949,7 @@ paths:
                   type:
                     - string
                     - 'null'
-                  description: 'Member group key.'
+                  description: "Member group key. Use special value 'quick' to add/remove the user to/from the quick group."
       x-rate-limit:
         -
           limit: 200000
@@ -84949,8 +84969,12 @@ paths:
                     description: 'All groups to which the specified user belongs.'
                     items:
                       type: string
+                  is_quick_group:
+                    type: boolean
+                    description: 'Whether the user is in the quick group or not.'
                 required:
                   - a_group_info
+                  - is_quick_group
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -85045,7 +85069,7 @@ paths:
                   type:
                     - string
                     - 'null'
-                  description: 'Member group key.'
+                  description: "Member group key. Use special value 'quick' to add/remove the user to/from the quick group."
       x-rate-limit:
         -
           limit: 200000
