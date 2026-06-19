@@ -5,7 +5,9 @@ on:
     branches:
       - main
     paths:
+      - production/openapi.yaml
       - stable/openapi.yaml
+      - dev/openapi.yaml
 
 jobs:
   release:
@@ -16,17 +18,51 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract version
+      - name: Extract versions
         id: version
         run: |
-          VERSION=$(grep -m1 'version:' stable/openapi.yaml | awk '{print $2}' | tr -d "'")
-          echo "value=$VERSION" >> $GITHUB_OUTPUT
+          PRODUCTION=$(grep -m1 'version:' production/openapi.yaml | awk '{print $2}' | tr -d "'")
+          STABLE=$(grep -m1 'version:' stable/openapi.yaml | awk '{print $2}' | tr -d "'")
+          DEV=$(grep -m1 'version:' dev/openapi.yaml | awk '{print $2}' | tr -d "'")
+          echo "production=$PRODUCTION" >> $GITHUB_OUTPUT
+          echo "stable=$STABLE" >> $GITHUB_OUTPUT
+          echo "dev=$DEV" >> $GITHUB_OUTPUT
 
-      - name: Create release
+      - name: Detect changed files
+        id: changed
+        run: |
+          git diff --name-only HEAD~1 HEAD > changed.txt
+          echo "production=$(grep -c 'production/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
+          echo "stable=$(grep -c 'stable/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
+          echo "dev=$(grep -c 'dev/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
+
+      - name: Release production
+        if: steps.changed.outputs.production != '0'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.version.outputs.value }}
-          name: v${{ steps.version.outputs.value }}
-          files: |
-            stable/openapi.yaml
-            dev/openapi.yaml
+          tag_name: production/v${{ steps.version.outputs.production }}
+          name: production/v${{ steps.version.outputs.production }}
+          make_latest: true
+          files: production/openapi.yaml
+
+      - name: Update latest tag
+        if: steps.changed.outputs.production != '0'
+        run: |
+          git tag -f latest
+          git push origin latest --force
+
+      - name: Release stable
+        if: steps.changed.outputs.stable != '0'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: stable/v${{ steps.version.outputs.stable }}
+          name: stable/v${{ steps.version.outputs.stable }}
+          files: stable/openapi.yaml
+
+      - name: Release dev
+        if: steps.changed.outputs.dev != '0'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: dev/v${{ steps.version.outputs.dev }}
+          name: dev/v${{ steps.version.outputs.dev }}
+          files: dev/openapi.yaml
