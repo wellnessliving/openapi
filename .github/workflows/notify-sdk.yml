@@ -1,0 +1,19 @@
+name: Notify SDK repo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'stable/openapi.yaml'
+      - 'dev/openapi.yaml'
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger SDK rebuild
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SDK_DISPATCH_TOKEN }}
+          repository: wellnessliving/wl-sdk-js-v2
+          event-type: openapi-updated

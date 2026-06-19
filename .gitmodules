@@ -1,0 +1,3 @@
+[submodule "sdk/js"]
+	path = sdk/js
+	url = https://github.com/wellnessliving/wl-sdk-js-v2
