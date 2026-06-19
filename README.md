@@ -24,6 +24,10 @@ dev/
   openapi.yaml     - OpenAPI 3.1 specification
 ```
 
+## Related repositories
+
+- [JS SDK](https://github.com/wellnessliving/wl-sdk-js-v2)
+
 ## Links
 
 - [WellnessLiving](https://www.wellnessliving.com)
