@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260618131745
+  version: 1.1.20260619010413
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -61888,6 +61888,18 @@ paths:
                   type: array
                   items:
                     type: object
+                    properties:
+                      k_business:
+                        type: string
+                        description: |-
+                          The key of the business for the WellnessLiving project to register the user in.
+
+                          The behavior may vary for different applications. If the application is connected to a given business, this
+                          property can always be empty (all clients will be registered in the connected business). If the business is set
+                          for such an application and is different from the business from the application settings, an error will occur.
+
+                          If the application isn't connected to the business, any business key can be set. This doesn't require any special
+                          privileges, as registration is a publicly available action.
                 id_mode:
                   $ref: '#/components/schemas/Wl.Mode.ModeSid'
                   description: |-
@@ -62390,6 +62402,12 @@ paths:
                         text_quiz_title:
                           type: string
                           description: 'Title for quiz icon.'
+                        is_virtual_service:
+                          type: boolean
+                          description: '`true` - If the business has at least one virtual service, `false` - otherwise.'
+                        url_image:
+                          type: string
+                          description: 'URL to image. Empty if image not exist.'
                       required:
                         - a_note
                         - a_quiz
@@ -62432,6 +62450,8 @@ paths:
                         - text_color_background
                         - text_color_border
                         - text_quiz_title
+                        - is_virtual_service
+                        - url_image
                   is_virtual_service:
                     type: boolean
                     description: '`true` - If the business has at least one virtual service, `false` - otherwise.'
@@ -62740,6 +62760,12 @@ paths:
                         text_color_border:
                           type: string
                           description: 'The border color in hex representation as used on WellnessLiving.'
+                        is_virtual_service:
+                          type: boolean
+                          description: '`true` - If the business has at least one virtual service, `false` - otherwise.'
+                        url_image:
+                          type: string
+                          description: 'URL to image. Empty if image not exist.'
                       required:
                         - a_note
                         - a_appointment_visit_info
@@ -62773,6 +62799,8 @@ paths:
                         - text_alert
                         - text_color_background
                         - text_color_border
+                        - is_virtual_service
+                        - url_image
                   is_virtual_service:
                     type: boolean
                     description: '`true` - If the business has at least one virtual service, `false` - otherwise.'
@@ -82696,6 +82724,16 @@ paths:
                           description: 'A list of online store category keys.'
                           items:
                             type: string
+                        id_program:
+                          $ref: '#/components/schemas/RsProgramSid'
+                          description: |-
+                            The program ID, set for promotions. One of the [RsProgramSid](#/components/schemas/RsProgramSid) constants.
+                             <p>If `id_program` is [RsProgramSid::INSURANCE_MEMBERSHIP](#/components/schemas/RsProgramSid), then use:</p>
+                             <ul>
+                               <li>[ProgramListApi](/Wl/Insurance/Catalog/ProgramList.json) to obtain a list of active programs.</li>
+                               <li>[EnrollmentFieldListApi](/Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json) to get and validate fields for a given program.</li>
+                               <li>[PaymentApi](/Wl/Catalog/Payment/Payment.json) for a program purchase.</li>
+                             </ul>
                         id_restriction:
                           $ref: '#/components/schemas/Wl.Shop.Product.PurchaseRestrictionSid'
                           description: 'The restriction ID. One of the [PurchaseRestrictionSid](#/components/schemas/Wl.Shop.Product.PurchaseRestrictionSid) constants.'
