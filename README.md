@@ -26,7 +26,8 @@ dev/
 
 ## Related repositories
 
-- [JS SDK](https://github.com/wellnessliving/wl-sdk-js-v2)
+- [JS SDK](https://github.com/wellnessliving/wl-openapi-js)
+- [PHP SDK](https://github.com/wellnessliving/wl-openapi-php)
 
 ## Links
 
