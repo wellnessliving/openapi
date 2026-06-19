@@ -4,6 +4,7 @@
   <title>WellnessLiving API - Stable</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
   <style>
     body { margin: 0; padding: 0; }
     #switcher {
@@ -47,13 +48,8 @@
     <div id="swagger-ui"></div>
   </div>
 
-  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
-  <style>
-    .swagger-ui .topbar { display: none; }
-  </style>
   <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
-  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js" crossorigin></script>
-  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js" crossorigin></script>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
   <script>
     var swaggerReady = false;
 
@@ -80,9 +76,8 @@
           url: 'openapi.yaml',
           dom_id: '#swagger-ui',
           deepLinking: true,
-          presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-          plugins: [SwaggerUIBundle.plugins.DownloadUrl],
-          layout: 'StandaloneLayout'
+          presets: [SwaggerUIBundle.presets.apis],
+          layout: 'BaseLayout'
         });
         swaggerReady = true;
       }
