@@ -77,6 +77,15 @@
       background: #fff3e0;
       color: #e65100;
     }
+    .badge-soon {
+      background: #f3f0ff;
+      color: #6b21a8;
+    }
+    .version-link.disabled {
+      pointer-events: none;
+      opacity: .55;
+      cursor: default;
+    }
     .footer {
       margin-top: 36px;
       font-size: 13px;
@@ -96,6 +105,12 @@
     <div class="logo">WellnessLiving API</div>
     <div class="subtitle">Interactive API documentation</div>
     <ul class="version-list">
+      <li>
+        <a class="version-link disabled" href="#">
+          <span class="version-name">Latest</span>
+          <span class="version-badge badge-soon">soon</span>
+        </a>
+      </li>
       <li>
         <a class="version-link" href="stable/">
           <span class="version-name">Stable</span>
