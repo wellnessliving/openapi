@@ -41,9 +41,6 @@
       color: #fff;
       pointer-events: none;
     }
-    #container-redoc,
-    #container-swagger { display: none; }
-    #container-swagger { padding-top: 48px; }
     .swagger-ui .topbar { display: none; }
   </style>
 </head>
@@ -51,49 +48,29 @@
   <div id="switcher">
     <span id="branch-label" class="branch"></span>
     <a id="btn-redoc" href="#">Redoc</a>
-    <a id="btn-swagger" href="#">Swagger UI</a>
+    <a class="active" href="#">Swagger UI</a>
   </div>
 
-  <div id="container-redoc"></div>
-  <div id="container-swagger">
-    <div id="swagger-ui"></div>
-  </div>
+  <div id="swagger-ui"></div>
 
-  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
   <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
   <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
   <script>
-    const params = new URLSearchParams(location.search);
-    const branch = params.get('branch') || 'stable';
-    const viewer = params.get('v') || localStorage.getItem('wl-api-viewer') || 'redoc';
-    const specUrl = branch + '/openapi.yaml';
-
+    const branch = new URLSearchParams(location.search).get('branch') || 'stable';
     const branchLabels = {'dev': 'Development', 'stable': 'Stable'};
+
     document.title = 'WellnessLiving API - ' + (branchLabels[branch] || branch);
     document.getElementById('branch-label').textContent = branchLabels[branch] || branch;
+    document.getElementById('btn-redoc').href = 'redoc.html?branch=' + branch;
 
-    document.getElementById('btn-redoc').href = '?branch=' + branch + '&v=redoc';
-    document.getElementById('btn-swagger').href = '?branch=' + branch + '&v=swagger';
-
-    localStorage.setItem('wl-api-viewer', viewer);
-    document.getElementById('btn-' + viewer).classList.add('active');
-    document.getElementById('container-' + viewer).style.display = '';
-
-    if (viewer === 'swagger')
-    {
-      SwaggerUIBundle({
-        url: specUrl,
-        dom_id: '#swagger-ui',
-        deepLinking: true,
-        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-        plugins: [SwaggerUIBundle.plugins.DownloadUrl],
-        layout: 'StandaloneLayout'
-      });
-    }
-    else
-    {
-      Redoc.init(specUrl, {}, document.getElementById('container-redoc'));
-    }
+    SwaggerUIBundle({
+      url: branch + '/openapi.yaml',
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+      plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+      layout: 'StandaloneLayout'
+    });
   </script>
 </body>
 </html>
