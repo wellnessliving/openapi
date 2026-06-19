@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>WellnessLiving API</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.1);
+      padding: 48px 56px;
+      max-width: 480px;
+      width: 100%;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #666;
+      font-size: 15px;
+      margin-bottom: 36px;
+    }
+    .version-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .version-list li {
+      margin-bottom: 16px;
+    }
+    .version-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .version-link:hover {
+      border-color: #4f7ef7;
+      box-shadow: 0 0 0 3px rgba(79,126,247,.1);
+    }
+    .version-name {
+      font-weight: 600;
+      font-size: 16px;
+      color: #1a1a2e;
+    }
+    .version-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .badge-stable {
+      background: #e6f4ea;
+      color: #2e7d32;
+    }
+    .badge-dev {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    .footer {
+      margin-top: 36px;
+      font-size: 13px;
+      color: #999;
+    }
+    .footer a {
+      color: #4f7ef7;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">WellnessLiving API</div>
+    <div class="subtitle">Interactive API documentation</div>
+    <ul class="version-list">
+      <li>
+        <a class="version-link" href="stable/">
+          <span class="version-name">Stable</span>
+          <span class="version-badge badge-stable">stable</span>
+        </a>
+      </li>
+      <li>
+        <a class="version-link" href="dev/">
+          <span class="version-name">Dev</span>
+          <span class="version-badge badge-dev">dev</span>
+        </a>
+      </li>
+    </ul>
+    <div class="footer">
+      <a href="https://www.wellnessliving.com">wellnessliving.com</a>
+      &nbsp;&middot;&nbsp;
+      <a href="https://www.wellnessliving.com/support">Support</a>
+    </div>
+  </div>
+</body>
+</html>

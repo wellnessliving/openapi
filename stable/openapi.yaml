@@ -5179,7 +5179,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Profile/ProfileCreate.json:
     post:
       operationId: Wl.Profile.ProfileCreateApi.post
@@ -19218,7 +19218,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
     post:
       operationId: Wl.Skin.SkinForeignApi.post
       responses:
@@ -19339,7 +19339,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
     put:
       operationId: Wl.Skin.SkinForeignApi.put
       responses:
@@ -19460,7 +19460,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Tag/TagList.json:
     get:
       operationId: Wl.Tag.TagListApi.get
@@ -33518,7 +33518,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Business/Lead/BusinessLead.json:
     post:
       operationId: Wl.Business.Lead.BusinessLeadApi.post
@@ -34188,7 +34188,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Business/AmazonRegion/AmazonRegion.json:
     get:
       operationId: Wl.Business.AmazonRegion.AmazonRegionApi.get
@@ -55319,7 +55319,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Staff/StaffView/StaffView74.json:
     get:
       operationId: Wl.Staff.StaffView.StaffView74Api.get
@@ -55850,7 +55850,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Reward/Action/Action.json:
     get:
       operationId: Wl.Reward.Action.ActionApi.get

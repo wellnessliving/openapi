@@ -2,22 +2,25 @@
 
 Interactive API documentation for the WellnessLiving platform, rendered with [Redoc](https://redocly.com/redoc/).
 
+**GitHub Pages:** https://wellnessliving.github.io/openapi/
+
 ## Versions
 
-| Version | URL | Description |
-|---------|-----|-------------|
-| **stable** | [`/stable/`](stable/index.html) | Latest stable release |
-| **dev** | [`/dev/`](dev/index.html) | Development build (updated automatically) |
+| Version | Docs | OpenAPI spec |
+|---------|------|--------------|
+| **stable** | [/stable/](https://wellnessliving.github.io/openapi/stable/) | [openapi.yaml](stable/openapi.yaml) |
+| **dev** | [/dev/](https://wellnessliving.github.io/openapi/dev/) | [openapi.yaml](dev/openapi.yaml) |
 
 ## Structure
 
 ```
+index.html         - version picker landing page
 stable/
-  index.html     - Redoc viewer
-  openapi.yaml   - OpenAPI 3.1 specification
+  index.html       - Redoc viewer
+  openapi.yaml     - OpenAPI 3.1 specification
 dev/
-  index.html     - Redoc viewer
-  openapi.yaml   - OpenAPI 3.1 specification
+  index.html       - Redoc viewer
+  openapi.yaml     - OpenAPI 3.1 specification
 ```
 
 ## Links

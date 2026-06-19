@@ -7822,7 +7822,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Announcement/AnnouncementList.json:
     get:
       operationId: Wl.Announcement.AnnouncementListApi.get
@@ -18061,7 +18061,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
     post:
       operationId: Wl.Skin.SkinForeignApi.post
       responses:
@@ -18182,7 +18182,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
     put:
       operationId: Wl.Skin.SkinForeignApi.put
       responses:
@@ -18303,7 +18303,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Tax/Tax.json:
     get:
       operationId: Wl.Tax.TaxApi.get
@@ -23176,7 +23176,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Business/Select/BusinessSelect.json:
     get:
       operationId: Wl.Business.Select.BusinessSelectApi.get
@@ -23800,7 +23800,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Business/Lead/BusinessLead.json:
     post:
       operationId: Wl.Business.Lead.BusinessLeadApi.post
@@ -42807,7 +42807,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Staff/StaffView/StaffView74.json:
     get:
       operationId: Wl.Staff.StaffView.StaffView74Api.get
@@ -43338,7 +43338,7 @@ paths:
         -
           limit: 200000
           period: 3600
-      security: {  }
+      security: []
   /Wl/Appointment/Edit/AddonUpdate.json:
     get:
       operationId: Wl.Appointment.Edit.AddonUpdateApi.get
