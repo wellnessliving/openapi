@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260619024527
+  version: 1.1.20260619030715
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -77986,6 +77986,20 @@ paths:
           schema:
             type: string
           description: "Guest's email."
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_mode:
+                  $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                  description: |-
+                    The mode type used to determine the Lead Source for the created guest.
+                    One of the [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants. Default is [ModeSid::API](#/components/schemas/Wl.Mode.ModeSid).
+              required:
+                - id_mode
       x-rate-limit:
         -
           limit: 200000
