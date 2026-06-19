@@ -64,6 +64,7 @@ jobs:
         with:
           tag_name: stable/v${{ steps.version.outputs.stable }}
           name: stable/v${{ steps.version.outputs.stable }}
+          make_latest: false
           files: stable/openapi.yaml
 
       - name: Release dev
@@ -72,4 +73,5 @@ jobs:
         with:
           tag_name: dev/v${{ steps.version.outputs.dev }}
           name: dev/v${{ steps.version.outputs.dev }}
+          make_latest: false
           files: dev/openapi.yaml
