@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260620051637
+  version: 1.1.20260620060558
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5586,6 +5586,14 @@ paths:
                               k_location:
                                 type: string
                                 description: 'Location key.'
+                              k_resource_location:
+                                type: string
+                                description: |-
+                                  Resource key, which has category ResourceCategoryEnum::LOCATION.
+                                  Only one such resource can be selected for a schedule.
+
+                                  Empty string, if no off-site location is used.
+                                  `null` if field is not loaded.
                               text_location:
                                 type: string
                                 description: 'Location title.'
@@ -5603,6 +5611,7 @@ paths:
                               - is_day
                               - k_class_period
                               - k_location
+                              - k_resource_location
                               - text_location
                               - text_room
                               - text_time
@@ -79599,6 +79608,9 @@ paths:
                             k_location:
                               type: string
                               description: 'The key of the location where the session is held.'
+                            k_resource_location:
+                              type: string
+                              description: 'Structured off-site location data used by the calendar attachment.'
                             s_location:
                               type: string
                               description: 'The location title.'
@@ -79627,6 +79639,7 @@ paths:
                             - f_price
                             - k_class_period
                             - k_location
+                            - k_resource_location
                             - s_location
                             - s_time
                             - s_timezone
@@ -79891,6 +79904,9 @@ paths:
                         k_location:
                           type: string
                           description: 'The key of the location where the session is held.'
+                        k_resource_location:
+                          type: string
+                          description: 'Structured off-site location data used by the calendar attachment.'
                         s_location:
                           type: string
                           description: 'The location title.'
@@ -79919,6 +79935,7 @@ paths:
                         - f_price
                         - k_class_period
                         - k_location
+                        - k_resource_location
                         - s_location
                         - s_time
                         - s_timezone
