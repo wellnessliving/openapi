@@ -26,3 +26,10 @@ jobs:
           token: ${{ secrets.SDK_DISPATCH_TOKEN }}
           repository: wellnessliving/wl-openapi-php
           event-type: openapi-updated
+
+      - name: Notify wl-sdk-js
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SDK_DISPATCH_TOKEN }}
+          repository: wellnessliving/wl-openapi-php
+          event-type: openapi-updated
