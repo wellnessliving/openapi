@@ -60,7 +60,8 @@
     document.getElementById('branch-label').textContent = branchLabels[branch] || branch;
     document.getElementById('btn-swagger').href = 'swagger.html?branch=' + branch;
 
-    Redoc.init(branch + '/openapi.yaml', {}, document.getElementById('redoc-container'));
+    const yamlUrl = 'https://raw.githubusercontent.com/wellnessliving/openapi/main/' + branch + '/openapi.yaml';
+    Redoc.init(yamlUrl, {}, document.getElementById('redoc-container'));
   </script>
 </body>
 </html>

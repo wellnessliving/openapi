@@ -63,8 +63,9 @@
     document.getElementById('branch-label').textContent = branchLabels[branch] || branch;
     document.getElementById('btn-redoc').href = 'redoc.html?branch=' + branch;
 
+    const yamlUrl = 'https://raw.githubusercontent.com/wellnessliving/openapi/main/' + branch + '/openapi.yaml';
     SwaggerUIBundle({
-      url: branch + '/openapi.yaml',
+      url: yamlUrl,
       dom_id: '#swagger-ui',
       deepLinking: true,
       presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
