@@ -27,9 +27,10 @@ jobs:
           repository: wellnessliving/wl-openapi-php
           event-type: openapi-updated
 
-      - name: Notify wl-sdk-js
-        uses: peter-evans/repository-dispatch@v3
+      - name: Notify wl-sdk-js (beta)
+        uses: benc-uk/workflow-dispatch@v1
         with:
+          workflow: generate-models.yml
+          repo: wellnessliving/wl-sdk-js
+          ref: beta
           token: ${{ secrets.SDK_DISPATCH_TOKEN }}
-          repository: wellnessliving/wl-openapi-php
-          event-type: openapi-updated
