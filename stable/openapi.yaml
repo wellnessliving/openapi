@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260703131648
+  version: 1.1.20260703142422
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -705,7 +705,7 @@ paths:
                     description: |-
                       A list of fields in this report.
 
-                      This array is effectively a title row for table that is returned in [QueryApi](/Thoth/ReportCore/Generator/Query.json).
+                      This array is effectively a title row for table that is returned in [QueryApi::$a_row](/Thoth/ReportCore/Generator/Query.json).
                     items:
                       type: string
                   a_row:
@@ -715,7 +715,7 @@ paths:
 
                       This is an indexed array in which one row is an indexed array also.
 
-                      Indexes of the columns correspond columns in [QueryApi](/Thoth/ReportCore/Generator/Query.json).
+                      Indexes of the columns correspond columns in [QueryApi::$a_field](/Thoth/ReportCore/Generator/Query.json).
                     items:
                       type: array
                       items:
@@ -728,7 +728,7 @@ paths:
                       This array is only filled in when report is being updated now, or due to some other reasons contains mixed version
                       data (some data from the latest generation, and other from one of previous generations).
 
-                      Value is index in [QueryApi](/Thoth/ReportCore/Generator/Query.json).
+                      Value is index in [QueryApi::$a_row](/Thoth/ReportCore/Generator/Query.json).
 
                       If a row is not listed here, it is of the latest version.
                     items:
@@ -1050,7 +1050,7 @@ paths:
                     description: |-
                       Determines whether the user is a debtor. If `true` - the owner of this account is a debtor.
                       If `false` - the user is not a debtor or the information is not returned for the
-                      account owner ([AccountApi](/Thoth/WlPay/Account/Account.json) is `false`).
+                      account owner ([AccountApi::$is_owner](/Thoth/WlPay/Account/Account.json) is `false`).
                 required:
                   - a_account
                   - a_account_nx
@@ -1071,7 +1071,7 @@ paths:
       description: |-
         Returns the list of existing accounts and accounts not yet created for the user within the specified business,
         including balance, currency, and payment method details.
-        When [AccountApi](/Thoth/WlPay/Account/Account.json) is `true`, resolves the money owner and includes the debtor status.
+        When [AccountApi::$is_owner](/Thoth/WlPay/Account/Account.json) is `true`, resolves the money owner and includes the debtor status.
       tags:
         - Payments
       parameters:
@@ -1235,8 +1235,8 @@ paths:
                     type: string
                     format: date
                     description: |-
-                      Current local date in current location [EnvironmentApi](/Thoth/WlPay/Form/Environment.json)
-                      or business [EnvironmentApi](/Thoth/WlPay/Form/Environment.json) if not set location.
+                      Current local date in current location [EnvironmentApi::$k_location](/Thoth/WlPay/Form/Environment.json)
+                      or business [EnvironmentApi::$k_business](/Thoth/WlPay/Form/Environment.json) if not set location.
                   f_surcharge:
                     type:
                       - string
@@ -1490,8 +1490,8 @@ paths:
                     type: string
                     format: date
                     description: |-
-                      Current local date in current location [EnvironmentApi](/Thoth/WlPay/Form/Environment.json)
-                      or business [EnvironmentApi](/Thoth/WlPay/Form/Environment.json) if not set location.
+                      Current local date in current location [EnvironmentApi::$k_location](/Thoth/WlPay/Form/Environment.json)
+                      or business [EnvironmentApi::$k_business](/Thoth/WlPay/Form/Environment.json) if not set location.
                   f_surcharge:
                     type:
                       - string
@@ -1931,7 +1931,7 @@ paths:
             type: string
           description: |-
             The primary key of a payment owner.
-            This could be the business of the user depending on a [AddressApi](/Thoth/WlPay/Address/Address.json) value.
+            This could be the business of the user depending on a [AddressApi::$id_pay_owner](/Thoth/WlPay/Address/Address.json) value.
       x-instance-get-key: 'id_pay_owner,k_id'
       x-rate-limit:
         -
@@ -4014,8 +4014,8 @@ paths:
             * All possible links must be registered in the Microsoft application used for authorization.
             * WARNING: Do not use this link for a direct redirect. This will present a vulnerability.
 
-            * A [LoginApi](/Social/Microsoft/Login.json) link will be generated along with this redirect URI.
-            * When checking the received [LoginApi](/Social/Microsoft/Login.json) from Microsoft.
+            * A [LoginApi::$url_login](/Social/Microsoft/Login.json) link will be generated along with this redirect URI.
+            * When checking the received [LoginApi::$s_code](/Social/Microsoft/Login.json) from Microsoft.
             The link must be sent along with it to the `post()` method.
       x-rate-limit:
         -
@@ -4068,8 +4068,8 @@ paths:
             * All possible links must be registered in the Microsoft application used for authorization.
             * WARNING: Do not use this link for a direct redirect. This will present a vulnerability.
 
-            * A [LoginApi](/Social/Microsoft/Login.json) link will be generated along with this redirect URI.
-            * When checking the received [LoginApi](/Social/Microsoft/Login.json) from Microsoft.
+            * A [LoginApi::$url_login](/Social/Microsoft/Login.json) link will be generated along with this redirect URI.
+            * When checking the received [LoginApi::$s_code](/Social/Microsoft/Login.json) from Microsoft.
             The link must be sent along with it to the `post()` method.
       requestBody:
         required: true
@@ -4540,7 +4540,7 @@ paths:
                     description: |-
                       An array of service resources.
 
-                      Contains an extended data set, as well as a different format than [VisitStatusApi](/Wl/Visit/VisitStatus.json).
+                      Contains an extended data set, as well as a different format than [VisitStatusApi::$a_resource](/Wl/Visit/VisitStatus.json).
 
                       Each element contains the following set of data:
                     items:
@@ -4576,7 +4576,7 @@ paths:
                   a_staff:
                     type: array
                     deprecated: true
-                    x-deprecated: 'This field is deprecated. Use [VisitStatusApi](/Wl/Visit/VisitStatus.json) instead.'
+                    x-deprecated: 'This field is deprecated. Use [VisitStatusApi::$a_uid_staff](/Wl/Visit/VisitStatus.json) instead.'
                     description: 'The list of keys of staff members that conduct the class.'
                     items:
                       type: string
@@ -4643,7 +4643,7 @@ paths:
                       - string
                       - 'null'
                     deprecated: true
-                    x-deprecated: 'This field is deprecated. Use [VisitStatusApi](/Wl/Visit/VisitStatus.json) instead.'
+                    x-deprecated: 'This field is deprecated. Use [VisitStatusApi::$uid_staff](/Wl/Visit/VisitStatus.json) instead.'
                     description: |-
                       The key of the staff providing the appointment.
                       If `null`, the visit isn't from an appointment (for example, the visit is from an asset).
@@ -5122,7 +5122,7 @@ paths:
                           description: 'The full description of the location.'
                         html_description_preview:
                           type: string
-                          description: 'A shorter description of the location. A preview of [ViewApi](/Wl/Location/View/View.json).'
+                          description: 'A shorter description of the location. A preview of [ViewApi::$html_description_full](/Wl/Location/View/View.json).'
                         i_logo_height:
                           type: integer
                           format: int32
@@ -5363,9 +5363,9 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Creates new location or edits the existing location.'
       description: |-
-        When [LocationApi](/Wl/Location/Location.json) is omitted, creates a new location requiring [LocationApi](/Wl/Location/Location.json),
-         [LocationApi](/Wl/Location/Location.json), and [LocationApi](/Wl/Location/Location.json).
-        When [LocationApi](/Wl/Location/Location.json) is provided, updates only the supplied fields of the existing location.
+        When [LocationApi::$k_location](/Wl/Location/Location.json) is omitted, creates a new location requiring [LocationApi::$k_city](/Wl/Location/Location.json),
+         [LocationApi::$text_address](/Wl/Location/Location.json), and [LocationApi::$text_title](/Wl/Location/Location.json).
+        When [LocationApi::$k_location](/Wl/Location/Location.json) is provided, updates only the supplied fields of the existing location.
          Returns the key of the created or updated location.
       tags:
         - Locations
@@ -5572,7 +5572,7 @@ paths:
               type: string
           description: |-
             A list of business keys.
-            You can specify this instead of [ListApi](/Wl/Location/List.json) to load data for many businesses in one call.
+            You can specify this instead of [ListApi::$k_business](/Wl/Location/List.json) to load data for many businesses in one call.
         -
           name: k_business
           in: query
@@ -5592,7 +5592,7 @@ paths:
             type: string
           description: |-
             The primary keys of the selected businesses.
-            You can specify this instead of [ListApi](/Wl/Location/List.json) to load data for many businesses in one call.
+            You can specify this instead of [ListApi::$k_business](/Wl/Location/List.json) to load data for many businesses in one call.
 
             This is the same as `$a_business`, but serialized with JSON (to make the URL shorter).
         -
@@ -5720,12 +5720,12 @@ paths:
                   type: string
                   description: |-
                     Email of the user.
-                    Required if [ProfileCreateApi](/Wl/Profile/ProfileCreate.json) not provided.
+                    Required if [ProfileCreateApi::$text_phone](/Wl/Profile/ProfileCreate.json) not provided.
                 text_phone:
                   type: string
                   description: |-
                     Phone of the user.
-                    Required if [ProfileCreateApi](/Wl/Profile/ProfileCreate.json) not provided.
+                    Required if [ProfileCreateApi::$text_mail](/Wl/Profile/ProfileCreate.json) not provided.
                 text_phone_home:
                   type: string
                   description: 'Home phone of the user.'
@@ -6410,7 +6410,7 @@ paths:
           schema:
             type: boolean
           description: |-
-            Determines whether you need to retrieve a list of event sessions regardless of the tab specified in [EventListApi](/Wl/Event/EventList.json).
+            Determines whether you need to retrieve a list of event sessions regardless of the tab specified in [EventListApi::$k_class_tab](/Wl/Event/EventList.json).
 
             * `true` - retrieves a list regardless of the specified tab.
             * `false` - retrieves a list only for the specific tab.
@@ -6425,7 +6425,7 @@ paths:
           description: |-
             The event business key to retrieve a list of all event sessions in business.
 
-            `null` to retrieve events from [EventListApi](/Wl/Event/EventList.json).
+            `null` to retrieve events from [EventListApi::$k_location](/Wl/Event/EventList.json).
         -
           name: k_class
           in: query
@@ -6448,8 +6448,8 @@ paths:
             An empty value to retrieve a list of event sessions that don't belong to any tab.
 
             Will be ignored in next cases:
-            * [EventListApi](/Wl/Event/EventList.json) specified.
-            * [EventListApi](/Wl/Event/EventList.json) is `true`.
+            * [EventListApi::$k_skin](/Wl/Event/EventList.json) specified.
+            * [EventListApi::$is_tab_all](/Wl/Event/EventList.json) is `true`.
         -
           name: k_location
           in: query
@@ -6461,8 +6461,8 @@ paths:
           description: |-
             The event location key to retrieve a list of all event sessions in a specific location.
 
-            Required if [EventListApi](/Wl/Event/EventList.json) isn't specified.
-            `null` if you need to retrieve a list of event sessions in all locations of [EventListApi](/Wl/Event/EventList.json).
+            Required if [EventListApi::$k_business](/Wl/Event/EventList.json) isn't specified.
+            `null` if you need to retrieve a list of event sessions in all locations of [EventListApi::$k_business](/Wl/Event/EventList.json).
         -
           name: k_skin
           in: query
@@ -6472,7 +6472,7 @@ paths:
           description: |-
             The skin key if an event list is used for widget mode.
 
-            [EventListApi](/Wl/Event/EventList.json) will be ignored for widget mode.
+            [EventListApi::$k_class_tab](/Wl/Event/EventList.json) will be ignored for widget mode.
         -
           name: text_search
           in: query
@@ -6532,7 +6532,7 @@ paths:
           description: |-
             The event business key to retrieve a list of all event sessions in business.
 
-            `null` to retrieve events from [EventListApi](/Wl/Event/EventList.json).
+            `null` to retrieve events from [EventListApi::$k_location](/Wl/Event/EventList.json).
         -
           name: uid
           in: query
@@ -6578,7 +6578,7 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Cancels book of event [EventCancelWholeApi](/Wl/Event/EventCancelWhole.json).'
+      summary: 'Cancels book of event [EventCancelWholeApi::$k_class](/Wl/Event/EventCancelWhole.json).'
       description: |-
         Used when a client wants to drop out of a multi-session event entirely. Cancels all remaining
         upcoming sessions at once, including any waitlisted spots, without requiring the client to cancel
@@ -6712,7 +6712,7 @@ paths:
                   k_business_token:
                     type: string
                     description: |-
-                      The business key obtained by the security token [DataApi](/Wl/Business/Data.json).
+                      The business key obtained by the security token [DataApi::$text_token](/Wl/Business/Data.json).
                       This can be used on the client side if authorization token should be used instead of the business key
                       (the business key isn't available).
                   k_business_type:
@@ -6721,7 +6721,7 @@ paths:
                   k_currency:
                     type: string
                     deprecated: true
-                    x-deprecated: 'Use [DataApi](/Wl/Business/Data.json) instead.'
+                    x-deprecated: 'Use [DataApi::$id_currency](/Wl/Business/Data.json) instead.'
                     description: "The currency key of the given business, or the system currency if the business didn't pass."
                   s_reply_mail:
                     type: string
@@ -6880,7 +6880,7 @@ paths:
             type: string
           description: |-
             The authorization token.
-            This may be used instead of [DataApi](/Wl/Business/Data.json) to
+            This may be used instead of [DataApi::$k_business](/Wl/Business/Data.json) to
             identify a business.
       x-instance-get-key: k_business
       x-rate-limit:
@@ -7467,7 +7467,7 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Checks access to given report.'
       description: |-
-        Accepts either [AccessApi](/Wl/Report/Access.json) (first-generation reports) or [AccessApi](/Wl/Report/Access.json) (second-generation reports), but not both,
+        Accepts either [AccessApi::$id_report](/Wl/Report/Access.json) (first-generation reports) or [AccessApi::$cid_report](/Wl/Report/Access.json) (second-generation reports), but not both,
         and returns `has_access` indicating whether the current user may view the report in the given business.
       tags:
         - Reports
@@ -7484,7 +7484,7 @@ paths:
             Report CID.
 
             It's used mostly for second generation reports.
-            For first generation reports use [AccessApi](/Wl/Report/Access.json) instead.
+            For first generation reports use [AccessApi::$id_report](/Wl/Report/Access.json) instead.
 
             Only one of these two fields should be sent, but not both.
         -
@@ -7497,7 +7497,7 @@ paths:
             Report ID.
 
             It's used mostly for first generation reports.
-            For second generation reports use [AccessApi](/Wl/Report/Access.json) instead.
+            For second generation reports use [AccessApi::$cid_report](/Wl/Report/Access.json) instead.
 
             Only one of these two fields should be sent, but not both.
         -
@@ -7758,8 +7758,8 @@ paths:
 
             If set, this is the end of the date window. Only debts added before or on this date will be shown.
 
-            If left `null` and [DebtListApi](/Wl/Collector/DebtList.json) has been specified, only debts added after the start date will be returned.
-            If left `null` and [DebtListApi](/Wl/Collector/DebtList.json) is also `null`, this will return debts from the previous month.
+            If left `null` and [DebtListApi::$dl_start](/Wl/Collector/DebtList.json) has been specified, only debts added after the start date will be returned.
+            If left `null` and [DebtListApi::$dl_start](/Wl/Collector/DebtList.json) is also `null`, this will return debts from the previous month.
         -
           name: dl_start
           in: query
@@ -7774,8 +7774,8 @@ paths:
 
             If set, this is the start of the date window. Only debts added on or after this date will be shown.
 
-            If left `null` and [DebtListApi](/Wl/Collector/DebtList.json) has been specified will return debts added since the beginning of time.
-            If left `null` and [DebtListApi](/Wl/Collector/DebtList.json) is also `null`, this will return debts from the previous month.
+            If left `null` and [DebtListApi::$dl_end](/Wl/Collector/DebtList.json) has been specified will return debts added since the beginning of time.
+            If left `null` and [DebtListApi::$dl_end](/Wl/Collector/DebtList.json) is also `null`, this will return debts from the previous month.
         -
           name: is_request_debt
           in: query
@@ -7996,8 +7996,8 @@ paths:
           description: |-
             If set, this is the end of the date window. Only debt payments added before or on this date will be shown.
 
-            If left `null` and [DebtTransactionApi](/Wl/Collector/DebtTransaction.json) has been specified only debt payments added after the start date will be returned.
-            If left `null` and [DebtTransactionApi](/Wl/Collector/DebtTransaction.json) is also `null`, this will return debt payments from the previous month.
+            If left `null` and [DebtTransactionApi::$dl_start](/Wl/Collector/DebtTransaction.json) has been specified only debt payments added after the start date will be returned.
+            If left `null` and [DebtTransactionApi::$dl_start](/Wl/Collector/DebtTransaction.json) is also `null`, this will return debt payments from the previous month.
         -
           name: dl_start
           in: query
@@ -8010,8 +8010,8 @@ paths:
           description: |-
             If set, this is the start of the date window. Only debt payments added on or after this date will be shown.
 
-            If left `null` and [DebtTransactionApi](/Wl/Collector/DebtTransaction.json) has been specified, this will return debt payments since the beginning of time.
-            If left `null` and [DebtTransactionApi](/Wl/Collector/DebtTransaction.json) is also `null`, this will return debt payments from the previous month.
+            If left `null` and [DebtTransactionApi::$dl_end](/Wl/Collector/DebtTransaction.json) has been specified, this will return debt payments since the beginning of time.
+            If left `null` and [DebtTransactionApi::$dl_end](/Wl/Collector/DebtTransaction.json) is also `null`, this will return debt payments from the previous month.
         -
           name: is_test
           in: query
@@ -8149,7 +8149,7 @@ paths:
                     description: |-
                       Order ID for list of announcements.
 
-                      Used only when [AnnouncementListApi](/Wl/Announcement/AnnouncementList.json) is `true`.
+                      Used only when [AnnouncementListApi::$is_backend](/Wl/Announcement/AnnouncementList.json) is `true`.
 
                       `null` in case when use default order.
                   id_sort_field:
@@ -8157,7 +8157,7 @@ paths:
                     description: |-
                       Sort field ID for list of announcements.
 
-                      Used only when [AnnouncementListApi](/Wl/Announcement/AnnouncementList.json) is `true`.
+                      Used only when [AnnouncementListApi::$is_backend](/Wl/Announcement/AnnouncementList.json) is `true`.
 
                       `null` in case when use default field.
                 required:
@@ -8194,7 +8194,7 @@ paths:
           description: |-
             Order ID for list of announcements.
 
-            Used only when [AnnouncementListApi](/Wl/Announcement/AnnouncementList.json) is `true`.
+            Used only when [AnnouncementListApi::$is_backend](/Wl/Announcement/AnnouncementList.json) is `true`.
 
             `null` in case when use default order.
         -
@@ -8206,7 +8206,7 @@ paths:
           description: |-
             Sort field ID for list of announcements.
 
-            Used only when [AnnouncementListApi](/Wl/Announcement/AnnouncementList.json) is `true`.
+            Used only when [AnnouncementListApi::$is_backend](/Wl/Announcement/AnnouncementList.json) is `true`.
 
             `null` in case when use default field.
         -
@@ -8634,15 +8634,15 @@ paths:
 
                     Lead will not be signed in if:
                     - email is used already for another existing user;
-                    - different user is signed in already (can be changed with [LeadApi](/Wl/Lead/Lead.json)).
+                    - different user is signed in already (can be changed with [LeadApi::$is_sing_in_force](/Wl/Lead/Lead.json)).
 
-                    If lead is not signed in, then [LeadApi](/Wl/Lead/Lead.json) will contain an error message.
+                    If lead is not signed in, then [LeadApi::$text_sign_in_error](/Wl/Lead/Lead.json) will contain an error message.
                 is_sing_in_force:
                   type: boolean
                   description: |-
                     `true` if newly created lead should be automatically signed in instead of the currently signed-in user,
                     `false` if currently singed-in user should not be signed out.
-                    If lead is not signed in, then [LeadApi](/Wl/Lead/Lead.json) will contain an error message.
+                    If lead is not signed in, then [LeadApi::$text_sign_in_error](/Wl/Lead/Lead.json) will contain an error message.
                 k_lead_source:
                   type:
                     - string
@@ -8658,8 +8658,8 @@ paths:
                   type: string
                   description: |-
                     The characters entered by the lead for the captcha test.
-                    This isn't necessary if the GET method returned an empty [LeadApi](/Wl/Lead/Lead.json).
-                    This field isn't necessary if the GET method returned an empty [LeadApi](/Wl/Lead/Lead.json).
+                    This isn't necessary if the GET method returned an empty [LeadApi::$url_captcha](/Wl/Lead/Lead.json).
+                    This field isn't necessary if the GET method returned an empty [LeadApi::$url_captcha](/Wl/Lead/Lead.json).
                 text_lead_source:
                   type:
                     - string
@@ -9539,12 +9539,12 @@ paths:
                     type: string
                     description: |-
                       The staff member's mailing address.
-                      This will be set if the user is a staff member ([LoginApi](/Wl/Login/Login.json)).
+                      This will be set if the user is a staff member ([LoginApi::$k_staff](/Wl/Login/Login.json)).
                   text_name_first_staff:
                     type: string
                     description: |-
                       The staff member's first name.
-                      This will be set if the user is a staff member ([LoginApi](/Wl/Login/Login.json)).
+                      This will be set if the user is a staff member ([LoginApi::$k_staff](/Wl/Login/Login.json)).
                   text_name_full_client:
                     type: string
                     description: |-
@@ -9556,12 +9556,12 @@ paths:
                       The staff member's full name.
                       The user login is returned in cases where neither the first name nor the last name have been specified.
                       An empty string is returned in cases where neither the first name, last name, nor login have been specified.
-                      This will be set if the user is a staff member ([LoginApi](/Wl/Login/Login.json)).
+                      This will be set if the user is a staff member ([LoginApi::$k_staff](/Wl/Login/Login.json)).
                   text_name_last_staff:
                     type: string
                     description: |-
                       The staff member's last name.
-                      This will be set if the user is a staff member ([LoginApi](/Wl/Login/Login.json)).
+                      This will be set if the user is a staff member ([LoginApi::$k_staff](/Wl/Login/Login.json)).
                   uid:
                     type:
                       - string
@@ -18250,7 +18250,7 @@ paths:
           description: |-
             The video key.
 
-            *Be careful, when use this property in code, use [VideoElementApi](/Wl/Video/VideoElement.json) instead.*
+            *Be careful, when use this property in code, use [VideoElementApi::$k_video_binary](/Wl/Video/VideoElement.json) instead.*
             In this property can be key in next format:
             * [Deprecated] String key in old format. 
             * String key in new format.
@@ -18277,7 +18277,7 @@ paths:
                   a_staff:
                     type: array
                     deprecated: true
-                    x-deprecated: 'This property will be removed in the future. Use [VideoElementApi](/Wl/Video/VideoElement.json) instead.'
+                    x-deprecated: 'This property will be removed in the future. Use [VideoElementApi::$a_staff_uid](/Wl/Video/VideoElement.json) instead.'
                     description: 'The keys of the user staff members who are on the video.'
                     items:
                       type: string
@@ -18454,7 +18454,7 @@ paths:
 
                       This URL return with domain which you use when you call this API.
                       In case when you make request to local domain and video is
-                      [VideoElementApi](/Wl/Video/VideoElement.json) links in file will have global domain and for correct
+                      [VideoElementApi::$is_converted](/Wl/Video/VideoElement.json) links in file will have global domain and for correct
                       work you must replace global domain to local.
 
                       Example for `videojs` player you can override method `beforeRequest`: <code>
@@ -18555,7 +18555,7 @@ paths:
           description: |-
             The video key.
 
-            *Be careful, when use this property in code, use [VideoElementApi](/Wl/Video/VideoElement.json) instead.*
+            *Be careful, when use this property in code, use [VideoElementApi::$k_video_binary](/Wl/Video/VideoElement.json) instead.*
             In this property can be key in next format:
             * [Deprecated] String key in old format. 
             * String key in new format.
@@ -18579,7 +18579,7 @@ paths:
                     description: |-
                       The video key.
 
-                      *Be careful, when use this property in code, use [VideoElementApi](/Wl/Video/VideoElement.json) instead.*
+                      *Be careful, when use this property in code, use [VideoElementApi::$k_video_binary](/Wl/Video/VideoElement.json) instead.*
                       In this property can be key in next format:
                       * [Deprecated] String key in old format. 
                       * String key in new format.
@@ -18640,7 +18640,7 @@ paths:
           description: |-
             The video key.
 
-            *Be careful, when use this property in code, use [VideoElementApi](/Wl/Video/VideoElement.json) instead.*
+            *Be careful, when use this property in code, use [VideoElementApi::$k_video_binary](/Wl/Video/VideoElement.json) instead.*
             In this property can be key in next format:
             * [Deprecated] String key in old format. 
             * String key in new format.
@@ -18659,7 +18659,7 @@ paths:
                 a_staff:
                   type: array
                   deprecated: true
-                  x-deprecated: 'This property will be removed in the future. Use [VideoElementApi](/Wl/Video/VideoElement.json) instead.'
+                  x-deprecated: 'This property will be removed in the future. Use [VideoElementApi::$a_staff_uid](/Wl/Video/VideoElement.json) instead.'
                   description: 'The keys of the user staff members who are on the video.'
                   items:
                     type: string
@@ -19028,7 +19028,7 @@ paths:
                             - 'null'
                           description: |-
                             URL of the video file (HLS stream). `null` if not available.
-                            See [VideoElementApi](/Wl/Video/VideoElement.json) for details about the video URL.
+                            See [VideoElementApi::$url_video](/Wl/Video/VideoElement.json) for details about the video URL.
                       required:
                         - a_staff
                         - a_video_category
@@ -19211,7 +19211,7 @@ paths:
           schema:
             type: array
             deprecated: true
-            x-deprecated: 'This property will be removed in the future. Use [VideoListApi](/Wl/Video/VideoList.json) instead.'
+            x-deprecated: 'This property will be removed in the future. Use [VideoListApi::$a_staff_uid](/Wl/Video/VideoList.json) instead.'
             items:
               type: string
           description: 'A list of staff members who appear in videos.'
@@ -19596,7 +19596,7 @@ paths:
                     description: |-
                       The key of the staff member resolved and used internally by this API.
 
-                      This property is populated from [StaffElementApi](/Wl/Staff/StaffElement.json) in `post()` and
+                      This property is populated from [StaffElementApi::$uid_staff](/Wl/Staff/StaffElement.json) in `post()` and
                       returned in API result for compatibility.
 
                       Passing `k_staff` in request payload is not supported and causes an error.
@@ -19634,7 +19634,7 @@ paths:
           description: |-
             The key of the staff member resolved and used internally by this API.
 
-            This property is populated from [StaffElementApi](/Wl/Staff/StaffElement.json) in `post()` and
+            This property is populated from [StaffElementApi::$uid_staff](/Wl/Staff/StaffElement.json) in `post()` and
             returned in API result for compatibility.
 
             Passing `k_staff` in request payload is not supported and causes an error.
@@ -19846,7 +19846,7 @@ paths:
                     User key of a staff member.
 
                     This is the supported request identifier for staff update operations.
-                    Value is normalized into [StaffElementApi](/Wl/Staff/StaffElement.json) in `post()`.
+                    Value is normalized into [StaffElementApi::$k_staff](/Wl/Staff/StaffElement.json) in `post()`.
               required:
                 - is_password_set_disable
                 - is_uid
@@ -20081,13 +20081,13 @@ paths:
                   dtl_now:
                     type: string
                     format: date-time
-                    description: 'Local date with time now in current location [EnvironmentApi](/Wl/Session/Environment.json).'
+                    description: 'Local date with time now in current location [EnvironmentApi::$k_location](/Wl/Session/Environment.json).'
                   has_form_quiz:
                     type: boolean
                     description: 'Whether exists form to confirm during registration process.'
                   has_merchant:
                     type: boolean
-                    description: "Whether the merchant is configured for the client's home location or for business [EnvironmentApi](/Wl/Session/Environment.json)."
+                    description: "Whether the merchant is configured for the client's home location or for business [EnvironmentApi::$k_business](/Wl/Session/Environment.json)."
                   id_currency:
                     $ref: '#/components/schemas/RsCurrencySid'
                     description: 'Currency ID. One of [RsCurrencySid](#/components/schemas/RsCurrencySid) constants.'
@@ -20994,8 +20994,8 @@ paths:
                     - 'null'
                   description: |-
                     List of tags in json format.
-                    See [TagListApi](/Wl/Tag/TagList.json) for the structure of each tag.
-                    `null` to use [TagListApi](/Wl/Tag/TagList.json) for getting the tag list.
+                    See [TagListApi::$a_list](/Wl/Tag/TagList.json) for the structure of each tag.
+                    `null` to use [TagListApi::$a_list](/Wl/Tag/TagList.json) for getting the tag list.
               required:
                 - a_list
       x-instance-get-key: k_business
@@ -21461,17 +21461,17 @@ paths:
                   a_location_holiday:
                     type: array
                     description: |-
-                      A list of the location's closed day titles by location keys on the date [HolidayApi](/Wl/Holiday/Holiday.json).
+                      A list of the location's closed day titles by location keys on the date [HolidayApi::$dl_work](/Wl/Holiday/Holiday.json).
 
                       Keys are location keys. Values are holiday title strings.
                     items:
                       type: string
                   is_business_holiday:
                     type: boolean
-                    description: '`true` if the business has a closed day on the date [HolidayApi](/Wl/Holiday/Holiday.json), `false` if otherwise.'
+                    description: '`true` if the business has a closed day on the date [HolidayApi::$dl_work](/Wl/Holiday/Holiday.json), `false` if otherwise.'
                   text_business_title:
                     type: string
-                    description: "The message used for the business's closed day on the date [HolidayApi](/Wl/Holiday/Holiday.json)."
+                    description: "The message used for the business's closed day on the date [HolidayApi::$dl_work](/Wl/Holiday/Holiday.json)."
                 required:
                   - a_location_holiday
                   - is_business_holiday
@@ -21534,7 +21534,7 @@ paths:
                   a_business_holidays:
                     type: array
                     description: |-
-                      An array consisting of the business's closed day data for all locations by holiday keys [HolidayApi](/Wl/Holiday/Holiday.json).
+                      An array consisting of the business's closed day data for all locations by holiday keys [HolidayApi::$dl_work](/Wl/Holiday/Holiday.json).
 
                       List of holidays.
                     items:
@@ -21801,7 +21801,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The image ID set in [ImageUploadApi](/Core/Drive/ImageUpload/ImageUpload.json).'
+          description: 'The image ID set in [ImageUploadApi::$s_class](/Core/Drive/ImageUpload/ImageUpload.json).'
         -
           name: s_class
           in: query
@@ -21959,7 +21959,7 @@ paths:
                     - string
                     - 'null'
                   description: |-
-                    A list of image IDs set in [ImageUploadApi](/Core/Drive/ImageUpload/ImageUpload.json), serialized using JSON.
+                    A list of image IDs set in [ImageUploadApi::$s_class](/Core/Drive/ImageUpload/ImageUpload.json), serialized using JSON.
 
                     This will be `null` if there's no data being sent by the client.
       x-instance-get-key: 's_class,k_id,a_config'
@@ -22125,7 +22125,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The image ID set in [ImageUploadApi](/Core/Drive/ImageUpload/ImageUpload.json).'
+          description: 'The image ID set in [ImageUploadApi::$s_class](/Core/Drive/ImageUpload/ImageUpload.json).'
         -
           name: s_class
           in: query
@@ -22166,7 +22166,7 @@ paths:
                     description: |-
                       The ID of the purchase that was created during payment.
                       This value is only returned in cases where a purchase was created.
-                      A new purchase is created when [ChargeApi](/Thoth/WlPay/Account/Charge/Charge.json) equals [RsPayAccountChargeSid::AUTO](#/components/schemas/RsPayAccountChargeSid).
+                      A new purchase is created when [ChargeApi::$id_pay_account_charge](/Thoth/WlPay/Account/Charge/Charge.json) equals [RsPayAccountChargeSid::AUTO](#/components/schemas/RsPayAccountChargeSid).
                 required:
                   - k_purchase
         '400':
@@ -22218,7 +22218,7 @@ paths:
             The ID of the business the user account belongs to.
 
             This shouldn't be passed if a user account has already been created.
-            In such cases, [ChargeApi](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
+            In such cases, [ChargeApi::$k_pay_account](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
 
             If both the business ID and account ID passed, the system checks if the given business is the owner of the specified account.
         -
@@ -22231,7 +22231,7 @@ paths:
             The ID of the user account to refill.
 
             This may be 0 if a user account hasn't been created yet.
-            In such cases, [ChargeApi](/Thoth/WlPay/Account/Charge/Charge.json) and [ChargeApi](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
+            In such cases, [ChargeApi::$k_business](/Thoth/WlPay/Account/Charge/Charge.json) and [ChargeApi::$uid](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
 
             If not passed, the currency of account equals the default business currency.
         -
@@ -22244,7 +22244,7 @@ paths:
             The ID of the user whose account is being refilled.
 
             This shouldn't be passed if a user account has already been created.
-            In such cases, [ChargeApi](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
+            In such cases, [ChargeApi::$k_pay_account](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
 
             If both the user ID and account ID passed, the system checks if the given user is the owner of the specified account.
       requestBody:
@@ -22388,7 +22388,7 @@ paths:
                     description: |-
                       A list of fields in the report.
 
-                      This array is effectively a title row for the table returned in [TransactionAllPaymentApi](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json).
+                      This array is effectively a title row for the table returned in [TransactionAllPaymentApi::$a_row](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json).
                     items:
                       type: string
                   a_row:
@@ -22397,9 +22397,9 @@ paths:
                       The report data.
 
                       This is an indexed array where each element is also an indexed array representing one report row.
-                      Column positions in each row correspond to the field names in [TransactionAllPaymentApi](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json).
+                      Column positions in each row correspond to the field names in [TransactionAllPaymentApi::$a_field](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json).
 
-                      Known columns (use [TransactionAllPaymentApi](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json) to resolve their positional indexes):
+                      Known columns (use [TransactionAllPaymentApi::$a_field](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json) to resolve their positional indexes):
                     items:
                       type: object
                       properties:
@@ -22802,7 +22802,7 @@ paths:
                     type: array
                     description: |-
                       List of bank cards.
-                      Duplicate of [ListApi](/Thoth/WlPay/Bank/Card/List.json) as a flat indexed array.
+                      Duplicate of [ListApi::$a_bank_card](/Thoth/WlPay/Bank/Card/List.json) as a flat indexed array.
                     items:
                       type: object
                       properties:
@@ -23171,7 +23171,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The image ID set in [ImageUploadApi](/Core/Drive/ImageUpload/ImageUpload.json).'
+          description: 'The image ID set in [ImageUploadApi::$s_class](/Core/Drive/ImageUpload/ImageUpload.json).'
         -
           name: s_class
           in: query
@@ -23329,7 +23329,7 @@ paths:
                     - string
                     - 'null'
                   description: |-
-                    A list of image IDs set in [ImageUploadApi](/Core/Drive/ImageUpload/ImageUpload.json), serialized using JSON.
+                    A list of image IDs set in [ImageUploadApi::$s_class](/Core/Drive/ImageUpload/ImageUpload.json), serialized using JSON.
 
                     This will be `null` if there's no data being sent by the client.
       x-instance-get-key: 's_class,k_id,a_config'
@@ -23495,7 +23495,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The image ID set in [ImageUploadApi](/Core/Drive/ImageUpload/ImageUpload.json).'
+          description: 'The image ID set in [ImageUploadApi::$s_class](/Core/Drive/ImageUpload/ImageUpload.json).'
         -
           name: s_class
           in: query
@@ -23606,7 +23606,7 @@ paths:
           schema:
             type: string
           description: |-
-            The key of the image within [ImageUploadTemporaryApi](/Core/Drive/ImageUpload/ImageUploadTemporary.json).
+            The key of the image within [ImageUploadTemporaryApi::$s_class](/Core/Drive/ImageUpload/ImageUploadTemporary.json).
 
             For example, for a user's photo, specify the user's key here.
         -
@@ -23695,8 +23695,8 @@ paths:
           schema:
             type: string
             deprecated: true
-            x-deprecated: 'Use [KeySecretApi](/Core/Request/Api/KeySecret.json) instead.'
-          description: 'Alias of [KeySecretApi](/Core/Request/Api/KeySecret.json).'
+            x-deprecated: 'Use [KeySecretApi::$url_origin](/Core/Request/Api/KeySecret.json) instead.'
+          description: 'Alias of [KeySecretApi::$url_origin](/Core/Request/Api/KeySecret.json).'
           deprecated: true
         -
           name: url_origin
@@ -24486,7 +24486,7 @@ paths:
 
                     When application not passed, credential loaded from the application, which makes the request,
                     used [FacebookCredential](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract) for load the credential.
-                    For set credential need used [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) and set [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) to [FacebookCredential::CID](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract).
+                    For set credential need used [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) and set [CredentialApi::$cid_credential](/Core/Request/Api/Application/Credential/Credential.json) to [FacebookCredential::CID](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract).
 
                     When application passed, the credential loaded by application id.
                 s_token:
@@ -24542,7 +24542,7 @@ paths:
 
                     When application not passed, credential loaded from the application, which makes the request,
                     used [GoogleCredential](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract) for load the credential.
-                    For set credential need used [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) and set [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) to [GoogleCredential::CID](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract).
+                    For set credential need used [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) and set [CredentialApi::$cid_credential](/Core/Request/Api/Application/Credential/Credential.json) to [GoogleCredential::CID](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract).
 
                     When application passed, the credential loaded by application id.
                 s_code:
@@ -24584,10 +24584,10 @@ paths:
 
 
                       For generating this filter, all filters are applied except:
-                      - [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json);
-                      - [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json);
-                      - [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json);
-                      - [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json).
+                      - [ClassList68Api::$a_class](/Wl/Schedule/ClassList/ClassList68.json);
+                      - [ClassList68Api::$a_event](/Wl/Schedule/ClassList/ClassList68.json);
+                      - [ClassList68Api::$show_class](/Wl/Schedule/ClassList/ClassList68.json);
+                      - [ClassList68Api::$show_event](/Wl/Schedule/ClassList/ClassList68.json).
                     properties:
                       text_type:
                         type: string
@@ -24610,8 +24610,8 @@ paths:
                   a_session:
                     type: array
                     description: |-
-                      A list of classes sessions starting with the date [ClassListApi](/Wl/Schedule/ClassList/ClassList.json)
-                      and in the 62 days ahead (or up to [ClassListApi](/Wl/Schedule/ClassList/ClassList.json)).
+                      A list of classes sessions starting with the date [ClassListApi::$dt_date](/Wl/Schedule/ClassList/ClassList.json)
+                      and in the 62 days ahead (or up to [ClassListApi::$dt_end](/Wl/Schedule/ClassList/ClassList.json)).
                       Every element has the following keys:
                     items:
                       type: object
@@ -24760,7 +24760,7 @@ paths:
                     type: boolean
                     description: |-
                       If `true`, there exists at least one virtual service by a specified
-                      [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) and [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json),
+                      [ClassList68Api::$k_business](/Wl/Schedule/ClassList/ClassList68.json) and [ClassList68Api::$k_class_tab](/Wl/Schedule/ClassList/ClassList68.json),
                       Otherwise, this will be `false`.
                 required:
                   - a_calendar
@@ -24789,10 +24789,10 @@ paths:
         requests and the browser refuse to send the request (situations with long class ID, event ID or staff ID lists).
 
          - Added generation of a separate 'Quick filter'.
-        This generation is enabled using the flag [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json).
+        This generation is enabled using the flag [ClassList68Api::$show_quick_filter](/Wl/Schedule/ClassList/ClassList68.json).
 
-         - Added a filter list of events [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json).
-         - Added a filter ID of tab [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json).
+         - Added a filter list of events [ClassList68Api::$a_event](/Wl/Schedule/ClassList/ClassList68.json).
+         - Added a filter ID of tab [ClassList68Api::$id_class_tab](/Wl/Schedule/ClassList/ClassList68.json).
       tags:
         - Schedule
       parameters:
@@ -24811,7 +24811,7 @@ paths:
                     The list of classes keys to filter.
                     Return sessions with matching class IDs.
 
-                    If it's empty and [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) is `true`, all classes will be returned.
+                    If it's empty and [ClassList68Api::$show_class](/Wl/Schedule/ClassList/ClassList68.json) is `true`, all classes will be returned.
                   items:
                     type: string
                 a_class_tab:
@@ -24821,9 +24821,9 @@ paths:
                   description: |-
                     List of tabs keys.
 
-                    This will be ignored if [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) is `true`.
+                    This will be ignored if [ClassList68Api::$is_tab_all](/Wl/Schedule/ClassList/ClassList68.json) is `true`.
 
-                    If list of tab keys is not empty, [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) is mandatory.
+                    If list of tab keys is not empty, [ClassList68Api::$id_class_tab](/Wl/Schedule/ClassList/ClassList68.json) is mandatory.
 
                     `null` if no filtering by Book Now Tab is required.
                   items:
@@ -24845,7 +24845,7 @@ paths:
                     The list of event keys to filter.
                     Return sessions with matching event keys.
 
-                    If it's empty and [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) is `true`, all events will be returned.
+                    If it's empty and [ClassList68Api::$show_event](/Wl/Schedule/ClassList/ClassList68.json) is `true`, all events will be returned.
                   items:
                     type: string
                 a_location:
@@ -24853,7 +24853,7 @@ paths:
                   description: |-
                     The list of location keys to filter results.
                     If it's empty, schedule for all locations will be returned.
-                    All given locations should be from the same business, which is sent in [ClassListApi](/Wl/Schedule/ClassList/ClassList.json).
+                    All given locations should be from the same business, which is sent in [ClassListApi::$k_business](/Wl/Schedule/ClassList/ClassList.json).
                   items:
                     type: string
                 a_time:
@@ -24893,19 +24893,19 @@ paths:
                   $ref: '#/components/schemas/Wl.Classes.Tab.TabSid'
                   description: |-
                     ID of tab. One of [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.
-                    This will be ignored if [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) is `true`.
+                    This will be ignored if [ClassList68Api::$is_tab_all](/Wl/Schedule/ClassList/ClassList68.json) is `true`.
 
                     `null` if no filtering by tab is required.
                 is_response_short:
                   type: boolean
                   description: |-
-                    `true` means to not generate [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) result.
-                    Can be used, if you do not need full information about existing classes and result in [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) is enough.
+                    `true` means to not generate [ClassList68Api::$a_session](/Wl/Schedule/ClassList/ClassList68.json) result.
+                    Can be used, if you do not need full information about existing classes and result in [ClassList68Api::$a_calendar](/Wl/Schedule/ClassList/ClassList68.json) is enough.
                 is_tab_all:
                   type: boolean
                   description: |-
                     If `true`, sessions from every class tab are returned. If `false`, use the
-                    [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) or [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) to filter sessions by class tab.
+                    [ClassList68Api::$k_class_tab](/Wl/Schedule/ClassList/ClassList68.json) or [ClassList68Api::$id_class_tab](/Wl/Schedule/ClassList/ClassList68.json) to filter sessions by class tab.
                 is_virtual:
                   type:
                     - boolean
@@ -24924,11 +24924,11 @@ paths:
                   type: string
                   description: |-
                     The tab key.
-                    This will be ignored if [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) is `true`.
+                    This will be ignored if [ClassList68Api::$is_tab_all](/Wl/Schedule/ClassList/ClassList68.json) is `true`.
                 s_staff:
                   type: string
                   deprecated: true
-                  x-deprecated: 'Use [ClassListApi](/Wl/Schedule/ClassList/ClassList.json) instead.'
+                  x-deprecated: 'Use [ClassListApi::$s_staff_uid](/Wl/Schedule/ClassList/ClassList.json) instead.'
                   description: |-
                     The list of staff members to filter.
                     A comma separated list of staff keys.
@@ -24949,7 +24949,7 @@ paths:
                 show_quick_filter:
                   type: boolean
                   description: |-
-                    Whether to generate [ClassList68Api](/Wl/Schedule/ClassList/ClassList68.json) a quick filter.
+                    Whether to generate [ClassList68Api::$a_quick](/Wl/Schedule/ClassList/ClassList68.json) a quick filter.
                     If `true`, a quick filter will be generated. `false` otherwise.
                 uid:
                   type: string
@@ -25004,8 +25004,8 @@ paths:
                   a_session:
                     type: array
                     description: |-
-                      A list of classes sessions starting with the date [ClassListApi](/Wl/Schedule/ClassList/ClassList.json)
-                      and in the 62 days ahead (or up to [ClassListApi](/Wl/Schedule/ClassList/ClassList.json)).
+                      A list of classes sessions starting with the date [ClassListApi::$dt_date](/Wl/Schedule/ClassList/ClassList.json)
+                      and in the 62 days ahead (or up to [ClassListApi::$dt_end](/Wl/Schedule/ClassList/ClassList.json)).
                       Every element has the following keys:
                     items:
                       type: object
@@ -25150,7 +25150,7 @@ paths:
                     type: boolean
                     description: |-
                       If `true`, there exists at least one virtual service by a specified
-                      [ClassListApi](/Wl/Schedule/ClassList/ClassList.json) and [ClassListApi](/Wl/Schedule/ClassList/ClassList.json),
+                      [ClassListApi::$k_business](/Wl/Schedule/ClassList/ClassList.json) and [ClassListApi::$k_class_tab](/Wl/Schedule/ClassList/ClassList.json),
                       Otherwise, this will be `false`.
                 required:
                   - a_calendar
@@ -25219,7 +25219,7 @@ paths:
           description: |-
             The list of location keys to filter results.
             If it's empty, schedule for all locations will be returned.
-            All given locations should be from the same business, which is sent in [ClassListApi](/Wl/Schedule/ClassList/ClassList.json).
+            All given locations should be from the same business, which is sent in [ClassListApi::$k_business](/Wl/Schedule/ClassList/ClassList.json).
         -
           name: a_time
           in: query
@@ -25272,8 +25272,8 @@ paths:
           schema:
             type: boolean
           description: |-
-            `true` means to not generate [ClassListApi](/Wl/Schedule/ClassList/ClassList.json) result.
-            Can be used, if you do not need full information about existing classes and result in [ClassListApi](/Wl/Schedule/ClassList/ClassList.json) is enough.
+            `true` means to not generate [ClassListApi::$a_session](/Wl/Schedule/ClassList/ClassList.json) result.
+            Can be used, if you do not need full information about existing classes and result in [ClassListApi::$a_calendar](/Wl/Schedule/ClassList/ClassList.json) is enough.
         -
           name: is_tab_all
           in: query
@@ -25282,7 +25282,7 @@ paths:
             type: boolean
           description: |-
             If `true`, sessions from every class tab are returned. If `false`, use the
-            [ClassListApi](/Wl/Schedule/ClassList/ClassList.json) value.
+            [ClassListApi::$k_class_tab](/Wl/Schedule/ClassList/ClassList.json) value.
         -
           name: is_virtual
           in: query
@@ -25315,7 +25315,7 @@ paths:
             The category tab key.
 
             This will be `null` if not set yet.
-            This will be ignored if [ClassListApi](/Wl/Schedule/ClassList/ClassList.json) is `true`.
+            This will be ignored if [ClassListApi::$is_tab_all](/Wl/Schedule/ClassList/ClassList.json) is `true`.
         -
           name: s_staff
           in: query
@@ -25323,7 +25323,7 @@ paths:
           schema:
             type: string
             deprecated: true
-            x-deprecated: 'Use [ClassListApi](/Wl/Schedule/ClassList/ClassList.json) instead.'
+            x-deprecated: 'Use [ClassListApi::$s_staff_uid](/Wl/Schedule/ClassList/ClassList.json) instead.'
           description: |-
             The list of staff members to filter.
             A comma separated list of staff keys.
@@ -27163,7 +27163,7 @@ paths:
                   type: string
                   description: |-
                     A list of sessions to get information for.
-                    A serialized array. See [ClassViewApi](/Wl/Schedule/ClassView/ClassView.json) for the array structure.
+                    A serialized array. See [ClassViewApi::$a_session_request](/Wl/Schedule/ClassView/ClassView.json) for the array structure.
                     Serialization and sending by POST is necessary to send big lists.
               required:
                 - s_session_request
@@ -27941,7 +27941,7 @@ paths:
               type: string
           description: |-
             List of user keys to get add-ons for. Not empty only when getting add-ons for new appointment
-            ([AddonUpdateApi](/Wl/Appointment/Edit/AddonUpdate.json) is null). User key '-1' means walk-in, user key '0' means new user
+            ([AddonUpdateApi::$k_appointment](/Wl/Appointment/Edit/AddonUpdate.json) is null). User key '-1' means walk-in, user key '0' means new user
             (user will be created together with appointment).
         -
           name: k_appointment
@@ -27965,7 +27965,7 @@ paths:
             type: string
           description: |-
             Location key.
-            Not empty only when getting add-ons for new appointment ([AddonUpdateApi](/Wl/Appointment/Edit/AddonUpdate.json) is null).
+            Not empty only when getting add-ons for new appointment ([AddonUpdateApi::$k_appointment](/Wl/Appointment/Edit/AddonUpdate.json) is null).
         -
           name: k_service
           in: query
@@ -27974,7 +27974,7 @@ paths:
             type: string
           description: |-
             Service key.
-            Not empty only when getting add-ons for new appointment ([AddonUpdateApi](/Wl/Appointment/Edit/AddonUpdate.json) is null).
+            Not empty only when getting add-ons for new appointment ([AddonUpdateApi::$k_appointment](/Wl/Appointment/Edit/AddonUpdate.json) is null).
       x-rate-limit:
         -
           limit: 200000
@@ -28887,7 +28887,7 @@ paths:
                       - array
                       - 'null'
                     deprecated: true
-                    x-deprecated: 'Use [ProcessApi](/Wl/Book/Process/Process.json) instead. Full list of relatives available, see [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).'
+                    x-deprecated: 'Use [ProcessApi::$is_family_relation_book](/Wl/Book/Process/Process.json) instead. Full list of relatives available, see [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).'
                     description: |-
                       Relationships who clients are allowed to book for.
                       One of the [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid) constants.
@@ -29069,7 +29069,7 @@ paths:
                       - array
                       - 'null'
                     deprecated: true
-                    x-deprecated: 'Use [ProcessApi](/Wl/Book/Process/Process.json) instead. Full list of relatives available, see [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).'
+                    x-deprecated: 'Use [ProcessApi::$is_family_relation_book](/Wl/Book/Process/Process.json) instead. Full list of relatives available, see [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).'
                     description: |-
                       Relationships who clients are allowed to book for.
                       One of the [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid) constants.
@@ -29250,7 +29250,7 @@ paths:
                       - array
                       - 'null'
                     deprecated: true
-                    x-deprecated: 'Use [ProcessApi](/Wl/Book/Process/Process.json) instead. Full list of relatives available, see [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).'
+                    x-deprecated: 'Use [ProcessApi::$is_family_relation_book](/Wl/Book/Process/Process.json) instead. Full list of relatives available, see [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).'
                     description: |-
                       Relationships who clients are allowed to book for.
                       One of the [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid) constants.
@@ -29458,7 +29458,7 @@ paths:
                     description: |-
                       `true` if the client's account will be flagged instead of charging a monetary fee, `false` otherwise.
 
-                      Meaningful only when [CancelCanApi](/Wl/Book/Cancel/CancelCan.json) is `true`.
+                      Meaningful only when [CancelCanApi::$is_late](/Wl/Book/Cancel/CancelCan.json) is `true`.
                   is_late:
                     type: boolean
                     description: |-
@@ -29536,7 +29536,7 @@ paths:
                   a_flag:
                     type: object
                     deprecated: true
-                    x-deprecated: 'This is old property, which is left for back-compatibility. Use [FlagApi](/Wl/Location/Flag/Flag.json) instead.'
+                    x-deprecated: 'This is old property, which is left for back-compatibility. Use [FlagApi::$a_restrictions_multiple](/Wl/Location/Flag/Flag.json) instead.'
                     description: |-
                       Array with structure:
                       `null` until loaded or when `a_uid` was not set.
@@ -29555,10 +29555,10 @@ paths:
                       - object
                       - 'null'
                     description: |-
-                      Array, where keys are UIDs to be checked and values are same as [FlagApi](/Wl/Location/Flag/Flag.json).
+                      Array, where keys are UIDs to be checked and values are same as [FlagApi::$a_restrictions_single](/Wl/Location/Flag/Flag.json).
                       `null` if user is not flagged in the location.
 
-                      This field is set, if API gets [FlagApi](/Wl/Location/Flag/Flag.json) and not [FlagApi](/Wl/Location/Flag/Flag.json) properties.
+                      This field is set, if API gets [FlagApi::$a_uid](/Wl/Location/Flag/Flag.json) and not [FlagApi::$uid](/Wl/Location/Flag/Flag.json) properties.
 
                       Keys are user keys. 
                       Values are flag restriction arrays:
@@ -29579,7 +29579,7 @@ paths:
                     description: |-
                       `null` if user is not flagged in the location.
 
-                      This field is set, if API gets [FlagApi](/Wl/Location/Flag/Flag.json) and not [FlagApi](/Wl/Location/Flag/Flag.json) properties.
+                      This field is set, if API gets [FlagApi::$uid](/Wl/Location/Flag/Flag.json) and not [FlagApi::$a_uid](/Wl/Location/Flag/Flag.json) properties.
                     properties:
                       is_book:
                         type: boolean
@@ -29593,11 +29593,11 @@ paths:
                   is_flag:
                     type: boolean
                     deprecated: true
-                    x-deprecated: 'This is old property, which is left for back-compatibility. Use [FlagApi](/Wl/Location/Flag/Flag.json) instead.'
+                    x-deprecated: 'This is old property, which is left for back-compatibility. Use [FlagApi::$a_restrictions_single](/Wl/Location/Flag/Flag.json) instead.'
                     description: |-
                       `true` if the user is flagged and can make purchases, but cannot make new reservations, `false` if otherwise.
 
-                      `null` until loaded or when [FlagApi](/Wl/Location/Flag/Flag.json) was not set.
+                      `null` until loaded or when [FlagApi::$a_uid](/Wl/Location/Flag/Flag.json) was not set.
                 required:
                   - a_flag
                   - is_flag
@@ -29614,8 +29614,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: |-
-        Checks if user [FlagApi](/Wl/Location/Flag/Flag.json) is flagged in location [FlagApi](/Wl/Location/Flag/Flag.json) or
-        each of users [FlagApi](/Wl/Location/Flag/Flag.json) is flagged in location [FlagApi](/Wl/Location/Flag/Flag.json).
+        Checks if user [FlagApi::$uid](/Wl/Location/Flag/Flag.json) is flagged in location [FlagApi::$k_location](/Wl/Location/Flag/Flag.json) or
+        each of users [FlagApi::$a_uid](/Wl/Location/Flag/Flag.json) is flagged in location [FlagApi::$k_location](/Wl/Location/Flag/Flag.json).
       description: |-
         Accepts either a single user key (`uid`) or an array of user keys (`a_uid`) and returns the flag status
         for each, including whether the flagged user is restricted from booking or purchasing at the location.
@@ -29890,7 +29890,7 @@ paths:
                     description: 'The full description of the location.'
                   html_description_preview:
                     type: string
-                    description: 'A shorter description of the location. A preview of [ViewApi](/Wl/Location/View/View.json).'
+                    description: 'A shorter description of the location. A preview of [ViewApi::$html_description_full](/Wl/Location/View/View.json).'
                   id_industry:
                     $ref: '#/components/schemas/RsHomeTourSid'
                     description: |-
@@ -30618,7 +30618,7 @@ paths:
                 a_new:
                   type: array
                   description: |-
-                    A copy of the [EditApi](/Wl/Profile/Edit/Edit.json).
+                    A copy of the [EditApi::$a_change](/Wl/Profile/Edit/Edit.json).
                     This is used for POST requests when creating a new user.
                 a_phone_inherit:
                   type: object
@@ -30649,7 +30649,7 @@ paths:
                     `true` - user agreed to receive marketing SMS;
                     `false` - otherwise.
 
-                    Only matters if [EditApi](/Wl/Profile/Edit/Edit.json) is `true`.
+                    Only matters if [EditApi::$is_sms_subscription_presented](/Wl/Profile/Edit/Edit.json) is `true`.
                 is_sms_subscription_presented:
                   type: boolean
                   description: |-
@@ -30662,7 +30662,7 @@ paths:
                     `true` - user agreed to receive transactional SMS;
                     `false` - otherwise.
 
-                    Only matters if [EditApi](/Wl/Profile/Edit/Edit.json) is `true`.
+                    Only matters if [EditApi::$is_sms_subscription_presented](/Wl/Profile/Edit/Edit.json) is `true`.
                 text_password:
                   type: string
                   description: 'The password to be set for a new user.'
@@ -31392,7 +31392,7 @@ paths:
                 a_new:
                   type: array
                   description: |-
-                    A copy of the [EditApi](/Wl/Profile/Edit/Edit.json).
+                    A copy of the [EditApi::$a_change](/Wl/Profile/Edit/Edit.json).
                     This is used for POST requests when creating a new user.
                 a_phone_inherit:
                   type: object
@@ -31423,7 +31423,7 @@ paths:
                     `true` - user agreed to receive marketing SMS;
                     `false` - otherwise.
 
-                    Only matters if [EditApi](/Wl/Profile/Edit/Edit.json) is `true`.
+                    Only matters if [EditApi::$is_sms_subscription_presented](/Wl/Profile/Edit/Edit.json) is `true`.
                 is_sms_subscription_presented:
                   type: boolean
                   description: |-
@@ -31436,7 +31436,7 @@ paths:
                     `true` - user agreed to receive transactional SMS;
                     `false` - otherwise.
 
-                    Only matters if [EditApi](/Wl/Profile/Edit/Edit.json) is `true`.
+                    Only matters if [EditApi::$is_sms_subscription_presented](/Wl/Profile/Edit/Edit.json) is `true`.
                 text_password:
                   type: string
                   description: 'The password to be set for a new user.'
@@ -32042,7 +32042,7 @@ paths:
         In case the attachment key is not specified, it adds a new attachment.
         In case the attachment key is specified, edits the attachment.
       description: |-
-        When [AttachElementApi](/Wl/Profile/Attach/AttachElement.json) is empty, uploads a new file to the client profile; when set, updates the
+        When [AttachElementApi::$k_attach](/Wl/Profile/Attach/AttachElement.json) is empty, uploads a new file to the client profile; when set, updates the
          attachment metadata, file content, or visibility flag depending on the provided fields.
       tags:
         - Profile
@@ -32580,7 +32580,7 @@ paths:
             type:
               - string
               - 'null'
-          description: 'The business key. Currently used only with [PurchaseElementApi](/Wl/Profile/Purchase/PurchaseElement.json) variable.'
+          description: 'The business key. Currently used only with [PurchaseElementApi::$k_session_pass](/Wl/Profile/Purchase/PurchaseElement.json) variable.'
         -
           name: k_code
           in: query
@@ -33301,7 +33301,7 @@ paths:
                     description: 'The key of the currency used to make the purchase.'
                   k_id:
                     type: string
-                    description: 'The key of the item. This can correspond to one of many values depending on [PurchaseListElementApi](/Wl/Profile/PurchaseList/PurchaseListElement.json).'
+                    description: 'The key of the item. This can correspond to one of many values depending on [PurchaseListElementApi::$id_sale](/Wl/Profile/PurchaseList/PurchaseListElement.json).'
                   k_login_promotion_result:
                     type: string
                     description: "The key of the purchased promotion. This won't be `0` only for promotions."
@@ -33537,7 +33537,7 @@ paths:
               - string
               - 'null'
           description: |-
-            The business key. Used with [PurchaseListElementApi](/Wl/Profile/PurchaseList/PurchaseListElement.json) variable and
+            The business key. Used with [PurchaseListElementApi::$k_session_pass](/Wl/Profile/PurchaseList/PurchaseListElement.json) variable and
             also with gift card components.
         -
           name: k_code
@@ -34031,13 +34031,13 @@ paths:
                   description: 'Login note access type ID.'
                 is_book:
                   type: boolean
-                  description: 'Whether flagged user can book. Does not matter if [AlertEditApi](/Wl/Profile/Alert/AlertEdit.json) is `false`.'
+                  description: 'Whether flagged user can book. Does not matter if [AlertEditApi::$is_flag](/Wl/Profile/Alert/AlertEdit.json) is `false`.'
                 is_flag:
                   type: boolean
                   description: 'Whether to flag the user.'
                 is_purchase:
                   type: boolean
-                  description: 'Whether flagged user can make purchases. Does not matter if [AlertEditApi](/Wl/Profile/Alert/AlertEdit.json) is `false`.'
+                  description: 'Whether flagged user can make purchases. Does not matter if [AlertEditApi::$is_flag](/Wl/Profile/Alert/AlertEdit.json) is `false`.'
                 text_note:
                   type: string
                   description: 'Note text.'
@@ -34675,7 +34675,7 @@ paths:
                   i_credit_score:
                     type: integer
                     format: int32
-                    description: 'Total amount of account credits user got for [ElementApi](/Wl/Profile/Activity/Element.json).'
+                    description: 'Total amount of account credits user got for [ElementApi::$k_login_activity](/Wl/Profile/Activity/Element.json).'
                   i_score:
                     type: integer
                     format: int32
@@ -34906,7 +34906,7 @@ paths:
             $ref: '#/components/schemas/RsPurchaseItemSid'
           description: |-
             The type of purchase item. This is one of the [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.
-            Optional if [ContractApi](/Wl/Profile/Contract/Contract.json) is not empty.
+            Optional if [ContractApi::$k_purchase_item](/Wl/Profile/Contract/Contract.json) is not empty.
         -
           name: k_business
           in: query
@@ -34922,7 +34922,7 @@ paths:
             type: string
           description: |-
             The key of the purchase item in the database.
-            The item key. Depends on [ContractApi](/Wl/Profile/Contract/Contract.json) property.
+            The item key. Depends on [ContractApi::$id_purchase_item](/Wl/Profile/Contract/Contract.json) property.
         -
           name: k_location
           in: query
@@ -35206,8 +35206,8 @@ paths:
                       List of classes and events.
 
                       The result may depend on the following flags:
-                      * [ListApi](/Wl/Classes/ClassList/List.json)
-                      * [ListApi](/Wl/Classes/ClassList/List.json)
+                      * [ListApi::$is_enrollment_block_all](/Wl/Classes/ClassList/List.json)
+                      * [ListApi::$is_enrollment_block_empty](/Wl/Classes/ClassList/List.json)
 
                       Each element has the following structure:
                     items:
@@ -35300,7 +35300,7 @@ paths:
               type: string
           description: |-
             List of tabs keys.
-            Filtering by Book Now Tab is not supported if [ListApi](/Wl/Classes/ClassList/List.json) is `true`.
+            Filtering by Book Now Tab is not supported if [ListApi::$is_franchise](/Wl/Classes/ClassList/List.json) is `true`.
 
             `null` if no filtering by Book Now Tab is required.
         -
@@ -35312,7 +35312,7 @@ paths:
           description: |-
             ID of book now tab. One of [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.
             Only [TabSid::TRAINING](#/components/schemas/Wl.Classes.Tab.TabSid) and [TabSid::ENROLLMENT](#/components/schemas/Wl.Classes.Tab.TabSid) book now tab are supported.
-            Filtering by Book Now Tab is not supported if [ListApi](/Wl/Classes/ClassList/List.json) is `true`.
+            Filtering by Book Now Tab is not supported if [ListApi::$is_franchise](/Wl/Classes/ClassList/List.json) is `true`.
 
             `null` if no filtering by Book Now Tab is required.
         -
@@ -35328,7 +35328,7 @@ paths:
             * `false` to return only one event from each enrollment block.
 
             Only published and non-empty events will be returned for the client.
-            To return empty events, use [ListApi](/Wl/Classes/ClassList/List.json).
+            To return empty events, use [ListApi::$is_enrollment_block_empty](/Wl/Classes/ClassList/List.json).
 
             For the staff, filtering by publication or emptiness is not applied.
         -
@@ -35345,7 +35345,7 @@ paths:
             Affects clients only.
             Does not affect staff. Staff always see empty events.
 
-            Makes sense in conjunction with the flag [ListApi](/Wl/Classes/ClassList/List.json).
+            Makes sense in conjunction with the flag [ListApi::$is_enrollment_block_all](/Wl/Classes/ClassList/List.json).
 
             * `true` to include events without sessions.
             * `false` to exclude events without sessions.
@@ -35478,7 +35478,7 @@ paths:
                             - 'null'
                           description: |-
                             Class-specific business policies overriding the business defaults.
-                            Has the same structure as [BusinessConfigApi](/Wl/Business/Config/BusinessConfig.json).
+                            Has the same structure as [BusinessConfigApi::$a_business_policy](/Wl/Business/Config/BusinessConfig.json).
                             `null` when the class uses the default business policy without overrides.
                           properties:
                             a_family_relation:
@@ -37168,7 +37168,7 @@ paths:
                   a_business_region:
                     type: array
                     description: |-
-                      List of region IDs for [AmazonRegionApi](/Wl/Business/AmazonRegion/AmazonRegion.json).
+                      List of region IDs for [AmazonRegionApi::$a_business](/Wl/Business/AmazonRegion/AmazonRegion.json).
 
                       Key - is business key.
                       Value - is region ID. One of [AmazonRegionSid](#/components/schemas/Core.Amazon.Region.AmazonRegionSid) constants.
@@ -37580,7 +37580,7 @@ paths:
           description: |-
             User key for which the waiver is shown.
             Used to fill the variables in the contract
-            Not necessarily if the user does not already exist. In this case, you need to set [WaiverApi](/Wl/Business/Waiver/Waiver.json).
+            Not necessarily if the user does not already exist. In this case, you need to set [WaiverApi::$text_fullname](/Wl/Business/Waiver/Waiver.json).
       x-instance-get-key: 'k_business,uid,text_fullname'
       x-rate-limit:
         -
@@ -38364,7 +38364,7 @@ paths:
             The Purchase Option key. If this key is used, a new hold will be created. The endpoint will return a `start-cross`
             status code if a hold is already in place.
 
-            Ignored if [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) is provided.
+            Ignored if [PromotionPayPauseApi::$k_promotion_pay_pause](/Wl/Login/Promotion/PromotionPayPause.json) is provided.
 
             `null` if not yet initialized.
         -
@@ -38379,7 +38379,7 @@ paths:
             The promotion payment hold key. If this key is used, it will edit an existing hold.
             This key will be empty if there's no active hold in place or if a scheduled hold isn't in effect.
 
-            `null` if not yet initialized or if the request is based on [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json).
+            `null` if not yet initialized or if the request is based on [PromotionPayPauseApi::$k_login_promotion](/Wl/Login/Promotion/PromotionPayPause.json).
       x-rate-limit:
         -
           limit: 200000
@@ -38401,7 +38401,7 @@ paths:
                     description: |-
                       List of all promotion payment pause periods. Each element has next structure:
 
-                      `null` if [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) is false.
+                      `null` if [PromotionPayPauseApi::$is_list](/Wl/Login/Promotion/PromotionPayPause.json) is false.
                     items:
                       type: object
                       properties:
@@ -38509,7 +38509,7 @@ paths:
                       The Purchase Option key. If this key is used, a new hold will be created. The endpoint will return a `start-cross`
                       status code if a hold is already in place.
 
-                      Ignored if [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) is provided.
+                      Ignored if [PromotionPayPauseApi::$k_promotion_pay_pause](/Wl/Login/Promotion/PromotionPayPause.json) is provided.
 
                       `null` if not yet initialized.
                   k_mail_pattern:
@@ -38525,7 +38525,7 @@ paths:
                       The promotion payment hold key. If this key is used, it will edit an existing hold.
                       This key will be empty if there's no active hold in place or if a scheduled hold isn't in effect.
 
-                      `null` if not yet initialized or if the request is based on [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json).
+                      `null` if not yet initialized or if the request is based on [PromotionPayPauseApi::$k_login_promotion](/Wl/Login/Promotion/PromotionPayPause.json).
                   text_note:
                     type:
                       - string
@@ -38552,8 +38552,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: |-
-        Returns promotion payment pause data: all hold periods when [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) is `true`,
-         the specified hold period when [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) is provided, or the currently
+        Returns promotion payment pause data: all hold periods when [PromotionPayPauseApi::$is_list](/Wl/Login/Promotion/PromotionPayPause.json) is `true`,
+         the specified hold period when [PromotionPayPauseApi::$k_promotion_pay_pause](/Wl/Login/Promotion/PromotionPayPause.json) is provided, or the currently
          active hold period otherwise.
       description: |-
         Also returns notification settings (email, push, SMS flags and email pattern key) and the date the last
@@ -38598,10 +38598,10 @@ paths:
             type: boolean
           description: |-
             Whether need to get all pause periods for the login promotion.
-            If `true` then [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) will be returned.
-            If `false` then information about specified [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) or
-            currently active pause period will be returned ([PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json),
-            [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) and [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json)).
+            If `true` then [PromotionPayPauseApi::$a_pay_pause_list](/Wl/Login/Promotion/PromotionPayPause.json) will be returned.
+            If `false` then information about specified [PromotionPayPauseApi::$k_promotion_pay_pause](/Wl/Login/Promotion/PromotionPayPause.json) or
+            currently active pause period will be returned ([PromotionPayPauseApi::$dt_start](/Wl/Login/Promotion/PromotionPayPause.json),
+            [PromotionPayPauseApi::$dt_end](/Wl/Login/Promotion/PromotionPayPause.json) and [PromotionPayPauseApi::$text_note](/Wl/Login/Promotion/PromotionPayPause.json)).
         -
           name: k_business
           in: query
@@ -38626,7 +38626,7 @@ paths:
             The Purchase Option key. If this key is used, a new hold will be created. The endpoint will return a `start-cross`
             status code if a hold is already in place.
 
-            Ignored if [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) is provided.
+            Ignored if [PromotionPayPauseApi::$k_promotion_pay_pause](/Wl/Login/Promotion/PromotionPayPause.json) is provided.
 
             `null` if not yet initialized.
         -
@@ -38641,7 +38641,7 @@ paths:
             The promotion payment hold key. If this key is used, it will edit an existing hold.
             This key will be empty if there's no active hold in place or if a scheduled hold isn't in effect.
 
-            `null` if not yet initialized or if the request is based on [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json).
+            `null` if not yet initialized or if the request is based on [PromotionPayPauseApi::$k_login_promotion](/Wl/Login/Promotion/PromotionPayPause.json).
       x-rate-limit:
         -
           limit: 200000
@@ -38664,7 +38664,7 @@ paths:
                       The promotion payment hold key. If this key is used, it will edit an existing hold.
                       This key will be empty if there's no active hold in place or if a scheduled hold isn't in effect.
 
-                      `null` if not yet initialized or if the request is based on [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json).
+                      `null` if not yet initialized or if the request is based on [PromotionPayPauseApi::$k_login_promotion](/Wl/Login/Promotion/PromotionPayPause.json).
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -38738,7 +38738,7 @@ paths:
             The Purchase Option key. If this key is used, a new hold will be created. The endpoint will return a `start-cross`
             status code if a hold is already in place.
 
-            Ignored if [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json) is provided.
+            Ignored if [PromotionPayPauseApi::$k_promotion_pay_pause](/Wl/Login/Promotion/PromotionPayPause.json) is provided.
 
             `null` if not yet initialized.
         -
@@ -38753,7 +38753,7 @@ paths:
             The promotion payment hold key. If this key is used, it will edit an existing hold.
             This key will be empty if there's no active hold in place or if a scheduled hold isn't in effect.
 
-            `null` if not yet initialized or if the request is based on [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json).
+            `null` if not yet initialized or if the request is based on [PromotionPayPauseApi::$k_login_promotion](/Wl/Login/Promotion/PromotionPayPause.json).
       requestBody:
         required: true
         content:
@@ -38814,7 +38814,7 @@ paths:
                       The promotion payment hold key. If this key is used, it will edit an existing hold.
                       This key will be empty if there's no active hold in place or if a scheduled hold isn't in effect.
 
-                      `null` if not yet initialized or if the request is based on [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json).
+                      `null` if not yet initialized or if the request is based on [PromotionPayPauseApi::$k_login_promotion](/Wl/Login/Promotion/PromotionPayPause.json).
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -38888,7 +38888,7 @@ paths:
             The promotion payment hold key. If this key is used, it will edit an existing hold.
             This key will be empty if there's no active hold in place or if a scheduled hold isn't in effect.
 
-            `null` if not yet initialized or if the request is based on [PromotionPayPauseApi](/Wl/Login/Promotion/PromotionPayPause.json).
+            `null` if not yet initialized or if the request is based on [PromotionPayPauseApi::$k_login_promotion](/Wl/Login/Promotion/PromotionPayPause.json).
       requestBody:
         required: true
         content:
@@ -44573,7 +44573,7 @@ paths:
             Quiz response key.
 
             `null` in a case of response creation or
-            removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+            removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
       requestBody:
         required: true
         content:
@@ -46383,7 +46383,7 @@ paths:
             Quiz response key.
 
             `null` in a case of response creation or
-            removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+            removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
       x-instance-get-key: 'k_business,k_quiz_response,is_backend'
       x-rate-limit:
         -
@@ -46407,7 +46407,7 @@ paths:
                       Quiz response key.
 
                       `null` in a case of response creation or
-                      removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+                      removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -46423,8 +46423,8 @@ paths:
       summary: 'Saves a quiz response with the given element answers.'
       description: |-
         Validates the submitted answers and persists the response record in a transaction. If
-        [QuizResponseApi](/Core/Quiz/QuizResponse.json) is set, only validation runs and no record is created.
-        Pass [QuizResponseApi](/Core/Quiz/QuizResponse.json) to bypass validation for pre-confirmed responses.
+        [QuizResponseApi::$is_validate_only](/Core/Quiz/QuizResponse.json) is set, only validation runs and no record is created.
+        Pass [QuizResponseApi::$is_skip](/Core/Quiz/QuizResponse.json) to bypass validation for pre-confirmed responses.
       tags:
         - Quiz
       parameters:
@@ -46484,7 +46484,7 @@ paths:
             Quiz response key.
 
             `null` in a case of response creation or
-            removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+            removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
       requestBody:
         required: true
         content:
@@ -48255,7 +48255,7 @@ paths:
             Quiz response key.
 
             `null` in a case of response creation or
-            removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+            removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
         -
           name: uid_link
           in: query
@@ -48351,7 +48351,7 @@ paths:
             Quiz response key.
 
             `null` in a case of response creation or
-            removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+            removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
       requestBody:
         required: true
         content:
@@ -50157,7 +50157,7 @@ paths:
             Quiz response key.
 
             `null` in a case of response creation or
-            removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+            removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
       deprecated: true
       x-deprecated: 'Use {@link \Wl\Quiz\Response\Response65Api} instead.'
       x-instance-get-key: 'k_business,k_quiz_response'
@@ -50183,7 +50183,7 @@ paths:
                       Quiz response key.
 
                       `null` in a case of response creation or
-                      removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+                      removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -50199,8 +50199,8 @@ paths:
       summary: 'Saves a quiz response with the given element answers.'
       description: |-
         Validates the submitted answers and persists the response record in a transaction. If
-        [QuizResponseApi](/Core/Quiz/QuizResponse.json) is set, only validation runs and no record is created.
-        Pass [QuizResponseApi](/Core/Quiz/QuizResponse.json) to bypass validation for pre-confirmed responses.
+        [QuizResponseApi::$is_validate_only](/Core/Quiz/QuizResponse.json) is set, only validation runs and no record is created.
+        Pass [QuizResponseApi::$is_skip](/Core/Quiz/QuizResponse.json) to bypass validation for pre-confirmed responses.
       tags:
         - Quiz
       parameters:
@@ -50254,7 +50254,7 @@ paths:
             Quiz response key.
 
             `null` in a case of response creation or
-            removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+            removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
       requestBody:
         required: true
         content:
@@ -52031,7 +52031,7 @@ paths:
             Quiz response key.
 
             `null` in a case of response creation or
-            removing set of responses in [QuizResponseApi](/Core/Quiz/QuizResponse.json).
+            removing set of responses in [QuizResponseApi::$a_quiz_response_key](/Core/Quiz/QuizResponse.json).
         -
           name: uid_link
           in: query
@@ -52219,7 +52219,7 @@ paths:
                     deprecated: true
                     x-deprecated: |-
                       This property is deprecated as it does not support multiple images.
-                       Use [ElementApi](/Wl/Catalog/CatalogList/Element.json) instead.
+                       Use [ElementApi::$a_image_list](/Wl/Catalog/CatalogList/Element.json) instead.
                     description: 'Image information:'
                     properties:
                       i_height:
@@ -52321,7 +52321,7 @@ paths:
                             Contains additional data for the sale item.
                             For Package, it contains also the following key:
 
-                            The same structure as [ElementApi](/Wl/Catalog/CatalogList/Element.json) has.
+                            The same structure as [ElementApi::$a_data](/Wl/Catalog/CatalogList/Element.json) has.
                           properties:
                             is_price_breakdown:
                               type: boolean
@@ -52840,9 +52840,9 @@ paths:
             Note that this must be serialized via JSON.
 
             If this field is specified, don't specify any of the following fields:
-            * [ElementApi](/Wl/Catalog/CatalogList/Element.json)
-            * [ElementApi](/Wl/Catalog/CatalogList/Element.json)
-            * [ElementApi](/Wl/Catalog/CatalogList/Element.json)
+            * [ElementApi::$id_sale](/Wl/Catalog/CatalogList/Element.json)
+            * [ElementApi::$k_id](/Wl/Catalog/CatalogList/Element.json)
+            * [ElementApi::$k_shop_product_option](/Wl/Catalog/CatalogList/Element.json)
 
             This will be `null` to get information for only one item.
         -
@@ -53511,7 +53511,7 @@ paths:
                                 type: object
                                 description: |-
                                   The list of reimbursement account field values.
-                                  Corresponds to the `a_account` list in [EnrollmentFieldListApi](/Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json).
+                                  Corresponds to the `a_account` list in [EnrollmentFieldListApi::$a_field_list](/Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json).
                                   Each element:
                                 properties:
                                   k_field:
@@ -53527,7 +53527,7 @@ paths:
                                 type: object
                                 description: |-
                                   The list of wellness program field values.
-                                  Corresponds to the `a_field` list in [EnrollmentFieldListApi](/Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json).
+                                  Corresponds to the `a_field` list in [EnrollmentFieldListApi::$a_field_list](/Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json).
                                   Each element:
                                 properties:
                                   k_field:
@@ -54777,7 +54777,7 @@ paths:
                   a_video_category:
                     type: array
                     description: |-
-                      The business video library categories as found in [CategoryListApi](/Wl/Video/Category/CategoryList.json).
+                      The business video library categories as found in [CategoryListApi::$k_business](/Wl/Video/Category/CategoryList.json).
 
                       Each element has the following structure:
                     items:
@@ -55497,7 +55497,7 @@ paths:
 
                     When application not passed, credential loaded from the application, which makes the request,
                     used [GoogleCredential](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract) for load the credential.
-                    For set credential need used [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) and set [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) to [GoogleCredential::CID](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract).
+                    For set credential need used [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) and set [CredentialApi::$cid_credential](/Core/Request/Api/Application/Credential/Credential.json) to [GoogleCredential::CID](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract).
 
                     When application passed, the credential loaded by application id.
                 s_code:
@@ -56218,7 +56218,7 @@ paths:
                       - 'null'
                     description: |-
                       Additional member data or `null` if any data can be shown.
-                      Will be filled if [InfoApi](/Wl/Member/Info/Info.json) flag is set.
+                      Will be filled if [InfoApi::$is_full](/Wl/Member/Info/Info.json) flag is set.
                     properties:
                       a_icon:
                         type: object
@@ -56708,7 +56708,7 @@ paths:
                       - 'null'
                     description: |-
                       If `true`, the client is a traveler. Otherwise, this will be `false`.
-                      This will be `null` in cases when the client is a walk-in. Or when [MemberInfoApi](/Wl/Reception/Application/MemberInfo.json) is `false`.
+                      This will be `null` in cases when the client is a walk-in. Or when [MemberInfoApi::$is_full](/Wl/Reception/Application/MemberInfo.json) is `false`.
                   m_lifetime_value:
                     type: string
                     description: "The member's lifetime value."
@@ -56884,7 +56884,7 @@ paths:
                     description: |-
                       List of the users, which can be authorized.
 
-                      Can be set only this field or [ReceptionAuthorizeApi](/Wl/Reception/Application/ReceptionAuthorize.json).
+                      Can be set only this field or [ReceptionAuthorizeApi::$uid](/Wl/Reception/Application/ReceptionAuthorize.json).
                       It depends, whether we found one user or multiple.
                     items:
                       type: object
@@ -56911,7 +56911,7 @@ paths:
                     description: |-
                       Key of the authorized user.
 
-                      Can be set only this field or [ReceptionAuthorizeApi](/Wl/Reception/Application/ReceptionAuthorize.json).
+                      Can be set only this field or [ReceptionAuthorizeApi::$a_select](/Wl/Reception/Application/ReceptionAuthorize.json).
                       It depends, whether we found one user or multiple.
                 required:
                   - a_select
@@ -56992,7 +56992,7 @@ paths:
                     type: array
                     description: |-
                       Array of image information for Self Check-In logo.
-                      Empty if [ReceptionDesignApi](/Wl/Reception/Design/ReceptionDesign.json) is not provided.
+                      Empty if [ReceptionDesignApi::$k_location](/Wl/Reception/Design/ReceptionDesign.json) is not provided.
 
                       Will contain the following keys:
 
@@ -57479,7 +57479,7 @@ paths:
           schema:
             type: boolean
           description: |-
-            Whether [PurchaseReceiptApi](/Wl/Purchase/Receipt/PurchaseReceipt.json) and [PurchaseReceiptApi](/Wl/Purchase/Receipt/PurchaseReceipt.json) require authentication.
+            Whether [PurchaseReceiptApi::$url_print](/Wl/Purchase/Receipt/PurchaseReceipt.json) and [PurchaseReceiptApi::$url_print_receipt](/Wl/Purchase/Receipt/PurchaseReceipt.json) require authentication.
 
             If `true`, the URL contains a token that allows temporary access to the page without logging in. If 'false', the
             page requires authentication.
@@ -57855,7 +57855,7 @@ paths:
           schema:
             $ref: '#/components/schemas/RsPurchaseItemSid'
           description: |-
-            Purchase item ID. Required if [SendMailApi](/Wl/AiAgent/Link/SendMail.json) is 'purchase'.
+            Purchase item ID. Required if [SendMailApi::$text_action](/Wl/AiAgent/Link/SendMail.json) is 'purchase'.
 
             One of the [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.
         -
@@ -57864,7 +57864,7 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/RsServiceSid'
-          description: "Service ID. Required if [SendMailApi](/Wl/AiAgent/Link/SendMail.json) is 'booking'."
+          description: "Service ID. Required if [SendMailApi::$text_action](/Wl/AiAgent/Link/SendMail.json) is 'booking'."
         -
           name: k_business
           in: query
@@ -58212,7 +58212,7 @@ paths:
                           type: object
                           description: |-
                             Contains a schedule of classes per day.
-                            Each element has a structure like in [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) property.
+                            Each element has a structure like in [StaffViewApi::$a_class_day](/Wl/Staff/StaffView/StaffView.json) property.
                           properties:
                             a_class_period:
                               type: object
@@ -58247,7 +58247,7 @@ paths:
                           type: object
                           description: |-
                             Staff information.
-                            Each element has a structure like in [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) property.
+                            Each element has a structure like in [StaffViewApi::$a_staff](/Wl/Staff/StaffView/StaffView.json) property.
                           properties:
                             a_location_work:
                               type: array
@@ -58628,8 +58628,8 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Retrieves information about staff.'
       description: |-
-        This method can accept or one staff key [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) or staff list
-        [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) but not both (exception would be thrown).
+        This method can accept or one staff key [StaffViewApi::$k_staff](/Wl/Staff/StaffView/StaffView.json) or staff list
+        [StaffViewApi::$a_staff_list](/Wl/Staff/StaffView/StaffView.json) but not both (exception would be thrown).
       tags:
         - Staff
       parameters:
@@ -58644,7 +58644,7 @@ paths:
               - array
               - 'null'
             deprecated: true
-            x-deprecated: 'Use [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) instead.'
+            x-deprecated: 'Use [StaffViewApi::$a_uid_staff_list](/Wl/Staff/StaffView/StaffView.json) instead.'
             items:
               type: string
           description: 'A list of staff keys.'
@@ -58694,7 +58694,7 @@ paths:
           schema:
             type: string
             deprecated: true
-            x-deprecated: 'Use [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) instead.'
+            x-deprecated: 'Use [StaffViewApi::$uid_staff](/Wl/Staff/StaffView/StaffView.json) instead.'
           description: |-
             The staff member key.
             A staff member can work for more than one business.
@@ -58776,7 +58776,7 @@ paths:
                           type: object
                           description: |-
                             Contains a schedule of classes per day.
-                            Each element has a structure like in [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) property.
+                            Each element has a structure like in [StaffViewApi::$a_class_day](/Wl/Staff/StaffView/StaffView.json) property.
                           properties:
                             a_class_period:
                               type: object
@@ -58811,7 +58811,7 @@ paths:
                           type: object
                           description: |-
                             Staff information.
-                            Each element has a structure like in [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) property.
+                            Each element has a structure like in [StaffViewApi::$a_staff](/Wl/Staff/StaffView/StaffView.json) property.
                           properties:
                             a_location_work:
                               type: array
@@ -59192,8 +59192,8 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Retrieves information about staff.'
       description: |-
-        This method can accept or one staff key [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) or staff list
-        [StaffViewApi](/Wl/Staff/StaffView/StaffView.json) but not both (exception would be thrown).
+        This method can accept or one staff key [StaffViewApi::$k_staff](/Wl/Staff/StaffView/StaffView.json) or staff list
+        [StaffViewApi::$a_staff_list](/Wl/Staff/StaffView/StaffView.json) but not both (exception would be thrown).
       tags:
         - Staff
       parameters:
@@ -59689,9 +59689,9 @@ paths:
                     format: int32
                     description: |-
                       Depending on arguments specified during API request might be:
-                      * Total number of points which were earned for each activity in a list provided in [ScoreApi](/Wl/Reward/Score/Score.json)
+                      * Total number of points which were earned for each activity in a list provided in [ScoreApi::$a_login_activity](/Wl/Reward/Score/Score.json)
                         in a case if it was provided.
-                      * Total number of points user currently own in a cast if [ScoreApi](/Wl/Reward/Score/Score.json) specified.
+                      * Total number of points user currently own in a cast if [ScoreApi::$uid](/Wl/Reward/Score/Score.json) specified.
                 required:
                   - i_score
         '400':
@@ -59813,9 +59813,9 @@ paths:
                   format: int32
                   description: |-
                     Depending on arguments specified during API request might be:
-                    * Total number of points which were earned for each activity in a list provided in [ScoreApi](/Wl/Reward/Score/Score.json)
+                    * Total number of points which were earned for each activity in a list provided in [ScoreApi::$a_login_activity](/Wl/Reward/Score/Score.json)
                       in a case if it was provided.
-                    * Total number of points user currently own in a cast if [ScoreApi](/Wl/Reward/Score/Score.json) specified.
+                    * Total number of points user currently own in a cast if [ScoreApi::$uid](/Wl/Reward/Score/Score.json) specified.
                 k_business:
                   type: string
                   description: 'Business key within which score should be managed.'
@@ -60677,7 +60677,7 @@ paths:
                       - 'null'
                     description: |-
                       Additional member data or `null` if any data can be shown.
-                      Will be filled if [InfoApi](/Wl/Member/Info/Info.json) flag is set.
+                      Will be filled if [InfoApi::$is_full](/Wl/Member/Info/Info.json) flag is set.
                     properties:
                       a_icon:
                         type: object
@@ -61133,7 +61133,7 @@ paths:
                       - 'null'
                     description: |-
                       If `true`, the client is a traveler. Otherwise, this will be `false`.
-                      This will be `null` in cases when the client is a walk-in. Or when [InfoApi](/Wl/Member/Info/Info.json) is `false`.
+                      This will be `null` in cases when the client is a walk-in. Or when [InfoApi::$is_full](/Wl/Member/Info/Info.json) is `false`.
                   m_lifetime_value:
                     type: string
                     description: "The member's lifetime value."
@@ -62748,7 +62748,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The key of the related user who [RelationApi](/Wl/Family/Relation/Relation.json) must be removed.'
+          description: 'The key of the related user who [RelationApi::$uid](/Wl/Family/Relation/Relation.json) must be removed.'
       requestBody:
         required: true
         content:
@@ -62908,8 +62908,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: |-
-        Adds to user [RelationApi](/Wl/Family/Relation/Relation.json)
-        relative [RelationApi](/Wl/Family/Relation/Relation.json).
+        Adds to user [RelationApi::$uid](/Wl/Family/Relation/Relation.json)
+        relative [RelationApi::$a_new](/Wl/Family/Relation/Relation.json).
       description: |-
         Creates a bidirectional family relationship between the user identified by `uid` and the user specified in
         `a_new`, then returns the updated list of relationships for `uid`.
@@ -62950,7 +62950,7 @@ paths:
               properties:
                 a_new:
                   type: object
-                  description: 'The new relationship to be added to user, specified with [RelationApi](/Wl/Family/Relation/Relation.json):'
+                  description: 'The new relationship to be added to user, specified with [RelationApi::$uid](/Wl/Family/Relation/Relation.json):'
                   properties:
                     id_family_relation:
                       $ref: '#/components/schemas/RsFamilyRelationSid'
@@ -63118,7 +63118,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The key of the related user who [RelationApi](/Wl/Family/Relation/Relation.json) must be removed.'
+          description: 'The key of the related user who [RelationApi::$uid](/Wl/Family/Relation/Relation.json) must be removed.'
       requestBody:
         required: true
         content:
@@ -63278,8 +63278,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: |-
-        Adds to user [RelationApi](/Wl/Family/Relation/Relation.json)
-        relative [RelationApi](/Wl/Family/Relation/Relation.json).
+        Adds to user [RelationApi::$uid](/Wl/Family/Relation/Relation.json)
+        relative [RelationApi::$a_new](/Wl/Family/Relation/Relation.json).
       description: |-
         Creates a bidirectional family relationship between the user identified by `uid` and the user specified in
         `a_new`, then returns the updated list of relationships for `uid`.
@@ -63320,7 +63320,7 @@ paths:
               properties:
                 a_new:
                   type: object
-                  description: 'The new relationship to be added to user, specified with [RelationApi](/Wl/Family/Relation/Relation.json):'
+                  description: 'The new relationship to be added to user, specified with [RelationApi::$uid](/Wl/Family/Relation/Relation.json):'
                   properties:
                     id_family_relation:
                       $ref: '#/components/schemas/RsFamilyRelationSid'
@@ -63448,7 +63448,7 @@ paths:
                     description: |-
                       The list of fields in this report.
 
-                      This array is effectively a title row for table that is returned in [ReportApi](/Wl/Integration/Autymate/Report.json).
+                      This array is effectively a title row for table that is returned in [ReportApi::$a_row](/Wl/Integration/Autymate/Report.json).
                     items:
                       type: string
                   a_row:
@@ -63458,7 +63458,7 @@ paths:
 
                       This is an indexed array in which one row is an indexed array also.
 
-                      Indexes of the columns correspond to columns in [ReportApi](/Wl/Integration/Autymate/Report.json).
+                      Indexes of the columns correspond to columns in [ReportApi::$a_field](/Wl/Integration/Autymate/Report.json).
                     items:
                       type: array
                       items:
@@ -64115,8 +64115,8 @@ paths:
             * All possible links must be registered in the Microsoft application used for authorization.
             * WARNING: Do not use this link for a direct redirect. This will present a vulnerability.
 
-            * A [LoginApi](/Social/Microsoft/Login.json) link will be generated along with this redirect URI.
-            * When checking the received [LoginApi](/Social/Microsoft/Login.json) from Microsoft.
+            * A [LoginApi::$url_login](/Social/Microsoft/Login.json) link will be generated along with this redirect URI.
+            * When checking the received [LoginApi::$s_code](/Social/Microsoft/Login.json) from Microsoft.
             The link must be sent along with it to the `post()` method.
       x-rate-limit:
         -
@@ -64168,8 +64168,8 @@ paths:
             * All possible links must be registered in the Microsoft application used for authorization.
             * WARNING: Do not use this link for a direct redirect. This will present a vulnerability.
 
-            * A [LoginApi](/Social/Microsoft/Login.json) link will be generated along with this redirect URI.
-            * When checking the received [LoginApi](/Social/Microsoft/Login.json) from Microsoft.
+            * A [LoginApi::$url_login](/Social/Microsoft/Login.json) link will be generated along with this redirect URI.
+            * When checking the received [LoginApi::$s_code](/Social/Microsoft/Login.json) from Microsoft.
             The link must be sent along with it to the `post()` method.
       requestBody:
         required: true
@@ -64222,7 +64222,7 @@ paths:
                           description: |-
                             The business category that can use this search tag.
                             One of the [RsBusinessCategorySid](#/components/schemas/RsBusinessCategorySid) constants.
-                            This can be found in the business information found in [DataApi](/Wl/Business/Data.json).
+                            This can be found in the business information found in [DataApi::$id_category](/Wl/Business/Data.json).
                         k_search_tag:
                           type: string
                           description: 'The key of the tag. The primary key in the table of tags.'
@@ -64432,7 +64432,7 @@ paths:
                 properties:
                   a_review:
                     type: array
-                    description: 'List of reviews. If passed [ReviewListApi](/Wl/Review/ReviewList/ReviewList.json) then the result will be full, otherwise in result will be keys: `k_review`, `uid`.'
+                    description: 'List of reviews. If passed [ReviewListApi::$i_page](/Wl/Review/ReviewList/ReviewList.json) then the result will be full, otherwise in result will be keys: `k_review`, `uid`.'
                     items:
                       type: object
                       properties:
@@ -64741,8 +64741,8 @@ paths:
                 a_key:
                   type: array
                   description: |-
-                    The primary keys of the shared objects. Depends on [SocialShareApi](/Wl/Social/Share/SocialShare.json).
-                    If [SocialShareApi](/Wl/Social/Share/SocialShare.json) is:
+                    The primary keys of the shared objects. Depends on [SocialShareApi::$id_share_object](/Wl/Social/Share/SocialShare.json).
+                    If [SocialShareApi::$id_share_object](/Wl/Social/Share/SocialShare.json) is:
                     * [ShareObjectSid::BOOK](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the visit. 
                     * [ShareObjectSid::LOCATION](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the location. 
                     * [ShareObjectSid::PURCHASE](#/components/schemas/Wl.Social.Share.ShareObjectSid) - each value is key of the purchase. 
@@ -64817,7 +64817,7 @@ paths:
 
                     When application not passed, credential loaded from the application, which makes the request,
                     used [FacebookCredential](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract) for load the credential.
-                    For set credential need used [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) and set [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) to [FacebookCredential::CID](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract).
+                    For set credential need used [CredentialApi](/Core/Request/Api/Application/Credential/Credential.json) and set [CredentialApi::$cid_credential](/Core/Request/Api/Application/Credential/Credential.json) to [FacebookCredential::CID](#/components/schemas/Core.Request.Api.Application.Credential.CredentialAbstract).
 
                     When application passed, the credential loaded by application id.
                 s_token:
@@ -66135,7 +66135,7 @@ paths:
                   description: |-
                     A copy of the notepad that was used to hash the user password.
 
-                    See [EnterApi](/Core/Passport/Login/Enter/Enter.json) for details.
+                    See [EnterApi::$s_password](/Core/Passport/Login/Enter/Enter.json) for details.
                 s_password:
                   type: string
                   description: |-
@@ -66183,7 +66183,7 @@ paths:
                     $ref: '#/components/schemas/Core.Amazon.Region.AmazonRegionSid'
                     description: |-
                       ID of the datacenter which is a preferred datacenter for the user specified in
-                      [NotepadApi](/Core/Passport/Login/Enter/Notepad.json).
+                      [NotepadApi::$s_login](/Core/Passport/Login/Enter/Notepad.json).
 
                       One of [AmazonRegionSid](#/components/schemas/Core.Amazon.Region.AmazonRegionSid) constants.
 
@@ -66899,8 +66899,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: |-
-        Gets schedule of business [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) for day
-        [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json).
+        Gets schedule of business [ScheduleListApi::$k_business](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) for day
+        [ScheduleListApi::$dt_date](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json).
       description: |-
         Returns all classes and appointments scheduled for the given business on the specified date,
         sorted chronologically. Supports both single-day and date-range modes, and includes full
@@ -66946,7 +66946,7 @@ paths:
             The end date of the range from which the list of schedule sessions should be retrieved.
 
             This will be `null` if the range has no end date. If this value is used,
-            [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
+            [ScheduleListApi::$dt_date](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
         -
           name: dl_start
           in: query
@@ -66958,7 +66958,7 @@ paths:
             The start date of the range from which the list of scheduled sessions should be retrieved.
 
             This will be `null` if the range has no start date. If this value is used,
-            [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
+            [ScheduleListApi::$dt_date](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
         -
           name: dt_date
           in: query
@@ -66970,8 +66970,8 @@ paths:
             The date of the sessions in Coordinated Universal Time (UTC) and MySQL format.
 
             If this value is used, then
-            [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) and
-            [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
+            [ScheduleListApi::$dl_end](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) and
+            [ScheduleListApi::$dl_start](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
         -
           name: k_business
           in: query
@@ -67250,8 +67250,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: |-
-        Gets schedule of business [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) for day
-        [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json).
+        Gets schedule of business [ScheduleListApi::$k_business](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) for day
+        [ScheduleListApi::$dt_date](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json).
       description: |-
         Returns all classes and appointments scheduled for the given business on the specified date,
         sorted chronologically. Supports both single-day and date-range modes, and includes full
@@ -67297,7 +67297,7 @@ paths:
             The end date of the range from which the list of schedule sessions should be retrieved.
 
             This will be `null` if the range has no end date. If this value is used,
-            [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
+            [ScheduleListApi::$dt_date](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
         -
           name: dl_start
           in: query
@@ -67309,7 +67309,7 @@ paths:
             The start date of the range from which the list of scheduled sessions should be retrieved.
 
             This will be `null` if the range has no start date. If this value is used,
-            [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
+            [ScheduleListApi::$dt_date](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
         -
           name: dt_date
           in: query
@@ -67321,8 +67321,8 @@ paths:
             The date of the sessions in Coordinated Universal Time (UTC) and MySQL format.
 
             If this value is used, then
-            [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) and
-            [ScheduleListApi](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
+            [ScheduleListApi::$dl_end](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) and
+            [ScheduleListApi::$dl_start](/Wl/Schedule/ScheduleList/StaffApp/ScheduleList.json) should not be set.
         -
           name: k_business
           in: query
@@ -68494,10 +68494,10 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Completes the appointment booking for one or more providers, optionally creating a new client.'
       description: |-
-        Accepts booking details for one or more providers in [FinishMultipleApi](/Wl/Appointment/Book/Finish/FinishMultiple.json),
+        Accepts booking details for one or more providers in [FinishMultipleApi::$a_book_data](/Wl/Appointment/Book/Finish/FinishMultiple.json),
          processes payment using the selected Purchase Option, creates appointment records, and sends
          booking confirmation notifications. A new client account can be created by supplying user
-         details in [FinishMultipleApi](/Wl/Appointment/Book/Finish/FinishMultiple.json) when no UID is provided.
+         details in [FinishMultipleApi::$a_user](/Wl/Appointment/Book/Finish/FinishMultiple.json) when no UID is provided.
       tags:
         - Appointments
       parameters:
@@ -68618,7 +68618,7 @@ paths:
                 a_answer:
                   type: array
                   description: |-
-                    A list of answers for the questions from [QuestionApi](/Wl/Appointment/Book/Question/Question.json).
+                    A list of answers for the questions from [QuestionApi::$a_question](/Wl/Appointment/Book/Question/Question.json).
 
                     1st dimension - provider index.
                     2nd dimension - keys refer to hashes of the questions. Values refer to answers for the questions.
@@ -69499,7 +69499,7 @@ paths:
                 a_answer:
                   type: array
                   description: |-
-                    A list of answers for the questions from [QuestionApi](/Wl/Appointment/Book/Question/Question.json).
+                    A list of answers for the questions from [QuestionApi::$a_question](/Wl/Appointment/Book/Question/Question.json).
                     Keys refer to hashes of the questions. Values refer to answers for the questions.
                   items:
                     type: string
@@ -69973,13 +69973,13 @@ paths:
                 a_answer:
                   type: array
                   description: |-
-                    A list of answers for the questions from [QuestionApi](/Wl/Appointment/Book/Question/Question.json).
+                    A list of answers for the questions from [QuestionApi::$a_question](/Wl/Appointment/Book/Question/Question.json).
                     Keys refer to hashes of the questions. Values refer to answers for the questions.
                   items:
                     type: string
                 a_book_data:
                   type: object
-                  description: 'The documentation is the same as in [FinishApi](/Wl/Appointment/Book/Finish/Finish.json).'
+                  description: 'The documentation is the same as in [FinishApi::$a_book_data](/Wl/Appointment/Book/Finish/Finish.json).'
                   properties:
                     a_conflict:
                       type: object
@@ -70859,12 +70859,12 @@ paths:
                 - k_service
                 - k_timezone
           description: |-
-            List of selected services without current [PurchaseApi](/Wl/Appointment/Book/Purchase/Purchase.json).
+            List of selected services without current [PurchaseApi::$k_service](/Wl/Appointment/Book/Purchase/Purchase.json).
 
             The list of these services directly affects the list of selected promotions.
             Depending on the number and order of services, there may be different results.
 
-            The current [PurchaseApi](/Wl/Appointment/Book/Purchase/Purchase.json) will be added to the end of this list.
+            The current [PurchaseApi::$k_service](/Wl/Appointment/Book/Purchase/Purchase.json) will be added to the end of this list.
             It is worth considering this list as a list of previously selected services.
 
             Each element has the following structure:
@@ -70975,7 +70975,7 @@ paths:
             type: string
           description: |-
             The service key used to select available Purchase Options.
-            If multiple services are selected, they should be specified in [PurchaseApi](/Wl/Appointment/Book/Purchase/Purchase.json) array.
+            If multiple services are selected, they should be specified in [PurchaseApi::$a_service](/Wl/Appointment/Book/Purchase/Purchase.json) array.
         -
           name: k_timezone
           in: query
@@ -70985,7 +70985,7 @@ paths:
               - string
               - 'null'
           description: |-
-            The timezone key for [PurchaseApi](/Wl/Appointment/Book/Purchase/Purchase.json).
+            The timezone key for [PurchaseApi::$dt_date](/Wl/Appointment/Book/Purchase/Purchase.json).
 
             Can be `null` if timezone is not selected.
             If not selected, the default client timezone will be used.
@@ -71566,12 +71566,12 @@ paths:
                 - k_service
                 - k_timezone
           description: |-
-            List of selected services without current [PurchaseApi](/Wl/Appointment/Book/Purchase/Purchase.json).
+            List of selected services without current [PurchaseApi::$k_service](/Wl/Appointment/Book/Purchase/Purchase.json).
 
             The list of these services directly affects the list of selected promotions.
             Depending on the number and order of services, there may be different results.
 
-            The current [PurchaseApi](/Wl/Appointment/Book/Purchase/Purchase.json) will be added to the end of this list.
+            The current [PurchaseApi::$k_service](/Wl/Appointment/Book/Purchase/Purchase.json) will be added to the end of this list.
             It is worth considering this list as a list of previously selected services.
 
             Each element has the following structure:
@@ -71693,7 +71693,7 @@ paths:
             type: string
           description: |-
             The service key used to select available Purchase Options.
-            If multiple services are selected, they should be specified in [PurchaseApi](/Wl/Appointment/Book/Purchase/Purchase.json) array.
+            If multiple services are selected, they should be specified in [PurchaseApi::$a_service](/Wl/Appointment/Book/Purchase/Purchase.json) array.
         -
           name: k_timezone
           in: query
@@ -71703,7 +71703,7 @@ paths:
               - string
               - 'null'
           description: |-
-            The timezone key for [PurchaseApi](/Wl/Appointment/Book/Purchase/Purchase.json).
+            The timezone key for [PurchaseApi::$dt_date](/Wl/Appointment/Book/Purchase/Purchase.json).
 
             Can be `null` if timezone is not selected.
             If not selected, the default client timezone will be used.
@@ -71972,7 +71972,7 @@ paths:
           schema:
             type: string
             deprecated: true
-            x-deprecated: 'This property will be removed in the future. Use [DayTimeApi](/Wl/Appointment/Book/Schedule/DayTime.json) instead.'
+            x-deprecated: 'This property will be removed in the future. Use [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) instead.'
           description: |-
             The staff member key used for showing the available appointment booking schedule.
             In case of back-to-back booking - staff key of first appointment.
@@ -71999,7 +71999,7 @@ paths:
           description: |-
             The staff key to show what days are available for booking.
 
-            For back-to-back booking ([DayTimeApi](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
+            For back-to-back booking ([DayTimeApi::$is_back_to_back](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
             Converted to JSON string to be usable as model key. Each item is an array with next structure:
         -
           name: s_product
@@ -72166,7 +72166,7 @@ paths:
                             description: 'Timezone shift from UTC in hours.'
                           is_select:
                             type: boolean
-                            description: "`true` for selected timezone - from [CalendarApi](/Wl/Appointment/Book/Schedule/Calendar.json) param or client's default timezone when param not set."
+                            description: "`true` for selected timezone - from [CalendarApi::$k_timezone](/Wl/Appointment/Book/Schedule/Calendar.json) param or client's default timezone when param not set."
                           k_timezone:
                             type: string
                             description: 'Timezone key.'
@@ -72415,7 +72415,7 @@ paths:
           schema:
             type: string
             deprecated: true
-            x-deprecated: 'This property will be removed in the future. Use [DayTimeApi](/Wl/Appointment/Book/Schedule/DayTime.json) instead.'
+            x-deprecated: 'This property will be removed in the future. Use [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) instead.'
           description: |-
             The staff member key used for showing the available appointment booking schedule.
             In case of back-to-back booking - staff key of first appointment.
@@ -72442,7 +72442,7 @@ paths:
           description: |-
             The staff key to show what days are available for booking.
 
-            For back-to-back booking ([DayTimeApi](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
+            For back-to-back booking ([DayTimeApi::$is_back_to_back](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
             Converted to JSON string to be usable as model key. Each item is an array with next structure:
         -
           name: s_product
@@ -72693,7 +72693,7 @@ paths:
           description: |-
             The staff key to show what days are available for booking.
 
-            For back-to-back booking ([DayTimeApi](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
+            For back-to-back booking ([DayTimeApi::$is_back_to_back](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
             Converted to JSON string to be usable as model key. Each item is an array with next structure:
         -
           name: s_product
@@ -72964,7 +72964,7 @@ paths:
       description: |-
         Returns the list of bookable assets at the given location, optionally filtered by category and book now tab.
          When a date and time are provided, only assets available at that time are included and busy asset slots
-         are returned in [AssetListApi](/Wl/Appointment/Book/Asset/AssetList.json). Supports both frontend and backend modes.
+         are returned in [AssetListApi::$a_asset_busy](/Wl/Appointment/Book/Asset/AssetList.json). Supports both frontend and backend modes.
       tags:
         - Appointments
       parameters:
@@ -73075,7 +73075,7 @@ paths:
           description: |-
             Timezone of date and time of asset booking.
 
-            Empty if [AssetListApi](/Wl/Appointment/Book/Asset/AssetList.json) not set or client can't change in which timezone dates should be shown.
+            Empty if [AssetListApi::$dtl_date](/Wl/Appointment/Book/Asset/AssetList.json) not set or client can't change in which timezone dates should be shown.
         -
           name: uid
           in: query
@@ -73442,14 +73442,14 @@ paths:
             type:
               - string
               - 'null'
-          description: 'The business key. Currently used only with [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json) variable.'
+          description: 'The business key. Currently used only with [PaymentApi::$k_session_pass](/Wl/Appointment/Book/Payment/Payment.json) variable.'
         -
           name: k_id
           in: query
           required: true
           schema:
             type: string
-          description: 'The item key. Depends on [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json) property.'
+          description: 'The item key. Depends on [PaymentApi::$id_purchase_item](/Wl/Appointment/Book/Payment/Payment.json) property.'
         -
           name: k_location
           in: query
@@ -73692,7 +73692,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The item key. Depends on [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json) property.'
+          description: 'The item key. Depends on [PaymentApi::$id_purchase_item](/Wl/Appointment/Book/Payment/Payment.json) property.'
         -
           name: k_location
           in: query
@@ -74300,7 +74300,7 @@ paths:
                 a_book_data_post:
                   type: object
                   description: |-
-                    A copy of [PaymentMultipleApi](/Wl/Appointment/Book/Payment/PaymentMultiple.json). Has the same structure.
+                    A copy of [PaymentMultipleApi::$a_book_data](/Wl/Appointment/Book/Payment/PaymentMultiple.json). Has the same structure.
                     Set this field value for POST requests.
                   properties:
                     a_provider:
@@ -74704,14 +74704,14 @@ paths:
             type:
               - string
               - 'null'
-          description: 'The business key. Currently used only with [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json) variable.'
+          description: 'The business key. Currently used only with [PaymentApi::$k_session_pass](/Wl/Appointment/Book/Payment/Payment.json) variable.'
         -
           name: k_id
           in: query
           required: true
           schema:
             type: string
-          description: 'The item key. Depends on [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json) property.'
+          description: 'The item key. Depends on [PaymentApi::$id_purchase_item](/Wl/Appointment/Book/Payment/Payment.json) property.'
         -
           name: k_location
           in: query
@@ -74879,7 +74879,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The item key. Depends on [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json) property.'
+          description: 'The item key. Depends on [PaymentApi::$id_purchase_item](/Wl/Appointment/Book/Payment/Payment.json) property.'
         -
           name: k_location
           in: query
@@ -74926,7 +74926,7 @@ paths:
                   type: object
                   description: |-
                     Information detailing an appointment booking.
-                    Has the same structure as [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json).
+                    Has the same structure as [PaymentApi::$a_book_data](/Wl/Appointment/Book/Payment/Payment.json).
                   properties:
                     a_product:
                       type: array
@@ -75746,7 +75746,7 @@ paths:
                           type: array
                           description: |-
                             List of UIDs of users who share this promotion.
-                            List of those passed in the [PurchaseApi](/Wl/Book/Process/Purchase/Purchase.json) array.
+                            List of those passed in the [PurchaseApi::$a_login_promotion_group](/Wl/Book/Process/Purchase/Purchase.json) array.
                           items:
                             type: string
                         a_visit_limit:
@@ -76144,12 +76144,12 @@ paths:
 
             Note:
             * It makes sense if for all clients the list is loaded within
-                 the same pair [PurchaseApi](/Wl/Book/Process/Purchase/Purchase.json) and [PurchaseApi](/Wl/Book/Process/Purchase/Purchase.json).
+                 the same pair [PurchaseApi::$dt_date_gmt](/Wl/Book/Process/Purchase/Purchase.json) and [PurchaseApi::$k_class_period](/Wl/Book/Process/Purchase/Purchase.json).
             * If promotions are shared, the system will try to determine if there are enough sessions left for the next
                  client who has the same promotion.
             * A very simple check is carried out based on a comparison of the remaining sessions for the promotion
                  with the number of times it was selected.
-            * Can affect the list of available login promotions [PurchaseApi](/Wl/Book/Process/Purchase/Purchase.json).
+            * Can affect the list of available login promotions [PurchaseApi::$a_login_promotion](/Wl/Book/Process/Purchase/Purchase.json).
                  If a given client is eligible for such a promotion, but the remaining sessions (minus those previously
                  selected) in it do not allow it to be applied to the selected session, then such promotion will simply
                  not be returned for the client.
@@ -76566,7 +76566,7 @@ paths:
                           type: array
                           description: |-
                             List of UIDs of users who share this promotion.
-                            List of those passed in the [PurchaseApi](/Wl/Book/Process/Purchase/Purchase.json) array.
+                            List of those passed in the [PurchaseApi::$a_login_promotion_group](/Wl/Book/Process/Purchase/Purchase.json) array.
                           items:
                             type: string
                         a_visit_limit:
@@ -76963,12 +76963,12 @@ paths:
 
             Note:
             * It makes sense if for all clients the list is loaded within
-                 the same pair [PurchaseApi](/Wl/Book/Process/Purchase/Purchase.json) and [PurchaseApi](/Wl/Book/Process/Purchase/Purchase.json).
+                 the same pair [PurchaseApi::$dt_date_gmt](/Wl/Book/Process/Purchase/Purchase.json) and [PurchaseApi::$k_class_period](/Wl/Book/Process/Purchase/Purchase.json).
             * If promotions are shared, the system will try to determine if there are enough sessions left for the next
                  client who has the same promotion.
             * A very simple check is carried out based on a comparison of the remaining sessions for the promotion
                  with the number of times it was selected.
-            * Can affect the list of available login promotions [PurchaseApi](/Wl/Book/Process/Purchase/Purchase.json).
+            * Can affect the list of available login promotions [PurchaseApi::$a_login_promotion](/Wl/Book/Process/Purchase/Purchase.json).
                  If a given client is eligible for such a promotion, but the remaining sessions (minus those previously
                  selected) in it do not allow it to be applied to the selected session, then such promotion will simply
                  not be returned for the client.
@@ -77076,12 +77076,12 @@ paths:
 
             Note:
             * It makes sense if for all clients the list is loaded within
-                 the same pair [Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json) and [Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json).
+                 the same pair [Purchase56Api::$dt_date_gmt](/Wl/Book/Process/Purchase/Purchase56.json) and [Purchase56Api::$k_class_period](/Wl/Book/Process/Purchase/Purchase56.json).
             * If promotions are shared, the system will try to determine if there are enough sessions left for the next
                  client who has the same promotion.
             * A very simple check is made based on a comparison of the remaining sessions for the promotion
                  with the number of times it was selected.
-            * Can affect the list of available login promotions [Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json).
+            * Can affect the list of available login promotions [Purchase56Api::$a_login_promotion](/Wl/Book/Process/Purchase/Purchase56.json).
                  If a given client is eligible for such a promotion, but the remaining sessions (minus those previously
                  selected) in it do not allow it to be applied to the selected session, then such promotion will simply
                  not be returned for the client.
@@ -77261,7 +77261,7 @@ paths:
           description: |-
             The number of sessions which are booked simultaneously.
 
-            Required when [PurchaseElementApi](/Wl/Book/Process/Purchase/PurchaseElement.json) = [RsPurchaseItemSid::CLASS_PERIOD](#/components/schemas/RsPurchaseItemSid).
+            Required when [PurchaseElementApi::$id_purchase_item](/Wl/Book/Process/Purchase/PurchaseElement.json) = [RsPurchaseItemSid::CLASS_PERIOD](#/components/schemas/RsPurchaseItemSid).
         -
           name: id_purchase_item
           in: query
@@ -79521,9 +79521,9 @@ paths:
                         The unique identifier of the item being checked.
                         This corresponds to one of the following values:
                         <ul>
-                          <li>[Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
-                          <li>[Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
-                          <li>[Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
+                          <li>[Purchase56Api::$a_purchase](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
+                          <li>[Purchase56Api::$a_reward_prize](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
+                          <li>[Purchase56Api::$a_login_prize](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
                         </ul>
                   required:
                     - s_value
@@ -79717,7 +79717,7 @@ paths:
                           format: int32
                           description: |-
                             The number of sessions that this item can cover.
-                              The same as in [StoreGroupApi](/Wl/Book/Process/Store/StoreGroup.json).
+                              The same as in [StoreGroupApi::$a_purchase_item_check](/Wl/Book/Process/Store/StoreGroup.json).
                               `0` if not applicable.
                         k_login_promotion:
                           type:
@@ -79725,7 +79725,7 @@ paths:
                             - 'null'
                           description: |-
                             Login promotion key. 
-                              The same as in [StoreGroupApi](/Wl/Book/Process/Store/StoreGroup.json).
+                              The same as in [StoreGroupApi::$a_login_promotion](/Wl/Book/Process/Store/StoreGroup.json).
                               `null` if not applicable.
                         k_login_promotion_guest_pass:
                           type:
@@ -79740,7 +79740,7 @@ paths:
                             - 'null'
                           description: |-
                             Session pass key. 
-                              The same as in [StoreGroupApi](/Wl/Book/Process/Store/StoreGroup.json).
+                              The same as in [StoreGroupApi::$a_session_pass](/Wl/Book/Process/Store/StoreGroup.json).
                               `null` if not applicable.
                         s_value:
                           type:
@@ -79748,7 +79748,7 @@ paths:
                             - 'null'
                           description: |-
                             The unique identifier of the purchase item.
-                              The same as in [StoreGroupApi](/Wl/Book/Process/Store/StoreGroup.json).
+                              The same as in [StoreGroupApi::$a_purchase_item_check](/Wl/Book/Process/Store/StoreGroup.json).
                               `null` if not applicable.
                         text_error:
                           type: string
@@ -79885,9 +79885,9 @@ paths:
                           The unique identifier of the item being checked.
                           This corresponds to one of the following values:
                           <ul>
-                            <li>[Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
-                            <li>[Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
-                            <li>[Purchase56Api](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
+                            <li>[Purchase56Api::$a_purchase](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
+                            <li>[Purchase56Api::$a_reward_prize](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
+                            <li>[Purchase56Api::$a_login_prize](/Wl/Book/Process/Purchase/Purchase56.json)`["s_value"]`</li>
                           </ul>
                     required:
                       - i_session
@@ -80333,7 +80333,7 @@ paths:
                     type: string
                     description: |-
                       Text representation of the list of staffs.
-                      List of staff see [InfoApi](/Wl/Book/Process/Info/Info.json).
+                      List of staff see [InfoApi::$a_staff](/Wl/Book/Process/Info/Info.json).
                   text_timezone:
                     type: string
                     description: 'Timezone abbreviation.'
@@ -80528,7 +80528,7 @@ paths:
 
                       The verification is based on the search for client's promotions and other features of the class/event.
                       But it does not take into account the presence of other mandatory steps.
-                      Their presence will be indicated by the [InfoApi](/Wl/Book/Process/Info/Info.json) flag.
+                      Their presence will be indicated by the [InfoApi::$is_next](/Wl/Book/Process/Info/Info.json) flag.
                   is_next:
                     type: boolean
                     description: |-
@@ -81100,7 +81100,7 @@ paths:
                     type: string
                     description: |-
                       Text representation of the list of staffs.
-                      List of staff see [InfoApi](/Wl/Book/Process/Info/Info.json).
+                      List of staff see [InfoApi::$a_staff](/Wl/Book/Process/Info/Info.json).
                   text_timezone:
                     type: string
                     description: 'Timezone abbreviation.'
@@ -81292,7 +81292,7 @@ paths:
 
                       The verification is based on the search for client's promotions and other features of the class/event.
                       But it does not take into account the presence of other mandatory steps.
-                      Their presence will be indicated by the [InfoApi](/Wl/Book/Process/Info/Info.json) flag.
+                      Their presence will be indicated by the [InfoApi::$is_next](/Wl/Book/Process/Info/Info.json) flag.
                   is_next:
                     type: boolean
                     description: |-
@@ -81607,7 +81607,7 @@ paths:
           schema:
             type: array
             deprecated: true
-            x-deprecated: 'Use [InfoCanCompleteApi](/Wl/Book/Process/Info/InfoCanComplete.json) along with POST call instead.'
+            x-deprecated: 'Use [InfoCanCompleteApi::$a_session_select_post](/Wl/Book/Process/Info/InfoCanComplete.json) along with POST call instead.'
             items:
               type: object
               properties:
@@ -81627,7 +81627,7 @@ paths:
           description: |-
             A list of sessions of an event that can be booked together.
 
-            This is the same as [InfoCanCompleteApi](/Wl/Book/Process/Info/InfoCanComplete.json), but limited by query string
+            This is the same as [InfoCanCompleteApi::$a_session_select_post](/Wl/Book/Process/Info/InfoCanComplete.json), but limited by query string
             length and might fail if the user is booking more than 50 sessions at once.
             Therefore, using the POST method is preferable.
           deprecated: true
@@ -82282,14 +82282,14 @@ paths:
                   dt_from:
                     type: string
                     format: date-time
-                    description: 'Date to start recurring booking. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
+                    description: 'Date to start recurring booking. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
                   dt_to:
                     type: string
                     format: date-time
-                    description: 'Date to finish recurring booking. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
+                    description: 'Date to finish recurring booking. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
                   i_count:
                     $ref: '#/components/schemas/RsRepeatEndSid'
-                    description: 'Count of the visits to be created. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::COUNT](#/components/schemas/RsRepeatEndSid).'
+                    description: 'Count of the visits to be created. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::COUNT](#/components/schemas/RsRepeatEndSid).'
                   text_date_from:
                     type: string
                     description: 'Start date of repeatable period in human-readable format.'
@@ -82361,7 +82361,7 @@ paths:
           schema:
             type: string
             format: date-time
-          description: 'Date to start recurring booking. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
+          description: 'Date to start recurring booking. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
         -
           name: dt_to
           in: query
@@ -82369,14 +82369,14 @@ paths:
           schema:
             type: string
             format: date-time
-          description: 'Date to finish recurring booking. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
+          description: 'Date to finish recurring booking. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
         -
           name: i_count
           in: query
           required: true
           schema:
             $ref: '#/components/schemas/RsRepeatEndSid'
-          description: 'Count of the visits to be created. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::COUNT](#/components/schemas/RsRepeatEndSid).'
+          description: 'Count of the visits to be created. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::COUNT](#/components/schemas/RsRepeatEndSid).'
         -
           name: i_duration
           in: query
@@ -82538,14 +82538,14 @@ paths:
                   dt_from:
                     type: string
                     format: date-time
-                    description: 'Date to start recurring booking. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
+                    description: 'Date to start recurring booking. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
                   dt_to:
                     type: string
                     format: date-time
-                    description: 'Date to finish recurring booking. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
+                    description: 'Date to finish recurring booking. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
                   i_count:
                     $ref: '#/components/schemas/RsRepeatEndSid'
-                    description: 'Count of the visits to be created. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::COUNT](#/components/schemas/RsRepeatEndSid).'
+                    description: 'Count of the visits to be created. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::COUNT](#/components/schemas/RsRepeatEndSid).'
                   text_date_from:
                     type: string
                     description: 'Start date of repeatable period in human-readable format.'
@@ -82617,7 +82617,7 @@ paths:
           schema:
             type: string
             format: date-time
-          description: 'Date to start recurring booking. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
+          description: 'Date to start recurring booking. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
         -
           name: dt_to
           in: query
@@ -82625,14 +82625,14 @@ paths:
           schema:
             type: string
             format: date-time
-          description: 'Date to finish recurring booking. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
+          description: 'Date to finish recurring booking. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::DATE](#/components/schemas/RsRepeatEndSid).'
         -
           name: i_count
           in: query
           required: true
           schema:
             $ref: '#/components/schemas/RsRepeatEndSid'
-          description: 'Count of the visits to be created. Not empty only when [RepeatApi](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::COUNT](#/components/schemas/RsRepeatEndSid).'
+          description: 'Count of the visits to be created. Not empty only when [RepeatApi::$id_repeat_end](/Wl/Book/Process/Frequency/Repeat.json) == [RsRepeatEndSid::COUNT](#/components/schemas/RsRepeatEndSid).'
         -
           name: i_duration
           in: query
@@ -82798,7 +82798,7 @@ paths:
             type: string
           description: |-
             Key of service to book.
-            Depending on [GuestProfileApi](/Wl/Book/Process/Guest/GuestProfile.json) value:,
+            Depending on [GuestProfileApi::$id_service](/Wl/Book/Process/Guest/GuestProfile.json) value:,
             <ul>
                 <li>[ServiceSid::CLASSES](#/components/schemas/Wl.Service.ServiceSid) - class key. </li>
                 <li>[ServiceSid::APPOINTMENT](#/components/schemas/Wl.Service.ServiceSid) - service key.</li>
@@ -82903,7 +82903,7 @@ paths:
             type: string
           description: |-
             Key of service to book.
-            Depending on [GuestProfileApi](/Wl/Book/Process/Guest/GuestProfile.json) value:,
+            Depending on [GuestProfileApi::$id_service](/Wl/Book/Process/Guest/GuestProfile.json) value:,
             <ul>
                 <li>[ServiceSid::CLASSES](#/components/schemas/Wl.Service.ServiceSid) - class key. </li>
                 <li>[ServiceSid::APPOINTMENT](#/components/schemas/Wl.Service.ServiceSid) - service key.</li>
@@ -83705,7 +83705,7 @@ paths:
                     description: |-
                       Retrieves information about an event item.
 
-                      Received only if [ElementApi](/Wl/Event/Book/EventView/Element.json) has been specified.
+                      Received only if [ElementApi::$k_event](/Wl/Event/Book/EventView/Element.json) has been specified.
                       In this case, other fields aren't receivers.
                     items:
                       type: object
@@ -83724,7 +83724,7 @@ paths:
                     description: |-
                       Business policies connected to clients and bookings.
 
-                      Contains the same structure as [BusinessConfigApi](/Wl/Business/Config/BusinessConfig.json).
+                      Contains the same structure as [BusinessConfigApi::$a_business_policy](/Wl/Business/Config/BusinessConfig.json).
 
                       If the event has custom overrides, those policies are used; otherwise, the default
                        business policies are returned.
@@ -83882,7 +83882,7 @@ paths:
                     description: |-
                       Information for a large number of events.
 
-                      Received only if [ElementApi](/Wl/Event/Book/EventView/Element.json) has been specified. In this case, other fields are not populated.
+                      Received only if [ElementApi::$s_event](/Wl/Event/Book/EventView/Element.json) has been specified. In this case, other fields are not populated.
 
                       Key is the event class key.
                     items:
@@ -83892,7 +83892,7 @@ paths:
                           type: object
                           description: |-
                             List of sessions available for booking.
-                            See [ElementApi](/Wl/Event/Book/EventView/Element.json).
+                            See [ElementApi::$a_book_available](/Wl/Event/Book/EventView/Element.json).
                           properties:
                             dt_date:
                               type: string
@@ -83905,7 +83905,7 @@ paths:
                             - k_class_period
                         a_class_logo:
                           type: object
-                          description: 'Image of event. See [ElementApi](/Wl/Event/Book/EventView/Element.json).'
+                          description: 'Image of event. See [ElementApi::$a_class_logo](/Wl/Event/Book/EventView/Element.json).'
                           properties:
                             i_height:
                               type: integer
@@ -83923,12 +83923,12 @@ paths:
                               description: 'Is returned only if staff has a photo. URL to image.'
                         a_class_tab:
                           type: array
-                          description: 'Class tab keys. See [ElementApi](/Wl/Event/Book/EventView/Element.json).'
+                          description: 'Class tab keys. See [ElementApi::$a_class_tab](/Wl/Event/Book/EventView/Element.json).'
                           items:
                             type: string
                         a_installment_template:
                           type: object
-                          description: 'List of installment plans. See [ElementApi](/Wl/Event/Book/EventView/Element.json).'
+                          description: 'List of installment plans. See [ElementApi::$a_installment_template](/Wl/Event/Book/EventView/Element.json).'
                           properties:
                             i_count:
                               type: integer
@@ -83963,7 +83963,7 @@ paths:
                             - s_duration
                         a_schedule:
                           type: object
-                          description: 'Schedule of event sessions. See [ElementApi](/Wl/Event/Book/EventView/Element.json).'
+                          description: 'Schedule of event sessions. See [ElementApi::$a_schedule](/Wl/Event/Book/EventView/Element.json).'
                           properties:
                             a_day:
                               type: array
@@ -84091,7 +84091,7 @@ paths:
                             type: string
                         a_staff_logo:
                           type: object
-                          description: 'Photos of staff. See [ElementApi](/Wl/Event/Book/EventView/Element.json).'
+                          description: 'Photos of staff. See [ElementApi::$a_staff_logo](/Wl/Event/Book/EventView/Element.json).'
                           properties:
                             i_height:
                               type: integer
@@ -84161,7 +84161,7 @@ paths:
                           description: '`true` if the event session has already started or ended and is not available to book.'
                         is_policy_custom:
                           type: boolean
-                          description: '`true` [ElementApi](/Wl/Event/Book/EventView/Element.json) contains the custom policies from the event; `false` otherwise.'
+                          description: '`true` [ElementApi::$a_business_policy](/Wl/Event/Book/EventView/Element.json) contains the custom policies from the event; `false` otherwise.'
                         is_virtual:
                           type: boolean
                           description: '`true` if event is virtual; `false` otherwise.'
@@ -84565,7 +84565,7 @@ paths:
                   is_policy_custom:
                     type: boolean
                     description: |-
-                      `true` if the [ElementApi](/Wl/Event/Book/EventView/Element.json) contains the custom policies from the event.
+                      `true` if the [ElementApi::$a_business_policy](/Wl/Event/Book/EventView/Element.json) contains the custom policies from the event.
                       `false` otherwise.
                   is_promotion_only:
                     type: boolean
@@ -84597,12 +84597,12 @@ paths:
                     type:
                       - string
                       - 'null'
-                    description: 'Price of the full event should be used as full price while [ElementApi](/Wl/Event/Book/EventView/Element.json) is actual.'
+                    description: 'Price of the full event should be used as full price while [ElementApi::$dt_early](/Wl/Event/Book/EventView/Element.json) is actual.'
                   s_deny_reason:
                     type: string
                     description: |-
                       The reason why the event can't be booked.
-                      Empty if [ElementApi](/Wl/Event/Book/EventView/Element.json) isn't empty.
+                      Empty if [ElementApi::$k_book_class_period](/Wl/Event/Book/EventView/Element.json) isn't empty.
                   s_title:
                     type:
                       - string
@@ -84705,8 +84705,8 @@ paths:
             format: date
           description: |-
             The last available date for booking.
-            If this is set and [ElementApi](/Wl/Event/Book/EventView/Element.json) is a set list of
-              sessions available for booking, [ElementApi](/Wl/Event/Book/EventView/Element.json)
+            If this is set and [ElementApi::$dl_book_available_start](/Wl/Event/Book/EventView/Element.json) is a set list of
+              sessions available for booking, [ElementApi::$a_book_available](/Wl/Event/Book/EventView/Element.json)
               should match given date range.
         -
           name: dl_book_available_start
@@ -84719,8 +84719,8 @@ paths:
             format: date
           description: |-
             The first available date for booking.
-            If this is set and [ElementApi](/Wl/Event/Book/EventView/Element.json) is a set list of
-              sessions available for booking [ElementApi](/Wl/Event/Book/EventView/Element.json)
+            If this is set and [ElementApi::$dl_book_available_end](/Wl/Event/Book/EventView/Element.json) is a set list of
+              sessions available for booking [ElementApi::$a_book_available](/Wl/Event/Book/EventView/Element.json)
               should match given date range.
         -
           name: dtu_session
@@ -84734,7 +84734,7 @@ paths:
           description: |-
             Datetime of the session.
             Is not `null` only if we need to get information for an event with a specific class period and datetime.
-            If this is `null`, then the [ElementApi](/Wl/Event/Book/EventView/Element.json) should be `null` too.
+            If this is `null`, then the [ElementApi::$k_class_period](/Wl/Event/Book/EventView/Element.json) should be `null` too.
         -
           name: i_image_height
           in: query
@@ -84805,7 +84805,7 @@ paths:
             Key of a class period to show information for.
 
             Is not `null` only if we need to get information for an event with a specific class period and datetime.
-            If this is `null`, then the [ElementApi](/Wl/Event/Book/EventView/Element.json) should be `null` too.
+            If this is `null`, then the [ElementApi::$dtu_session](/Wl/Event/Book/EventView/Element.json) should be `null` too.
         -
           name: k_event
           in: query
@@ -84814,7 +84814,7 @@ paths:
             type: string
           description: |-
             The event key.
-            You can specify [ElementApi](/Wl/Event/Book/EventView/Element.json) instead to get information for a large number of events.
+            You can specify [ElementApi::$s_event](/Wl/Event/Book/EventView/Element.json) instead to get information for a large number of events.
         -
           name: s_event
           in: query
@@ -84823,7 +84823,7 @@ paths:
             type: string
           description: |-
             A list of event keys serialized with JSON.
-            Specify instead of [ElementApi](/Wl/Event/Book/EventView/Element.json) to get information for a large number of events.
+            Specify instead of [ElementApi::$k_event](/Wl/Event/Book/EventView/Element.json) to get information for a large number of events.
         -
           name: show_unpublished
           in: query
@@ -84880,8 +84880,8 @@ paths:
                     type: boolean
                     description: |-
                       `true` if exist at least one virtual event
-                      by specific [ListApi](/Wl/Event/Book/EventList/List.json) and
-                      [ListApi](/Wl/Event/Book/EventList/List.json),
+                      by specific [ListApi::$k_business](/Wl/Event/Book/EventList/List.json) and
+                      [ListApi::$k_class_tab](/Wl/Event/Book/EventList/List.json),
                       `false` otherwise.
                 required:
                   - a_event
@@ -85228,7 +85228,7 @@ paths:
                   description: |-
                     The list of data to save.
 
-                    Data depends on current [ModifyApi](/Wl/Classes/Period/Modify/Modify.json):
+                    Data depends on current [ModifyApi::$id_step](/Wl/Classes/Period/Modify/Modify.json):
                   properties:
                     is_forward:
                       type: boolean
@@ -87109,7 +87109,7 @@ paths:
                       Barcode of the member.
 
                       Dynamic, if business uses barcode as dynamic ID.
-                      Or static, if business uses static ID. In this case [DynamicIdApi](/Wl/Login/Member/DynamicId/DynamicId.json) will be zero.
+                      Or static, if business uses static ID. In this case [DynamicIdApi::$i_expire](/Wl/Login/Member/DynamicId/DynamicId.json) will be zero.
                   url_barcode:
                     type: string
                     description: 'URL of the barcode image.'
@@ -87240,7 +87240,7 @@ paths:
                     type:
                       - string
                       - 'null'
-                    description: "The user's account balance if they were charged the [AddApi](/Wl/Login/Attendance/Add/Add.json) amount."
+                    description: "The user's account balance if they were charged the [AddApi::$m_price](/Wl/Login/Attendance/Add/Add.json) amount."
                 required:
                   - a_login_promotion
                   - a_session_pass
@@ -88138,9 +88138,9 @@ paths:
                         is_visit:
                           type: boolean
                           description: |-
-                            This will be `true` if this Purchase Option is suitable to pay for the visit [CatalogListApi](/Wl/Catalog/StaffApp/CatalogList/CatalogList.json).
+                            This will be `true` if this Purchase Option is suitable to pay for the visit [CatalogListApi::$k_visit](/Wl/Catalog/StaffApp/CatalogList/CatalogList.json).
                             Otherwise, this will be `false`.
-                            If [CatalogListApi](/Wl/Catalog/StaffApp/CatalogList/CatalogList.json) is empty, this will always be `false`.
+                            If [CatalogListApi::$k_visit](/Wl/Catalog/StaffApp/CatalogList/CatalogList.json) is empty, this will always be `false`.
                         k_id:
                           type: string
                           description: 'The sale item ID.'
@@ -88856,7 +88856,7 @@ paths:
           $ref: '#/components/responses/500'
       summary: |-
         Retrieves all reward action categories for business specified in
-        [CategoryListApi](/Wl/Reward/Action/CategoryList/CategoryList.json).
+        [CategoryListApi::$k_business](/Wl/Reward/Action/CategoryList/CategoryList.json).
       description: |-
         Returns the list of reward action categories including category type ID, database key, and title for the
         given business.
@@ -88987,7 +88987,7 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Retrieves all reward boards for business specified in [ListApi](/Wl/Reward/Board/BoardList/List.json).'
+      summary: 'Retrieves all reward boards for business specified in [ListApi::$k_business](/Wl/Reward/Board/BoardList/List.json).'
       description: |-
         Returns the list of reward boards available to the given user in the business, including board key and title,
         filtered to exclude boards the user is not eligible to view.
@@ -90977,7 +90977,7 @@ paths:
                       `true` means discount code can reduce price of the gift cards.
                       `false` means discount code cannot reduce price of the gift cards.
 
-                      If [DiscountCodeEditApi](/Wl/Discount/Code/Edit/DiscountCodeEdit.json) is `true` this fields does not matter.
+                      If [DiscountCodeEditApi::$is_purchase_all](/Wl/Discount/Code/Edit/DiscountCodeEdit.json) is `true` this fields does not matter.
                   is_first_payment:
                     type: boolean
                     description: |-
@@ -91190,7 +91190,7 @@ paths:
                     `true` means discount code can reduce price of the gift cards.
                     `false` means discount code cannot reduce price of the gift cards.
 
-                    If [DiscountCodeEditApi](/Wl/Discount/Code/Edit/DiscountCodeEdit.json) is `true` this fields does not matter.
+                    If [DiscountCodeEditApi::$is_purchase_all](/Wl/Discount/Code/Edit/DiscountCodeEdit.json) is `true` this fields does not matter.
                 is_first_payment:
                   type: boolean
                   description: |-
@@ -91633,7 +91633,7 @@ paths:
       description: |-
         Returns the asset categories and individual assets linked to the service at the given location.
          Each asset includes its availability flag for the requested time slot. The response also includes
-         [ServiceApi](/Wl/Appointment/Book/Asset/Service/Service.json) with currently reserved asset slots and a flag indicating
+         [ServiceApi::$a_resource_busy](/Wl/Appointment/Book/Asset/Service/Service.json) with currently reserved asset slots and a flag indicating
          whether the current user is allowed to book unavailable assets.
       tags:
         - Appointments
@@ -91694,7 +91694,7 @@ paths:
               - string
               - 'null'
           description: |-
-            The appointment booking key to ignore when [ServiceApi](/Wl/Appointment/Book/Asset/Service/Service.json) is derived.
+            The appointment booking key to ignore when [ServiceApi::$a_resource_busy](/Wl/Appointment/Book/Asset/Service/Service.json) is derived.
 
             `null` if no appointment booking must be ignored.
         -
@@ -92688,7 +92688,7 @@ paths:
                     type: string
                     description: |-
                       List of mail patterns data to load.
-                      Each element has the structure, described in [PatternApi](/Wl/Mail/Pattern/AutomatedMarketing/CustomTemplate/Pattern.json).
+                      Each element has the structure, described in [PatternApi::$a_pattern_load](/Wl/Mail/Pattern/AutomatedMarketing/CustomTemplate/Pattern.json).
                   text_phone_formatted:
                     type: string
                     description: 'Business sender phone formatted.'
@@ -92795,7 +92795,7 @@ paths:
         Validates and stores the submitted notification template (email, push or SMS) for the given
          business. A system template edited under a business is copied into that business instead of
          modifying the original. The saved mail pattern key is returned in
-         [PatternApi](/Wl/Mail/Pattern/AutomatedMarketing/CustomTemplate/Pattern.json).
+         [PatternApi::$k_mail_pattern](/Wl/Mail/Pattern/AutomatedMarketing/CustomTemplate/Pattern.json).
       tags:
         - 'Automated Marketing'
       parameters:
@@ -93160,7 +93160,7 @@ paths:
                       - string
                       - 'null'
                     format: date-time
-                    description: 'Last local date when the user entered progress values. `null` if the user had not entered progress data before the [LogApi](/Wl/Member/Progress/Log/Edit/Log.json) date.'
+                    description: 'Last local date when the user entered progress values. `null` if the user had not entered progress data before the [LogApi::$dt_date](/Wl/Member/Progress/Log/Edit/Log.json) date.'
                   is_staff:
                     type: boolean
                     description: 'How we want to see this page. As a staff or as a user.'
