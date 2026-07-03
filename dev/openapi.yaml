@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260703090919
+  version: 1.1.20260703100406
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -97027,11 +97027,12 @@ components:
       description: |-
         The source of a visit.
 
-        Last used ID: 30.
+        Last used ID: 31.
 
         Values:
         - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
         - 21 (`AZURE`): Registered through `Azure`.
+        - 31 (`BRIVO_DOOR_ACCESS`): Visit has been checked-in by Brivo Door Access.
         - 23 (`CENTRED`): Visit has been created by `CENTRED`.
         - 8 (`CLASSPASS_BOOKING`): Visit has been created by `ClassPass`.
         - 22 (`COLLECTIONS`): Debt paid via collections.
@@ -97063,6 +97064,7 @@ components:
       enum:
         - 28
         - 21
+        - 31
         - 23
         - 8
         - 22
@@ -97092,6 +97094,7 @@ components:
       x-enum-varnames:
         - API
         - AZURE
+        - BRIVO_DOOR_ACCESS
         - CENTRED
         - CLASSPASS_BOOKING
         - COLLECTIONS
@@ -97121,6 +97124,7 @@ components:
       x-enum-descriptions:
         - 'Action made via Api Endpoint. Default for leads created via API, unless overridden.'
         - 'Registered through `Azure`.'
+        - 'Visit has been checked-in by Brivo Door Access.'
         - 'Visit has been created by `CENTRED`.'
         - 'Visit has been created by `ClassPass`.'
         - 'Debt paid via collections.'
