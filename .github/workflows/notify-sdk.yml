@@ -6,11 +6,12 @@ on:
       - Release
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   notify:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Notify wl-openapi-js
