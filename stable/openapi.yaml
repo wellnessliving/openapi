@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260703021706
+  version: 1.1.20260703024524
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -105809,7 +105809,7 @@ components:
       description: |-
         Lifecycle state of a guest pass invitation.
 
-        Last used: 10
+        Last used: 12
 
         Values:
         - 9 (`ATTEND`): Guest attended the visit booked with the guest pass.
@@ -105832,6 +105832,13 @@ components:
            counts toward "Used".
         - 4 (`NO_SHOW`): Guest accepted the invitation but did not show up for the visit. Pass is
            consumed and counts toward "Used".
+        - 12 (`PENDING`): Guest has a visit linked to the guest pass, but its outcome (attended, no-show,
+           or late-cancelled) has not been determined yet and must be resolved manually by
+           staff. Distinct from [InviteStatusEnum::INVITE_ACCEPTED](#/components/schemas/Wl.Login.Promotion.GuestPass.Invite.InviteStatusEnum): the guest already
+           has a linked visit here, rather than merely having accepted the invitation.
+        - 11 (`WAITLISTED`): Guest is on the waitlist for the class session booked with the guest pass.
+           Pass is committed to the guest - it is no longer "Available" to the host,
+           but the guest has not secured a confirmed spot in the class yet.
       enum:
         - 9
         - 8
@@ -105843,6 +105850,8 @@ components:
         - 1
         - 5
         - 4
+        - 12
+        - 11
       x-enum-varnames:
         - ATTEND
         - BOOK
@@ -105854,6 +105863,8 @@ components:
         - INVITE_SENT
         - LATE_CANCELLED
         - NO_SHOW
+        - PENDING
+        - WAITLISTED
       x-enum-descriptions:
         - 'Guest attended the visit booked with the guest pass.'
         - 'Guest booked the visit booked with the guest pass.'
@@ -105882,6 +105893,15 @@ components:
         - |-
           Guest accepted the invitation but did not show up for the visit. Pass is
            consumed and counts toward "Used".
+        - |-
+          Guest has a visit linked to the guest pass, but its outcome (attended, no-show,
+           or late-cancelled) has not been determined yet and must be resolved manually by
+           staff. Distinct from {@link \Wl\Login\Promotion\GuestPass\Invite\InviteStatusEnum::INVITE_ACCEPTED}: the guest already
+           has a linked visit here, rather than merely having accepted the invitation.
+        - |-
+          Guest is on the waitlist for the class session booked with the guest pass.
+           Pass is committed to the guest - it is no longer "Available" to the host,
+           but the guest has not secured a confirmed spot in the class yet.
   parameters:
     X-Error-Rules:
       name: X-Error-Rules
