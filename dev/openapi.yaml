@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260706145201
+  version: 1.1.20260706210751
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -50162,6 +50162,9 @@ paths:
                           description: |-
                             Whether service will be hidden in the White Label mobile application.
                              `true` means that service will not be displayed, `false` otherwise.
+                        is_active:
+                          type: boolean
+                          description: 'Whether appointment type is active.'
                         k_service:
                           type: string
                           description: 'Appointment type identifier, primary key.'
@@ -50176,6 +50179,7 @@ paths:
                           description: 'Appointment type name.'
                       required:
                         - hide_application
+                        - is_active
                         - k_service
                         - k_service_category
                         - text_category
@@ -50198,6 +50202,90 @@ paths:
       description: 'Gets key of the business and returns all available appointment types with their names and categories.'
       tags:
         - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_franchise
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Whether to return franchisee-created appointment types (if business is franchisor).
+            `true` to include franchisee-created appointment types.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key, primary key.'
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Service/ServiceList/List75.json:
+    get:
+      operationId: Wl.Service.ServiceList.List75.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_service:
+                    type: array
+                    description: 'Appointment types list:'
+                    items:
+                      type: object
+                      properties:
+                        hide_application:
+                          type: boolean
+                          description: |-
+                            Whether service will be hidden in the White Label mobile application.
+                             `true` means that service will not be displayed, `false` otherwise.
+                        is_active:
+                          type: boolean
+                          description: 'Whether appointment type is active.'
+                        k_service:
+                          type: string
+                          description: 'Appointment type identifier, primary key.'
+                        k_service_category:
+                          type: string
+                          description: 'Appointment type category identifier, primary key.'
+                        text_category:
+                          type: string
+                          description: 'Appointment type category name.'
+                        text_service:
+                          type: string
+                          description: 'Appointment type name.'
+                      required:
+                        - hide_application
+                        - is_active
+                        - k_service
+                        - k_service_category
+                        - text_category
+                        - text_service
+                required:
+                  - a_service
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns list of appointment type in the business.'
+      description: 'Gets key of the business and returns all available appointment types with their names and categories.'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
