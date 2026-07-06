@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260706102850
+  version: 1.1.20260706145201
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -39097,25 +39097,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  a_book_error:
-                    type: array
-                    description: |-
-                      List of errors that occurred during booking.
-
-                      Keys are user keys. 
-                      Each value has the next structure:
-                    items:
-                      type: object
-                      properties:
-                        text_code:
-                          type: string
-                          description: 'Error code identifying the type of error that occurred.'
-                        text_message:
-                          type: string
-                          description: 'Human-readable error message describing the booking failure.'
-                      required:
-                        - text_code
-                        - text_message
                   a_login_activity_book:
                     type: array
                     description: "Primary keys of users' activity that correspond to bookings made."
@@ -39134,7 +39115,6 @@ paths:
                       The key of the user's activity corresponding to the purchase made.
                       `null` if no purchase was made.
                 required:
-                  - a_book_error
                   - a_login_activity_book
                   - a_visit
         '400':
