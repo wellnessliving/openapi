@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260707093231
+  version: 1.1.20260707135928
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -64173,13 +64173,16 @@ paths:
                 properties:
                   a_list:
                     type: array
-                    description: |-
-                      Discount codes list.
-
-                      Each element has next structure:
+                    description: 'Discount codes list. Each element has the following structure:'
                     items:
                       type: object
                       properties:
+                        is_active:
+                          type: boolean
+                          description: '`true` if the discount code is active, `false` otherwise.'
+                        is_remove:
+                          type: boolean
+                          description: '`true` if the discount code is removed, `false` otherwise.'
                         k_discount_code:
                           type: string
                           description: 'Discount code key.'
@@ -64187,6 +64190,8 @@ paths:
                           type: string
                           description: 'Discount code title.'
                       required:
+                        - is_active
+                        - is_remove
                         - k_discount_code
                         - text_discount_code
                 required:
@@ -81039,7 +81044,7 @@ paths:
                             description: 'Appointment timezone abbreviation.'
                           uid_staff:
                             type: string
-                            description: 'Appointment staff user key, primary key in PassportLoginSql table.'
+                            description: 'Appointment user key.'
                         required:
                           - a_addon
                           - a_promotion_applicable
@@ -81083,7 +81088,7 @@ paths:
                             description: 'Staff full name.'
                           uid_staff:
                             type: string
-                            description: 'Staff user key, primary key in PassportLoginSql table.'
+                            description: 'Staff user key.'
                         required:
                           - text_name
                           - uid_staff
