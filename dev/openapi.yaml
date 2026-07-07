@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260706210751
+  version: 1.1.20260707081558
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -41,6 +41,9 @@ tags:
   -
     name: Appointments
     description: 'Appointment booking and management endpoints.'
+  -
+    name: 'Attendance Payment'
+    description: 'Multiple payment endpoints for unpaid appointments.'
   -
     name: Authentication
     description: 'User authentication and account access endpoints.'
@@ -21096,7 +21099,7 @@ paths:
           period: 3600
   /Thoth/PayProcessor/StripeCom/StripeComKey.json:
     post:
-      operationId: Wl.Pay.Processor.StripeCom.StripeComKey.post
+      operationId: Thoth.PayProcessor.StripeCom.StripeComKey.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21166,7 +21169,7 @@ paths:
           period: 3600
   /Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json:
     post:
-      operationId: Wl.Pay.Processor.StripeCom.PaymentIntentUpdate.post
+      operationId: Thoth.PayProcessor.StripeCom.PaymentIntentUpdate.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21274,7 +21277,7 @@ paths:
           period: 3600
   /Thoth/PayProcessor/StripeCom/StripeComPayInit.json:
     post:
-      operationId: Wl.Pay.Processor.StripeCom.StripeComPayInit.post
+      operationId: Thoth.PayProcessor.StripeCom.StripeComPayInit.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21535,7 +21538,7 @@ paths:
           period: 3600
   /Thoth/PayProcessor/StripeCom/StripeComPaymentIntentCancel.json:
     post:
-      operationId: Wl.Pay.Processor.StripeCom.StripeComPaymentIntentCancel.post
+      operationId: Thoth.PayProcessor.StripeCom.StripeComPaymentIntentCancel.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21599,7 +21602,7 @@ paths:
           period: 3600
   /Thoth/PayProcessor/CyberSource/CsPaEnrollment.json:
     post:
-      operationId: Wl.Pay.Processor.CyberSource.CsPaEnrollment.post
+      operationId: Thoth.PayProcessor.CyberSource.CsPaEnrollment.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21682,7 +21685,7 @@ paths:
           period: 3600
   /Thoth/PayProcessor/CyberSource/CsPaValidate.json:
     post:
-      operationId: Wl.Pay.Processor.CyberSource.CsPaValidate.post
+      operationId: Thoth.PayProcessor.CyberSource.CsPaValidate.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21731,7 +21734,7 @@ paths:
           period: 3600
   /Thoth/PayProcessor/CyberSource/CsCaptureContext.json:
     post:
-      operationId: Wl.Pay.Processor.CyberSource.CsCaptureContext.post
+      operationId: Thoth.PayProcessor.CyberSource.CsCaptureContext.post
       responses:
         '200':
           description: 'Successful response.'
@@ -21816,7 +21819,7 @@ paths:
           period: 3600
   /Thoth/PayProcessor/CyberSource/CsPaSetup.json:
     post:
-      operationId: Wl.Pay.Processor.CyberSource.CsPaSetup.post
+      operationId: Thoth.PayProcessor.CyberSource.CsPaSetup.post
       responses:
         '200':
           description: 'Successful response.'
@@ -22011,7 +22014,7 @@ paths:
           period: 3600
   /Thoth/ReportCore/Generator/Query.json:
     post:
-      operationId: Wl.Report.Generator.Query.post
+      operationId: Thoth.ReportCore.Generator.Query.post
       responses:
         '200':
           description: 'Successful response.'
@@ -22486,7 +22489,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Form/Environment.json:
     get:
-      operationId: Wl.Pay.Form.Environment.get
+      operationId: Thoth.WlPay.Form.Environment.get
       responses:
         '200':
           description: 'Successful response.'
@@ -22743,7 +22746,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Form/EnvironmentUser.json:
     get:
-      operationId: Wl.Pay.Form.EnvironmentUser.get
+      operationId: Thoth.WlPay.Form.EnvironmentUser.get
       responses:
         '200':
           description: 'Successful response.'
@@ -22998,7 +23001,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Account/Account.json:
     get:
-      operationId: Wl.Pay.Account.Account.get
+      operationId: Thoth.WlPay.Account.Account.get
       responses:
         '200':
           description: 'Successful response.'
@@ -23153,7 +23156,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Owner/Owner.json:
     get:
-      operationId: Wl.Pay.Owner.Owner.get
+      operationId: Thoth.WlPay.Owner.Owner.get
       responses:
         '200':
           description: 'Successful response.'
@@ -23232,7 +23235,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Method/List.json:
     get:
-      operationId: Wl.Pay.Method.List.get
+      operationId: Thoth.WlPay.Method.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -23323,7 +23326,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Address/Address.json:
     get:
-      operationId: Wl.Pay.Address.Address.get
+      operationId: Thoth.WlPay.Address.Address.get
       responses:
         '200':
           description: 'Successful response.'
@@ -23472,7 +23475,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Address/Profile.json:
     get:
-      operationId: Wl.Pay.Address.Profile.get
+      operationId: Thoth.WlPay.Address.Profile.get
       responses:
         '200':
           description: 'Successful response.'
@@ -50286,6 +50289,8 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Returns list of appointment type in the business.'
       description: 'Gets key of the business and returns all available appointment types with their names and categories.'
+      tags:
+        - Appointments
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -66021,7 +66026,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Card/List.json:
     get:
-      operationId: Wl.Pay.Bank.Card.List.get
+      operationId: Thoth.WlPay.Bank.Card.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -66198,7 +66203,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Ach/List.json:
     get:
-      operationId: Wl.Pay.Bank.Ach.List.get
+      operationId: Thoth.WlPay.Bank.Ach.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -66305,7 +66310,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Transaction/Report/TransactionAllPayment.json:
     get:
-      operationId: Wl.Pay.Transaction.Report.TransactionAllPayment.get
+      operationId: Thoth.WlPay.Transaction.Report.TransactionAllPayment.get
       responses:
         '200':
           description: 'Successful response.'
@@ -66560,7 +66565,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Address/Widget/WidgetEdit.json:
     get:
-      operationId: Wl.Pay.Address.Widget.WidgetEdit.get
+      operationId: Thoth.WlPay.Address.Widget.WidgetEdit.get
       responses:
         '200':
           description: 'Successful response.'
@@ -80877,6 +80882,411 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Profile/Attendance/Schedule/PaymentMultiple.json:
+    get:
+      operationId: Wl.Profile.Attendance.Schedule.PaymentMultiple.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_client:
+                    type: object
+                    description: |-
+                      Clients' data.
+                      Clients with unpaid appointments data, each element has next structure:
+                    properties:
+                      a_relation:
+                        type:
+                          - object
+                          - 'null'
+                        description: |-
+                          Information about relation. `null` if there is no relation, in particular when appointments
+                           are loaded by [PaymentMultipleApi::$a_appointment](/Wl/Profile/Attendance/Schedule/PaymentMultiple.json).
+                        properties:
+                          id_family_relation:
+                            $ref: '#/components/schemas/RsFamilyRelationSid'
+                            description: 'Family relation ID. One of [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid) constants.'
+                          uid_payer:
+                            type: string
+                            description: 'Payer UID.'
+                        required:
+                          - id_family_relation
+                          - uid_payer
+                      a_service:
+                        type: object
+                        description: 'Unpaid appointments data.'
+                        properties:
+                          a_addon:
+                            type: object
+                            description: 'List of add-ons:'
+                            properties:
+                              i_count:
+                                type: integer
+                                format: int32
+                                description: 'Number of the product.'
+                              is_paid:
+                                type: boolean
+                                description: '`true` if the product is paid, otherwise `false`.'
+                              html_price:
+                                type: string
+                                description: 'Formatted product price'
+                              m_price:
+                                type: string
+                                description: 'Product price.'
+                              text_title:
+                                type: string
+                                description: 'Product title.'
+                            required:
+                              - i_count
+                              - is_paid
+                              - html_price
+                              - m_price
+                              - text_title
+                          a_promotion_applicable:
+                            type: object
+                            description: 'Promotions that can be used to pay for appointment:'
+                            properties:
+                              m_price:
+                                type: string
+                                description: 'Promotion price.'
+                              i_order:
+                                type: integer
+                                format: int32
+                                description: 'Sort order.'
+                              text_key:
+                                type: string
+                                description: 'Promotion key.'
+                              text_price:
+                                type: string
+                                description: 'Promotion price.'
+                              text_title:
+                                type: string
+                                description: 'Promotion title.'
+                            required:
+                              - m_price
+                              - i_order
+                              - text_key
+                              - text_price
+                              - text_title
+                          a_promotion_owned:
+                            type: object
+                            description: 'Promotions owned by the client, which can be used to pay for appointment:'
+                            properties:
+                              i_limit:
+                                type: integer
+                                format: int32
+                                description: 'Limit of visits.'
+                              i_order:
+                                type: integer
+                                format: int32
+                                description: 'Sort order.'
+                              i_remain:
+                                type: integer
+                                format: int32
+                                description: 'The number of the remaining visits.'
+                              text_key:
+                                type: string
+                                description: 'Promotion key.'
+                              text_price:
+                                type: string
+                                description: 'Promotion price.'
+                              text_title:
+                                type: string
+                                description: 'Promotion title.'
+                              text_title_remain:
+                                type: string
+                                description: 'Promotion title with number of remaining sessions.'
+                            required:
+                              - i_limit
+                              - i_order
+                              - i_remain
+                              - text_key
+                              - text_price
+                              - text_title
+                              - text_title_remain
+                          has_unpaid_addon:
+                            type: boolean
+                            description: '`true` if appointment has unpaid add-ons, otherwise `false`.'
+                          is_pay_need:
+                            type: boolean
+                            description: '`true` if the appointment is not free and not paid, otherwise `false`.'
+                          is_required:
+                            type: boolean
+                            description: '`true` if the payment is required, otherwise `false`.'
+                          k_appointment:
+                            type: string
+                            description: 'Appointment key.'
+                          text_date:
+                            type: string
+                            description: 'Appointment date.'
+                          text_service:
+                            type: string
+                            description: 'Appointment title.'
+                          text_staff:
+                            type:
+                              - string
+                              - 'null'
+                            description: 'Name of the staff leading the appointment. `null` for asset.'
+                          text_time:
+                            type: string
+                            description: 'Appointment time.'
+                          text_timezone_abbr:
+                            type: string
+                            description: 'Appointment timezone abbreviation.'
+                          uid_staff:
+                            type: string
+                            description: 'Appointment staff user key, primary key in PassportLoginSql table.'
+                        required:
+                          - a_addon
+                          - a_promotion_applicable
+                          - a_promotion_owned
+                          - has_unpaid_addon
+                          - is_pay_need
+                          - is_required
+                          - k_appointment
+                          - text_date
+                          - text_service
+                          - text_staff
+                          - text_time
+                          - text_timezone_abbr
+                          - uid_staff
+                      uid:
+                        type: string
+                        description: 'The user for whom the appointment is booked.'
+                    required:
+                      - a_relation
+                      - a_service
+                      - uid
+                  a_staff_list:
+                    oneOf:
+                      -
+                        type: object
+                        properties:
+                          k_staff:
+                            type: string
+                            description: 'Staff key.'
+                          text_name:
+                            type: string
+                            description: 'Name of the staff.'
+                        required:
+                          - k_staff
+                          - text_name
+                      -
+                        type: object
+                        properties:
+                          text_name:
+                            type: string
+                            description: 'Staff full name.'
+                          uid_staff:
+                            type: string
+                            description: 'Staff user key, primary key in PassportLoginSql table.'
+                        required:
+                          - text_name
+                          - uid_staff
+                    description: 'List of available staff members for tips.'
+                  i_unpaid_number:
+                    type: integer
+                    format: int32
+                    description: 'Total number of unpaid appointments.'
+                  is_tip:
+                    type: boolean
+                    description: 'Whether tips are accepted.'
+                required:
+                  - a_client
+                  - a_staff_list
+                  - i_unpaid_number
+                  - is_tip
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Loads unpaid appointments data for the multiple payment panel.'
+      description: |-
+        Loads unpaid appointments together with their addons, applicable purchase options, and
+         purchase options already owned by the client. Appointments are loaded either for a client
+         and their relatives on a specific day, or for an explicit list of appointments specified in
+         [PaymentMultipleApi::$a_appointment](/Wl/Profile/Attendance/Schedule/PaymentMultiple.json).
+      tags:
+        - 'Attendance Payment'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_appointment
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of appointment keys for which to load unpaid data.
+
+            When specified, appointments are looked up directly by these keys, instead of by all unpaid
+             appointments booked for [PaymentMultipleApi::$uid](/Wl/Profile/Attendance/Schedule/PaymentMultiple.json) on the day specified in
+             [PaymentMultipleApi::$dtl_date](/Wl/Profile/Attendance/Schedule/PaymentMultiple.json).
+        -
+          name: dtl_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: 'Local date and time for which visit is booked in MySQL format.'
+        -
+          name: is_simple
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            When set to `true` it's mean that need load full information about unpaid visits:
+             * List of available/existing POs.
+             * List of unpaid addons.
+             When set to `false` loaded only general information about visits on passed day.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The location key.'
+        -
+          name: k_visit
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Last booked visit key.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The user's key."
+      x-instance-get-key: 'dtl_date,k_business,k_location,k_visit,uid,is_simple'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Profile.Attendance.Schedule.PaymentMultiple.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url_redirect:
+                    type: string
+                    description: 'Url for redirect after applying existing purchase options.'
+                required:
+                  - url_redirect
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Applies existing purchase options for appointments pay and generates a link for payment in the store.'
+      description: |-
+        Applies purchase options and session passes already owned by the client to the selected
+         visits. Redirects to the store cart or checkout page so the client can complete payment for
+         any remaining unpaid addons or newly purchased purchase options.
+      tags:
+        - 'Attendance Payment'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_visit_pay
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                a_shop_product_option:
+                  type: array
+                  description: 'Selected for payment products options keys.'
+                  items:
+                    type: string
+                k_visit:
+                  type: string
+                  description: 'The visit key.'
+                text_key:
+                  type: string
+                  description: 'Selected pay option to apply. The key has structure [PayChangeApi::$text_key](/Wl/Visit/Pay/PayChange.json).'
+                uid:
+                  type: string
+                  description: 'The user key.'
+              required:
+                - a_shop_product_option
+                - k_visit
+                - text_key
+                - uid
+          description: |-
+            Visits payment data.
+
+            Visits payment data to apply:
+        -
+          name: is_checkout
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Determines for which store page the redirection url should be generated.
+            `true` if to the checkout page.
+            `false` if to the cart page.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "The user's key."
+      x-instance-get-key: 'dtl_date,k_business,k_location,k_visit,uid,is_simple'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Profile/Form/Response/ResponseList.json:
     get:
       operationId: Wl.Profile.Form.Response.ResponseList.get
@@ -92054,7 +92464,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Card/Add/Add.json:
     delete:
-      operationId: Wl.Pay.Bank.Card.Add.Add.delete
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -92099,7 +92509,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Pay.Bank.Card.Add.Add.get
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.get
       responses:
         '200':
           description: 'Successful response.'
@@ -92165,7 +92575,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Pay.Bank.Card.Add.Add.post
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.post
       responses:
         '200':
           description: 'Successful response.'
@@ -92313,7 +92723,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Card/Widget/WidgetSelect.json:
     get:
-      operationId: Wl.Pay.Bank.Card.Widget.WidgetSelect.get
+      operationId: Thoth.WlPay.Bank.Card.Widget.WidgetSelect.get
       responses:
         '200':
           description: 'Successful response.'
@@ -92506,7 +92916,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Ach/Add/Add.json:
     delete:
-      operationId: Wl.Pay.Bank.Ach.Add.Add.delete
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -92552,7 +92962,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Pay.Bank.Ach.Add.Add.get
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.get
       responses:
         '200':
           description: 'Successful response.'
@@ -92642,7 +93052,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Pay.Bank.Ach.Add.Add.post
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.post
       responses:
         '200':
           description: 'Successful response.'
@@ -95695,6 +96105,52 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Report/Generator/Query.json:
+    $ref: '#/paths/~1Thoth~1ReportCore~1Generator~1Query.json'
+  /Wl/Pay/Account/Account.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Account~1Account.json'
+  /Wl/Pay/Address/Address.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Address.json'
+  /Wl/Pay/Address/Profile.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Profile.json'
+  /Wl/Pay/Form/Environment.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Form~1Environment.json'
+  /Wl/Pay/Form/EnvironmentUser.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Form~1EnvironmentUser.json'
+  /Wl/Pay/Method/List.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Method~1List.json'
+  /Wl/Pay/Owner/Owner.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Owner~1Owner.json'
+  /Wl/Pay/Bank/Card/List.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1List.json'
+  /Wl/Pay/Bank/Ach/List.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Ach~1List.json'
+  /Wl/Pay/Address/Widget/WidgetEdit.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Widget~1WidgetEdit.json'
+  /Wl/Pay/Transaction/Report/TransactionAllPayment.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Transaction~1Report~1TransactionAllPayment.json'
+  /Wl/Pay/Processor/CyberSource/CsCaptureContext.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsCaptureContext.json'
+  /Wl/Pay/Processor/CyberSource/CsPaEnrollment.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaEnrollment.json'
+  /Wl/Pay/Processor/CyberSource/CsPaSetup.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaSetup.json'
+  /Wl/Pay/Processor/CyberSource/CsPaValidate.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaValidate.json'
+  /Wl/Pay/Processor/StripeCom/PaymentIntentUpdate.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1PaymentIntentUpdate.json'
+  /Wl/Pay/Processor/StripeCom/StripeComKey.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComKey.json'
+  /Wl/Pay/Processor/StripeCom/StripeComPayInit.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComPayInit.json'
+  /Wl/Pay/Processor/StripeCom/StripeComPaymentIntentCancel.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComPaymentIntentCancel.json'
+  /Wl/Pay/Bank/Card/Add/Add.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1Add~1Add.json'
+  /Wl/Pay/Bank/Card/Widget/WidgetSelect.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1Widget~1WidgetSelect.json'
+  /Wl/Pay/Bank/Ach/Add/Add.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Ach~1Add~1Add.json'
 components:
   schemas:
     ErrorResponse:
