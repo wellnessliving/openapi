@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260707031721
+  version: 1.1.20260707040044
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -473,7 +473,7 @@ paths:
           period: 3600
   /Thoth/ReportCore/Generator/Query.json:
     post:
-      operationId: Wl.Report.Generator.Query.post
+      operationId: Thoth.ReportCore.Generator.Query.post
       responses:
         '200':
           description: 'Successful response.'
@@ -956,7 +956,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Account/Account.json:
     get:
-      operationId: Wl.Pay.Account.Account.get
+      operationId: Thoth.WlPay.Account.Account.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1111,7 +1111,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Form/EnvironmentUser.json:
     get:
-      operationId: Wl.Pay.Form.EnvironmentUser.get
+      operationId: Thoth.WlPay.Form.EnvironmentUser.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1366,7 +1366,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Form/Environment.json:
     get:
-      operationId: Wl.Pay.Form.Environment.get
+      operationId: Thoth.WlPay.Form.Environment.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1623,7 +1623,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Method/List.json:
     get:
-      operationId: Wl.Pay.Method.List.get
+      operationId: Thoth.WlPay.Method.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1714,7 +1714,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Owner/Owner.json:
     get:
-      operationId: Wl.Pay.Owner.Owner.get
+      operationId: Thoth.WlPay.Owner.Owner.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1793,7 +1793,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Address/Address.json:
     get:
-      operationId: Wl.Pay.Address.Address.get
+      operationId: Thoth.WlPay.Address.Address.get
       responses:
         '200':
           description: 'Successful response.'
@@ -1942,7 +1942,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Address/Profile.json:
     get:
-      operationId: Wl.Pay.Address.Profile.get
+      operationId: Thoth.WlPay.Address.Profile.get
       responses:
         '200':
           description: 'Successful response.'
@@ -22377,7 +22377,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Transaction/Report/TransactionAllPayment.json:
     get:
-      operationId: Wl.Pay.Transaction.Report.TransactionAllPayment.get
+      operationId: Thoth.WlPay.Transaction.Report.TransactionAllPayment.get
       responses:
         '200':
           description: 'Successful response.'
@@ -22634,7 +22634,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Ach/List.json:
     get:
-      operationId: Wl.Pay.Bank.Ach.List.get
+      operationId: Thoth.WlPay.Bank.Ach.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -22740,7 +22740,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Card/List.json:
     get:
-      operationId: Wl.Pay.Bank.Card.List.get
+      operationId: Thoth.WlPay.Bank.Card.List.get
       responses:
         '200':
           description: 'Successful response.'
@@ -22917,7 +22917,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Address/Widget/WidgetEdit.json:
     get:
-      operationId: Wl.Pay.Address.Widget.WidgetEdit.get
+      operationId: Thoth.WlPay.Address.Widget.WidgetEdit.get
       responses:
         '200':
           description: 'Successful response.'
@@ -65074,7 +65074,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Ach/Add/Add.json:
     delete:
-      operationId: Wl.Pay.Bank.Ach.Add.Add.delete
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -65119,7 +65119,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Pay.Bank.Ach.Add.Add.get
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.get
       responses:
         '200':
           description: 'Successful response.'
@@ -65208,7 +65208,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Pay.Bank.Ach.Add.Add.post
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.post
       responses:
         '200':
           description: 'Successful response.'
@@ -65462,7 +65462,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Card/Add/Add.json:
     delete:
-      operationId: Wl.Pay.Bank.Card.Add.Add.delete
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.delete
       responses:
         '200':
           description: 'Successful response.'
@@ -65507,7 +65507,7 @@ paths:
           limit: 200000
           period: 3600
     get:
-      operationId: Wl.Pay.Bank.Card.Add.Add.get
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.get
       responses:
         '200':
           description: 'Successful response.'
@@ -65573,7 +65573,7 @@ paths:
           limit: 200000
           period: 3600
     post:
-      operationId: Wl.Pay.Bank.Card.Add.Add.post
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.post
       responses:
         '200':
           description: 'Successful response.'
@@ -65721,7 +65721,7 @@ paths:
           period: 3600
   /Thoth/WlPay/Bank/Card/Widget/WidgetSelect.json:
     get:
-      operationId: Wl.Pay.Bank.Card.Widget.WidgetSelect.get
+      operationId: Thoth.WlPay.Bank.Card.Widget.WidgetSelect.get
       responses:
         '200':
           description: 'Successful response.'
@@ -83616,7 +83616,7 @@ paths:
           schema:
             type: string
           description: "The user's key."
-      x-instance-get-key: 'dtl_date,k_business,k_location,k_visit,uid,is_simple,a_appointment'
+      x-instance-get-key: 'dtl_date,k_business,k_location,k_visit,uid,is_simple'
       x-rate-limit:
         -
           limit: 200000
@@ -83714,7 +83714,7 @@ paths:
           schema:
             type: string
           description: "The user's key."
-      x-instance-get-key: 'dtl_date,k_business,k_location,k_visit,uid,is_simple,a_appointment'
+      x-instance-get-key: 'dtl_date,k_business,k_location,k_visit,uid,is_simple'
       x-rate-limit:
         -
           limit: 200000
@@ -94484,6 +94484,36 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Report/Generator/Query.json:
+    $ref: '#/paths/~1Thoth~1ReportCore~1Generator~1Query.json'
+  /Wl/Pay/Account/Account.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Account~1Account.json'
+  /Wl/Pay/Address/Address.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Address.json'
+  /Wl/Pay/Address/Profile.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Profile.json'
+  /Wl/Pay/Form/Environment.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Form~1Environment.json'
+  /Wl/Pay/Form/EnvironmentUser.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Form~1EnvironmentUser.json'
+  /Wl/Pay/Method/List.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Method~1List.json'
+  /Wl/Pay/Owner/Owner.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Owner~1Owner.json'
+  /Wl/Pay/Bank/Card/List.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1List.json'
+  /Wl/Pay/Bank/Ach/List.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Ach~1List.json'
+  /Wl/Pay/Address/Widget/WidgetEdit.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Widget~1WidgetEdit.json'
+  /Wl/Pay/Transaction/Report/TransactionAllPayment.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Transaction~1Report~1TransactionAllPayment.json'
+  /Wl/Pay/Bank/Card/Add/Add.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1Add~1Add.json'
+  /Wl/Pay/Bank/Card/Widget/WidgetSelect.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1Widget~1WidgetSelect.json'
+  /Wl/Pay/Bank/Ach/Add/Add.json:
+    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Ach~1Add~1Add.json'
 components:
   schemas:
     ErrorResponse:
