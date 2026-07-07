@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260707080132
+  version: 1.1.20260707081927
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -62014,13 +62014,16 @@ paths:
                 properties:
                   a_list:
                     type: array
-                    description: |-
-                      Discount codes list.
-
-                      Each element has next structure:
+                    description: 'Discount codes list. Each element has the following structure:'
                     items:
                       type: object
                       properties:
+                        is_active:
+                          type: boolean
+                          description: '`true` if the discount code is active, `false` otherwise.'
+                        is_remove:
+                          type: boolean
+                          description: '`true` if the discount code is removed, `false` otherwise.'
                         k_discount_code:
                           type: string
                           description: 'Discount code key.'
@@ -62028,6 +62031,8 @@ paths:
                           type: string
                           description: 'Discount code title.'
                       required:
+                        - is_active
+                        - is_remove
                         - k_discount_code
                         - text_discount_code
                 required:
