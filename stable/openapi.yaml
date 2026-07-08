@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260707130709
+  version: 1.1.20260708062531
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -78,6 +78,9 @@ tags:
     name: Currency
     description: 'Currency information endpoints.'
   -
+    name: CyberSource
+    description: 'CyberSource payment gateway integration endpoints.'
+  -
     name: Discounts
     description: 'Discount code and gift card management endpoints.'
   -
@@ -137,6 +140,9 @@ tags:
   -
     name: Notifications
     description: 'Notification and OTP delivery endpoints.'
+  -
+    name: Nuvei
+    description: 'Nuvei payment gateway integration endpoints.'
   -
     name: 'Payment Address'
     description: 'Payment address management endpoints.'
@@ -200,6 +206,9 @@ tags:
   -
     name: Staff
     description: 'Staff member and privilege endpoints.'
+  -
+    name: StripeCom
+    description: 'StripeCom payment gateway integration endpoints.'
   -
     name: System
     description: 'Core system endpoints for request signing, security tokens, and CORS origin configuration.'
@@ -467,6 +476,1440 @@ paths:
             Minimum price to search by (inclusive). Decimal string in dollars (e.g. `"0.00"`).
 
             `null` to not limit by minimum price.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/StripeCom/StripeComKey.json:
+    post:
+      operationId: Thoth.PayProcessor.StripeCom.StripeComKey.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_public:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Merchant public key.
+
+                      `null` before the key is set.
+                      It is set by `post()`.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets the `Stripe` public key for a merchant.'
+      description: |-
+        Returns the publishable key configured for the business merchant, so it can be used by the
+         frontend to initialize `Stripe` payment elements.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: 'ID of the actor.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant to get the public key for.'
+                uid_purchase:
+                  type: string
+                  description: 'Payment owner user key.'
+              required:
+                - id_pay_actor
+                - k_business
+                - k_business_merchant
+                - uid_purchase
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json:
+    post:
+      operationId: Thoth.PayProcessor.StripeCom.PaymentIntentUpdate.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Updates a `Stripe` Payment Intent.'
+      description: |-
+        Adjusts the amount and surcharge of the Payment Intent created for the Stripe Payment Element
+         form when the cart contents change, keeping the underlying payment transaction in sync.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_pay_actor
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayActorSid'
+          description: 'ID of the actor. One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business to update Payment Intent for.'
+        -
+          name: k_business_merchant
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business merchant to update Payment Intent for.'
+        -
+          name: k_pay_transaction
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the payment transaction to update.
+            Required.
+        -
+          name: s_payment_intent
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Payment intent ID to update.
+            Required.
+        -
+          name: uid_purchase
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Payment owner user key.
+            `null` if pay owner is anonymous.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+                    Required.
+                m_amount:
+                  type: string
+                  description: |-
+                    Payment amount to set.
+                    Required.
+                m_surcharge:
+                  type: string
+                  description: |-
+                    Surcharge amount to set.
+                    Required.
+              required:
+                - id_currency
+                - m_amount
+                - m_surcharge
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/StripeCom/StripeComPayInit.json:
+    post:
+      operationId: Thoth.PayProcessor.StripeCom.StripeComPayInit.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_status:
+                    $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.PaymentIntentStatusSid'
+                    description: 'Status of this Payment Intent.'
+                  k_pay_transaction:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Key of payment transaction that was created.
+
+                      `null` in case when not initialized yet.
+                  s_client_secret:
+                    type: string
+                    description: 'Payment Intent client secret key.'
+                  s_payment_intent:
+                    type: string
+                    description: 'Payment intent ID.'
+                  text_message:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Error message.
+
+                      `null` in case response has not received yet or request is not failed.
+                required:
+                  - id_status
+                  - s_client_secret
+                  - s_payment_intent
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Initializes a `Stripe` payment.'
+      description: |-
+        Starts a payment transaction and creates a not-captured Payment Intent at `stripe.com`, returning
+         its status and client secret to continue the payment flow on the frontend.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_card:
+                  type:
+                    - object
+                    - 'null'
+                  description: |-
+                    Credit card data.
+
+                    Contents of the payment source as it presents on the payment form.
+
+                    Supplied in case payment source is card.
+                    `null` if payment source is other than card or payment is initialized before card data is known.
+                  properties:
+                    a_pay_address:
+                      type: object
+                      description: 'Payment address for address edit widget. Used only if `is_new` is `true`:'
+                      properties:
+                        is_new:
+                          type: boolean
+                          description: '`true` if user has chosen to add new address, `false` otherwise.'
+                        k_geo_country:
+                          type: string
+                          description: 'Key of the country.  Used only if `is_new` is `true`.'
+                        k_geo_region:
+                          type: string
+                          description: 'Key of the region.  Used only if `is_new` is `true`.'
+                        k_pay_address:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Chosen payment address key. 
+                            Set even if user decided to add new address.
+                        s_city:
+                          type: string
+                          description: 'City name. Used only if `is_new` is `true`.'
+                        s_name:
+                          type: string
+                          description: "User's full name."
+                        s_phone:
+                          type: string
+                          description: 'Phone number. Used only if `is_new` is `true`.'
+                        s_postal:
+                          type: string
+                          description: 'Postal code. Used only if `is_new` is `true`.'
+                        s_street1:
+                          type: string
+                          description: 'First address line. Used only if `is_new` is `true`.'
+                        s_street2:
+                          type: string
+                          description: 'Second address line. Used only if `is_new` is `true`.'
+                        text_mail:
+                          type:
+                            - string
+                            - 'null'
+                          description: "User's email. `null` if not specified. Used only if `is_new` is `true`."
+                    i_csc:
+                      type: integer
+                      format: int32
+                      description: 'Card CSC code. Used only if `is_new` is `true`.'
+                    i_month:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration month. Used only if `is_new` is `true`.'
+                    i_year:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration year. Used only if `is_new` is `true`.'
+                    id_card_type:
+                      $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
+                      description: 'Card type. One of [CardTypeEnum](#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum) constants as int. Used only if `is_new` is `true`.'
+                    is_default:
+                      type: boolean
+                      description: 'If the card should be made the default payment method. Used only if `is_new` is `true`.'
+                    is_new:
+                      type: boolean
+                      description: 'Whether a new card is being added instead of an existing one being selected.'
+                    is_save:
+                      type: boolean
+                      description: 'If the card information should be saved for future transactions. Used only if `is_new` is `true`.'
+                    k_pay_bank:
+                      type: string
+                      description: 'Selected payment card key. Used only if `is_new` is `false`. `0` if no existing card is selected.'
+                    s_name:
+                      type: string
+                      description: 'Card nickname. Used only if `is_new` is `true`.'
+                    s_number:
+                      type: string
+                      description: 'Card number. Used only if `is_new` is `true`.'
+                  required:
+                    - is_new
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+
+                    One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: |-
+                    ID of the actor.
+
+                    One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_method:
+                  $ref: '#/components/schemas/RsPayMethodSid'
+                  description: |-
+                    ID of pay method.
+
+                    One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+
+                    `null` in case when not initialized yet.
+                is_authorize:
+                  type: boolean
+                  description: |-
+                    Whether authorization or capture should be performed.
+
+                    `true` (or anything that is not empty) to perform authorization.
+
+                    `false` (or anything that is empty, or do not pass this value) to charge the payment amount.
+                is_pos:
+                  type: boolean
+                  description: '`true` if card swiper is used, `false` otherwise.'
+                is_stripe_elements:
+                  type: boolean
+                  description: '`true` if Stripe Payment Element form (@link https://stripe.com/docs/payments/elements) is used, `false` otherwise.'
+                k_business:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business which receives the payment.
+
+                    `null` in case when not initialized yet.
+                k_business_merchant:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business merchant that should be used to perform the request.
+
+                    `null` in case when not initialized yet.
+                k_pay_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a custom payment method.
+
+                    `null` in case when not initialized yet or empty if payment is performed with a standard payment method.
+                m_amount:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment amount.
+
+                    `null` in case when not initialized yet.
+                m_surcharge:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Surcharge amount.
+
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                s_payment_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment method ID.
+
+                    `null` if Payment intent must be created without existing Payment method.
+                uid_purchase:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment owner user key.
+
+                    `null` in case when not initialized yet or if pay owner is anonymous.
+              required:
+                - is_authorize
+                - is_pos
+                - is_stripe_elements
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/StripeCom/StripeComPaymentIntentCancel.json:
+    post:
+      operationId: Thoth.PayProcessor.StripeCom.StripeComPaymentIntentCancel.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Cancels a `Stripe` Payment Intent.'
+      description: |-
+        Verifies that the Payment Intent belongs to the current payer authentication session, then
+         refunds the associated payment transaction to release the reserved amount.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: 'ID of the actor.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant, that processes payment.'
+                k_pay_transaction:
+                  type: string
+                  description: 'Pay transaction key, which was used to create payment intent.'
+                s_payment_intent:
+                  type: string
+                  description: 'Payment intent ID.'
+                uid_purchase:
+                  type: string
+                  description: 'Payment owner user key.'
+              required:
+                - id_pay_actor
+                - k_business
+                - k_business_merchant
+                - k_pay_transaction
+                - s_payment_intent
+                - uid_purchase
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/Nuvei/NuveiTransactionOnAuthSuccess.json:
+    post:
+      operationId: Thoth.PayProcessor.Nuvei.NuveiTransactionOnAuthSuccess.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Finalizes the `Nuvei` transaction after successful payer authentication.'
+      description: |-
+        Validates the payer authentication session and encrypted card token, then updates the payment
+         transaction created by [NuveiOpenOrderApi](/Thoth/PayProcessor/Nuvei/NuveiOpenOrder.json) with the gateway transaction ID and card data.
+      tags:
+        - Payments
+        - Nuvei
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                is_authorize:
+                  type: boolean
+                  description: |-
+                    Whether authorization or capture should be performed.
+
+                    `true` (or anything that is not empty) to perform authorization.
+
+                    `false` (or anything that is empty, or do not pass this value) to charge the payment amount.
+                k_business:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business which receives the payment.
+
+                    `null` in case when not initialized yet.
+                k_business_merchant:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business merchant that should be used to perform the request.
+
+                    `null` in case when not initialized yet.
+                k_pay_bank:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a selected payment source.
+
+                    `null` in case when an existed payment source is not used.
+                k_pay_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a custom payment method.
+
+                    `null` in case when not initialized yet or empty if payment is performed with a standard payment method.
+                k_pay_transaction:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of payment transaction that was previously created with [NuveiOpenOrderApi](/Thoth/PayProcessor/Nuvei/NuveiOpenOrder.json).
+
+                    `null` in case when not initialized yet.
+                m_amount:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment amount.
+
+                    `null` in case when not initialized yet.
+                m_surcharge:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Surcharge amount.
+
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                s_encrypt:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Contents of the encrypted token.
+
+                    `null` in case when not initialized yet.
+                s_nuvei_order:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    The order ID provided by Nuvei.
+
+                    `null` in case when not initialized yet.
+                s_nuvei_session:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    The session identifier to be used by the request that processes the newly opened order.
+
+                    `null` in case when not initialized yet.
+                s_response:
+                  type:
+                    - string
+                    - 'null'
+                  description: 'Payment gateway-specific response object.'
+                s_transaction:
+                  type:
+                    - string
+                    - 'null'
+                  description: 'The Gateway transaction ID.'
+                uid_purchase:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment owner user key.
+
+                    `null` in case when not initialized yet or if pay owner is anonymous.
+              required:
+                - is_authorize
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/Nuvei/NuveiUpdateOrder.json:
+    post:
+      operationId: Thoth.PayProcessor.Nuvei.NuveiUpdateOrder.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text_message:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Error message.
+
+                      `null` in case response has not received yet or request is not failed.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Updates the amount of a previously opened `Nuvei` order.'
+      description: |-
+        Validates the payer authentication session, then requests `Nuvei` to update the amount of the order
+         opened by [NuveiOpenOrderApi](/Thoth/PayProcessor/Nuvei/NuveiOpenOrder.json) and adjusts the payment transaction accordingly.
+      tags:
+        - Payments
+        - Nuvei
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+
+                    One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: |-
+                    ID of the actor.
+
+                    One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_method:
+                  $ref: '#/components/schemas/RsPayMethodSid'
+                  description: |-
+                    ID of pay method.
+
+                    One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+
+                    `null` in case when not initialized yet.
+                is_authorize:
+                  type: boolean
+                  description: |-
+                    Whether authorization or capture should be performed.
+
+                    `true` (or anything that is not empty) to perform authorization.
+
+                    `false` (or anything that is empty, or do not pass this value) to charge the payment amount.
+                k_business:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business which receives the payment.
+
+                    `null` in case when not initialized yet.
+                k_business_merchant:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business merchant that should be used to perform the request.
+
+                    `null` in case when not initialized yet.
+                k_pay_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a custom payment method.
+
+                    `null` in case when not initialized yet or empty if payment is performed with a standard payment method.
+                k_pay_transaction:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of payment transaction that was created in [NuveiOpenOrderApi](/Thoth/PayProcessor/Nuvei/NuveiOpenOrder.json).
+
+                    This will be `null` if not loaded yet.
+                m_amount:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment amount.
+
+                    `null` in case when not initialized yet.
+                m_surcharge:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Surcharge amount.
+
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                s_nuvei_order:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    The order ID that was created in [NuveiOpenOrderApi](/Thoth/PayProcessor/Nuvei/NuveiOpenOrder.json).
+
+                    This will be `null` if not loaded yet.
+                s_nuvei_session:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    The session identifier in which order was created.
+
+                    This will be `null` if not loaded yet.
+                uid_purchase:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment owner user key.
+
+                    `null` in case when not initialized yet or if pay owner is anonymous.
+              required:
+                - is_authorize
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/Nuvei/NuveiOpenOrder.json:
+    post:
+      operationId: Thoth.PayProcessor.Nuvei.NuveiOpenOrder.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  k_pay_transaction:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Key of payment transaction that was created.
+
+                      `null` in case when not initialized yet.
+                  s_nuvei_order:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The order ID provided by Nuvei.
+
+                      `null` in case of errors.
+                  s_nuvei_session:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The session identifier to be used by the request that processes the newly opened order.
+
+                      `null` in case of errors.
+                  text_message:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Error message.
+
+                      `null` in case response has not received yet or request is not failed.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Opens a `Nuvei` order for the payment transaction.'
+      description: |-
+        Authenticates the merchant credentials, starts a payment transaction, and requests `Nuvei` to open
+         an order for the requested amount, returning the order and session identifiers needed to continue
+         the payer authentication flow.
+      tags:
+        - Payments
+        - Nuvei
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+
+                    One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: |-
+                    ID of the actor.
+
+                    One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_method:
+                  $ref: '#/components/schemas/RsPayMethodSid'
+                  description: |-
+                    ID of pay method.
+
+                    One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+
+                    `null` in case when not initialized yet.
+                is_authorize:
+                  type: boolean
+                  description: |-
+                    Whether authorization or capture should be performed.
+
+                    `true` (or anything that is not empty) to perform authorization.
+
+                    `false` (or anything that is empty, or do not pass this value) to charge the payment amount.
+                k_business:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business which receives the payment.
+
+                    `null` in case when not initialized yet.
+                k_business_merchant:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business merchant that should be used to perform the request.
+
+                    `null` in case when not initialized yet.
+                k_pay_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a custom payment method.
+
+                    `null` in case when not initialized yet or empty if payment is performed with a standard payment method.
+                m_amount:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment amount.
+
+                    `null` in case when not initialized yet.
+                m_surcharge:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Surcharge amount.
+
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                uid_purchase:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment owner user key.
+
+                    `null` in case when not initialized yet or if pay owner is anonymous.
+              required:
+                - is_authorize
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/Nuvei/NuveiTransactionCancel.json:
+    post:
+      operationId: Thoth.PayProcessor.Nuvei.NuveiTransactionCancel.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Cancels the `Nuvei` transaction.'
+      description: |-
+        Voids the payer authentication session opened by [NuveiOpenOrderApi](/Thoth/PayProcessor/Nuvei/NuveiOpenOrder.json) and schedules the
+         underlying payment transaction to be voided.
+      tags:
+        - Payments
+        - Nuvei
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_business:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business which receives the payment.
+
+                    `null` in case when not initialized yet.
+                k_pay_transaction:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of payment transaction that was created in [NuveiOpenOrderApi](/Thoth/PayProcessor/Nuvei/NuveiOpenOrder.json).
+
+                    This will be `null` if not loaded yet.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/CyberSource/CsPaEnrollment.json:
+    post:
+      operationId: Thoth.PayProcessor.CyberSource.CsPaEnrollment.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_jwt:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'JSON Web Token to include into the request to the second frame.'
+                  url_interact:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      URL for frontend interaction.
+                      This normally means that payer needs to make further steps for the authentication.
+
+                      `null` if no interaction required, and we should proceed with the withdrawal.
+                      This normally means that payer is authenticated.
+
+                      If payer is not authenticated, or there is an error occurred during check of the enrollment,
+                      this API returns an exception.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Checks `CyberSource` Payer Authentication enrollment.'
+      description: |-
+        Verifies whether the payer must complete additional authentication steps for the transaction
+         started by [CsPaSetupApi](/Thoth/PayProcessor/CyberSource/CsPaSetup.json), returning a JWT and interaction URL when a challenge is required.
+      tags:
+        - Payments
+        - CyberSource
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_device_info:
+                  type: object
+                  description: 'User device info:'
+                  properties:
+                    i_browser_screen_height:
+                      type: integer
+                      format: int32
+                      description: 'User browser screen height.'
+                    i_browser_screen_width:
+                      type: integer
+                      format: int32
+                      description: 'User browser screen width.'
+                  required:
+                    - i_browser_screen_height
+                    - i_browser_screen_width
+                k_pay_transaction:
+                  type: string
+                  description: 'Key of payment transaction that was previously created with [CsPaSetupApi](/Thoth/PayProcessor/CyberSource/CsPaSetup.json).'
+              required:
+                - a_device_info
+                - k_pay_transaction
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/CyberSource/CsPaValidate.json:
+    post:
+      operationId: Thoth.PayProcessor.CyberSource.CsPaValidate.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Validates the `CyberSource` Payer Authentication result.'
+      description: |-
+        Retrieves the authentication result for the transaction validated by [CsPaEnrollmentApi](/Thoth/PayProcessor/CyberSource/CsPaEnrollment.json)
+         and confirms whether the payer authentication succeeded, allowing the merchant to proceed with
+         processing the payment.
+      tags:
+        - Payments
+        - CyberSource
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_pay_transaction:
+                  type: string
+                  description: 'Key of payment transaction that was previously created with [CsPaSetupApi](/Thoth/PayProcessor/CyberSource/CsPaSetup.json).'
+                s_transaction:
+                  type: string
+                  description: 'Payer authentication transaction ID.'
+              required:
+                - k_pay_transaction
+                - s_transaction
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/CyberSource/CsCaptureContext.json:
+    post:
+      operationId: Thoth.PayProcessor.CyberSource.CsCaptureContext.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_client_library_integrity:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Microform Integration JavaScript library integrity property value.
+
+                      `null` until generated.
+                  s_key:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Contents of the key.
+
+                      `null` until generated.
+                  s_key_id:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      ID of the key.
+
+                      `null` until generated.
+                  url_client_library:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Microform Integration JavaScript library url.
+
+                      `null` until generated.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Generates a capture context for `CyberSource` Flex Microform.'
+      description: |-
+        Returns a capture context and key ID that the client uses to encrypt the card number before
+         sending it in the follow-on Tokenize Card request.
+      tags:
+        - Payments
+        - CyberSource
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant that should be used to perform the request.'
+              required:
+                - k_business
+                - k_business_merchant
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/PayProcessor/CyberSource/CsPaSetup.json:
+    post:
+      operationId: Thoth.PayProcessor.CyberSource.CsPaSetup.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  k_pay_transaction:
+                    type: string
+                    description: 'Key of payment transaction that was created.'
+                  s_jwt:
+                    type: string
+                    description: 'JWT token, as returned by Cyber Source.'
+                  s_reference:
+                    type: string
+                    description: 'Reference ID, as returned by Cyber Source.'
+                  url_collection:
+                    type: string
+                    description: 'Device collection URL, as returned by Cyber Source.'
+                required:
+                  - k_pay_transaction
+                  - s_jwt
+                  - s_reference
+                  - url_collection
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Starts `CyberSource` Payer Authentication setup.'
+      description: |-
+        Validates the payment request and card data, starts a payment transaction, and requests
+         `CyberSource` to set up payer authentication, returning the JWT and device collection URL
+         needed to continue the flow.
+      tags:
+        - Payments
+        - CyberSource
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_card:
+                  type: object
+                  description: |-
+                    Credit card data.
+
+                    Contents of the payment source as it presents on the payment form.
+                  properties:
+                    a_pay_address:
+                      type: object
+                      description: 'Payment address for address edit widget. Used only if `is_new` is `true`:'
+                      properties:
+                        is_new:
+                          type: boolean
+                          description: '`true` if user has chosen to add new address, `false` otherwise.'
+                        k_geo_country:
+                          type: string
+                          description: 'Key of the country.  Used only if `is_new` is `true`.'
+                        k_geo_region:
+                          type: string
+                          description: 'Key of the region.  Used only if `is_new` is `true`.'
+                        k_pay_address:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Chosen payment address key. 
+                            Set even if user decided to add new address.
+                        s_city:
+                          type: string
+                          description: 'City name. Used only if `is_new` is `true`.'
+                        s_name:
+                          type: string
+                          description: "User's full name."
+                        s_phone:
+                          type: string
+                          description: 'Phone number. Used only if `is_new` is `true`.'
+                        s_postal:
+                          type: string
+                          description: 'Postal code. Used only if `is_new` is `true`.'
+                        s_street1:
+                          type: string
+                          description: 'First address line. Used only if `is_new` is `true`.'
+                        s_street2:
+                          type: string
+                          description: 'Second address line. Used only if `is_new` is `true`.'
+                        text_mail:
+                          type:
+                            - string
+                            - 'null'
+                          description: "User's email. `null` if not specified. Used only if `is_new` is `true`."
+                    i_csc:
+                      type: integer
+                      format: int32
+                      description: 'Card CSC code. Used only if `is_new` is `true`.'
+                    i_month:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration month. Used only if `is_new` is `true`.'
+                    i_year:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration year. Used only if `is_new` is `true`.'
+                    id_card_type:
+                      $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
+                      description: 'Card type. One of [CardTypeEnum](#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum) constants as int. Used only if `is_new` is `true`.'
+                    is_default:
+                      type: boolean
+                      description: 'If the card should be made the default payment method. Used only if `is_new` is `true`.'
+                    is_new:
+                      type: boolean
+                      description: 'Whether a new card is being added instead of an existing one being selected.'
+                    is_save:
+                      type: boolean
+                      description: 'If the card information should be saved for future transactions. Used only if `is_new` is `true`.'
+                    k_pay_bank:
+                      type: string
+                      description: 'Selected payment card key. Used only if `is_new` is `false`. `0` if no existing card is selected.'
+                    s_name:
+                      type: string
+                      description: 'Card nickname. Used only if `is_new` is `true`.'
+                    s_number:
+                      type: string
+                      description: 'Card number. Used only if `is_new` is `true`.'
+                  required:
+                    - is_new
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: 'ID of the actor.'
+                is_authorize:
+                  type: boolean
+                  description: |-
+                    Whether authorization or capture should be performed.
+
+                    `true` (or anything that is not empty) to perform authorization and void immediately.
+
+                    `false` (or anything that is empty, or do not pass this value) to capture the payment amount.
+                k_business:
+                  type: string
+                  description: 'Key of the business which receives the payment.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant that should be used to perform the request.'
+                k_pay_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a custom payment method.
+
+                    `null` or an empty string if payment is performed with a standard payment method.
+
+                    Only payment methods based on [RsPayMethodSid::ECOMMERCE](#/components/schemas/RsPayMethodSid) are accepted.
+                m_amount:
+                  type: string
+                  description: 'Payment amount.'
+                m_surcharge:
+                  type: string
+                  description: |-
+                    Surcharge amount.
+
+                    Empty string or null for zero surcharge amount.
+                uid_pay_owner:
+                  type: string
+                  description: 'UID of the payment owner.'
+              required:
+                - a_card
+                - id_pay_actor
+                - is_authorize
+                - k_business
+                - k_business_merchant
+                - m_amount
+                - m_surcharge
+                - uid_pay_owner
       x-rate-limit:
         -
           limit: 200000
@@ -865,13 +2308,6 @@ paths:
                 is_backend:
                   type: boolean
                   description: 'Whether report is generating for the backend.'
-                is_export:
-                  type: boolean
-                  description: |-
-                    Whether the timeout check should be enforced during cell loading.
-
-                    Set to `true` by the export controller to abort cell loading with a user-facing error
-                    when the remaining execution time drops below `TIME_LIMIT_BUFFER_SECOND`.
                 is_refresh:
                   type: boolean
                   description: |-
@@ -943,7 +2379,6 @@ paths:
                 - i_offset
                 - is_actual
                 - is_backend
-                - is_export
                 - is_refresh
                 - json_filter
                 - k_business
@@ -22532,10 +23967,7 @@ paths:
                     description: 'The date and time if generation of this report has started. Otherwise, this will be `null`.'
                   id_report_status:
                     $ref: '#/components/schemas/Wl.Report.Generator.ReportGeneratorStatusSid'
-                    description: |-
-                      The report status.
-
-                      One of [ReportGeneratorStatusSid](#/components/schemas/Wl.Report.Generator.ReportGeneratorStatusSid) constants.
+                    description: 'The report status.'
                   is_more:
                     type: boolean
                     description: |-
@@ -22579,6 +24011,7 @@ paths:
         up to `LIMIT` rows per request.
       tags:
         - Payments
+        - Reports
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -22705,6 +24138,7 @@ paths:
         Validates the user, business, and location, then retrieves all saved ACH accounts for the resolved merchant.
          Also reports whether the current owner is allowed to add a new ACH account.
       tags:
+        - Payments
         - ACH
       parameters:
         -
@@ -22999,6 +24433,7 @@ paths:
          When no business key is provided, system-level defaults are returned.
       tags:
         - 'Payment Address'
+        - Payments
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -65065,6 +66500,9 @@ paths:
                 is_pass_deactivate:
                   type: boolean
                   description: 'Whether even pass should be deactivated or not.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
                 k_purchase_item_tuition:
                   type: string
                   description: 'Key of the tuition purchase item. This is enrollment key, which can be got from [TuitionEnrollmentListApi](/Wl/Tuition/Enrollment/TuitionEnrollmentList.json).'
@@ -65072,6 +66510,7 @@ paths:
                 - a_event_cancel
                 - is_cancel_visits
                 - is_pass_deactivate
+                - k_business
                 - k_purchase_item_tuition
       x-rate-limit:
         -
@@ -65100,6 +66539,7 @@ paths:
         Removes the ACH bank account identified by `k_pay_bank` from the pay owner's saved payment methods
          for the given business.
       tags:
+        - Payments
         - ACH
       parameters:
         -
@@ -65138,7 +66578,7 @@ paths:
                     description: 'The HTML form containing the fields required to add a card.'
                   id_pay_processor:
                     $ref: '#/components/schemas/Thoth.PayProcessor.PayProcessorSid'
-                    description: 'Transaction processor id. One of [PayProcessorSid](#/components/schemas/Thoth.PayProcessor.PayProcessorSid) constants.'
+                    description: 'Transaction processor ID.'
                 required:
                   - html_widget
                   - id_pay_processor
@@ -65160,6 +66600,7 @@ paths:
          Zealand) or ACH as the payment method. Returns the rendered widget HTML and the processor ID for the
          resolved merchant.
       tags:
+        - Payments
         - ACH
       parameters:
         -
@@ -65171,7 +66612,7 @@ paths:
           schema:
             $ref: '#/components/schemas/Core.Locale.LocaleSid'
           description: |-
-            Locale ID. One of [LocaleSid](#/components/schemas/Core.Locale.LocaleSid) constants.
+            Locale ID.
             `null` - if it is not set.
         -
           name: is_new
@@ -65326,6 +66767,7 @@ paths:
          and optionally marks it as the default payment method. Returns the saved account details including billing
          address information.
       tags:
+        - Payments
         - ACH
       parameters:
         -
@@ -65850,6 +67292,7 @@ paths:
          merchant and returns the list of saved cards available to the given owner. For business owners, a system-wide
          merchant must be configured; for users, a business-specific merchant is required.
       tags:
+        - Payments
         - 'Payment Methods'
       parameters:
         -
@@ -65860,16 +67303,14 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/RsPayMethodSid'
-          description: 'Payment method. One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.'
+          description: 'Payment method.'
         -
           name: id_pay_mode
           in: query
           required: true
           schema:
             $ref: '#/components/schemas/RsPayModeSid'
-          description: |-
-            Payment mode.
-            One of [RsPayModeSid](#/components/schemas/RsPayModeSid) constants.
+          description: 'Payment mode.'
         -
           name: id_pay_owner
           in: query
@@ -94513,6 +95954,22 @@ paths:
     $ref: '#/paths/~1Thoth~1WlPay~1Address~1Widget~1WidgetEdit.json'
   /Wl/Pay/Transaction/Report/TransactionAllPayment.json:
     $ref: '#/paths/~1Thoth~1WlPay~1Transaction~1Report~1TransactionAllPayment.json'
+  /Wl/Pay/Processor/CyberSource/CsCaptureContext.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsCaptureContext.json'
+  /Wl/Pay/Processor/CyberSource/CsPaEnrollment.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaEnrollment.json'
+  /Wl/Pay/Processor/CyberSource/CsPaSetup.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaSetup.json'
+  /Wl/Pay/Processor/CyberSource/CsPaValidate.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaValidate.json'
+  /Wl/Pay/Processor/StripeCom/PaymentIntentUpdate.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1PaymentIntentUpdate.json'
+  /Wl/Pay/Processor/StripeCom/StripeComKey.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComKey.json'
+  /Wl/Pay/Processor/StripeCom/StripeComPayInit.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComPayInit.json'
+  /Wl/Pay/Processor/StripeCom/StripeComPaymentIntentCancel.json:
+    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComPaymentIntentCancel.json'
   /Wl/Pay/Bank/Card/Add/Add.json:
     $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1Add~1Add.json'
   /Wl/Pay/Bank/Card/Widget/WidgetSelect.json:
@@ -94742,6 +96199,312 @@ components:
         - 'Wellness Centers'
         - Yoga.
         - Zumba.
+    RsPayActorSid:
+      type: integer
+      format: int32
+      description: |-
+        Payment actors (staff member, user or business owner).
+
+        Values:
+        - 3 (`BUSINESS`): Business owner.
+
+          Business owner is a sort of ordinary user. It is used when business acts as a user - for example, pays for business
+          account to system business.
+        - 1 (`STAFF`): Staff member.
+
+          The payment is performed by staff (business owner, or administrator within a business backend) on
+          behalf of a user.
+        - 2 (`USER`): User.
+
+          The payment is performed by the user.
+      enum:
+        - 3
+        - 1
+        - 2
+      x-enum-varnames:
+        - BUSINESS
+        - STAFF
+        - USER
+      x-enum-descriptions:
+        - |-
+          Business owner.
+
+          Business owner is a sort of ordinary user. It is used when business acts as a user - for example, pays for business
+          account to system business.
+        - |-
+          Staff member.
+
+          The payment is performed by staff (business owner, or administrator within a business backend) on
+          behalf of a user.
+        - |-
+          User.
+
+          The payment is performed by the user.
+    Core.Locale.CurrencySid:
+      type: integer
+      format: int32
+      description: |-
+        A list of currencies.
+
+        Currency constant names must comply with the standard `ISO 4217` for correct integration with other services.
+
+        Values:
+        - 11 (`AED`): United Arab Emirates dirham.
+        - 6 (`AUD`): Australian dollar.
+        - 18 (`BMD`): Bermudian Dollar.
+        - 19 (`BSD`): Bahamian dollar.
+        - 4 (`CAD`): Canadian dollar.
+        - 8 (`EGP`): Egypt Pound.
+        - 13 (`EUR`): Euro.
+        - 3 (`GBP`): British pound.
+        - 14 (`KWD`): Kuwaiti dinar.
+        - 5 (`KYD`): Cayman Islands dollar.
+        - 16 (`MUR`): Mauritian Rupee.
+        - 10 (`NZD`): New Zealand Dollar.
+        - 12 (`PHP`): Philippines Pesco.
+        - 15 (`SAR`): Saudi Riyal.
+        - 20 (`SGD`): Singapore dollar.
+        - 2 (`UNKNOWN`): Unknown code.
+
+          Used when currency is not specified or is not known.
+        - 1 (`USD`): US dollars.
+        - 17 (`XOF`): West African CFA franc.
+
+          Is used in Senegal.
+        - 7 (`ZAR`): South African rand.
+      enum:
+        - 11
+        - 6
+        - 18
+        - 19
+        - 4
+        - 8
+        - 13
+        - 3
+        - 14
+        - 5
+        - 16
+        - 10
+        - 12
+        - 15
+        - 20
+        - 2
+        - 1
+        - 17
+        - 7
+      x-enum-varnames:
+        - AED
+        - AUD
+        - BMD
+        - BSD
+        - CAD
+        - EGP
+        - EUR
+        - GBP
+        - KWD
+        - KYD
+        - MUR
+        - NZD
+        - PHP
+        - SAR
+        - SGD
+        - UNKNOWN
+        - USD
+        - XOF
+        - ZAR
+      x-enum-descriptions:
+        - 'United Arab Emirates dirham.'
+        - 'Australian dollar.'
+        - 'Bermudian Dollar.'
+        - 'Bahamian dollar.'
+        - 'Canadian dollar.'
+        - 'Egypt Pound.'
+        - Euro.
+        - 'British pound.'
+        - 'Kuwaiti dinar.'
+        - 'Cayman Islands dollar.'
+        - 'Mauritian Rupee.'
+        - 'New Zealand Dollar.'
+        - 'Philippines Pesco.'
+        - 'Saudi Riyal.'
+        - 'Singapore dollar.'
+        - |-
+          Unknown code.
+
+          Used when currency is not specified or is not known.
+        - 'US dollars.'
+        - |-
+          West African CFA franc.
+
+          Is used in Senegal.
+        - 'South African rand.'
+    Thoth.PayProcessor.StripeCom.PaymentIntentStatusSid:
+      type: integer
+      format: int32
+      description: |-
+        Statuses of payment intents.
+
+        Values:
+        - 7 (`CANCELED`): You may cancel a Payment Intent at any point before it is processing or succeeded. This invalidates the
+          Payment Intent for future payment attempts, and cannot be undone. If any funds have been held, cancellation returns
+          those funds.
+        - 4 (`PROCESSING`): Once required actions are handled, the Payment Intent moves to processing. While for some payment methods
+          (e.g., cards) processing can be quick, other types of payment methods can take up to a few days to process.
+        - 3 (`REQUIRES_ACTION`): If the payment requires additional actions, such as authenticating with 3D Secure , the Payment Intent has a status
+          of `requires_action`.
+        - 6 (`REQUIRES_CAPTURE`): Requires capture.
+        - 2 (`REQUIRES_CONFIRMATION`): After the customer provides their payment information, the Payment Intent is ready to be confirmed.
+
+          This status is optional and in most integrations, this state is skipped because payment method information is
+          submitted at the same time that the payment is confirmed.
+        - 1 (`REQUIRES_PAYMENT_METHOD`): When the Payment Intent is created, it has a status of `requires_payment_method` until a payment method is
+          attached.
+
+          We recommend creating the Payment Intent as soon as you know how much you want to charge, so that Stripe can record
+          all the attempted payments.
+
+          If the payment attempt fails (for example due to a decline), the Payment Intent’s status returns to
+          `requires_payment_method`.
+        - 5 (`SUCCEEDED`): A Payment Intent with a status of succeeded means that the payment flow it is driving is complete.
+
+          The funds are now in your account and you can confidently fulfill the order. If you need to refund the customer,
+          you can use the Refunds API.
+      enum:
+        - 7
+        - 4
+        - 3
+        - 6
+        - 2
+        - 1
+        - 5
+      x-enum-varnames:
+        - CANCELED
+        - PROCESSING
+        - REQUIRES_ACTION
+        - REQUIRES_CAPTURE
+        - REQUIRES_CONFIRMATION
+        - REQUIRES_PAYMENT_METHOD
+        - SUCCEEDED
+      x-enum-descriptions:
+        - |-
+          You may cancel a Payment Intent at any point before it is processing or succeeded. This invalidates the
+          Payment Intent for future payment attempts, and cannot be undone. If any funds have been held, cancellation returns
+          those funds.
+        - |-
+          Once required actions are handled, the Payment Intent moves to processing. While for some payment methods
+          (e.g., cards) processing can be quick, other types of payment methods can take up to a few days to process.
+        - |-
+          If the payment requires additional actions, such as authenticating with 3D Secure , the Payment Intent has a status
+          of `requires_action`.
+        - 'Requires capture.'
+        - |-
+          After the customer provides their payment information, the Payment Intent is ready to be confirmed.
+
+          This status is optional and in most integrations, this state is skipped because payment method information is
+          submitted at the same time that the payment is confirmed.
+        - |-
+          When the Payment Intent is created, it has a status of `requires_payment_method` until a payment method is
+          attached.
+
+          We recommend creating the Payment Intent as soon as you know how much you want to charge, so that Stripe can record
+          all the attempted payments.
+
+          If the payment attempt fails (for example due to a decline), the Payment Intent’s status returns to
+          `requires_payment_method`.
+        - |-
+          A Payment Intent with a status of succeeded means that the payment flow it is driving is complete.
+
+          The funds are now in your account and you can confidently fulfill the order. If you need to refund the customer,
+          you can use the Refunds API.
+    Thoth.WlPay.Bank.Card.CardTypeEnum:
+      type: integer
+      format: int32
+      description: |-
+        An enum of credit card types.
+
+        Last used ID: 2
+
+        Values:
+        - 1 (`CREDIT`): Credit Card.
+        - 2 (`DEBIT`): Debit Card.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - CREDIT
+        - DEBIT
+      x-enum-descriptions:
+        - 'Credit Card.'
+        - 'Debit Card.'
+    RsPayMethodSid:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        A list of payment methods.
+
+
+
+        Last used ID: 13.
+
+        Values:
+        - 7 (`ACCOUNT`): Payment with personal user account (rs.pay.account).
+        - 9 (`ACH`): ACH system (USA-specific direct banking transactions).
+        - 4 (`CASH`): Payment with cash.
+        - 5 (`CHEQUE`): Payment with a cheque.
+        - 8 (`COUPON`): Payment with a coupon.
+        - 10 (`DIRECT_ENTRY`): Direct Entry system (australian-specific direct banking transactions).
+        - 2 (`ECOMMERCE`): Online payment. Card not present.
+        - 6 (`EXTERNAL`): Payment with an external terminal.
+        - 11 (`IMPORT_ACCRUAL`): Special method to be used for migration process.
+
+          There are sales in Mindbody that were not bought using account balance or reward points.
+          This is not real revenue and cannot be imported as real sales. So, they can be imported as this special method
+          to be in the system and to allow business owner to hide on sales report.
+
+          In online store this method should not be available.
+        - 1 (`POS`): Payment method at a Points of sale.
+      enum:
+        - 7
+        - 9
+        - 4
+        - 5
+        - 8
+        - 10
+        - 2
+        - 6
+        - 11
+        - 1
+      x-enum-varnames:
+        - ACCOUNT
+        - ACH
+        - CASH
+        - CHEQUE
+        - COUPON
+        - DIRECT_ENTRY
+        - ECOMMERCE
+        - EXTERNAL
+        - IMPORT_ACCRUAL
+        - POS
+      x-enum-descriptions:
+        - 'Payment with personal user account (rs.pay.account).'
+        - 'ACH system (USA-specific direct banking transactions).'
+        - 'Payment with cash.'
+        - 'Payment with a cheque.'
+        - 'Payment with a coupon.'
+        - 'Direct Entry system (australian-specific direct banking transactions).'
+        - 'Online payment. Card not present.'
+        - 'Payment with an external terminal.'
+        - |-
+          Special method to be used for migration process.
+
+          There are sales in Mindbody that were not bought using account balance or reward points.
+          This is not real revenue and cannot be imported as real sales. So, they can be imported as this special method
+          to be in the system and to allow business owner to hide on sales report.
+
+          In online store this method should not be available.
+        - 'Payment method at a Points of sale.'
     Thoth.ReportCore.Generator.ReportGeneratorStatusSid:
       type: integer
       format: int32
@@ -95289,104 +97052,6 @@ components:
         - 'Franchisee "Cross-Location Visit Details" report.'
         - 'Franchise "Cross-Location Visit Summary" report.'
         - 'Franchisee "Cross-Location Visit Summary" report.'
-    Core.Locale.CurrencySid:
-      type: integer
-      format: int32
-      description: |-
-        A list of currencies.
-
-        Currency constant names must comply with the standard `ISO 4217` for correct integration with other services.
-
-        Values:
-        - 11 (`AED`): United Arab Emirates dirham.
-        - 6 (`AUD`): Australian dollar.
-        - 18 (`BMD`): Bermudian Dollar.
-        - 19 (`BSD`): Bahamian dollar.
-        - 4 (`CAD`): Canadian dollar.
-        - 8 (`EGP`): Egypt Pound.
-        - 13 (`EUR`): Euro.
-        - 3 (`GBP`): British pound.
-        - 14 (`KWD`): Kuwaiti dinar.
-        - 5 (`KYD`): Cayman Islands dollar.
-        - 16 (`MUR`): Mauritian Rupee.
-        - 10 (`NZD`): New Zealand Dollar.
-        - 12 (`PHP`): Philippines Pesco.
-        - 15 (`SAR`): Saudi Riyal.
-        - 20 (`SGD`): Singapore dollar.
-        - 2 (`UNKNOWN`): Unknown code.
-
-          Used when currency is not specified or is not known.
-        - 1 (`USD`): US dollars.
-        - 17 (`XOF`): West African CFA franc.
-
-          Is used in Senegal.
-        - 7 (`ZAR`): South African rand.
-      enum:
-        - 11
-        - 6
-        - 18
-        - 19
-        - 4
-        - 8
-        - 13
-        - 3
-        - 14
-        - 5
-        - 16
-        - 10
-        - 12
-        - 15
-        - 20
-        - 2
-        - 1
-        - 17
-        - 7
-      x-enum-varnames:
-        - AED
-        - AUD
-        - BMD
-        - BSD
-        - CAD
-        - EGP
-        - EUR
-        - GBP
-        - KWD
-        - KYD
-        - MUR
-        - NZD
-        - PHP
-        - SAR
-        - SGD
-        - UNKNOWN
-        - USD
-        - XOF
-        - ZAR
-      x-enum-descriptions:
-        - 'United Arab Emirates dirham.'
-        - 'Australian dollar.'
-        - 'Bermudian Dollar.'
-        - 'Bahamian dollar.'
-        - 'Canadian dollar.'
-        - 'Egypt Pound.'
-        - Euro.
-        - 'British pound.'
-        - 'Kuwaiti dinar.'
-        - 'Cayman Islands dollar.'
-        - 'Mauritian Rupee.'
-        - 'New Zealand Dollar.'
-        - 'Philippines Pesco.'
-        - 'Saudi Riyal.'
-        - 'Singapore dollar.'
-        - |-
-          Unknown code.
-
-          Used when currency is not specified or is not known.
-        - 'US dollars.'
-        - |-
-          West African CFA franc.
-
-          Is used in Senegal.
-        - 'South African rand.'
     ACardSystemSid:
       type: integer
       format: int32
@@ -95455,73 +97120,6 @@ components:
         - "The card system can't be determined."
         - 'Union Pay.'
         - Visa.
-    RsPayMethodSid:
-      type: integer
-      format: int32
-      description: |-
-        A list of payment methods.
-
-
-
-        Last used ID: 13.
-
-        Values:
-        - 7 (`ACCOUNT`): Payment with personal user account (rs.pay.account).
-        - 9 (`ACH`): ACH system (USA-specific direct banking transactions).
-        - 4 (`CASH`): Payment with cash.
-        - 5 (`CHEQUE`): Payment with a cheque.
-        - 8 (`COUPON`): Payment with a coupon.
-        - 10 (`DIRECT_ENTRY`): Direct Entry system (australian-specific direct banking transactions).
-        - 2 (`ECOMMERCE`): Online payment. Card not present.
-        - 6 (`EXTERNAL`): Payment with an external terminal.
-        - 11 (`IMPORT_ACCRUAL`): Special method to be used for migration process.
-
-          There are sales in Mindbody that were not bought using account balance or reward points.
-          This is not real revenue and cannot be imported as real sales. So, they can be imported as this special method
-          to be in the system and to allow business owner to hide on sales report.
-
-          In online store this method should not be available.
-        - 1 (`POS`): Payment method at a Points of sale.
-      enum:
-        - 7
-        - 9
-        - 4
-        - 5
-        - 8
-        - 10
-        - 2
-        - 6
-        - 11
-        - 1
-      x-enum-varnames:
-        - ACCOUNT
-        - ACH
-        - CASH
-        - CHEQUE
-        - COUPON
-        - DIRECT_ENTRY
-        - ECOMMERCE
-        - EXTERNAL
-        - IMPORT_ACCRUAL
-        - POS
-      x-enum-descriptions:
-        - 'Payment with personal user account (rs.pay.account).'
-        - 'ACH system (USA-specific direct banking transactions).'
-        - 'Payment with cash.'
-        - 'Payment with a cheque.'
-        - 'Payment with a coupon.'
-        - 'Direct Entry system (australian-specific direct banking transactions).'
-        - 'Online payment. Card not present.'
-        - 'Payment with an external terminal.'
-        - |-
-          Special method to be used for migration process.
-
-          There are sales in Mindbody that were not bought using account balance or reward points.
-          This is not real revenue and cannot be imported as real sales. So, they can be imported as this special method
-          to be in the system and to allow business owner to hide on sales report.
-
-          In online store this method should not be available.
-        - 'Payment method at a Points of sale.'
     Thoth.PayProcessor.PayProcessorSid:
       type: integer
       format: int32
@@ -106357,47 +107955,6 @@ components:
         - 'Bank account for ACH direct bank transactions. USA-specific system.'
         - 'A credit card.'
         - 'Bank account for Direct Entry direct bank transactions.  Australian-specific system.'
-    RsPayActorSid:
-      type: integer
-      format: int32
-      description: |-
-        Payment actors (staff member, user or business owner).
-
-        Values:
-        - 3 (`BUSINESS`): Business owner.
-
-          Business owner is a sort of ordinary user. It is used when business acts as a user - for example, pays for business
-          account to system business.
-        - 1 (`STAFF`): Staff member.
-
-          The payment is performed by staff (business owner, or administrator within a business backend) on
-          behalf of a user.
-        - 2 (`USER`): User.
-
-          The payment is performed by the user.
-      enum:
-        - 3
-        - 1
-        - 2
-      x-enum-varnames:
-        - BUSINESS
-        - STAFF
-        - USER
-      x-enum-descriptions:
-        - |-
-          Business owner.
-
-          Business owner is a sort of ordinary user. It is used when business acts as a user - for example, pays for business
-          account to system business.
-        - |-
-          Staff member.
-
-          The payment is performed by staff (business owner, or administrator within a business backend) on
-          behalf of a user.
-        - |-
-          User.
-
-          The payment is performed by the user.
     RsPayBankAchSecSid:
       type: integer
       format: int32
@@ -106424,28 +107981,6 @@ components:
         - 'Prearranged Payment & Deposit.'
         - 'Telephone Initiated Entry.'
         - 'Web Initiated Entry.'
-    Thoth.WlPay.Bank.Card.CardTypeEnum:
-      type:
-        - integer
-        - 'null'
-      format: int32
-      description: |-
-        An enum of credit card types.
-
-        Last used ID: 2
-
-        Values:
-        - 1 (`CREDIT`): Credit Card.
-        - 2 (`DEBIT`): Debit Card.
-      enum:
-        - 1
-        - 2
-      x-enum-varnames:
-        - CREDIT
-        - DEBIT
-      x-enum-descriptions:
-        - 'Credit Card.'
-        - 'Debit Card.'
     Wl.Card.CardSystemSid:
       type: integer
       format: int32
