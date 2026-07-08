@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260707153245
+  version: 1.1.20260708081355
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -65795,6 +65795,9 @@ paths:
                 is_pass_deactivate:
                   type: boolean
                   description: 'Whether even pass should be deactivated or not.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
                 k_purchase_item_tuition:
                   type: string
                   description: 'Key of the tuition purchase item. This is enrollment key, which can be got from [TuitionEnrollmentListApi](/Wl/Tuition/Enrollment/TuitionEnrollmentList.json).'
@@ -65802,6 +65805,7 @@ paths:
                 - a_event_cancel
                 - is_cancel_visits
                 - is_pass_deactivate
+                - k_business
                 - k_purchase_item_tuition
       x-rate-limit:
         -
@@ -105711,7 +105715,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 244.
+        Last Used ID: 245.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -105848,6 +105852,7 @@ components:
         - 164 (`OVERRIDE_FEE`): Override late cancel and no show fees.
         - 94 (`PARTNER_PROGRAM_MANAGE`): Manage partner program.
         - 166 (`PAYMENT_PROCESSING`): Access to Payment Processing.
+        - 245 (`PERFORM_BULK_BILLING`): Allows the staff member to initiate bulk billing of multiple clients in one batch.
         - 156 (`PHYSICAL_INVENTORY_COUNT`): Permission to perform Physical Inventory Count.
         - 88 (`POSTCARD_SEND`): Staff member with this role will be able to send postcards.
         - 106 (`POWER_SEARCH_DELETE`): Delete shared power searches.
@@ -106079,6 +106084,7 @@ components:
         - 164
         - 94
         - 166
+        - 245
         - 156
         - 88
         - 106
@@ -106307,6 +106313,7 @@ components:
         - OVERRIDE_FEE
         - PARTNER_PROGRAM_MANAGE
         - PAYMENT_PROCESSING
+        - PERFORM_BULK_BILLING
         - PHYSICAL_INVENTORY_COUNT
         - POSTCARD_SEND
         - POWER_SEARCH_DELETE
@@ -106535,6 +106542,7 @@ components:
         - 'Override late cancel and no show fees.'
         - 'Manage partner program.'
         - 'Access to Payment Processing.'
+        - 'Allows the staff member to initiate bulk billing of multiple clients in one batch.'
         - 'Permission to perform Physical Inventory Count.'
         - 'Staff member with this role will be able to send postcards.'
         - 'Delete shared power searches.'
