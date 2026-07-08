@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260708103828
+  version: 1.1.20260708114809
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -41013,6 +41013,121 @@ paths:
             type: string
           description: 'Class identifier to get information for.'
       x-instance-get-key: 'k_business,k_class'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Billing/Bulk/PurchaseItemList.json:
+    get:
+      operationId: Wl.Billing.Bulk.PurchaseItemList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_product:
+                    type: array
+                    description: 'The list of products available at the location. Each element has the following structure:'
+                    items:
+                      type: object
+                      properties:
+                        a_option:
+                          type: object
+                          description: 'The list of product options available at the location. Each element has the following structure:'
+                          properties:
+                            is_inventory:
+                              type: boolean
+                              description: '`true` if the product tracks inventory, `false` otherwise.'
+                            k_shop_product_option:
+                              type: string
+                              description: 'The product option key.'
+                            m_price:
+                              type: string
+                              description: 'The regular price of the option.'
+                            text_title:
+                              type: string
+                              description: 'The product option title.'
+                          required:
+                            - is_inventory
+                            - k_shop_product_option
+                            - m_price
+                            - text_title
+                        k_shop_product:
+                          type: string
+                          description: 'The product key.'
+                        text_title:
+                          type: string
+                          description: 'The product title.'
+                      required:
+                        - a_option
+                        - k_shop_product
+                        - text_title
+                  a_promotion:
+                    type: array
+                    description: 'The list of promotions available at the location. Each element has the following structure:'
+                    items:
+                      type: object
+                      properties:
+                        id_program:
+                          type: integer
+                          format: int32
+                          description: 'The promotion program.'
+                        id_program_type:
+                          type: integer
+                          format: int32
+                          description: 'The promotion program type.'
+                        k_promotion:
+                          type: string
+                          description: 'The promotion key.'
+                        m_price:
+                          type: string
+                          description: 'The promotion price, excluding taxes.'
+                        text_title:
+                          type: string
+                          description: 'The promotion title.'
+                      required:
+                        - id_program
+                        - id_program_type
+                        - k_promotion
+                        - m_price
+                        - text_title
+                required:
+                  - a_product
+                  - a_promotion
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets the list of promotions and products available at the location.'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The location key to filter available items by.'
+      x-instance-get-key: 'k_business,k_location'
       x-rate-limit:
         -
           limit: 200000
