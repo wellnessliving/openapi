@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260709090643
+  version: 1.1.20260709124201
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -21097,6 +21097,76 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Processor/StripeCom/StripeComKey.json:
+    post:
+      operationId: Thoth.PayProcessor.StripeCom.StripeComKey.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_public:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Merchant public key.
+
+                      `null` before the key is set.
+                      It is set by `post()`.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets the `Stripe` public key for a merchant.'
+      description: |-
+        Returns the publishable key configured for the business merchant, so it can be used by the
+         frontend to initialize `Stripe` payment elements.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: 'ID of the actor.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant to get the public key for.'
+                uid_purchase:
+                  type: string
+                  description: 'Payment owner user key.'
+              required:
+                - id_pay_actor
+                - k_business
+                - k_business_merchant
+                - uid_purchase
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/PayProcessor/StripeCom/StripeComKey.json:
     post:
       operationId: Thoth.PayProcessor.StripeCom.StripeComKey.post
@@ -21163,6 +21233,114 @@ paths:
                 - k_business
                 - k_business_merchant
                 - uid_purchase
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/StripeCom/PaymentIntentUpdate.json:
+    post:
+      operationId: Thoth.PayProcessor.StripeCom.PaymentIntentUpdate.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Updates a `Stripe` Payment Intent.'
+      description: |-
+        Adjusts the amount and surcharge of the Payment Intent created for the Stripe Payment Element
+         form when the cart contents change, keeping the underlying payment transaction in sync.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_pay_actor
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayActorSid'
+          description: 'ID of the actor. One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business to update Payment Intent for.'
+        -
+          name: k_business_merchant
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business merchant to update Payment Intent for.'
+        -
+          name: k_pay_transaction
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the payment transaction to update.
+            Required.
+        -
+          name: s_payment_intent
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Payment intent ID to update.
+            Required.
+        -
+          name: uid_purchase
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Payment owner user key.
+            `null` if pay owner is anonymous.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+                    Required.
+                m_amount:
+                  type: string
+                  description: |-
+                    Payment amount to set.
+                    Required.
+                m_surcharge:
+                  type: string
+                  description: |-
+                    Surcharge amount to set.
+                    Required.
+              required:
+                - id_currency
+                - m_amount
+                - m_surcharge
       x-rate-limit:
         -
           limit: 200000
@@ -21271,6 +21449,267 @@ paths:
                 - id_currency
                 - m_amount
                 - m_surcharge
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/StripeCom/StripeComPayInit.json:
+    post:
+      operationId: Thoth.PayProcessor.StripeCom.StripeComPayInit.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_status:
+                    $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.PaymentIntentStatusSid'
+                    description: 'Status of this Payment Intent.'
+                  k_pay_transaction:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Key of payment transaction that was created.
+
+                      `null` in case when not initialized yet.
+                  s_client_secret:
+                    type: string
+                    description: 'Payment Intent client secret key.'
+                  s_payment_intent:
+                    type: string
+                    description: 'Payment intent ID.'
+                  text_message:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Error message.
+
+                      `null` in case response has not received yet or request is not failed.
+                required:
+                  - id_status
+                  - s_client_secret
+                  - s_payment_intent
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Initializes a `Stripe` payment.'
+      description: |-
+        Starts a payment transaction and creates a not-captured Payment Intent at `stripe.com`, returning
+         its status and client secret to continue the payment flow on the frontend.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_card:
+                  type:
+                    - object
+                    - 'null'
+                  description: |-
+                    Credit card data.
+
+                    Contents of the payment source as it presents on the payment form.
+
+                    Supplied in case payment source is card.
+                    `null` if payment source is other than card or payment is initialized before card data is known.
+                  properties:
+                    a_pay_address:
+                      type: object
+                      description: 'Payment address for address edit widget. Used only if `is_new` is `true`:'
+                      properties:
+                        is_new:
+                          type: boolean
+                          description: '`true` if user has chosen to add new address, `false` otherwise.'
+                        k_geo_country:
+                          type: string
+                          description: 'Key of the country.  Used only if `is_new` is `true`.'
+                        k_geo_region:
+                          type: string
+                          description: 'Key of the region.  Used only if `is_new` is `true`.'
+                        k_pay_address:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Chosen payment address key. 
+                            Set even if user decided to add new address.
+                        s_city:
+                          type: string
+                          description: 'City name. Used only if `is_new` is `true`.'
+                        s_name:
+                          type: string
+                          description: "User's full name."
+                        s_phone:
+                          type: string
+                          description: 'Phone number. Used only if `is_new` is `true`.'
+                        s_postal:
+                          type: string
+                          description: 'Postal code. Used only if `is_new` is `true`.'
+                        s_street1:
+                          type: string
+                          description: 'First address line. Used only if `is_new` is `true`.'
+                        s_street2:
+                          type: string
+                          description: 'Second address line. Used only if `is_new` is `true`.'
+                        text_mail:
+                          type:
+                            - string
+                            - 'null'
+                          description: "User's email. `null` if not specified. Used only if `is_new` is `true`."
+                    i_csc:
+                      type: integer
+                      format: int32
+                      description: 'Card CSC code. Used only if `is_new` is `true`.'
+                    i_month:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration month. Used only if `is_new` is `true`.'
+                    i_year:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration year. Used only if `is_new` is `true`.'
+                    id_card_type:
+                      $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
+                      description: 'Card type. One of [CardTypeEnum](#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum) constants as int. Used only if `is_new` is `true`.'
+                    is_default:
+                      type: boolean
+                      description: 'If the card should be made the default payment method. Used only if `is_new` is `true`.'
+                    is_new:
+                      type: boolean
+                      description: 'Whether a new card is being added instead of an existing one being selected.'
+                    is_save:
+                      type: boolean
+                      description: 'If the card information should be saved for future transactions. Used only if `is_new` is `true`.'
+                    k_pay_bank:
+                      type: string
+                      description: 'Selected payment card key. Used only if `is_new` is `false`. `0` if no existing card is selected.'
+                    s_name:
+                      type: string
+                      description: 'Card nickname. Used only if `is_new` is `true`.'
+                    s_number:
+                      type: string
+                      description: 'Card number. Used only if `is_new` is `true`.'
+                  required:
+                    - is_new
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+
+                    One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: |-
+                    ID of the actor.
+
+                    One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_method:
+                  $ref: '#/components/schemas/RsPayMethodSid'
+                  description: |-
+                    ID of pay method.
+
+                    One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+
+                    `null` in case when not initialized yet.
+                is_authorize:
+                  type: boolean
+                  description: |-
+                    Whether authorization or capture should be performed.
+
+                    `true` (or anything that is not empty) to perform authorization.
+
+                    `false` (or anything that is empty, or do not pass this value) to charge the payment amount.
+                is_pos:
+                  type: boolean
+                  description: '`true` if card swiper is used, `false` otherwise.'
+                is_stripe_elements:
+                  type: boolean
+                  description: '`true` if Stripe Payment Element form (@link https://stripe.com/docs/payments/elements) is used, `false` otherwise.'
+                k_business:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business which receives the payment.
+
+                    `null` in case when not initialized yet.
+                k_business_merchant:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business merchant that should be used to perform the request.
+
+                    `null` in case when not initialized yet.
+                k_pay_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a custom payment method.
+
+                    `null` in case when not initialized yet or empty if payment is performed with a standard payment method.
+                m_amount:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment amount.
+
+                    `null` in case when not initialized yet.
+                m_surcharge:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Surcharge amount.
+
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                s_payment_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment method ID.
+
+                    `null` if Payment intent must be created without existing Payment method.
+                uid_purchase:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment owner user key.
+
+                    `null` in case when not initialized yet or if pay owner is anonymous.
+              required:
+                - is_authorize
+                - is_pos
+                - is_stripe_elements
       x-rate-limit:
         -
           limit: 200000
@@ -21536,6 +21975,70 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Processor/StripeCom/StripeComPaymentIntentCancel.json:
+    post:
+      operationId: Thoth.PayProcessor.StripeCom.StripeComPaymentIntentCancel.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Cancels a `Stripe` Payment Intent.'
+      description: |-
+        Verifies that the Payment Intent belongs to the current payer authentication session, then
+         refunds the associated payment transaction to release the reserved amount.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: 'ID of the actor.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant, that processes payment.'
+                k_pay_transaction:
+                  type: string
+                  description: 'Pay transaction key, which was used to create payment intent.'
+                s_payment_intent:
+                  type: string
+                  description: 'Payment intent ID.'
+                uid_purchase:
+                  type: string
+                  description: 'Payment owner user key.'
+              required:
+                - id_pay_actor
+                - k_business
+                - k_business_merchant
+                - k_pay_transaction
+                - s_payment_intent
+                - uid_purchase
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/PayProcessor/StripeCom/StripeComPaymentIntentCancel.json:
     post:
       operationId: Thoth.PayProcessor.StripeCom.StripeComPaymentIntentCancel.post
@@ -21596,6 +22099,89 @@ paths:
                 - k_pay_transaction
                 - s_payment_intent
                 - uid_purchase
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/CyberSource/CsPaEnrollment.json:
+    post:
+      operationId: Thoth.PayProcessor.CyberSource.CsPaEnrollment.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_jwt:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'JSON Web Token to include into the request to the second frame.'
+                  url_interact:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      URL for frontend interaction.
+                      This normally means that payer needs to make further steps for the authentication.
+
+                      `null` if no interaction required, and we should proceed with the withdrawal.
+                      This normally means that payer is authenticated.
+
+                      If payer is not authenticated, or there is an error occurred during check of the enrollment,
+                      this API returns an exception.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Checks `CyberSource` Payer Authentication enrollment.'
+      description: |-
+        Verifies whether the payer must complete additional authentication steps for the transaction
+         started by [CsPaSetupApi](/Thoth/PayProcessor/CyberSource/CsPaSetup.json), returning a JWT and interaction URL when a challenge is required.
+      tags:
+        - Payments
+        - CyberSource
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_device_info:
+                  type: object
+                  description: 'User device info:'
+                  properties:
+                    i_browser_screen_height:
+                      type: integer
+                      format: int32
+                      description: 'User browser screen height.'
+                    i_browser_screen_width:
+                      type: integer
+                      format: int32
+                      description: 'User browser screen width.'
+                  required:
+                    - i_browser_screen_height
+                    - i_browser_screen_width
+                k_pay_transaction:
+                  type: string
+                  description: 'Key of payment transaction that was previously created with [CsPaSetupApi](/Thoth/PayProcessor/CyberSource/CsPaSetup.json).'
+              required:
+                - a_device_info
+                - k_pay_transaction
       x-rate-limit:
         -
           limit: 200000
@@ -21683,6 +22269,55 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Processor/CyberSource/CsPaValidate.json:
+    post:
+      operationId: Thoth.PayProcessor.CyberSource.CsPaValidate.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Validates the `CyberSource` Payer Authentication result.'
+      description: |-
+        Retrieves the authentication result for the transaction validated by [CsPaEnrollmentApi](/Thoth/PayProcessor/CyberSource/CsPaEnrollment.json)
+         and confirms whether the payer authentication succeeded, allowing the merchant to proceed with
+         processing the payment.
+      tags:
+        - Payments
+        - CyberSource
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_pay_transaction:
+                  type: string
+                  description: 'Key of payment transaction that was previously created with [CsPaSetupApi](/Thoth/PayProcessor/CyberSource/CsPaSetup.json).'
+                s_transaction:
+                  type: string
+                  description: 'Payer authentication transaction ID.'
+              required:
+                - k_pay_transaction
+                - s_transaction
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/PayProcessor/CyberSource/CsPaValidate.json:
     post:
       operationId: Thoth.PayProcessor.CyberSource.CsPaValidate.post
@@ -21728,6 +22363,91 @@ paths:
               required:
                 - k_pay_transaction
                 - s_transaction
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/CyberSource/CsCaptureContext.json:
+    post:
+      operationId: Thoth.PayProcessor.CyberSource.CsCaptureContext.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_client_library_integrity:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Microform Integration JavaScript library integrity property value.
+
+                      `null` until generated.
+                  s_key:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Contents of the key.
+
+                      `null` until generated.
+                  s_key_id:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      ID of the key.
+
+                      `null` until generated.
+                  url_client_library:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Microform Integration JavaScript library url.
+
+                      `null` until generated.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Generates a capture context for `CyberSource` Flex Microform.'
+      description: |-
+        Returns a capture context and key ID that the client uses to encrypt the card number before
+         sending it in the follow-on Tokenize Card request.
+      tags:
+        - Payments
+        - CyberSource
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant that should be used to perform the request.'
+              required:
+                - k_business
+                - k_business_merchant
       x-rate-limit:
         -
           limit: 200000
@@ -21813,6 +22533,201 @@ paths:
               required:
                 - k_business
                 - k_business_merchant
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/CyberSource/CsPaSetup.json:
+    post:
+      operationId: Thoth.PayProcessor.CyberSource.CsPaSetup.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  k_pay_transaction:
+                    type: string
+                    description: 'Key of payment transaction that was created.'
+                  s_jwt:
+                    type: string
+                    description: 'JWT token, as returned by Cyber Source.'
+                  s_reference:
+                    type: string
+                    description: 'Reference ID, as returned by Cyber Source.'
+                  url_collection:
+                    type: string
+                    description: 'Device collection URL, as returned by Cyber Source.'
+                required:
+                  - k_pay_transaction
+                  - s_jwt
+                  - s_reference
+                  - url_collection
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Starts `CyberSource` Payer Authentication setup.'
+      description: |-
+        Validates the payment request and card data, starts a payment transaction, and requests
+         `CyberSource` to set up payer authentication, returning the JWT and device collection URL
+         needed to continue the flow.
+      tags:
+        - Payments
+        - CyberSource
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_card:
+                  type: object
+                  description: |-
+                    Credit card data.
+
+                    Contents of the payment source as it presents on the payment form.
+                  properties:
+                    a_pay_address:
+                      type: object
+                      description: 'Payment address for address edit widget. Used only if `is_new` is `true`:'
+                      properties:
+                        is_new:
+                          type: boolean
+                          description: '`true` if user has chosen to add new address, `false` otherwise.'
+                        k_geo_country:
+                          type: string
+                          description: 'Key of the country.  Used only if `is_new` is `true`.'
+                        k_geo_region:
+                          type: string
+                          description: 'Key of the region.  Used only if `is_new` is `true`.'
+                        k_pay_address:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Chosen payment address key. 
+                            Set even if user decided to add new address.
+                        s_city:
+                          type: string
+                          description: 'City name. Used only if `is_new` is `true`.'
+                        s_name:
+                          type: string
+                          description: "User's full name."
+                        s_phone:
+                          type: string
+                          description: 'Phone number. Used only if `is_new` is `true`.'
+                        s_postal:
+                          type: string
+                          description: 'Postal code. Used only if `is_new` is `true`.'
+                        s_street1:
+                          type: string
+                          description: 'First address line. Used only if `is_new` is `true`.'
+                        s_street2:
+                          type: string
+                          description: 'Second address line. Used only if `is_new` is `true`.'
+                        text_mail:
+                          type:
+                            - string
+                            - 'null'
+                          description: "User's email. `null` if not specified. Used only if `is_new` is `true`."
+                    i_csc:
+                      type: integer
+                      format: int32
+                      description: 'Card CSC code. Used only if `is_new` is `true`.'
+                    i_month:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration month. Used only if `is_new` is `true`.'
+                    i_year:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration year. Used only if `is_new` is `true`.'
+                    id_card_type:
+                      $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
+                      description: 'Card type. One of [CardTypeEnum](#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum) constants as int. Used only if `is_new` is `true`.'
+                    is_default:
+                      type: boolean
+                      description: 'If the card should be made the default payment method. Used only if `is_new` is `true`.'
+                    is_new:
+                      type: boolean
+                      description: 'Whether a new card is being added instead of an existing one being selected.'
+                    is_save:
+                      type: boolean
+                      description: 'If the card information should be saved for future transactions. Used only if `is_new` is `true`.'
+                    k_pay_bank:
+                      type: string
+                      description: 'Selected payment card key. Used only if `is_new` is `false`. `0` if no existing card is selected.'
+                    s_name:
+                      type: string
+                      description: 'Card nickname. Used only if `is_new` is `true`.'
+                    s_number:
+                      type: string
+                      description: 'Card number. Used only if `is_new` is `true`.'
+                  required:
+                    - is_new
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: 'ID of the actor.'
+                is_authorize:
+                  type: boolean
+                  description: |-
+                    Whether authorization or capture should be performed.
+
+                    `true` (or anything that is not empty) to perform authorization and void immediately.
+
+                    `false` (or anything that is empty, or do not pass this value) to capture the payment amount.
+                k_business:
+                  type: string
+                  description: 'Key of the business which receives the payment.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant that should be used to perform the request.'
+                k_pay_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a custom payment method.
+
+                    `null` or an empty string if payment is performed with a standard payment method.
+
+                    Only payment methods based on [RsPayMethodSid::ECOMMERCE](#/components/schemas/RsPayMethodSid) are accepted.
+                m_amount:
+                  type: string
+                  description: 'Payment amount.'
+                m_surcharge:
+                  type: string
+                  description: |-
+                    Surcharge amount.
+
+                    Empty string or null for zero surcharge amount.
+                uid_pay_owner:
+                  type: string
+                  description: 'UID of the payment owner.'
+              required:
+                - a_card
+                - id_pay_actor
+                - is_authorize
+                - k_business
+                - k_business_merchant
+                - m_amount
+                - m_surcharge
+                - uid_pay_owner
       x-rate-limit:
         -
           limit: 200000
@@ -22008,6 +22923,481 @@ paths:
                 - m_amount
                 - m_surcharge
                 - uid_pay_owner
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Report/Generator/Query.json:
+    post:
+      operationId: Thoth.ReportCore.Generator.Query.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_dynamic:
+                    type: array
+                    description: |-
+                      A list of dynamic fields in this report.
+
+                      Copy of result of [ReportGeneratorReportAbstract::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract).
+                    items:
+                      type: object
+                      properties:
+                        a_cell:
+                          type: array
+                          description: 'Fields of the complex cell.'
+                          items:
+                            type: object
+                        a_customization_element:
+                          type: array
+                          description: |-
+                            Elements of a customization from that are required by this filter field.
+                            Keys are names of required form elements; values are classes of this elements.
+                          items:
+                            type: array
+                        a_type:
+                          type: array
+                          description: |-
+                            A list of scalar types of values that this field can get.
+
+                            Only scalar types are listed here.
+                            Complex types is specified in `s_class`.
+
+                            Key is name of a scalar type. Value is always `true`.
+
+                            The following scalar types are possible:
+
+                            * `string`
+                            * `int`
+                            * `float`
+                            * `bool`
+                            * `array` (only allowed for values cells, not for report fields)
+
+                            Empty array if scalar types are not acceptable.
+                            In this case `s_class` is specified.
+                        is_dynamic:
+                          type: boolean
+                          description: |-
+                            Whether this field is dynamic or static.
+
+                            `true` if this field is generated dynamically.
+
+
+                            `false` if this field corresponds to a regular property.
+                        is_export:
+                          type:
+                            - boolean
+                            - 'null'
+                          description: |-
+                            Whether this field is used for export.
+
+                            `true` if this field is used for export.
+
+                            `false` if this field is only used for rendering of the report.
+                        is_hide_by_default:
+                          type: boolean
+                          description: |-
+                            Whether this field should be hidden by default. It can later be shown by using the customization form.
+
+                            `true` if this field should be hidden by default.
+
+                            `false` if this field should be shown by default.
+                        is_hide_if_empty:
+                          type: boolean
+                          description: |-
+                            Whether this field should be hidden if the entire column is empty.
+
+                            <b>Note: Currently only implemented in the export. If you need this to affect the HTML report, you will need to
+                            implement that!</b>
+
+                            `true` if this field should be hidden if the entire column is empty.
+                            `false` if this field should be shown if the entire column is empty.
+                        is_null:
+                          type: boolean
+                          description: |-
+                            Whether this field is nullable.
+
+                            `true` if `null` is an allowed value for this field.
+
+                            `false` if `null` is not allowed.
+                        is_order:
+                          type:
+                            - boolean
+                            - 'null'
+                          description: |-
+                            Whether the ordering by this field is available.
+
+                            `null` means that value is not initialized.
+
+                            For dynamic fields should be set manually.
+                        is_show:
+                          type: boolean
+                          description: |-
+                            Whether this field should be shown during report render.
+
+                            `true` if this field should be shown during report render.
+
+                            `false` if this field should not be shown during report render.
+
+                            By default, all fields are shown.
+                            To not to show a field, it should be marked with &#64;`show-no` tag.
+                        is_store:
+                          type: boolean
+                          description: 'Whether this field is stored in the report storage.'
+                        s_cast:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Argument for the MySQL function `cast()`.
+
+                            Allows treating value of the field as certain type, which is required for proper ordering.
+                            For example, keys can be string and can be numbers.
+                            If key is a number, it should have cast value as `unsigned`.
+                            If key is a string, cast can be left null, because string will be used by default.
+
+                            `null` value should be determined based on the prefix.
+                        s_class:
+                          type:
+                            - object
+                            - 'null'
+                          description: |-
+                            Name of a cell class.
+
+
+                            `null` if complex types are not acceptable (in this case
+                            `a_type` is not empty).
+                        s_class_css:
+                          type: string
+                          description: |-
+                            CSS class that is used for formatting of this field.
+                            This class will be added to the column header.
+                        s_format:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Name of formatting method that is used for formatting of this field during export.
+
+                            Formatting method may not be provided if `s_class` is set.
+                            In this case formatting methods may be specified for individual properties of that class.
+
+                            `null` if no additional formatting should be performed during export.
+
+                            See `namespace.Wl/Report/Generator/doc/report-export-format.md` for details.
+                        s_name:
+                          type: string
+                          description: 'Name of a public property in which value of this field is stored.'
+                        s_sort:
+                          type: string
+                          description: |-
+                            A string by which report columns are sorted.
+
+                            Sorting is only considered for report fields, but not for fields of a report cell.
+
+
+                            Having different order leads to that all indexes are changed.
+                        s_type:
+                          type: string
+                          description: |-
+                            Type of this field, as specified in its PHP doc.
+
+                            Copy of value of &#64;`var` tag of the field.
+
+                            This value may not be specified for dynamic columns.
+                        text_title:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Data to derive title of a column which values are represented by this report field.
+
+
+
+                              For dynamic columns, it is required that this title be set.
+                              In this case this is not a source for a translated message.
+
+                              `null` for cell properties, because cells properties are not shown as individual columns in the report.
+                              `null` is also set if this field should not be show. 
+                            </i>
+                        text_title_export:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Title of this field that is used during export.
+
+                            Copy of &#64;`title-export` tag.
+                            If &#64;`title-export` tag is not provided, this property contains copy of
+                            `text_title`.
+
+                            For report cells, if &#64;`title-export` tag is not set, source for translated message for this property is based
+                            on concatenation of `s_name` for report row field and report
+                            cell field.
+
+                            `null` if this field has `is_export` set to `false`.
+                        text_title_info:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Text of the cell info tooltip.'
+                      required:
+                        - a_cell
+                        - a_customization_element
+                        - a_type
+                        - is_dynamic
+                        - is_hide_by_default
+                        - is_hide_if_empty
+                        - is_null
+                        - is_show
+                        - is_store
+                        - s_class_css
+                        - s_name
+                        - s_sort
+                        - s_type
+                  a_field:
+                    type: array
+                    description: |-
+                      A list of fields in this report.
+
+                      This array is effectively a title row for table that is returned in [QueryApi::$a_row](/Thoth/ReportCore/Generator/Query.json).
+                    items:
+                      type: string
+                  a_row:
+                    type: array
+                    description: |-
+                      Report data.
+
+                      This is an indexed array in which one row is an indexed array also.
+
+                      Indexes of the columns correspond columns in [QueryApi::$a_field](/Thoth/ReportCore/Generator/Query.json).
+                    items:
+                      type: array
+                      items:
+                        type: string
+                  a_stale:
+                    type: array
+                    description: |-
+                      A list of stale rows.
+
+                      This array is only filled in when report is being updated now, or due to some other reasons contains mixed version
+                      data (some data from the latest generation, and other from one of previous generations).
+
+                      Value is index in [QueryApi::$a_row](/Thoth/ReportCore/Generator/Query.json).
+
+                      If a row is not listed here, it is of the latest version.
+                    items:
+                      type: integer
+                      format: int32
+                  a_warning:
+                    type: array
+                    description: 'Warning list of the report.'
+                    items:
+                      type: string
+                  dtu_complete:
+                    type: string
+                    format: date-time
+                    description: |-
+                      Date and time when this report has completed generation.
+
+                      `null` if generation of this report is not completed.
+                  dtu_queue:
+                    type: string
+                    format: date-time
+                    description: |-
+                      Date and time when this report was put on generation queue.
+
+                      Effectively, this is the time when a user clicked to view this report.
+                  dtu_start:
+                    type: string
+                    format: date-time
+                    description: |-
+                      Date and time when generation of this report has started.
+
+                      `null` if generation of this report is not started.
+                  i_cas_change:
+                    type: integer
+                    format: int32
+                    description: |-
+                      A CAS (compare-and-swap) number that allows to track changes in the report storage.
+
+                      This number is changed every time content of the report gets updated.
+                      If this number is not changed, the content is not updated.
+                  id_report_status:
+                    $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorStatusSid'
+                    description: |-
+                      Status of the report.
+
+                      One of [ReportGeneratorStatusSid](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorStatusSid) constants.
+                  s_report:
+                    type: string
+                    description: |-
+                      Key of this report.
+
+                      This key may be used to subscribe to report changes with [UpdateChannel](#/components/schemas/Core.WebSocket.ChannelBroadcast).
+                  text_error:
+                    type: string
+                    description: |-
+                      Text of an error message that occurred during generation of the report.
+
+                      An empty string in no error messages have occurred.
+                required:
+                  - a_dynamic
+                  - a_field
+                  - a_row
+                  - a_stale
+                  - a_warning
+                  - dtu_complete
+                  - dtu_queue
+                  - dtu_start
+                  - i_cas_change
+                  - id_report_status
+                  - s_report
+                  - text_error
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns contents of a report as a table.'
+      description: |-
+        If the report is not yet generated, it gets generated.
+        If the report is being generated now, partial content may be returned.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                cid_report:
+                  $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract'
+                  description: |-
+                    CID of the report to show.
+
+                    One of [ReportGeneratorReportAbstract](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) subclasses.
+                i_limit:
+                  type: integer
+                  format: int32
+                  description: |-
+                    How many rows of the report to return.
+
+                    `0` to not to return content at all.
+                    This may be useful to get metadata of the report.
+                i_offset:
+                  type: integer
+                  format: int32
+                  description: |-
+                    Offset.
+
+                    How many rows of the report to skip at the beginning of the list.
+
+                    Only return rows after the last skipped row.
+
+                    `0` to return contents from the very beginning.
+                is_actual:
+                  type: boolean
+                  description: |-
+                    Defines whether actual or already generated report should be returned.
+
+                    `true` to not attempt search generated report and generate it again.
+                    `false` to attempt search generated report.
+                is_backend:
+                  type: boolean
+                  description: 'Whether report is generating for the backend.'
+                is_refresh:
+                  type: boolean
+                  description: |-
+                    Whether this report should be refreshed.
+
+                    `true` to refresh this report if it is already generated.
+                    Refreshing of the report may not be queried while report is being generated.
+
+                    `false` to only return contents of the report.
+                    If report is not yet generated, it automatically starts the generation in the background.
+                json_filter:
+                  type: string
+                  description: |-
+                    Filters that should be applied to the report.
+
+                    In this array, key is name of a filter field.
+                k_business:
+                  type: string
+                  description: |-
+                    Key of the business which report should be shown.
+
+                    `0` or an empty string for system-wide reports.
+                s_sort:
+                  type: string
+                  description: |-
+                    Sorting order.
+
+                    A comma-separated list of fields to sort by.
+
+                    Name of a field may be prepended with a `+` or `-` sign to sort in ascending or descending order.
+                    Ascending order is the default.
+
+                    You may sort reports by report fields and by cell fields.
+
+                    To sort by a report field, just specify name of that field.
+
+                    To sort by a cell field, specify name of a report field and name of the cell field.
+                    Separate with a dot. For example: `o_account.m_amount`.
+
+
+
+                    Example value: `s_first,+s_last,-o_account.m_amount,o_address`.
+
+                    Means the following:
+
+                    * sort by `s_first` in ascending order (which is the default).
+                    * sort by `s_last` in ascending order (which is specified explicitly).
+                    * sort by `m_amount` field of `o_account` cell in descending order.
+                    * sort by default field (i.e. the one marked with &#64;`sort` tag) of `o_address` cell in ascending order.
+
+                    Note that you may not sort by fields that are marked with &#64;`store-no` tag.
+                s_sql:
+                  type: string
+                  description: |-
+                    An SQL query that should be executed on report table.
+
+                    See `namespace.Wl/Report/Generator/doc/report-query-sql.md` for details.
+
+                    Empty string to select all columns of the report table.
+                uid_actor:
+                  type: string
+                  description: |-
+                    Actor user.
+
+                    `0` or an empty string for guests.
+              required:
+                - cid_report
+                - i_limit
+                - i_offset
+                - is_actual
+                - is_backend
+                - is_refresh
+                - json_filter
+                - k_business
+                - s_sort
+                - s_sql
+                - uid_actor
       x-rate-limit:
         -
           limit: 200000
@@ -22487,6 +23877,263 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Form/Environment.json:
+    get:
+      operationId: Thoth.WlPay.Form.Environment.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_card_system:
+                    type: array
+                    description: |-
+                      A list of supported bank card systems.
+                      Keys refer to card types based on card numbers (see [ACardSystemSid](#/components/schemas/ACardSystemSid)),
+                      and values are IDs of card systems (one of [ACardSystemSid](#/components/schemas/ACardSystemSid) constants).
+                    items:
+                      $ref: '#/components/schemas/ACardSystemSid'
+                  a_method_staff:
+                    type: array
+                    description: |-
+                      A list of payment methods enabled for staff members.
+                      The ID is one of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+                      The value is always `true`.
+                    items:
+                      $ref: '#/components/schemas/RsPayMethodSid'
+                  a_method_support:
+                    type: array
+                    description: |-
+                      A list of all payment methods that can be used within this business.
+                      This array is sorted in the order in which payment methods should be shown to the user.
+                      Each element of the array has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        id_pay_method:
+                          $ref: '#/components/schemas/RsPayMethodSid'
+                          description: 'The ID of type of payment method. One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.'
+                        is_client:
+                          type: boolean
+                          description: 'Determines whether this method is available for clients. This field is only returned for custom payment methods.'
+                        k_pay_method:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The key of the custom payment method.
+                            This will be `null` if this payment method isn't customized.
+                        s_method:
+                          type: string
+                          description: 'The name of payment method. This field is only returned for custom payment methods.'
+                      required:
+                        - id_pay_method
+                        - k_pay_method
+                  a_mobile_config:
+                    type:
+                      - array
+                      - 'null'
+                    description: |-
+                      The configuration array that's sent to mobile card reader plugin.
+                      The structure of this array depends on the payment processor being used.
+                      `null` when mobile card readers are not supported, or when actor has no access to them.
+                  a_pay_processor:
+                    type:
+                      - array
+                      - 'null'
+                    description: |-
+                      Represents information about payment processors.
+
+                      Keys are payment methods IDs, one of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+
+                      Value is the following array: 
+
+                      `null` if no processors are set up.
+                    items:
+                      type: object
+                      properties:
+                        a_public_keys:
+                          type:
+                            - array
+                            - 'null'
+                          description: |-
+                            Public keys configured for this payment processor.
+
+                            `null` if this payment processor does not support public keys.
+                        a_public_info:
+                          type:
+                            - array
+                            - 'null'
+                          description: |-
+                            Public info configured for this payment processor.
+
+                            `null` if this payment processor does not support public info.
+                        hide_save_source:
+                          type: boolean
+                          description: 'Whether `save payment method` option should be hidden. `true` if hidden, `false` - otherwise.'
+                        id_pay_processor:
+                          $ref: '#/components/schemas/Thoth.PayProcessor.PayProcessorSid'
+                          description: 'ID of the payment processor. One of [PayProcessorSid](#/components/schemas/Thoth.PayProcessor.PayProcessorSid) constants.'
+                        is_enabled_3ds:
+                          type:
+                            - boolean
+                            - 'null'
+                          description: |-
+                            `true` if 3DS should be performed, `false` if 3DS should not be performed. `null` if this is not defined for payment processor.
+                            Only for [PayProcessorSid::NUVEI](#/components/schemas/Thoth.PayProcessor.PayProcessorSid)
+                        is_test:
+                          type:
+                            - boolean
+                            - 'null'
+                          description: |-
+                            `true` if the merchant is in a test mode, `false` otherwise.
+                            `null` if this is not defined for payment processor.
+                        k_business_merchant:
+                          type: string
+                          description: 'Key of the business merchant.'
+                      required:
+                        - a_public_keys
+                        - a_public_info
+                        - hide_save_source
+                        - id_pay_processor
+                        - is_enabled_3ds
+                        - is_test
+                        - k_business_merchant
+                  dl_now:
+                    type: string
+                    format: date
+                    description: |-
+                      Current local date in current location [EnvironmentApi::$k_location](/Thoth/WlPay/Form/Environment.json)
+                      or business [EnvironmentApi::$k_business](/Thoth/WlPay/Form/Environment.json) if not set location.
+                  f_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount for payment with card represented as a percent of transaction amount.
+
+                      This will be `null` if the percentage surcharge amount shouldn't be withdrawn.
+                  f_surcharge_ach:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount for payment with ACH represented as a percent of transaction amount.
+
+                      This will be `null` if the percentage surcharge amount shouldn't be withdrawn.
+                  id_locale:
+                    $ref: '#/components/schemas/Core.Locale.LocaleSid'
+                    description: 'The locale ID of the business.'
+                  is_save_optional:
+                    type: boolean
+                    description: |-
+                      `true` if clients can choose whether their banking and credit card information is saved at checkout,
+                      `false` if this information is always saved.
+                  is_save_source:
+                    type: boolean
+                    description: |-
+                      Determines whether newly added payment sources should be saved. This will be `true` if payment sources should be saved,
+                      `false` if otherwise.
+                  is_tip:
+                    type: boolean
+                    description: 'Whether tips are accepted.'
+                  m_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount for payment with card represented as a fixed amount.
+
+                      This will be `null` if the fixed surcharge amount shouldn't be withdrawn.
+                  m_surcharge_ach:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount for payment with ACH represented as a fixed amount.
+
+                      This will be `null` if the fixed surcharge amount shouldn't be withdrawn.
+                required:
+                  - a_card_system
+                  - a_method_staff
+                  - a_method_support
+                  - dl_now
+                  - is_save_optional
+                  - is_save_source
+                  - is_tip
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns information about payment environment.'
+      description: |-
+        Called before rendering a payment form to determine which payment methods and card types are available
+        for a given business and location, what surcharges apply, and how the form should behave (tip prompt,
+        optional card save). This endpoint is deprecated; use [EnvironmentUserApi](/Thoth/WlPay/Form/EnvironmentUser.json)
+         for new integrations.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The key of the business to retrieve payment information for.
+
+            This will be `0` if not set yet.
+            An empty string or `null` if payments are performed with the WellnessLiving system merchant.
+        -
+          name: k_currency
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the currency to retrieve payment information for.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The key of the location to retrieve payment information for.
+
+            This will be `0` if not set yet.
+        -
+          name: uid_owner
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            The user ID to retrieve payment information for.
+
+            `null` if not defined.
+      deprecated: true
+      x-deprecated: 'Use {@link \Thoth\WlPay\Form\EnvironmentUserApi} instead.'
+      x-instance-get-key: 'k_currency,k_business,k_location'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/WlPay/Form/Environment.json:
     get:
       operationId: Thoth.WlPay.Form.Environment.get
@@ -22740,6 +24387,261 @@ paths:
       deprecated: true
       x-deprecated: 'Use {@link \Thoth\WlPay\Form\EnvironmentUserApi} instead.'
       x-instance-get-key: 'k_currency,k_business,k_location'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Form/EnvironmentUser.json:
+    get:
+      operationId: Thoth.WlPay.Form.EnvironmentUser.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_card_system:
+                    type: array
+                    description: |-
+                      A list of supported bank card systems.
+                      Keys refer to card types based on card numbers (see [ACardSystemSid](#/components/schemas/ACardSystemSid)),
+                      and values are IDs of card systems (one of [ACardSystemSid](#/components/schemas/ACardSystemSid) constants).
+                    items:
+                      $ref: '#/components/schemas/ACardSystemSid'
+                  a_method_staff:
+                    type: array
+                    description: |-
+                      A list of payment methods enabled for staff members.
+                      The ID is one of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+                      The value is always `true`.
+                    items:
+                      $ref: '#/components/schemas/RsPayMethodSid'
+                  a_method_support:
+                    type: array
+                    description: |-
+                      A list of all payment methods that can be used within this business.
+                      This array is sorted in the order in which payment methods should be shown to the user.
+                      Each element of the array has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        id_pay_method:
+                          $ref: '#/components/schemas/RsPayMethodSid'
+                          description: 'The ID of type of payment method. One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.'
+                        is_client:
+                          type: boolean
+                          description: 'Determines whether this method is available for clients. This field is only returned for custom payment methods.'
+                        k_pay_method:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The key of the custom payment method.
+                            This will be `null` if this payment method isn't customized.
+                        s_method:
+                          type: string
+                          description: 'The name of payment method. This field is only returned for custom payment methods.'
+                      required:
+                        - id_pay_method
+                        - k_pay_method
+                  a_mobile_config:
+                    type:
+                      - array
+                      - 'null'
+                    description: |-
+                      The configuration array that's sent to mobile card reader plugin.
+                      The structure of this array depends on the payment processor being used.
+                      `null` when mobile card readers are not supported, or when actor has no access to them.
+                  a_pay_processor:
+                    type:
+                      - array
+                      - 'null'
+                    description: |-
+                      Represents information about payment processors.
+
+                      Keys are payment methods IDs, one of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+
+                      Value is the following array: 
+
+                      `null` if no processors are set up.
+                    items:
+                      type: object
+                      properties:
+                        a_public_keys:
+                          type:
+                            - array
+                            - 'null'
+                          description: |-
+                            Public keys configured for this payment processor.
+
+                            `null` if this payment processor does not support public keys.
+                        a_public_info:
+                          type:
+                            - array
+                            - 'null'
+                          description: |-
+                            Public info configured for this payment processor.
+
+                            `null` if this payment processor does not support public info.
+                        hide_save_source:
+                          type: boolean
+                          description: 'Whether `save payment method` option should be hidden. `true` if hidden, `false` - otherwise.'
+                        id_pay_processor:
+                          $ref: '#/components/schemas/Thoth.PayProcessor.PayProcessorSid'
+                          description: 'ID of the payment processor. One of [PayProcessorSid](#/components/schemas/Thoth.PayProcessor.PayProcessorSid) constants.'
+                        is_enabled_3ds:
+                          type:
+                            - boolean
+                            - 'null'
+                          description: |-
+                            `true` if 3DS should be performed, `false` if 3DS should not be performed. `null` if this is not defined for payment processor.
+                            Only for [PayProcessorSid::NUVEI](#/components/schemas/Thoth.PayProcessor.PayProcessorSid)
+                        is_test:
+                          type:
+                            - boolean
+                            - 'null'
+                          description: |-
+                            `true` if the merchant is in a test mode, `false` otherwise.
+                            `null` if this is not defined for payment processor.
+                        k_business_merchant:
+                          type: string
+                          description: 'Key of the business merchant.'
+                      required:
+                        - a_public_keys
+                        - a_public_info
+                        - hide_save_source
+                        - id_pay_processor
+                        - is_enabled_3ds
+                        - is_test
+                        - k_business_merchant
+                  dl_now:
+                    type: string
+                    format: date
+                    description: |-
+                      Current local date in current location [EnvironmentApi::$k_location](/Thoth/WlPay/Form/Environment.json)
+                      or business [EnvironmentApi::$k_business](/Thoth/WlPay/Form/Environment.json) if not set location.
+                  f_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount for payment with card represented as a percent of transaction amount.
+
+                      This will be `null` if the percentage surcharge amount shouldn't be withdrawn.
+                  f_surcharge_ach:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount for payment with ACH represented as a percent of transaction amount.
+
+                      This will be `null` if the percentage surcharge amount shouldn't be withdrawn.
+                  id_locale:
+                    $ref: '#/components/schemas/Core.Locale.LocaleSid'
+                    description: 'The locale ID of the business.'
+                  is_save_optional:
+                    type: boolean
+                    description: |-
+                      `true` if clients can choose whether their banking and credit card information is saved at checkout,
+                      `false` if this information is always saved.
+                  is_save_source:
+                    type: boolean
+                    description: |-
+                      Determines whether newly added payment sources should be saved. This will be `true` if payment sources should be saved,
+                      `false` if otherwise.
+                  is_tip:
+                    type: boolean
+                    description: 'Whether tips are accepted.'
+                  m_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount for payment with card represented as a fixed amount.
+
+                      This will be `null` if the fixed surcharge amount shouldn't be withdrawn.
+                  m_surcharge_ach:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount for payment with ACH represented as a fixed amount.
+
+                      This will be `null` if the fixed surcharge amount shouldn't be withdrawn.
+                required:
+                  - a_card_system
+                  - a_method_staff
+                  - a_method_support
+                  - dl_now
+                  - is_save_optional
+                  - is_save_source
+                  - is_tip
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns information about payment environment.'
+      description: |-
+        Called before rendering a payment form to determine which payment methods and card types are available
+        for a given business and location, what surcharges apply, and how the form should behave (tip prompt,
+        optional card save). This endpoint is deprecated; use [EnvironmentUserApi](/Thoth/WlPay/Form/EnvironmentUser.json)
+         for new integrations.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The key of the business to retrieve payment information for.
+
+            This will be `0` if not set yet.
+            An empty string or `null` if payments are performed with the WellnessLiving system merchant.
+        -
+          name: k_currency
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the currency to retrieve payment information for.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The key of the location to retrieve payment information for.
+
+            This will be `0` if not set yet.
+        -
+          name: uid_owner
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            The user ID to retrieve payment information for.
+
+            `null` if not defined.
+      x-instance-get-key: 'k_currency,k_business,k_location,uid_owner'
       x-rate-limit:
         -
           limit: 200000
@@ -22999,6 +24901,161 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Account/Account.json:
+    get:
+      operationId: Thoth.WlPay.Account.Account.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_account:
+                    type: object
+                    description: |-
+                      A list of the user's accounts.
+
+                      Keys are account keys. This could be `0` if the user has no accounts in the currency of the given business.
+                      Values are account data:
+                    properties:
+                      id_currency:
+                        $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                        description: 'Currency ID. One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constant.'
+                      k_currency:
+                        type: string
+                        description: 'Key of account currency.'
+                      k_pay_account:
+                        type:
+                          - string
+                          - 'null'
+                        description: 'ID of payment account.  `null` if this is a user account based on system payment method.'
+                      k_pay_method:
+                        type:
+                          - string
+                          - 'null'
+                        description: 'ID of custom payment method. `null` if this is a user account based on system payment method.'
+                      m_rest:
+                        type: string
+                        description: 'Account balance.'
+                      s_method:
+                        type:
+                          - string
+                          - 'null'
+                        description: 'Name of a custom payment method. `null` if this is a user account based on system payment method.'
+                    required:
+                      - id_currency
+                      - k_currency
+                      - k_pay_account
+                      - k_pay_method
+                      - m_rest
+                      - s_method
+                  a_account_nx:
+                    type: array
+                    description: |-
+                      A list of accounts that have not been created for this user yet.
+
+                      Keys are composed of `{k_pay_method}:{k_currency}`. Each element:
+                    items:
+                      type: object
+                      properties:
+                        can_negative:
+                          type: boolean
+                          description: '`true` if the account is allowed to have a negative balance, `false` otherwise.'
+                        id_currency:
+                          $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                          description: 'Currency ID. One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.'
+                        k_currency:
+                          type: string
+                          description: 'Currency key.'
+                        k_pay_account:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Payment account key. `null` for accounts not yet created.'
+                        k_pay_method:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Custom payment method key. `null` for accounts based on the system payment method.'
+                        m_rest:
+                          type: string
+                          description: "Account balance. Always `'0.00'` for accounts not yet created."
+                        s_method:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Name of the custom payment method. `null` for accounts based on the system payment method.'
+                      required:
+                        - can_negative
+                        - id_currency
+                        - k_currency
+                        - k_pay_account
+                        - k_pay_method
+                        - m_rest
+                        - s_method
+                  is_debtor:
+                    type: boolean
+                    description: |-
+                      Determines whether the user is a debtor. If `true` - the owner of this account is a debtor.
+                      If `false` - the user is not a debtor or the information is not returned for the
+                      account owner ([AccountApi::$is_owner](/Thoth/WlPay/Account/Account.json) is `false`).
+                required:
+                  - a_account
+                  - a_account_nx
+                  - is_debtor
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Retrieves information about accounts of given user in given business.'
+      description: |-
+        Returns the list of existing accounts and accounts not yet created for the user within the specified business,
+        including balance, currency, and payment method details.
+        When [AccountApi::$is_owner](/Thoth/WlPay/Account/Account.json) is `true`, resolves the money owner and includes the debtor status.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_owner
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            If `true`, information for the account's owner is returned. Clients can be configured to pay for a relative's
+            expenses. For example, a parent can pay for their child.
+            Otherwise, `false` to indicate information strictly for the specified user is returned.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the business to show information for.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the user to show information for.'
+      x-instance-get-key: 'uid,k_business,is_owner'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/WlPay/Account/Account.json:
     get:
       operationId: Thoth.WlPay.Account.Account.get
@@ -23154,6 +25211,85 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Owner/Owner.json:
+    get:
+      operationId: Thoth.WlPay.Owner.Owner.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_pay_owner:
+                    $ref: '#/components/schemas/RsPayOwnerSid'
+                    description: |-
+                      The type of user for which transactions can be made (this property is optional).
+
+                      This is one of the [RsPayOwnerSid](#/components/schemas/RsPayOwnerSid) constants.
+                  is_pay_self_only:
+                    type: boolean
+                    description: |-
+                      Is client pay only for self. If parent pays for child this flag will be `false` for both.
+                      `true` if client pay only for self, `false` - otherwise.
+                  k_pay_owner:
+                    type: string
+                    description: 'The payment owner key. This is used for financial transactions.'
+                  k_pay_owner_money:
+                    type: string
+                    description: 'Key of the money owner.'
+                required:
+                  - id_pay_owner
+                  - is_pay_self_only
+                  - k_pay_owner
+                  - k_pay_owner_money
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns information about payment owner.'
+      description: |-
+        Must be called before initiating any payment on behalf of a user, to determine the correct payment
+        owner keys to pass to the payment form. Also indicates whether a family-account relationship exists
+        (for example, a parent paying for a child), which affects how the payment form is pre-populated.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Business key.
+
+            `null` if not passed.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of a user to show information for.'
+      x-instance-get-key: 'uid,k_business'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/WlPay/Owner/Owner.json:
     get:
       operationId: Thoth.WlPay.Owner.Owner.get
@@ -23229,6 +25365,97 @@ paths:
             type: string
           description: 'Key of a user to show information for.'
       x-instance-get-key: 'uid,k_business'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Method/List.json:
+    get:
+      operationId: Thoth.WlPay.Method.List.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_pay_method:
+                    type: array
+                    description: 'A list of payment methods:'
+                    items:
+                      type: object
+                      properties:
+                        id_pay_method:
+                          $ref: '#/components/schemas/RsPayMethodSid'
+                          description: 'The payment method type ID. One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.'
+                        k_pay_method:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Payment method key. 
+                            May be `null` if it is a system payment method.
+                        s_title:
+                          type: string
+                          description: 'The payment method name.'
+                      required:
+                        - id_pay_method
+                        - k_pay_method
+                        - s_title
+                required:
+                  - a_pay_method
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns list of active payment methods data.'
+      description: |-
+        Returns the system-level payment methods enabled for the business combined with any custom payment methods
+        configured for the business and accessible to the given user based on their role. When `$is_active` is
+        `false`, inactive custom methods are included as well.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_active
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Whether only active payment methods should be returned.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key.'
+        -
+          name: show_manual
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Whether payment method [RsPayMethodSid::ACCOUNT_MANUAL](#/components/schemas/RsPayMethodSid) should be included in response.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of a user to show information for.'
+      x-instance-get-key: 'k_business,uid,is_active,show_manual'
       x-rate-limit:
         -
           limit: 200000
@@ -23320,6 +25547,155 @@ paths:
             type: string
           description: 'The key of a user to show information for.'
       x-instance-get-key: 'k_business,uid,is_active,show_manual'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Address/Address.json:
+    get:
+      operationId: Thoth.WlPay.Address.Address.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_pay_address:
+                    type:
+                      - array
+                      - 'null'
+                    description: |-
+                      The payee's address information.
+
+                      A list of payment addresses belonging to the owner. Each element: 
+
+                      `null` if the current user has no access to the required information, or cannot edit the bank account.
+                    items:
+                      type: object
+                      properties:
+                        is_selected:
+                          type: boolean
+                          description: '`true` if this address is currently selected, `false` otherwise.'
+                        k_country:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Country geo key. `null` if the country cannot be determined.'
+                        k_pay_address:
+                          type: string
+                          description: 'Payment address key. Primary key in the `rs_pay_address` table.'
+                        k_region:
+                          type: string
+                          description: 'Region geo key.'
+                        s_city:
+                          type: string
+                          description: 'City name.'
+                        s_country:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Country name. `null` if the country cannot be determined.'
+                        s_country_code:
+                          type: string
+                          description: 'Country abbreviation code, or an empty string if unavailable.'
+                        s_name:
+                          type: string
+                          description: 'Full name of the address owner.'
+                        s_phone:
+                          type: string
+                          description: 'Phone number.'
+                        s_postal:
+                          type: string
+                          description: 'Postal code.'
+                        s_region:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Region name.'
+                        s_region_code:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Region abbreviation code. `null` if the region cannot be determined.'
+                        s_street1:
+                          type: string
+                          description: 'First line of the street address.'
+                        s_street2:
+                          type: string
+                          description: 'Second line of the street address.'
+                        text_mail:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Email address of the owner. `null` if the owner is a business.'
+                      required:
+                        - is_selected
+                        - k_country
+                        - k_pay_address
+                        - k_region
+                        - s_city
+                        - s_country
+                        - s_country_code
+                        - s_name
+                        - s_phone
+                        - s_postal
+                        - s_region
+                        - s_region_code
+                        - s_street1
+                        - s_street2
+                        - text_mail
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: "Gets user's payment addresses information."
+      description: |-
+        Returns the list of saved payment addresses for the specified owner type and key, including address fields,
+        country and region details, and the currently selected address. Returns `null` if the current user cannot
+        edit bank accounts for the owner.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_pay_owner
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayOwnerSid'
+          description: |-
+            The ID of the payment owner type.
+            One of [RsPayOwnerSid](#/components/schemas/RsPayOwnerSid) constants.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Business key, where the payment is performed.
+            `null` if pay owner is not user.
+        -
+          name: k_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The primary key of a payment owner.
+            This could be the business of the user depending on a [AddressApi::$id_pay_owner](/Thoth/WlPay/Address/Address.json) value.
+      x-instance-get-key: 'id_pay_owner,k_id'
       x-rate-limit:
         -
           limit: 200000
@@ -23469,6 +25845,121 @@ paths:
             The primary key of a payment owner.
             This could be the business of the user depending on a [AddressApi::$id_pay_owner](/Thoth/WlPay/Address/Address.json) value.
       x-instance-get-key: 'id_pay_owner,k_id'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Address/Profile.json:
+    get:
+      operationId: Thoth.WlPay.Address.Profile.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  k_geo_country:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The country key.
+
+                      This will be `null` if not set yet.
+                  k_geo_region:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The region ID.
+
+                      This will be `null` if not set yet.
+                  s_city:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The name of the city in the address.
+
+                      This will be `null` if not set yet.
+                  s_name:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The client name as listed in their address.
+
+                      This will be `null` if not set yet.
+                  s_phone:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The client phone number.
+
+                      This will be `null` if not set yet.
+                  s_postal:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The client postal or zip code.
+
+                      This will be `null` if not set yet.
+                  s_street1:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The first line of the client address.
+
+                      This will be `null` if not set yet.
+                  s_street2:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The second line of the client address.
+
+                      This will be `null` if not set yet.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns default payment address data that is retrieved from user profile.'
+      description: |-
+        Loads the user's profile for the given business and returns address fields (name, phone, street, city,
+        postal code, country, region) to pre-populate a payment address form.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key number used internally by WellnessLiving.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the user whose data should be retrieved.'
+      x-instance-get-key: 'k_business,uid'
       x-rate-limit:
         -
           limit: 200000
@@ -62978,6 +65469,52 @@ paths:
         -
           limit: 200000
           period: 3600
+  /door-access/brivo/webhook:
+    post:
+      operationId: Wl.DoorAccess.Brivo.Webhook.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Receives a Brivo door-access event.'
+      description: |-
+        Authenticates the request by the per-business webhook secret, then decodes the Brivo `AUDIT` event
+         payload and store the access fact and, when enabled, trigger an automatic check-in.
+         Access-denied and unrecognized events are ignored.
+      tags:
+        - Integrations
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business the webhook belongs to. Taken from the webhook URL.'
+        -
+          name: s_token
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Secret token from the webhook URL used to authenticate the Brivo request.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/DoorAccess/Brivo/Webhook.json:
     post:
       operationId: Wl.DoorAccess.Brivo.Webhook.post
@@ -65926,6 +68463,228 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Account/Charge/Charge.json:
+    post:
+      operationId: Thoth.WlPay.Account.Charge.Charge.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  k_purchase:
+                    type: string
+                    description: |-
+                      The ID of the purchase that was created during payment.
+                      This value is only returned in cases where a purchase was created.
+                      A new purchase is created when [ChargeApi::$id_pay_account_charge](/Thoth/WlPay/Account/Charge/Charge.json) equals [RsPayAccountChargeSid::AUTO](#/components/schemas/RsPayAccountChargeSid).
+                required:
+                  - k_purchase
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Refills the user account balance by the specified payment amount or adjusts it manually.'
+      description: |-
+        Accepts the payment amount, account key or user-and-business identifiers, charge mode, and payment form
+        data. Processes the payment through the configured payment environment and returns the purchase key
+        when a new purchase is created (for the automatic charge mode).
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_pay_account_charge
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayAccountChargeSid'
+          description: |-
+            The account charge mode.
+
+            One of the [RsPayAccountChargeSid](#/components/schemas/RsPayAccountChargeSid) constants.
+        -
+          name: is_staff
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'If `true`, the account is filled by a staff member in the backend. Otherwise, this will be `false`.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The ID of the business the user account belongs to.
+
+            This shouldn't be passed if a user account has already been created.
+            In such cases, [ChargeApi::$k_pay_account](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
+
+            If both the business ID and account ID passed, the system checks if the given business is the owner of the specified account.
+        -
+          name: k_pay_account
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The ID of the user account to refill.
+
+            This may be 0 if a user account hasn't been created yet.
+            In such cases, [ChargeApi::$k_business](/Thoth/WlPay/Account/Charge/Charge.json) and [ChargeApi::$uid](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
+
+            If not passed, the currency of account equals the default business currency.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The ID of the user whose account is being refilled.
+
+            This shouldn't be passed if a user account has already been created.
+            In such cases, [ChargeApi::$k_pay_account](/Thoth/WlPay/Account/Charge/Charge.json) should be passed instead.
+
+            If both the user ID and account ID passed, the system checks if the given user is the owner of the specified account.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_pay_form:
+                  type: array
+                  description: |-
+                    A list of payment sources to pay with.
+
+                    Each element has next keys:
+                  items:
+                    type: object
+                    properties:
+                      a_pay_card:
+                        type: object
+                        description: 'The payment card information:'
+                        properties:
+                          a_pay_address:
+                            type: object
+                            description: 'The payment address:'
+                            properties:
+                              is_new:
+                                type: boolean
+                                description: 'Set this value to `1` to add a new payment address or to `0` to use a saved payment address.'
+                              k_geo_country:
+                                type: string
+                                description: 'The key of the country used for the payment address. Specify this to add a new address.'
+                              k_geo_region:
+                                type: string
+                                description: 'The key of the region for the payment address. Specify this to add a new address.'
+                              k_pay_address:
+                                type: string
+                                description: 'The key of the saved payment address. Specify this to use a saved address.'
+                              s_city:
+                                type: string
+                                description: 'The city used for the payment address. Specify this to add a new address.'
+                              s_name:
+                                type: string
+                                description: 'The card name. Specify this to add a new address.'
+                              s_phone:
+                                type: string
+                                description: 'The payment phone. Specify this to add a new address.'
+                              s_postal:
+                                type: string
+                                description: 'The postal code for the payment address. Specify this to add a new address.'
+                              s_street1:
+                                type: string
+                                description: 'The payment address. Specify this to add a new address.'
+                              s_street2:
+                                type: string
+                                description: 'The optional payment address. Specify this to add a new address.'
+                            required:
+                              - is_new
+                          i_csc:
+                            type: integer
+                            format: int32
+                            description: 'The credit card CSC. Specify this to add a new card.'
+                          i_month:
+                            type: integer
+                            format: int32
+                            description: 'The credit card expiration month. Specify this to add a new card.'
+                          i_year:
+                            type: integer
+                            format: int32
+                            description: 'The credit card expiration year. Specify this to add a new card.'
+                          is_new:
+                            type: boolean
+                            description: 'Specify `1` to add a new card, or `0` to use a saved card.'
+                          k_pay_bank:
+                            type: string
+                            description: 'The key of the credit card. Specify this to use saved card.'
+                          s_comment:
+                            type: string
+                            description: 'Optional comment(s). Specify this to add a new card.'
+                          s_number:
+                            type: string
+                            description: 'The card number. Specify this to add a new card.'
+                        required:
+                          - a_pay_address
+                          - is_new
+                      f_amount:
+                        type: string
+                        description: 'The amount of money to withdraw with this payment source.'
+                      is_hide:
+                        type: boolean
+                        description: 'Determines whether this payment method is hidden.'
+                      is_save:
+                        type: boolean
+                        description: "Whether payment method should be saved to user's account."
+                      is_success:
+                        type: boolean
+                        description: 'Identifies whether this source was successfully charged.'
+                      m_surcharge:
+                        type: string
+                        description: 'The client-side calculated surcharge.'
+                      s_index:
+                        type: string
+                        description: 'The index of this form (optional).'
+                      sid_pay_method:
+                        type: string
+                        description: 'The payment method ID.'
+                    required:
+                      - f_amount
+                      - sid_pay_method
+                id_mode:
+                  $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                  description: 'The source mode key. One of the [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants.'
+                m_amount:
+                  type: string
+                  description: 'The payment amount.'
+                s_comment:
+                  type: string
+                  description: 'The transaction comment.'
+              required:
+                - a_pay_form
+                - id_mode
+                - m_amount
+                - s_comment
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/WlPay/Account/Charge/Charge.json:
     post:
       operationId: Thoth.WlPay.Account.Charge.Charge.post
@@ -66148,6 +68907,183 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Bank/Card/List.json:
+    get:
+      operationId: Thoth.WlPay.Bank.Card.List.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_bank_card:
+                    type: object
+                    description: |-
+                      A list of bank cards.
+                      The array keys are the card `k_pay_bank` IDs.
+                      Each element has the following keys:
+                    properties:
+                      i_month:
+                        type: integer
+                        format: int32
+                        description: 'The month when the payment card expires, represented by a number (1=January and 12=December).'
+                      i_year:
+                        type: integer
+                        format: int32
+                        description: 'The last two digits of the year when the payment card expires.'
+                      id_card_system:
+                        $ref: '#/components/schemas/ACardSystemSid'
+                        description: 'The card system ID. This is one of the [ACardSystemSid](#/components/schemas/ACardSystemSid) constants.'
+                      is_default:
+                        type: boolean
+                        description: |-
+                          If `true`, then this card is the user default card.
+                          If `false`, then this isn't the user default card.
+                      k_pay_address:
+                        type: string
+                        description: 'The payment address ID. This refers to a physical address associated with a payment card.'
+                      k_pay_bank:
+                        type: string
+                        description: 'The payment method ID. Each payment card for each user will have its own ID.'
+                      text_name_card:
+                        type: string
+                        description: |-
+                          The payment card descriptor. This is typically the company name and the last 4 digits of the card
+                          (for example, visa-5903).
+                      text_name_holder:
+                        type: string
+                        description: 'The name of the card owner as it appears on the card.'
+                      text_number:
+                        type: string
+                        description: |-
+                          A portion of the payment card number, used to identify the card.
+                          This is typically the last 4 digits of the card number.
+                    required:
+                      - i_month
+                      - i_year
+                      - id_card_system
+                      - is_default
+                      - k_pay_address
+                      - k_pay_bank
+                      - text_name_card
+                      - text_name_holder
+                      - text_number
+                  a_list:
+                    type: array
+                    description: |-
+                      List of bank cards.
+                      Duplicate of [ListApi::$a_bank_card](/Thoth/WlPay/Bank/Card/List.json) as a flat indexed array.
+                    items:
+                      type: object
+                      properties:
+                        i_month:
+                          type: integer
+                          format: int32
+                          description: 'The month when the payment card expires, represented by a number (1=January and 12=December).'
+                        i_year:
+                          type: integer
+                          format: int32
+                          description: 'The last two digits of the year when the payment card expires.'
+                        id_card_system:
+                          $ref: '#/components/schemas/ACardSystemSid'
+                          description: 'The card system ID. This is one of the [ACardSystemSid](#/components/schemas/ACardSystemSid) constants.'
+                        is_default:
+                          type: boolean
+                          description: |-
+                            If `true`, then this card is the user default card.
+                            If `false`, then this isn't the user default card.
+                        k_pay_address:
+                          type: string
+                          description: 'The payment address ID. This refers to a physical address associated with a payment card.'
+                        k_pay_bank:
+                          type: string
+                          description: 'The payment method ID. Each payment card for each user will have its own ID.'
+                        text_name_card:
+                          type: string
+                          description: |-
+                            The payment card descriptor. This is typically the company name and the last 4 digits of the card
+                            (for example, visa-5903).
+                        text_name_holder:
+                          type: string
+                          description: 'The name of the card owner as it appears on the card.'
+                        text_number:
+                          type: string
+                          description: |-
+                            A portion of the payment card number, used to identify the card.
+                            This is typically the last 4 digits of the card number.
+                      required:
+                        - i_month
+                        - i_year
+                        - id_card_system
+                        - is_default
+                        - k_pay_address
+                        - k_pay_bank
+                        - text_name_card
+                        - text_name_holder
+                        - text_number
+                  can_add:
+                    type: boolean
+                    description: |-
+                      Whether new card can be added.
+
+                      `true` if new cards can be added.
+                      `false` if new cards can not be added.
+                required:
+                  - a_bank_card
+                  - a_list
+                  - can_add
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: "Retrieves information about user's bank cards."
+      description: |-
+        Returns the list of saved payment cards for the specified user and business, including card number fragment,
+        expiry date, card system, holder name, and default status. Also returns whether new cards can be added.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'ID of current business.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Location to show information for.
+
+            `0` to use user's home location.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'ID of a user to show information for.'
+      x-instance-get-key: 'uid,k_business,k_location'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/WlPay/Bank/Card/List.json:
     get:
       operationId: Thoth.WlPay.Bank.Card.List.get
@@ -66325,6 +69261,113 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Bank/Ach/List.json:
+    get:
+      operationId: Thoth.WlPay.Bank.Ach.List.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_list:
+                    type: array
+                    description: 'List of ACH accounts:'
+                    items:
+                      type: object
+                      properties:
+                        id_pay_bank_ach_holder:
+                          $ref: '#/components/schemas/RsPayBankAchHolderSid'
+                          description: 'Type of account holder. One of [RsPayBankAchHolderSid](#/components/schemas/RsPayBankAchHolderSid) constants.'
+                        id_pay_bank_ach_type:
+                          $ref: '#/components/schemas/RsPayBankAchTypeSid'
+                          description: 'Type of account. One of [RsPayBankAchTypeSid](#/components/schemas/RsPayBankAchTypeSid) constants.'
+                        is_default:
+                          type: boolean
+                          description: '`true` - this account is default payment method; `false` - otherwise.'
+                        k_pay_bank:
+                          type: string
+                          description: 'ID of bank account.'
+                        text_name_account:
+                          type: string
+                          description: 'Account name.'
+                        text_name_holder:
+                          type: string
+                          description: 'Account holder name.'
+                        text_number:
+                          type: string
+                          description: 'ACH account number.'
+                      required:
+                        - id_pay_bank_ach_holder
+                        - id_pay_bank_ach_type
+                        - is_default
+                        - k_pay_bank
+                        - text_name_account
+                        - text_name_holder
+                        - text_number
+                  can_add:
+                    type: boolean
+                    description: |-
+                      Whether new ACH account can be added.
+
+                      `true` if new ACH account can be added.
+                      `false` if new ACH account can not be added.
+                required:
+                  - a_list
+                  - can_add
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: "Retrieves information about user's ACH accounts."
+      description: |-
+        Validates the user, business, and location, then retrieves all saved ACH accounts for the resolved merchant.
+         Also reports whether the current owner is allowed to add a new ACH account.
+      tags:
+        - Payments
+        - ACH
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'ID of current business.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Location to show information for.
+
+            `0` to use user's home location.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'ID of a user to show information for.'
+      x-instance-get-key: 'uid,k_business,k_location'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/WlPay/Bank/Ach/List.json:
     get:
       operationId: Thoth.WlPay.Bank.Ach.List.get
@@ -66428,6 +69471,261 @@ paths:
             type: string
           description: 'ID of a user to show information for.'
       x-instance-get-key: 'uid,k_business,k_location'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Transaction/Report/TransactionAllPayment.json:
+    get:
+      operationId: Thoth.WlPay.Transaction.Report.TransactionAllPayment.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_field:
+                    type: array
+                    description: |-
+                      A list of fields in the report.
+
+                      This array is effectively a title row for the table returned in [TransactionAllPaymentApi::$a_row](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json).
+                    items:
+                      type: string
+                  a_row:
+                    type: array
+                    description: |-
+                      The report data.
+
+                      This is an indexed array where each element is also an indexed array representing one report row.
+                      Column positions in each row correspond to the field names in [TransactionAllPaymentApi::$a_field](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json).
+
+                      Known columns (use [TransactionAllPaymentApi::$a_field](/Thoth/WlPay/Transaction/Report/TransactionAllPayment.json) to resolve their positional indexes):
+                    items:
+                      type: object
+                      properties:
+                        a_pay_transaction:
+                          type: object
+                          description: 'List of pay transactions associated with this row. Each element:'
+                          properties:
+                            id_pay_method:
+                              $ref: '#/components/schemas/RsPayMethodSid'
+                              description: 'Payment method ID. One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.'
+                            k_pay_transaction:
+                              type: string
+                              description: 'Pay transaction key.'
+                            m_amount:
+                              type: string
+                              description: 'Amount paid.'
+                            m_surcharge:
+                              type: string
+                              description: 'Surcharge amount from store settings.'
+                            s_batch_number:
+                              type: string
+                              description: 'Batch number for this transaction.'
+                          required:
+                            - id_pay_method
+                            - k_pay_transaction
+                            - m_amount
+                            - m_surcharge
+                            - s_batch_number
+                        dtu_purchase_start:
+                          type: string
+                          description: 'Start date and time of the purchase in UTC.'
+                        k_purchase:
+                          type: string
+                          description: 'Purchase key.'
+                        m_net_sale:
+                          type: string
+                          description: 'Net sales amount.'
+                        m_total_tax:
+                          type: string
+                          description: 'Total tax amount.'
+                        o_client.text_first:
+                          type: string
+                          description: 'First name of the client.'
+                        o_client.text_last:
+                          type: string
+                          description: 'Last name of the client.'
+                        o_client.text_name:
+                          type: string
+                          description: 'Full name of the client.'
+                        o_location.k_location:
+                          type: string
+                          description: 'Location key.'
+                        s_batch_number:
+                          type: string
+                          description: 'Batch number of the first transaction in the row.'
+                        text_location_address:
+                          type: string
+                          description: 'Street address of the location.'
+                        text_location_city:
+                          type: string
+                          description: "Name of the location's city."
+                        text_location_country:
+                          type: string
+                          description: "Name of the location's country."
+                        text_location_postal:
+                          type: string
+                          description: 'Postal code of the location.'
+                        text_location_region:
+                          type: string
+                          description: "Name of the location's region."
+                        text_payment_method:
+                          type: string
+                          description: 'Name of the payment method used.'
+                        text_payment_method_base:
+                          type: string
+                          description: 'Name of the base payment method. If a custom method was used, this is the method it is based on.'
+                        text_tax_title:
+                          type: string
+                          description: 'Comma-separated list of tax names applied to the purchase.'
+                        text_tax_value:
+                          type: string
+                          description: |-
+                            Comma-separated list of tax values. Percentage-based taxes have `%` appended;
+                            fixed-amount taxes have `$` appended.
+                      required:
+                        - a_pay_transaction
+                        - dtu_purchase_start
+                        - k_purchase
+                        - m_net_sale
+                        - m_total_tax
+                        - o_client.text_first
+                        - o_client.text_last
+                        - o_client.text_name
+                        - o_location.k_location
+                        - s_batch_number
+                        - text_location_address
+                        - text_location_city
+                        - text_location_country
+                        - text_location_postal
+                        - text_location_region
+                        - text_payment_method
+                        - text_payment_method_base
+                        - text_tax_title
+                        - text_tax_value
+                  a_warning:
+                    type: array
+                    description: 'The warning list of the report.'
+                    items:
+                      type: string
+                  dtu_complete:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: 'The date and time if the report has completed generation. Otherwise, this will be `null`.'
+                  dtu_queue:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: 'The date and time if this report has been put in the generation queue. Otherwise, this will be `null`.'
+                  dtu_start:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: 'The date and time if generation of this report has started. Otherwise, this will be `null`.'
+                  id_report_status:
+                    $ref: '#/components/schemas/Wl.Report.Generator.ReportGeneratorStatusSid'
+                    description: 'The report status.'
+                  is_more:
+                    type: boolean
+                    description: |-
+                      Determines whether to show more rows in the report.
+
+                      If `true`, there are more report rows to get. Otherwise, `false` to indicate that all rows in the report have
+                      already been retrieved.
+                  is_report_complete:
+                    type: boolean
+                    description: |-
+                      Determines whether the report is complete.
+
+                      If the report is accessed on the current day, or is returning a result that was cached on the current day, it could
+                      be incomplete as not all the transactions for the day are present.
+
+                      If `true`, the report has been completed. Otherwise, `false`.
+                required:
+                  - a_field
+                  - a_row
+                  - a_warning
+                  - id_report_status
+                  - is_more
+                  - is_report_complete
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns All Transactions Report data for the specified date range.'
+      description: |-
+        Provides access to the All Transactions Report used for revenue reconciliation and export. The report
+        is generated asynchronously and cached; check `$id_report_status` to determine whether generation is
+        still in progress. Set `$is_refresh` to request regeneration and use `$i_page` to paginate through
+        up to `LIMIT` rows per request.
+      tags:
+        - Payments
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dl_date_end
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: 'The end date in local time to retrieve transactions for.'
+        -
+          name: dl_date_start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: 'The end date in local time to retrieve transactions for.'
+        -
+          name: i_page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            The page of the report, starting from 0.
+            Each page will contain a maximum of `LIMIT` rows.
+        -
+          name: is_refresh
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Determines whether the report should be refreshed.
+
+            If `true`, this report should be refreshed. A report refresh can't be requested while the report is being generated.
+            Otherwise, `false` to only return contents of the report.
+
+            If the report hasn't yet been generated, it will automatically start generating in the background.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the business for which report should be generated.'
       x-rate-limit:
         -
           limit: 200000
@@ -66683,6 +69981,106 @@ paths:
           schema:
             type: string
           description: 'The key of the business for which report should be generated.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Address/Widget/WidgetEdit.json:
+    get:
+      operationId: Thoth.WlPay.Address.Widget.WidgetEdit.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_geo:
+                    type: array
+                    description: 'List of countries with their regions, keyed by country geo key. Each element:'
+                    items:
+                      type: object
+                      properties:
+                        a_region:
+                          type: object
+                          description: 'List of geographic regions within the country. Each element:'
+                          properties:
+                            is_select:
+                              type: boolean
+                              description: '`true` if this region is currently selected; `false` otherwise.'
+                            k_geo:
+                              type: string
+                              description: 'Region key.'
+                            s_title:
+                              type: string
+                              description: 'Region title.'
+                            text_abbr:
+                              type: string
+                              description: 'Region abbreviation.'
+                          required:
+                            - is_select
+                            - k_geo
+                            - s_title
+                            - text_abbr
+                        is_select:
+                          type: boolean
+                          description: '`true` if this country is currently selected; `false` otherwise.'
+                        k_geo:
+                          type: string
+                          description: 'Country key.'
+                        s_title:
+                          type: string
+                          description: 'Country title.'
+                        text_abbr:
+                          type: string
+                          description: 'Country abbreviation.'
+                      required:
+                        - a_region
+                        - is_select
+                        - k_geo
+                        - s_title
+                        - text_abbr
+                  html_phone_mask:
+                    type: string
+                    description: 'Mask for phone entering (ready for output to the page).'
+                  text_phone_mask:
+                    type: string
+                    description: 'Mask for phone entering.'
+                required:
+                  - a_geo
+                  - html_phone_mask
+                  - text_phone_mask
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets data for "edit payment address" widget.'
+      description: |-
+        Returns the list of geographic regions and phone number format masks configured for the given business locale.
+         When no business key is provided, system-level defaults are returned.
+      tags:
+        - 'Payment Address'
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      x-instance-get-key: k_business
       x-rate-limit:
         -
           limit: 200000
@@ -92586,6 +95984,265 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Bank/Card/Add/Add.json:
+    delete:
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Deletes saved card.'
+      description: |-
+        Removes the payment card identified by `$k_pay_bank` from the specified business, permanently deleting
+        the stored card record.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key number used internally by WellnessLiving.'
+        -
+          name: k_pay_bank
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Pay bank key to delete.'
+      x-instance-get-key: 'k_business,k_location,k_pay_owner'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    get:
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  html_widget:
+                    type: string
+                    description: 'The HTML form containing the fields required to add a card.'
+                required:
+                  - html_widget
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets code of bank card widget.'
+      description: |-
+        Returns an HTML snippet containing the card entry form rendered by the server-side widget for the given
+        payment owner. This method is deprecated; prefer building the card widget on the client side.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key number used internally by WellnessLiving.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The location key.'
+        -
+          name: k_pay_owner
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The payment owner ID. This is different from the user ID. It can be found with
+            the [OwnerApi](/Thoth/WlPay/Owner/Owner.json).
+      deprecated: true
+      x-deprecated: 'Make card widget in client side using `RsPayBankCardEditWidget` class.'
+      x-instance-get-key: 'k_business,k_location,k_pay_owner'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Thoth.WlPay.Bank.Card.Add.Add.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves new bank card.'
+      description: |-
+        Validates the payment owner and business, then saves the new card details provided in `$a_card_detail`
+        and optionally sets the card as the default recurring payment source.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key number used internally by WellnessLiving.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The location key.'
+        -
+          name: k_pay_owner
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The payment owner ID. This is different from the user ID. It can be found with
+            the [OwnerApi](/Thoth/WlPay/Owner/Owner.json).
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_card_detail:
+                  type: object
+                  description: 'An array containing payment card information with the following fields:'
+                  properties:
+                    a_pay_address:
+                      type: object
+                      description: 'Address information:'
+                      properties:
+                        is_new:
+                          type: boolean
+                          description: '`true` - add new address. `false` - use existing address.'
+                        k_pay_address:
+                          type: string
+                          description: 'The chosen payment address ID. THis will be set even if the user decided to add a new address.'
+                        k_geo_country:
+                          type: string
+                          description: 'The country key.'
+                        k_geo_region:
+                          type: string
+                          description: 'The region key.'
+                        s_city:
+                          type: string
+                          description: 'The city name.'
+                        s_name:
+                          type: string
+                          description: "The user's name."
+                        s_street1:
+                          type: string
+                          description: 'The first address line.'
+                        s_street2:
+                          type: string
+                          description: 'The second address line.'
+                        s_phone:
+                          type: string
+                          description: 'The phone number.'
+                        s_postal:
+                          type: string
+                          description: 'The postal code.'
+                      required:
+                        - is_new
+                        - k_pay_address
+                        - k_geo_country
+                        - k_geo_region
+                        - s_city
+                        - s_name
+                        - s_street1
+                        - s_street2
+                        - s_phone
+                        - s_postal
+                    i_csc:
+                      type: integer
+                      format: int32
+                      description: 'The payment card security code, also known as the CVC or CVV.'
+                    i_month:
+                      type: integer
+                      format: int32
+                      description: 'The number of the month when the payment card expires. 1=January and 12=December.'
+                    i_year:
+                      type: integer
+                      format: int32
+                      description: 'The last two digits of the year when the payment card expires.'
+                    id_pay_actor:
+                      $ref: '#/components/schemas/RsPayActorSid'
+                      description: 'Pay actor id. One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.'
+                    k_pay_bank:
+                      type: string
+                      description: |-
+                        Key of existing payment source in case of editing. 
+                        Empty if new pay source is being added.
+                    s_name:
+                      type: string
+                      description: 'The name as it appears on the payment card.'
+                    s_number:
+                      type: string
+                      description: 'The payment card number with no spaces or dashes.'
+                  required:
+                    - a_pay_address
+                    - i_csc
+                    - i_month
+                    - i_year
+                    - id_pay_actor
+                    - k_pay_bank
+                    - s_name
+                    - s_number
+              required:
+                - a_card_detail
+      x-instance-get-key: 'k_business,k_location,k_pay_owner'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/WlPay/Bank/Card/Add/Add.json:
     delete:
       operationId: Thoth.WlPay.Bank.Card.Add.Add.delete
@@ -92845,6 +96502,199 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Bank/Card/Widget/WidgetSelect.json:
+    get:
+      operationId: Thoth.WlPay.Bank.Card.Widget.WidgetSelect.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_pay_card:
+                    type: object
+                    description: 'List of saved bank cards.'
+                    properties:
+                      eid_card_type:
+                        $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
+                        description: 'Payment card type enum case. `null` if card type is not set.'
+                      i_month:
+                        type: integer
+                        format: int32
+                        description: 'Card expiration month.'
+                      i_year:
+                        type: integer
+                        format: int32
+                        description: 'Card expiration year.'
+                      id_card_system:
+                        $ref: '#/components/schemas/Wl.Card.CardSystemSid'
+                        description: 'Card system ID. One of [CardSystemSid](#/components/schemas/Wl.Card.CardSystemSid) constants.'
+                      id_card_type:
+                        $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
+                        description: 'Payment card type ID. One of [CardTypeEnum](#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum) constants as int.'
+                      id_pay_processor:
+                        $ref: '#/components/schemas/Thoth.PayProcessor.PayProcessorSid'
+                        description: 'Payment processor ID. One of [PayProcessorSid](#/components/schemas/Thoth.PayProcessor.PayProcessorSid) constants.'
+                      is_default:
+                        type: boolean
+                        description: '`true` if this card is the default payment method; `false` otherwise.'
+                      k_pay_address:
+                        type: string
+                        description: 'Billing address key.'
+                      k_pay_bank:
+                        type: string
+                        description: 'Payment card key.'
+                      k_pay_recurrent:
+                        type: string
+                        description: 'Recurrent payment token key.'
+                      k_region:
+                        type: string
+                        description: 'Billing region key.'
+                      s_name:
+                        type: string
+                        description: 'Card nickname. Auto-generated from card system and masked number if not explicitly set.'
+                      s_number:
+                        type: string
+                        description: 'Partial card number.'
+                      sid_card_system:
+                        type: string
+                        description: 'Card system SID. One of [CardSystemSid](#/components/schemas/Wl.Card.CardSystemSid) constants as string.'
+                      text_city:
+                        type: string
+                        description: 'Billing city.'
+                      text_country:
+                        type: string
+                        description: "Country name resolved from the region's parent geo entity. Empty if region has no parent."
+                      text_holder:
+                        type: string
+                        description: 'Cardholder name.'
+                      text_postal:
+                        type: string
+                        description: 'Billing postal code.'
+                      text_public_token:
+                        type: string
+                        description: 'Public representation of the recurrent payment token, safe for browser output.'
+                      text_region:
+                        type: string
+                        description: 'Region name resolved from the region key. Empty if no region is set.'
+                      text_street_1:
+                        type: string
+                        description: 'Billing street address line 1.'
+                      text_street_2:
+                        type: string
+                        description: 'Billing street address line 2.'
+                    required:
+                      - eid_card_type
+                      - i_month
+                      - i_year
+                      - id_card_system
+                      - id_card_type
+                      - id_pay_processor
+                      - is_default
+                      - k_pay_address
+                      - k_pay_bank
+                      - k_pay_recurrent
+                      - k_region
+                      - s_name
+                      - s_number
+                      - sid_card_system
+                      - text_city
+                      - text_country
+                      - text_holder
+                      - text_postal
+                      - text_public_token
+                      - text_region
+                      - text_street_1
+                      - text_street_2
+                required:
+                  - a_pay_card
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets a list of saved bank cards.'
+      description: |-
+        Validates the payment method, currency, business, location, and pay owner type, then loads the configured
+         merchant and returns the list of saved cards available to the given owner. For business owners, a system-wide
+         merchant must be configured; for users, a business-specific merchant is required.
+      tags:
+        - Payments
+        - 'Payment Methods'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_pay_method
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayMethodSid'
+          description: 'Payment method.'
+        -
+          name: id_pay_mode
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayModeSid'
+          description: 'Payment mode.'
+        -
+          name: id_pay_owner
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayOwnerSid'
+          description: |-
+            Payment owner kind.
+            Must be [RsPayOwnerSid::BUSINESS](#/components/schemas/RsPayOwnerSid) or [RsPayOwnerSid::USER](#/components/schemas/RsPayOwnerSid).
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Business key.
+            `null` if use system business.
+        -
+          name: k_currency
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Currency key.'
+        -
+          name: k_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Payment owner.
+            Must be primary key of a business or a user.
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Location key.
+            `null` to use system-wide merchant.
+      x-instance-get-key: 'id_pay_method,id_pay_owner,k_id,k_business,k_currency,k_location,id_pay_mode'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Thoth/WlPay/Bank/Card/Widget/WidgetSelect.json:
     get:
       operationId: Thoth.WlPay.Bank.Card.Widget.WidgetSelect.get
@@ -93034,6 +96884,397 @@ paths:
             Location key.
             `null` to use system-wide merchant.
       x-instance-get-key: 'id_pay_method,id_pay_owner,k_id,k_business,k_currency,k_location,id_pay_mode'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Bank/Ach/Add/Add.json:
+    delete:
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Deletes saved ACH.'
+      description: |-
+        Removes the ACH bank account identified by `k_pay_bank` from the pay owner's saved payment methods
+         for the given business.
+      tags:
+        - Payments
+        - ACH
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_pay_bank
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Pay bank key to delete.'
+      x-instance-get-key: 'k_business,k_location,k_pay_owner,id_locale,is_new'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    get:
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  html_widget:
+                    type: string
+                    description: 'The HTML form containing the fields required to add a card.'
+                  id_pay_processor:
+                    $ref: '#/components/schemas/Thoth.PayProcessor.PayProcessorSid'
+                    description: 'Transaction processor ID.'
+                required:
+                  - html_widget
+                  - id_pay_processor
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets widget for ACH account add.'
+      description: |-
+        Validates the locale, business, and pay owner, then determines whether to use Direct Entry (Australia and New
+         Zealand) or ACH as the payment method. Returns the rendered widget HTML and the processor ID for the
+         resolved merchant.
+      tags:
+        - Payments
+        - ACH
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_locale
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Core.Locale.LocaleSid'
+          description: |-
+            Locale ID.
+            `null` - if it is not set.
+        -
+          name: is_new
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Determines if the set of configs of the new payment form design is used.
+            `true` - if it is the new payment form design.
+            `false` - if it is the old payment form design.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Location key.
+
+            If empty, user's home location will be used.
+        -
+          name: k_pay_owner
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Pay owner key.'
+      x-instance-get-key: 'k_business,k_location,k_pay_owner,id_locale,is_new'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Thoth.WlPay.Bank.Ach.Add.Add.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_pay_bank:
+                    type: object
+                    description: 'ACH account information:'
+                    properties:
+                      can_remove:
+                        type: boolean
+                        description: |-
+                          Whether current user can remove payment method.
+                          `true` if user can remove payment methods.
+                          `false` if user cannot remove payment methods.
+                      id_pay_bank:
+                        $ref: '#/components/schemas/RsPayBankSid'
+                        description: 'Type of recurrent payment token. One of [RsPayBankSid](#/components/schemas/RsPayBankSid) constants.'
+                      id_pay_bank_ach_holder:
+                        $ref: '#/components/schemas/RsPayBankAchHolderSid'
+                        description: 'Type of account holder. One of [RsPayBankAchHolderSid](#/components/schemas/RsPayBankAchHolderSid) constants.'
+                      id_pay_bank_ach_type:
+                        $ref: '#/components/schemas/RsPayBankAchTypeSid'
+                        description: 'Type of account. One of [RsPayBankAchTypeSid](#/components/schemas/RsPayBankAchTypeSid) constants.'
+                      is_default:
+                        type: boolean
+                        description: '`true` - this account is default payment method; `false` - otherwise.'
+                      k_pay_address:
+                        type: string
+                        description: 'Billing address.'
+                      k_pay_bank:
+                        type: string
+                        description: 'ID of bank account.'
+                      k_region:
+                        type: string
+                        description: 'Region ID.'
+                      text_city:
+                        type: string
+                        description: 'Name of city.'
+                      text_country:
+                        type: string
+                        description: 'Name of country.'
+                      text_name:
+                        type: string
+                        description: 'Account nickname.'
+                      text_name_account:
+                        type: string
+                        description: 'Account name.'
+                      text_name_holder:
+                        type: string
+                        description: 'Account holder name.'
+                      text_number:
+                        type: string
+                        description: 'ACH account number.'
+                      text_phone:
+                        type: string
+                        description: 'Phone number.'
+                      text_postal:
+                        type: string
+                        description: 'Postal code.'
+                      text_region:
+                        type: string
+                        description: 'Name of region.'
+                      text_street1:
+                        type: string
+                        description: 'Street address line 1.'
+                      text_street2:
+                        type: string
+                        description: 'Street address line 2.'
+                    required:
+                      - can_remove
+                      - id_pay_bank
+                      - id_pay_bank_ach_holder
+                      - id_pay_bank_ach_type
+                      - is_default
+                      - k_pay_address
+                      - k_pay_bank
+                      - k_region
+                      - text_city
+                      - text_country
+                      - text_name
+                      - text_name_account
+                      - text_name_holder
+                      - text_number
+                      - text_phone
+                      - text_postal
+                      - text_region
+                      - text_street1
+                      - text_street2
+                required:
+                  - a_pay_bank
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves new ACH pay method.'
+      description: |-
+        Processes the submitted ACH widget data, saves the bank account under the given pay owner and business,
+         and optionally marks it as the default payment method. Returns the saved account details including billing
+         address information.
+      tags:
+        - Payments
+        - ACH
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Location key.
+
+            If empty, user's home location will be used.
+        -
+          name: k_pay_owner
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Pay owner key.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_card_detail:
+                  type: object
+                  description: 'Array with ACH details from ACH widget.'
+                  properties:
+                    a_pay_address:
+                      type: object
+                      description: 'Payment address:'
+                      properties:
+                        is_new:
+                          type: boolean
+                          description: '`true` - add new address; `false` - use existing address.'
+                        k_geo_country:
+                          type: string
+                          description: 'Country ID.'
+                        k_geo_region:
+                          type: string
+                          description: 'Region ID.'
+                        k_pay_address:
+                          type: string
+                          description: 'Chosen payment address ID. It will be set even if user decided to add new address.'
+                        s_city:
+                          type: string
+                          description: 'City name.'
+                        s_name:
+                          type: string
+                          description: 'User name.'
+                        s_phone:
+                          type: string
+                          description: 'Phone number.'
+                        s_postal:
+                          type: string
+                          description: 'Postal code.'
+                        s_street1:
+                          type: string
+                          description: 'First address line.'
+                        s_street2:
+                          type: string
+                          description: 'Second address line.'
+                      required:
+                        - is_new
+                        - k_geo_country
+                        - k_geo_region
+                        - k_pay_address
+                        - s_city
+                        - s_name
+                        - s_phone
+                        - s_postal
+                        - s_street1
+                        - s_street2
+                    id_pay_actor:
+                      $ref: '#/components/schemas/RsPayActorSid'
+                      description: 'Pay actor id. One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.'
+                    id_pay_bank_ach_holder:
+                      $ref: '#/components/schemas/RsPayBankAchHolderSid'
+                      description: 'Account holder type. One of [RsPayBankAchHolderSid](#/components/schemas/RsPayBankAchHolderSid) constants.'
+                    id_pay_bank_ach_sec:
+                      $ref: '#/components/schemas/RsPayBankAchSecSid'
+                      description: 'SEC code. One of [RsPayBankAchSecSid](#/components/schemas/RsPayBankAchSecSid) constants.'
+                    id_pay_bank_ach_type:
+                      $ref: '#/components/schemas/RsPayBankAchTypeSid'
+                      description: 'Account type. One of [RsPayBankAchTypeSid](#/components/schemas/RsPayBankAchTypeSid) constants.'
+                    is_default:
+                      type: boolean
+                      description: '`true` - if a payment method is set as default, `false` - otherwise.'
+                    k_pay_bank:
+                      type: string
+                      description: |-
+                        Key of existing payment source in case of editing. 
+                        Empty if new pay source is being added.
+                    s_aban:
+                      type: string
+                      description: 'ABA number.'
+                    s_account:
+                      type: string
+                      description: 'Account number.'
+                    s_name:
+                      type: string
+                      description: 'Bank account nickname.'
+                    s_number:
+                      type: string
+                      description: 'Part of bank account number.'
+                    s_owner:
+                      type: string
+                      description: 'Name of bank account owner.'
+                  required:
+                    - a_pay_address
+                    - id_pay_actor
+                    - id_pay_bank_ach_holder
+                    - id_pay_bank_ach_sec
+                    - id_pay_bank_ach_type
+                    - is_default
+                    - k_pay_bank
+                    - s_aban
+                    - s_account
+                    - s_name
+                    - s_number
+                    - s_owner
+              required:
+                - a_card_detail
+      x-instance-get-key: 'k_business,k_location,k_pay_owner,id_locale,is_new'
       x-rate-limit:
         -
           limit: 200000
@@ -96229,52 +100470,6 @@ paths:
         -
           limit: 200000
           period: 3600
-  /Wl/Report/Generator/Query.json:
-    $ref: '#/paths/~1Thoth~1ReportCore~1Generator~1Query.json'
-  /Wl/Pay/Account/Account.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Account~1Account.json'
-  /Wl/Pay/Address/Address.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Address.json'
-  /Wl/Pay/Address/Profile.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Profile.json'
-  /Wl/Pay/Form/Environment.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Form~1Environment.json'
-  /Wl/Pay/Form/EnvironmentUser.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Form~1EnvironmentUser.json'
-  /Wl/Pay/Method/List.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Method~1List.json'
-  /Wl/Pay/Owner/Owner.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Owner~1Owner.json'
-  /Wl/Pay/Bank/Card/List.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1List.json'
-  /Wl/Pay/Bank/Ach/List.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Ach~1List.json'
-  /Wl/Pay/Address/Widget/WidgetEdit.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Address~1Widget~1WidgetEdit.json'
-  /Wl/Pay/Transaction/Report/TransactionAllPayment.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Transaction~1Report~1TransactionAllPayment.json'
-  /Wl/Pay/Processor/CyberSource/CsCaptureContext.json:
-    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsCaptureContext.json'
-  /Wl/Pay/Processor/CyberSource/CsPaEnrollment.json:
-    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaEnrollment.json'
-  /Wl/Pay/Processor/CyberSource/CsPaSetup.json:
-    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaSetup.json'
-  /Wl/Pay/Processor/CyberSource/CsPaValidate.json:
-    $ref: '#/paths/~1Thoth~1PayProcessor~1CyberSource~1CsPaValidate.json'
-  /Wl/Pay/Processor/StripeCom/PaymentIntentUpdate.json:
-    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1PaymentIntentUpdate.json'
-  /Wl/Pay/Processor/StripeCom/StripeComKey.json:
-    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComKey.json'
-  /Wl/Pay/Processor/StripeCom/StripeComPayInit.json:
-    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComPayInit.json'
-  /Wl/Pay/Processor/StripeCom/StripeComPaymentIntentCancel.json:
-    $ref: '#/paths/~1Thoth~1PayProcessor~1StripeCom~1StripeComPaymentIntentCancel.json'
-  /Wl/Pay/Bank/Card/Add/Add.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1Add~1Add.json'
-  /Wl/Pay/Bank/Card/Widget/WidgetSelect.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Card~1Widget~1WidgetSelect.json'
-  /Wl/Pay/Bank/Ach/Add/Add.json:
-    $ref: '#/paths/~1Thoth~1WlPay~1Bank~1Ach~1Add~1Add.json'
 components:
   schemas:
     ErrorResponse:
@@ -105830,7 +110025,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 245.
+        Last Used ID: 246.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -105876,6 +110071,8 @@ components:
         - 17 (`CLASS_FOREIGN`): Change/View all classes.
         - 152 (`CLASS_LOCK_SEARCH`): Lock search bar on class attendance list.
         - 5 (`CLASS_PERIOD`): Edit class schedule.
+        - 246 (`CLASS_SCHEDULE_VIEW`): Allows a staff member to see other staff members' class sessions on the schedule in read-only mode
+           while the Classes scope is set to only their own schedules.
         - 135 (`CONTACT_LOG_MANAGE`): Add and view client's contact logs.
         - 31 (`COUPON`): Add, remove, and edit gift cards.
         - 131 (`DASHBOARD_DELETE`): Delete shared dashboard.
@@ -106108,6 +110305,7 @@ components:
         - 17
         - 152
         - 5
+        - 246
         - 135
         - 31
         - 131
@@ -106337,6 +110535,7 @@ components:
         - CLASS_FOREIGN
         - CLASS_LOCK_SEARCH
         - CLASS_PERIOD
+        - CLASS_SCHEDULE_VIEW
         - CONTACT_LOG_MANAGE
         - COUPON
         - DASHBOARD_DELETE
@@ -106566,6 +110765,9 @@ components:
         - 'Change/View all classes.'
         - 'Lock search bar on class attendance list.'
         - 'Edit class schedule.'
+        - |-
+          Allows a staff member to see other staff members' class sessions on the schedule in read-only mode
+           while the Classes scope is set to only their own schedules.
         - "Add and view client's contact logs."
         - 'Add, remove, and edit gift cards.'
         - 'Delete shared dashboard.'
