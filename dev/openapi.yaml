@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260709134057
+  version: 1.1.20260709142513
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -51253,17 +51253,30 @@ paths:
                               Staff-only: ignored when sent by a client.
                               Each value has the next structure:
                             properties:
-                              a_tax_fee:
+                              a_discount:
+                                type: object
+                                description: 'Manual discount applied to the registration fee.'
+                                properties:
+                                  m_discount:
+                                    type: string
+                                    description: 'Discount amount.'
+                                  text_discount:
+                                    type: string
+                                    description: 'Discount title.'
+                                required:
+                                  - m_discount
+                                  - text_discount
+                              a_tax:
                                 type: array
                                 description: |-
                                   List of taxes to be applied to the registration fee.
                                   Keys are tax keys. 
                                   Values are tax amounts.
-                              m_amount_fee:
+                              m_amount:
                                 type: string
                                 description: 'Registration fee amount for the tuition participant.'
                             required:
-                              - m_amount_fee
+                              - m_amount
                           a_uid_share:
                             type: array
                             description: "An array of UIDs representing the client's relatives that share the Purchase Option."
@@ -52864,11 +52877,11 @@ paths:
                                 Keys are participant keys. 
                                 Each value has the next structure:
                               properties:
-                                m_amount_fee:
+                                m_amount:
                                   type: string
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
-                                - m_amount_fee
+                                - m_amount
                         k_login_prize:
                           type: string
                           description: 'Key of login prize used on item.'
@@ -53099,11 +53112,11 @@ paths:
                         Keys are participant keys. 
                         Each value has the next structure:
                       properties:
-                        m_amount_fee:
+                        m_amount:
                           type: string
                           description: 'Registration fee amount for the tuition participant.'
                       required:
-                        - m_amount_fee
+                        - m_amount
                 k_login_prize:
                   type: string
                   description: 'Key of login prize used on item.'
@@ -62980,52 +62993,6 @@ paths:
             type: string
           description: 'Key of the user.'
       x-instance-get-key: 'uid,k_business'
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
-  /door-access/brivo/webhook:
-    post:
-      operationId: door-access.brivo.webhook.post
-      responses:
-        '200':
-          description: 'Successful response.'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Receives a Brivo door-access event.'
-      description: |-
-        Authenticates the request by the per-business webhook secret, then decodes the Brivo `AUDIT` event
-         payload and store the access fact and, when enabled, trigger an automatic check-in.
-         Access-denied and unrecognized events are ignored.
-      tags:
-        - Integrations
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-        -
-          name: k_business
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Business the webhook belongs to. Taken from the webhook URL.'
-        -
-          name: s_token
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Secret token from the webhook URL used to authenticate the Brivo request.'
       x-rate-limit:
         -
           limit: 200000
@@ -90452,17 +90419,30 @@ paths:
                                   Keys are participant keys. 
                                   Each value has the next structure:
                               properties:
-                                a_tax_fee:
+                                a_discount:
+                                  type: object
+                                  description: 'Manual discount applied to the registration fee:'
+                                  properties:
+                                    m_discount:
+                                      type: string
+                                      description: 'Discount amount.'
+                                    text_discount:
+                                      type: string
+                                      description: 'Discount title.'
+                                  required:
+                                    - m_discount
+                                    - text_discount
+                                a_tax:
                                   type: array
                                   description: |-
                                     List of taxes to be applied to the registration fee:
                                          Keys are internal system tax keys. 
                                          Values are amount of taxes to be applied to the registration fee.
-                                m_amount_fee:
+                                m_amount:
                                   type: string
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
-                                - m_amount_fee
+                                - m_amount
                             f_price:
                               type: string
                               description: 'The custom price.'
@@ -90702,17 +90682,30 @@ paths:
                           Keys are participant keys. 
                           Each value has the next structure:
                       properties:
-                        a_tax_fee:
+                        a_discount:
+                          type: object
+                          description: 'Manual discount applied to the registration fee:'
+                          properties:
+                            m_discount:
+                              type: string
+                              description: 'Discount amount.'
+                            text_discount:
+                              type: string
+                              description: 'Discount title.'
+                          required:
+                            - m_discount
+                            - text_discount
+                        a_tax:
                           type: array
                           description: |-
                             List of taxes to be applied to the registration fee:
                                  Keys are internal system tax keys. 
                                  Values are amount of taxes to be applied to the registration fee.
-                        m_amount_fee:
+                        m_amount:
                           type: string
                           description: 'Registration fee amount for the tuition participant.'
                       required:
-                        - m_amount_fee
+                        - m_amount
                     f_price:
                       type: string
                       description: 'The custom price.'
@@ -96277,8 +96270,6 @@ paths:
     $ref: '#/paths/~1Wl~1Pay~1Address~1Address.json'
   /Thoth/WlPay/Address/Profile.json:
     $ref: '#/paths/~1Wl~1Pay~1Address~1Profile.json'
-  /Wl/DoorAccess/Brivo/Webhook.json:
-    $ref: '#/paths/~1door-access~1brivo~1webhook'
   /Thoth/WlPay/Account/Charge/Charge.json:
     $ref: '#/paths/~1Wl~1Pay~1Account~1Charge~1Charge.json'
   /Thoth/WlPay/Bank/Card/List.json:
