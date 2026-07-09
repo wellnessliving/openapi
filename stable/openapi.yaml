@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260709093626
+  version: 1.1.20260709102345
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -54901,17 +54901,30 @@ paths:
                               Staff-only: ignored when sent by a client.
                               Each value has the next structure:
                             properties:
-                              a_tax_fee:
+                              a_discount:
+                                type: object
+                                description: 'Manual discount applied to the registration fee.'
+                                properties:
+                                  m_discount:
+                                    type: string
+                                    description: 'Discount amount.'
+                                  text_discount:
+                                    type: string
+                                    description: 'Discount title.'
+                                required:
+                                  - m_discount
+                                  - text_discount
+                              a_tax:
                                 type: array
                                 description: |-
                                   List of taxes to be applied to the registration fee.
                                   Keys are tax keys. 
                                   Values are tax amounts.
-                              m_amount_fee:
+                              m_amount:
                                 type: string
                                 description: 'Registration fee amount for the tuition participant.'
                             required:
-                              - m_amount_fee
+                              - m_amount
                           a_uid_share:
                             type: array
                             description: "An array of UIDs representing the client's relatives that share the Purchase Option."
@@ -55294,11 +55307,11 @@ paths:
                                 Keys are participant keys. 
                                 Each value has the next structure:
                               properties:
-                                m_amount_fee:
+                                m_amount:
                                   type: string
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
-                                - m_amount_fee
+                                - m_amount
                         k_login_prize:
                           type: string
                           description: 'Key of login prize used on item.'
@@ -55529,11 +55542,11 @@ paths:
                         Keys are participant keys. 
                         Each value has the next structure:
                       properties:
-                        m_amount_fee:
+                        m_amount:
                           type: string
                           description: 'Registration fee amount for the tuition participant.'
                       required:
-                        - m_amount_fee
+                        - m_amount
                 k_login_prize:
                   type: string
                   description: 'Key of login prize used on item.'
@@ -89460,17 +89473,30 @@ paths:
                                   Keys are participant keys. 
                                   Each value has the next structure:
                               properties:
-                                a_tax_fee:
+                                a_discount:
+                                  type: object
+                                  description: 'Manual discount applied to the registration fee:'
+                                  properties:
+                                    m_discount:
+                                      type: string
+                                      description: 'Discount amount.'
+                                    text_discount:
+                                      type: string
+                                      description: 'Discount title.'
+                                  required:
+                                    - m_discount
+                                    - text_discount
+                                a_tax:
                                   type: array
                                   description: |-
                                     List of taxes to be applied to the registration fee:
                                          Keys are internal system tax keys. 
                                          Values are amount of taxes to be applied to the registration fee.
-                                m_amount_fee:
+                                m_amount:
                                   type: string
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
-                                - m_amount_fee
+                                - m_amount
                             f_price:
                               type: string
                               description: 'The custom price.'
@@ -89710,17 +89736,30 @@ paths:
                           Keys are participant keys. 
                           Each value has the next structure:
                       properties:
-                        a_tax_fee:
+                        a_discount:
+                          type: object
+                          description: 'Manual discount applied to the registration fee:'
+                          properties:
+                            m_discount:
+                              type: string
+                              description: 'Discount amount.'
+                            text_discount:
+                              type: string
+                              description: 'Discount title.'
+                          required:
+                            - m_discount
+                            - text_discount
+                        a_tax:
                           type: array
                           description: |-
                             List of taxes to be applied to the registration fee:
                                  Keys are internal system tax keys. 
                                  Values are amount of taxes to be applied to the registration fee.
-                        m_amount_fee:
+                        m_amount:
                           type: string
                           description: 'Registration fee amount for the tuition participant.'
                       required:
-                        - m_amount_fee
+                        - m_amount
                     f_price:
                       type: string
                       description: 'The custom price.'
