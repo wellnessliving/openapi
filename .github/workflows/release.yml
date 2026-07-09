@@ -36,12 +36,31 @@ jobs:
           BASE="${{ github.event.before }}"
           if [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
             git show --name-only --format='' HEAD > changed.txt
+            REF_BASE="HEAD^"
           else
             git diff --name-only "$BASE" HEAD > changed.txt
+            REF_BASE="$BASE"
           fi
-          echo "production=$(grep -c 'production/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
-          echo "stable=$(grep -c 'stable/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
-          echo "dev=$(grep -c 'dev/openapi.yaml' changed.txt)" >> $GITHUB_OUTPUT
+
+          # Skip release if the file's only change is its `version:` line.
+          release_needed() {
+            FILE="$1"
+            if ! grep -qxF "$FILE" changed.txt; then
+              echo 0
+              return
+            fi
+            OLD=$(git show "$REF_BASE:$FILE" 2>/dev/null | grep -v '^\s*version:')
+            NEW=$(git show "HEAD:$FILE" | grep -v '^\s*version:')
+            if [ "$OLD" = "$NEW" ]; then
+              echo 0
+            else
+              echo 1
+            fi
+          }
+
+          echo "production=$(release_needed production/openapi.yaml)" >> $GITHUB_OUTPUT
+          echo "stable=$(release_needed stable/openapi.yaml)" >> $GITHUB_OUTPUT
+          echo "dev=$(release_needed dev/openapi.yaml)" >> $GITHUB_OUTPUT
 
       - name: Release production
         if: steps.changed.outputs.production != '0'
