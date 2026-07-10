@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260710072235
+  version: 1.1.20260710095522
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -88668,6 +88668,16 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dl_date
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            format: date
+          description: 'Local calendar date for which guest pass availability should be calculated.'
         -
           name: k_business
           in: query
