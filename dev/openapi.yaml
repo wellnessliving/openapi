@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260709192558
+  version: 1.1.20260710063445
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -71064,6 +71064,12 @@ paths:
                           description: |-
                             For appointments: `true` if user has checked-in; `false` otherwise.
                             For classes always `null`.
+                        is_class_view:
+                          type: boolean
+                          description: |-
+                            `true` if this class session is visible only through the "View other staff schedules"
+                            permission and must be shown read-only (no attendance roster, no booked client identities,
+                            and no edit, cancel, reschedule, or booking actions); `false` otherwise.
                         is_pay:
                           type: boolean
                           description: |-
@@ -71161,6 +71167,7 @@ paths:
                         - id_option
                         - id_service
                         - is_arrive
+                        - is_class_view
                         - is_pay
                         - is_repeat
                         - k_appointment
