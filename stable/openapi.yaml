@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260710033641
+  version: 1.1.20260710072235
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -645,11 +645,13 @@ paths:
                   description: |-
                     Payment amount to set.
                     Required.
+                  default: '0.00'
                 m_surcharge:
                   type: string
                   description: |-
                     Surcharge amount to set.
                     Required.
+                  default: '0.00'
               required:
                 - id_currency
                 - m_amount
@@ -2324,6 +2326,7 @@ paths:
                     Filters that should be applied to the report.
 
                     In this array, key is name of a filter field.
+                  default: '[]'
                 k_business:
                   type: string
                   description: |-
@@ -3120,6 +3123,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'Whether only active payment methods should be returned.'
         -
           name: k_business
@@ -3169,6 +3173,7 @@ paths:
                     description: |-
                       Is client pay only for self. If parent pays for child this flag will be `false` for both.
                       `true` if client pay only for self, `false` - otherwise.
+                    default: true
                   k_pay_owner:
                     type: string
                     description: 'The payment owner key. This is used for financial transactions.'
@@ -6242,6 +6247,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             The staff decision to charge (or not charge) a penalty when a client meets late cancel/no-show requirements.
 
@@ -6414,51 +6420,53 @@ paths:
                       Short-form information about locations.
 
                       Keys refer to location primary keys. Values refer to sub-arrays with the next keys:
-                    properties:
-                      f_latitude:
-                        type: number
-                        format: float
-                        description: 'The latitude coordinate.'
-                      f_longitude:
-                        type: number
-                        format: float
-                        description: 'The longitude coordinate.'
-                      f_rate:
-                        type: number
-                        format: float
-                        description: 'The location rate.'
-                      i_order:
-                        type: integer
-                        format: int32
-                        description: 'The order number.'
-                      k_business:
-                        type: string
-                        description: "The business's primary key."
-                      k_location:
-                        type: string
-                        description: "The location's primary key."
-                      s_title:
-                        type: string
-                        description: 'The location title.'
-                      text_address:
-                        type: string
-                        description: 'The full location address.'
-                      url_logo:
-                        type: string
-                        description: 'The location logo.'
-                    required:
-                      - f_latitude
-                      - f_longitude
-                      - f_rate
-                      - i_order
-                      - k_business
-                      - k_location
-                      - s_title
-                      - text_address
+                    additionalProperties:
+                      type: object
+                      properties:
+                        f_latitude:
+                          type: number
+                          format: float
+                          description: 'The latitude coordinate.'
+                        f_longitude:
+                          type: number
+                          format: float
+                          description: 'The longitude coordinate.'
+                        f_rate:
+                          type: number
+                          format: float
+                          description: 'The location rate.'
+                        i_order:
+                          type: integer
+                          format: int32
+                          description: 'The order number.'
+                        k_business:
+                          type: string
+                          description: "The business's primary key."
+                        k_location:
+                          type: string
+                          description: "The location's primary key."
+                        s_title:
+                          type: string
+                          description: 'The location title.'
+                        text_address:
+                          type: string
+                          description: 'The full location address.'
+                        url_logo:
+                          type: string
+                          description: 'The location logo.'
+                      required:
+                        - f_latitude
+                        - f_longitude
+                        - f_rate
+                        - i_order
+                        - k_business
+                        - k_location
+                        - s_title
+                        - text_address
                   a_location_full:
-                    type: array
+                    type: object
                     description: 'A list of models with full information about each location.'
-                    items:
+                    additionalProperties:
                       type: object
                       properties:
                         a_age:
@@ -6543,7 +6551,7 @@ paths:
                             - 'null'
                           description: |-
                             The date when the location actuality was last checked. `null` if the location has never been checked.
-                            Set only in [ListBulkApi](/Wl/Location/ListBulk.json), otherwise always `null`.
+                            Set only in {@link \Wl\Location\ListBulkApi}, otherwise always `null`.
                         dtu_create:
                           type: string
                           description: 'The date when the location was created.'
@@ -6560,7 +6568,7 @@ paths:
                           description: 'The full description of the location.'
                         html_description_preview:
                           type: string
-                          description: 'A shorter description of the location. A preview of [ViewApi::$html_description_full](/Wl/Location/View/View.json).'
+                          description: 'A shorter description of the location. A preview of {@link \Wl\Location\View\ViewApi::$html_description_full}.'
                         i_logo_height:
                           type: integer
                           format: int32
@@ -6890,16 +6898,16 @@ paths:
                 type: object
                 properties:
                   a_location:
-                    type: array
+                    type: object
                     description: |-
                       Information about the business's location(s). If you've specified multiple businesses for this endpoint, this will
                       return location information for multiple businesses. Keys refer to location keys. Values refer to nested arrays with the next keys:
-                    items:
+                    additionalProperties:
                       type: object
                       properties:
                         a_directories:
                           type: array
-                          description: 'List of directories from [RsProjectSid](#/components/schemas/RsProjectSid), where location is published.'
+                          description: 'List of directories from {@link \RsProjectSid}, where location is published.'
                           items:
                             type: integer
                             format: int32
@@ -8294,6 +8302,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 100
           description: 'The maximum height of the business image (in pixels).'
         -
           name: i_logo_width
@@ -8302,6 +8311,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 220
           description: 'The maximum width of the business image (in pixels).'
         -
           name: k_business
@@ -8698,6 +8708,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'This will be `true` if the API is being used from the backend. Otherwise, this will be `false`.'
         -
           name: s_facebook_id
@@ -10962,8 +10973,13 @@ paths:
                       Whether photo is uploaded.
                       `true` if photo is not uploaded, `false` otherwise.
                   k_staff:
-                    type: string
-                    description: "The user's staff key for the specified business."
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The user's staff key for the specified business.
+
+                      `null` if staff key not available for this application.
                   s_first_name:
                     type: string
                     description: 'The first name of the user.'
@@ -11021,7 +11037,6 @@ paths:
                   - can_send_message
                   - id_gender
                   - is_photo_empty
-                  - k_staff
                   - s_first_name
                   - s_last_name
                   - text_mail_client
@@ -11151,7 +11166,6 @@ paths:
                           description: 'User photo URL.'
                       required:
                         - id_gender
-                        - k_staff
                         - s_first_name
                         - s_last_name
                         - text_mail_client
@@ -13098,6 +13112,7 @@ paths:
 
                       `true` if quiz is active.
                       `false` if quiz is not active.
+                    default: true
                   is_imported:
                     type: boolean
                     description: '`true` if quiz is imported, `false` otherwise.'
@@ -13121,6 +13136,7 @@ paths:
 
                       `true` to show numbering on the form for elements that supports numbering.
                       `false` to not show numbering.
+                    default: true
                   text_title:
                     type: string
                     description: 'Quiz form title.'
@@ -15157,6 +15173,7 @@ paths:
 
                     `true` if quiz is active.
                     `false` if quiz is not active.
+                  default: true
                 json_element:
                   type: string
                   description: |-
@@ -15178,6 +15195,7 @@ paths:
 
                     `true` to show numbering on the form for elements that supports numbering.
                     `false` to not show numbering.
+                  default: true
                 text_title:
                   type: string
                   description: 'Quiz form title.'
@@ -15430,6 +15448,7 @@ paths:
 
                     `true` if quiz is active.
                     `false` if quiz is not active.
+                  default: true
               required:
                 - is_active
       deprecated: true
@@ -17302,6 +17321,7 @@ paths:
 
                       `true` if quiz is active.
                       `false` if quiz is not active.
+                    default: true
                   is_imported:
                     type: boolean
                     description: '`true` if quiz is imported, `false` otherwise.'
@@ -17325,6 +17345,7 @@ paths:
 
                       `true` to show numbering on the form for elements that supports numbering.
                       `false` to not show numbering.
+                    default: true
                   text_title:
                     type: string
                     description: 'Quiz form title.'
@@ -19359,6 +19380,7 @@ paths:
 
                     `true` if quiz is active.
                     `false` if quiz is not active.
+                  default: true
                 json_element:
                   type: string
                   description: |-
@@ -19380,6 +19402,7 @@ paths:
 
                     `true` to show numbering on the form for elements that supports numbering.
                     `false` to not show numbering.
+                  default: true
                 text_title:
                   type: string
                   description: 'Quiz form title.'
@@ -19630,6 +19653,7 @@ paths:
 
                     `true` if quiz is active.
                     `false` if quiz is not active.
+                  default: true
               required:
                 - is_active
       x-instance-get-key: 'k_business,k_quiz,k_quiz_login,uid_client,json_purchase_item'
@@ -20085,7 +20109,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -21147,6 +21171,7 @@ paths:
                 is_uid:
                   type: boolean
                   description: 'Whether the staff member can to sign in.'
+                  default: true
                 k_business:
                   type: string
                   description: |-
@@ -22730,6 +22755,7 @@ paths:
                 is_featured:
                   type: boolean
                   description: 'Determines if the review is featured.'
+                  default: true
                 k_business:
                   type: string
                   description: 'The business key.'
@@ -23798,6 +23824,7 @@ paths:
                 m_amount:
                   type: string
                   description: 'The payment amount.'
+                  default: '0.00'
                 s_comment:
                   type: string
                   description: 'The transaction comment.'
@@ -25060,7 +25087,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -25540,6 +25567,7 @@ paths:
                   text_tjx_button_name:
                     type: string
                     description: 'Tjx button name.'
+                    default: 'TJX Single Sign on'
                   url_facebook:
                     type: string
                     description: 'Facebook authorization link.'
@@ -26004,14 +26032,14 @@ paths:
                 type: object
                 properties:
                   a_calendar:
-                    type: array
+                    type: object
                     description: |-
                       Keys are dates of the days inside requested date range, when there is at least one class in the business.
                       If locations are sent as a parameter, then at least one class must exist in the given locations.
 
                       Each key is a date string in `YYYY-MM-DD` format (local date in the business time zone).
                       Each value is an empty array reserved for future use.
-                    items:
+                    additionalProperties:
                       type: array
                   a_quick:
                     type: object
@@ -26381,6 +26409,7 @@ paths:
                 show_class:
                   type: boolean
                   description: 'If `true`, classes will be included in the response. `false` - otherwise.'
+                  default: true
                 show_event:
                   type: boolean
                   description: 'If `true`, events are also returned. If `false`, only classes are returned.'
@@ -26430,14 +26459,14 @@ paths:
                 type: object
                 properties:
                   a_calendar:
-                    type: array
+                    type: object
                     description: |-
                       Keys are dates of the days inside requested date range, when there is at least one class in the business.
                       If locations are sent as a parameter, then at least one class must exist in the given locations.
 
                       Each key is a date string in `YYYY-MM-DD` format (local date in the business time zone).
                       Each value is an empty array reserved for future use.
-                    items:
+                    additionalProperties:
                       type: array
                   a_session:
                     type: array
@@ -26788,6 +26817,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'If `true`, classes will be included in the response. `false` - otherwise.'
         -
           name: show_event
@@ -29854,6 +29884,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 5
           description: 'Count of last booked services to return. Default value is 5.'
         -
           name: id_service
@@ -29965,6 +29996,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -30438,6 +30470,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -30619,6 +30652,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -30800,6 +30834,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -31473,6 +31508,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 100
           description: 'Maximum location image height.'
         -
           name: i_logo_width
@@ -31481,6 +31517,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 220
           description: 'Maximum location image width.'
         -
           name: k_location
@@ -31992,7 +32029,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -32766,7 +32803,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -33066,6 +33103,7 @@ paths:
                 is_old_password_required:
                   type: boolean
                   description: 'Checks if the current password is required or not to update the password.'
+                  default: true
                 k_business:
                   type: string
                   description: |-
@@ -33242,6 +33280,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'If `true`, the API is being used from backend. Otherwise, this will be `false`.'
         -
           name: k_business
@@ -33491,7 +33530,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -35911,21 +35950,27 @@ paths:
                   is_account_management_email:
                     type: boolean
                     description: "Determines whether email notifications related to purchases, contracts, and other activity in a client's account are enabled."
+                    default: true
                   is_account_management_sms:
                     type: boolean
                     description: "Determines whether SMS notifications related to purchases, contracts, and other activity in a client's account are enabled."
+                    default: true
                   is_news_and_updates_email:
                     type: boolean
                     description: 'Determines whether email notifications related to news and updates from the business regarding their services, availability, and promotions are enabled.'
+                    default: true
                   is_news_and_updates_sms:
                     type: boolean
                     description: 'Whether sms notifications related to news and updates from the business regarding their services, availability and promotions are enabled.'
+                    default: true
                   is_schedule_and_reminders_email:
                     type: boolean
                     description: 'Determines whether email notifications related to the services a client has booked are enabled.'
+                    default: true
                   is_schedule_and_reminders_sms:
                     type: boolean
                     description: 'Determines whether SMS notifications related to the services a client has booked are enabled.'
+                    default: true
                   text_language:
                     type: string
                     description: 'SID of language code.'
@@ -36028,21 +36073,27 @@ paths:
                 is_account_management_email:
                   type: boolean
                   description: "Determines whether email notifications related to purchases, contracts, and other activity in a client's account are enabled."
+                  default: true
                 is_account_management_sms:
                   type: boolean
                   description: "Determines whether SMS notifications related to purchases, contracts, and other activity in a client's account are enabled."
+                  default: true
                 is_news_and_updates_email:
                   type: boolean
                   description: 'Determines whether email notifications related to news and updates from the business regarding their services, availability, and promotions are enabled.'
+                  default: true
                 is_news_and_updates_sms:
                   type: boolean
                   description: 'Whether sms notifications related to news and updates from the business regarding their services, availability and promotions are enabled.'
+                  default: true
                 is_schedule_and_reminders_email:
                   type: boolean
                   description: 'Determines whether email notifications related to the services a client has booked are enabled.'
+                  default: true
                 is_schedule_and_reminders_sms:
                   type: boolean
                   description: 'Determines whether SMS notifications related to the services a client has booked are enabled.'
+                  default: true
               required:
                 - is_account_management_email
                 - is_account_management_sms
@@ -36773,6 +36824,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Whether to include events in the result.
 
@@ -38184,6 +38236,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'If `true`, the return only active customers, `false` - all business.'
         -
           name: text_mail
@@ -38249,6 +38302,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'If `true`, the return only active customers, `false` - all business.'
         -
           name: is_strict
@@ -40883,6 +40937,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 150
           description: |-
             The maximum number of members to return in the list.
 
@@ -43026,7 +43081,6 @@ paths:
                           description: "Staff member's last name."
                       required:
                         - a_logo
-                        - k_staff
                         - uid_staff
                         - html_firstname
                         - html_lastname
@@ -45219,7 +45273,6 @@ paths:
                           description: "Staff member's last name."
                       required:
                         - a_logo
-                        - k_staff
                         - uid_staff
                         - html_firstname
                         - html_lastname
@@ -45859,6 +45912,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 1
           description: 'Number of the page to get.'
         -
           name: i_page_size
@@ -45867,6 +45921,7 @@ paths:
           schema:
             type: integer
             format: int32
+            default: 50
           description: 'Page size.'
         -
           name: id_pay_method
@@ -45902,6 +45957,7 @@ paths:
           required: true
           schema:
             type: string
+            default: '0.00'
           description: 'Maximum price of the product. 0 means no filter by maximum price.'
         -
           name: m_price_min
@@ -45909,6 +45965,7 @@ paths:
           required: true
           schema:
             type: string
+            default: '0.00'
           description: 'Minimum price of the product.'
         -
           name: uid
@@ -47685,6 +47742,7 @@ paths:
 
                       `true` to show numbering on the form for elements that supports numbering.
                       `false` to not show numbering.
+                    default: true
                   text_add_date:
                     type: string
                     description: 'Date when response added.'
@@ -47764,6 +47822,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: '`true` for load answers for response, `false` otherwise.'
         -
           name: is_backend
@@ -47906,7 +47965,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -51465,6 +51524,7 @@ paths:
 
                       `true` to show numbering on the form for elements that supports numbering.
                       `false` to not show numbering.
+                    default: true
                   text_add_date:
                     type: string
                     description: 'Date when response added.'
@@ -51544,6 +51604,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: '`true` for load answers for response, `false` otherwise.'
         -
           name: is_simple
@@ -51676,7 +51737,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -54471,6 +54532,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             `true` to consider the requirement to have a credit card for booking
             (this requirement can be set in business settings)
@@ -55568,6 +55630,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'Whether selected login prize should be auto applied to first applicable item.'
         -
           name: k_location
@@ -59340,13 +59403,13 @@ paths:
                 type: object
                 properties:
                   a_privilege_passport:
-                    type: array
+                    type: object
                     description: |-
                       List of privileges, if user is administrator.
 
                       There is no certain list of admin privileges, as they are name-based.
                       If you need to check access to certain place contact WellnessLiving integration team.
-                    items:
+                    additionalProperties:
                       type: string
                   a_privilege_staff:
                     type: array
@@ -64987,6 +65050,8 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/RsPayMethodSid'
+            default:
+              - 7
           description: |-
             List of payment methods to filter out in the report.
             Each element is one of the [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
@@ -67566,6 +67631,7 @@ paths:
                 json_data:
                   type: string
                   description: 'Additional data for user authorization.'
+                  default: '[]'
                 s_captcha:
                   type: string
                   description: 'The answer to the captcha, if needed.'
@@ -67638,6 +67704,7 @@ paths:
                   s_hash:
                     type: string
                     description: 'The hash type.'
+                    default: sha3
                   s_notepad:
                     type: string
                     description: |-
@@ -73775,6 +73842,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'If calendar should be displayed in month view mode.'
         -
           name: is_staff
@@ -74360,7 +74428,7 @@ paths:
                         - k_resource_category
                         - sid_deny_reason
                   a_asset_busy:
-                    type: array
+                    type: object
                     description: |-
                       A list of reserved assets.
 
@@ -74373,9 +74441,9 @@ paths:
 
                       If you're rebooking an appointment, check the value of `a_resource_busy['15']['10']`.
                       If it's equal to the key of your current appointment booking, you can assume the asset is available.
-                    items:
-                      type: array
-                      items:
+                    additionalProperties:
+                      type: object
+                      additionalProperties:
                         oneOf:
                           -
                             type: string
@@ -74724,18 +74792,23 @@ paths:
                   m_coupon:
                     type: string
                     description: 'Gift card amount.'
+                    default: '0.00'
                   m_discount:
                     type: string
                     description: 'Discount amount.'
+                    default: '0.00'
                   m_surcharge:
                     type: string
                     description: 'Surcharge amount calculated for credit cards (Virtual Terminal and Card Swiper).'
+                    default: '0.00'
                   m_surcharge_ach:
                     type: string
                     description: 'Surcharge amount calculated for money transfers from account: ACH, Direct Entry.'
+                    default: '0.00'
                   m_tax:
                     type: string
                     description: 'The tax of service.'
+                    default: '0.00'
                   m_total:
                     type: string
                     description: 'The total cost of the purchase.'
@@ -75381,21 +75454,27 @@ paths:
                   m_coupon:
                     type: string
                     description: 'The gift card amount.'
+                    default: '0.00'
                   m_discount:
                     type: string
                     description: 'The discount amount.'
+                    default: '0.00'
                   m_surcharge:
                     type: string
                     description: 'Surcharge amount calculated for credit cards (Virtual Terminal and Card Swiper).'
+                    default: '0.00'
                   m_surcharge_ach:
                     type: string
                     description: 'Surcharge amount calculated for money transfers from account: ACH, Direct Entry.'
+                    default: '0.00'
                   m_tax:
                     type: string
                     description: 'The amount of tax to pay.'
+                    default: '0.00'
                   m_total:
                     type: string
                     description: 'The price of the service, with taxes and without surcharges.'
+                    default: '0.00'
                 required:
                   - a_promotion_data
                   - a_purchase
@@ -76059,18 +76138,23 @@ paths:
                   m_coupon:
                     type: string
                     description: 'Gift card amount.'
+                    default: '0.00'
                   m_discount:
                     type: string
                     description: 'Discount amount.'
+                    default: '0.00'
                   m_surcharge:
                     type: string
                     description: 'Surcharge amount calculated for credit cards (Virtual Terminal and Card Swiper).'
+                    default: '0.00'
                   m_surcharge_ach:
                     type: string
                     description: 'Surcharge amount calculated for money transfers from account: ACH, Direct Entry.'
+                    default: '0.00'
                   m_tax:
                     type: string
                     description: 'The tax of service.'
+                    default: '0.00'
                   m_total:
                     type: string
                     description: 'The total cost of the purchase.'
@@ -77683,6 +77767,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -78502,6 +78587,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -79007,6 +79093,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -79410,6 +79497,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -79545,6 +79633,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -79681,6 +79770,7 @@ paths:
                   description: |-
                     Determines whether the class/event can be booked at this step or not.
                     This is an external process control flag.
+                  default: true
                 is_book_unpaid:
                   type: boolean
                   description: |-
@@ -79962,6 +80052,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -80109,6 +80200,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -80260,6 +80352,7 @@ paths:
                   description: |-
                     Determines whether the class/event can be booked at this step or not.
                     This is an external process control flag.
+                  default: true
                 is_book_unpaid:
                   type: boolean
                   description: |-
@@ -80414,6 +80507,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -80717,6 +80811,7 @@ paths:
                   description: |-
                     Determines whether the class/event can be booked at this step or not.
                     This is an external process control flag.
+                  default: true
                 is_book_unpaid:
                   type: boolean
                   description: |-
@@ -80893,6 +80988,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -81087,6 +81183,7 @@ paths:
                   description: |-
                     Determines whether the class/event can be booked at this step or not.
                     This is an external process control flag.
+                  default: true
                 is_book_unpaid:
                   type: boolean
                   description: |-
@@ -81264,6 +81361,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -81867,6 +81965,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -82037,6 +82136,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -82184,6 +82284,7 @@ paths:
                   description: |-
                     Determines whether the class/event can be booked at this step or not.
                     This is an external process control flag.
+                  default: true
                 is_agree:
                   type: boolean
                   description: |-
@@ -82633,6 +82734,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -82801,6 +82903,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -82948,6 +83051,7 @@ paths:
                   description: |-
                     Determines whether the class/event can be booked at this step or not.
                     This is an external process control flag.
+                  default: true
                 is_agree:
                   type: boolean
                   description: |-
@@ -83336,6 +83440,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -83448,6 +83553,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: |-
             Checking whether the client has a credit card (if configured in the business) will be skipped if this flag is set to `false`.
 
@@ -83608,6 +83714,7 @@ paths:
                   description: |-
                     Determines whether the class/event can be booked at this step or not.
                     This is an external process control flag.
+                  default: true
                 is_book_unpaid:
                   type: boolean
                   description: |-
@@ -84498,6 +84605,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'If `true`, the API is being used from backend. Otherwise, this will be `false`.'
         -
           name: k_business
@@ -84694,6 +84802,7 @@ paths:
           required: true
           schema:
             type: boolean
+            default: true
           description: 'If `true`, the API is being used from backend. Otherwise, this will be `false`.'
         -
           name: k_business
@@ -87732,12 +87841,12 @@ paths:
                 type: object
                 properties:
                   a_option:
-                    type: array
+                    type: object
                     description: |-
                       List of config option values.
                       Key - config option class CID.
                       Values - config option value.
-                    items:
+                    additionalProperties:
                       type: string
                 required:
                   - a_option
@@ -90344,6 +90453,7 @@ paths:
                     type: integer
                     format: int32
                     description: 'Number of seconds of inactivity before automatic redirect.'
+                    default: 15
                   i_book_open:
                     type: integer
                     format: int32
@@ -90928,25 +91038,25 @@ paths:
 
         **1. Broadcast strategy** (default)
 
-        Set `$id_delivery_strategy` to `0` or [OtpDeliveryStrategyEnum::BROADCAST](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum) (or omit it entirely).
-        Use `$is_mail` and/or `$is_phone` to specify which channels to use.
+        Set [PassportOtpApi::$id_delivery_strategy](/Wl/Passport/Login/Enter/PassportOtp.json) to `null` or [OtpDeliveryStrategyEnum::BROADCAST](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum) (or omit it entirely).
+        Use [PassportOtpApi::$is_mail](/Wl/Passport/Login/Enter/PassportOtp.json) and/or [PassportOtpApi::$is_phone](/Wl/Passport/Login/Enter/PassportOtp.json) to specify which channels to use.
         At least one of them must be `true`; the OTP is sent to every channel that is enabled.
-        The user must have a corresponding contact — a phone number when `$is_phone` is `true`, an email when
-        `$is_mail` is `true` — otherwise an error is thrown.
+        The user must have a corresponding contact — a phone number when [PassportOtpApi::$is_phone](/Wl/Passport/Login/Enter/PassportOtp.json) is `true`, an email when
+        [PassportOtpApi::$is_mail](/Wl/Passport/Login/Enter/PassportOtp.json) is `true` — otherwise an error is thrown.
 
-        Example: set `$is_mail = true` and `$is_phone = true` to send OTP via both email and SMS simultaneously.
+        Example: set [PassportOtpApi::$is_mail](/Wl/Passport/Login/Enter/PassportOtp.json) to `true` and [PassportOtpApi::$is_phone](/Wl/Passport/Login/Enter/PassportOtp.json) to `true` to send OTP via both email and SMS simultaneously.
 
         **2. Priority strategy**
 
-        Set `$id_delivery_strategy` to [OtpDeliveryStrategyEnum::PRIORITY](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum).
-        Provide `$text_delivery_priority` — a comma-separated list of `sms` and `email` values in the preferred
+        Set [PassportOtpApi::$id_delivery_strategy](/Wl/Passport/Login/Enter/PassportOtp.json) to [OtpDeliveryStrategyEnum::PRIORITY](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum).
+        Provide [PassportOtpApi::$text_delivery_priority](/Wl/Passport/Login/Enter/PassportOtp.json) — a comma-separated list of `sms` and `email` values in the preferred
         order, e.g. `"sms,email"`.
         The system picks the first channel from the list for which the user has valid contact data and sends the OTP
-        only to that one channel. The selected channel is returned in `$text_delivery_selected`; when SMS is
-        selected, the last four digits of the phone are returned in `$text_phone_masked`.
+        only to that one channel. The selected channel is returned in [PassportOtpApi::$text_delivery_selected](/Wl/Passport/Login/Enter/PassportOtp.json); when SMS is
+        selected, the last four digits of the phone are returned in [PassportOtpApi::$text_phone_masked](/Wl/Passport/Login/Enter/PassportOtp.json).
         If none of the listed channels can be used, an error is thrown.
 
-        Example: set `$text_delivery_priority = "sms,email"` to prefer SMS but fall back to email if the user
+        Example: set [PassportOtpApi::$text_delivery_priority](/Wl/Passport/Login/Enter/PassportOtp.json) set to `sms,email` to prefer SMS but fall back to email if the user
         has no phone number.
       tags:
         - Authentication
@@ -90956,7 +91066,7 @@ paths:
         -
           name: id_delivery_strategy
           in: query
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum'
           description: 'Type of delivery strategy from [OtpDeliveryStrategyEnum](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum).'
@@ -91554,6 +91664,7 @@ paths:
                   minimum: 1
                   maximum: 9999
                   description: 'Code version.'
+                  default: 1
                 id_category:
                   $ref: '#/components/schemas/Wl.Skin.Application.Resource.ApplicationCategorySid'
                   description: |-
@@ -91576,6 +91687,7 @@ paths:
                   type: string
                   maxLength: 255
                   description: 'Version name for the App Store and Google Play builds.'
+                  default: 2.0.1
                 text_annotation:
                   type: string
                   maxLength: 80
@@ -91679,7 +91791,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -92012,6 +92124,7 @@ paths:
                   description: |-
                     Entity in array format.
                     Alternative of `a_criteria` to transfer data via HTTP as one variable.
+                  default: '[]'
                 s_color_background:
                   type: string
                   description: 'Hexadecimal color of icon background.'
@@ -92202,6 +92315,7 @@ paths:
                   description: |-
                     Entity in array format.
                     Alternative of `a_criteria` to transfer data via HTTP as one variable.
+                  default: '[]'
                 s_color_background:
                   type: string
                   description: 'Hexadecimal color of icon background.'
@@ -92816,6 +92930,7 @@ paths:
                   f_value:
                     type: string
                     description: 'Value of the percentage or fixed discount.'
+                    default: '0.00'
                   i_duration:
                     type: integer
                     format: int32
@@ -93029,6 +93144,7 @@ paths:
                 f_value:
                   type: string
                   description: 'Value of the percentage or fixed discount.'
+                  default: '0.00'
                 i_duration:
                   type: integer
                   format: int32
@@ -93230,6 +93346,7 @@ paths:
                   json_credential:
                     type: string
                     description: 'An array with the credential.'
+                    default: '[]'
                 required:
                   - json_credential
         '400':
@@ -93307,6 +93424,7 @@ paths:
                 json_credential:
                   type: string
                   description: 'An array with the credential.'
+                  default: '[]'
               required:
                 - json_credential
       x-rate-limit:
@@ -93325,7 +93443,7 @@ paths:
                 type: object
                 properties:
                   a_resource_busy:
-                    type: array
+                    type: object
                     description: |-
                       A list of reserved assets.
 
@@ -93338,10 +93456,14 @@ paths:
 
                       If you're rebooking an appointment, check the value of `a_resource_busy['15']['10']`.
                       If it's equal to the key of your current appointment booking, you can assume the asset is available.
-                    items:
-                      type: array
-                      items:
-                        type: string
+                    additionalProperties:
+                      type: object
+                      additionalProperties:
+                        oneOf:
+                          -
+                            type: string
+                          -
+                            type: boolean
                   a_resource_type:
                     type: object
                     description: |-
@@ -95882,8 +96004,8 @@ paths:
           in: query
           required: true
           schema:
-            type: array
-            items:
+            type: object
+            additionalProperties:
               type: string
           description: |-
             The list of notes for product options in the store.
@@ -95893,8 +96015,8 @@ paths:
           in: query
           required: true
           schema:
-            type: array
-            items:
+            type: object
+            additionalProperties:
               type: integer
               format: int32
           description: |-
@@ -95950,8 +96072,8 @@ paths:
           in: query
           required: true
           schema:
-            type: array
-            items:
+            type: object
+            additionalProperties:
               type: string
           description: |-
             The list of notes for product options in the store.
@@ -95961,8 +96083,8 @@ paths:
           in: query
           required: true
           schema:
-            type: array
-            items:
+            type: object
+            additionalProperties:
               type: integer
               format: int32
           description: |-
@@ -97347,6 +97469,7 @@ components:
       x-enum-descriptions:
         - 'Version 2 (invisible).'
         - 'Version 3.'
+      default: 1
     Wl.Gender.GenderSid:
       type: integer
       format: int32
@@ -100956,6 +101079,7 @@ components:
         - 'All records.'
         - 'Records with the flag turned off.'
         - 'Records with the flag turned on.'
+      default: 3
     Wl.Service.ServiceSid:
       type: integer
       format: int32
@@ -102086,6 +102210,7 @@ components:
       x-enum-descriptions:
         - 'Embedded video.'
         - 'Uploaded video.'
+      default: 1
     Wl.Video.Catalog.Filter.Sort.FilterSortSid:
       type:
         - integer
@@ -107871,6 +107996,7 @@ components:
       x-enum-descriptions:
         - 'Access Autymate to create an initial enrollment.'
         - 'Access Autymate to view the dashboard.'
+      default: 1
     Wl.Business.Franchise.Location.BusinessFranchiseLocationSid:
       type: integer
       format: int32
@@ -108303,6 +108429,7 @@ components:
         - 'Client role.'
         - 'Guest role. User that is not logged in.'
         - 'Staff member role.'
+      default: 2
     Wl.Book.Process.ProcessCheckSid:
       type: integer
       format: int32
@@ -109155,8 +109282,11 @@ components:
       x-enum-descriptions:
         - 'Redirect user to recently viewed class.'
         - 'Redirect user to upcoming schedule.'
+      default: 1
     Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum:
-      type: integer
+      type:
+        - integer
+        - 'null'
       format: int32
       description: |-
         List of different OTP code delivery strategies.
@@ -109253,6 +109383,7 @@ components:
         - 'Patch update (1) - for small bug fixes or improvements.'
         - 'Minor update (2) - for backward-compatible feature additions.'
         - 'Major update (3) - for incompatible API changes or major new features.'
+      default: 1
     Wl.Lead.Conversion.LeadConversionTypeSid:
       type:
         - integer
