@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260710063445
+  version: 1.1.20260710102407
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -3889,8 +3889,13 @@ paths:
                       Whether photo is uploaded.
                       `true` if photo is not uploaded, `false` otherwise.
                   k_staff:
-                    type: string
-                    description: "The user's staff key for the specified business."
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The user's staff key for the specified business.
+
+                      `null` if staff key not available for this application.
                   s_first_name:
                     type: string
                     description: 'The first name of the user.'
@@ -3948,7 +3953,6 @@ paths:
                   - can_send_message
                   - id_gender
                   - is_photo_empty
-                  - k_staff
                   - s_first_name
                   - s_last_name
                   - text_mail_client
@@ -4078,7 +4082,6 @@ paths:
                           description: 'User photo URL.'
                       required:
                         - id_gender
-                        - k_staff
                         - s_first_name
                         - s_last_name
                         - text_mail_client
@@ -6756,7 +6759,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -7527,51 +7530,53 @@ paths:
                       Short-form information about locations.
 
                       Keys refer to location primary keys. Values refer to sub-arrays with the next keys:
-                    properties:
-                      f_latitude:
-                        type: number
-                        format: float
-                        description: 'The latitude coordinate.'
-                      f_longitude:
-                        type: number
-                        format: float
-                        description: 'The longitude coordinate.'
-                      f_rate:
-                        type: number
-                        format: float
-                        description: 'The location rate.'
-                      i_order:
-                        type: integer
-                        format: int32
-                        description: 'The order number.'
-                      k_business:
-                        type: string
-                        description: "The business's primary key."
-                      k_location:
-                        type: string
-                        description: "The location's primary key."
-                      s_title:
-                        type: string
-                        description: 'The location title.'
-                      text_address:
-                        type: string
-                        description: 'The full location address.'
-                      url_logo:
-                        type: string
-                        description: 'The location logo.'
-                    required:
-                      - f_latitude
-                      - f_longitude
-                      - f_rate
-                      - i_order
-                      - k_business
-                      - k_location
-                      - s_title
-                      - text_address
+                    additionalProperties:
+                      type: object
+                      properties:
+                        f_latitude:
+                          type: number
+                          format: float
+                          description: 'The latitude coordinate.'
+                        f_longitude:
+                          type: number
+                          format: float
+                          description: 'The longitude coordinate.'
+                        f_rate:
+                          type: number
+                          format: float
+                          description: 'The location rate.'
+                        i_order:
+                          type: integer
+                          format: int32
+                          description: 'The order number.'
+                        k_business:
+                          type: string
+                          description: "The business's primary key."
+                        k_location:
+                          type: string
+                          description: "The location's primary key."
+                        s_title:
+                          type: string
+                          description: 'The location title.'
+                        text_address:
+                          type: string
+                          description: 'The full location address.'
+                        url_logo:
+                          type: string
+                          description: 'The location logo.'
+                      required:
+                        - f_latitude
+                        - f_longitude
+                        - f_rate
+                        - i_order
+                        - k_business
+                        - k_location
+                        - s_title
+                        - text_address
                   a_location_full:
-                    type: array
+                    type: object
                     description: 'A list of models with full information about each location.'
-                    items:
+                    additionalProperties:
                       type: object
                       properties:
                         a_age:
@@ -7656,7 +7661,7 @@ paths:
                             - 'null'
                           description: |-
                             The date when the location actuality was last checked. `null` if the location has never been checked.
-                            Set only in [ListBulkApi](/Wl/Location/ListBulk.json), otherwise always `null`.
+                            Set only in {@link \Wl\Location\ListBulkApi}, otherwise always `null`.
                         dtu_create:
                           type: string
                           description: 'The date when the location was created.'
@@ -7673,7 +7678,7 @@ paths:
                           description: 'The full description of the location.'
                         html_description_preview:
                           type: string
-                          description: 'A shorter description of the location. A preview of [ViewApi::$html_description_full](/Wl/Location/View/View.json).'
+                          description: 'A shorter description of the location. A preview of {@link \Wl\Location\View\ViewApi::$html_description_full}.'
                         i_logo_height:
                           type: integer
                           format: int32
@@ -8003,16 +8008,16 @@ paths:
                 type: object
                 properties:
                   a_location:
-                    type: array
+                    type: object
                     description: |-
                       Information about the business's location(s). If you've specified multiple businesses for this endpoint, this will
                       return location information for multiple businesses. Keys refer to location keys. Values refer to nested arrays with the next keys:
-                    items:
+                    additionalProperties:
                       type: object
                       properties:
                         a_directories:
                           type: array
-                          description: 'List of directories from [RsProjectSid](#/components/schemas/RsProjectSid), where location is published.'
+                          description: 'List of directories from {@link \RsProjectSid}, where location is published.'
                           items:
                             type: integer
                             format: int32
@@ -24517,7 +24522,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -29911,7 +29916,6 @@ paths:
                           description: "Staff member's last name."
                       required:
                         - a_logo
-                        - k_staff
                         - uid_staff
                         - html_firstname
                         - html_lastname
@@ -32104,7 +32108,6 @@ paths:
                           description: "Staff member's last name."
                       required:
                         - a_logo
-                        - k_staff
                         - uid_staff
                         - html_firstname
                         - html_lastname
@@ -35946,14 +35949,14 @@ paths:
                 type: object
                 properties:
                   a_calendar:
-                    type: array
+                    type: object
                     description: |-
                       Keys are dates of the days inside requested date range, when there is at least one class in the business.
                       If locations are sent as a parameter, then at least one class must exist in the given locations.
 
                       Each key is a date string in `YYYY-MM-DD` format (local date in the business time zone).
                       Each value is an empty array reserved for future use.
-                    items:
+                    additionalProperties:
                       type: array
                   a_quick:
                     type: object
@@ -36380,14 +36383,14 @@ paths:
                 type: object
                 properties:
                   a_calendar:
-                    type: array
+                    type: object
                     description: |-
                       Keys are dates of the days inside requested date range, when there is at least one class in the business.
                       If locations are sent as a parameter, then at least one class must exist in the given locations.
 
                       Each key is a date string in `YYYY-MM-DD` format (local date in the business time zone).
                       Each value is an empty array reserved for future use.
-                    items:
+                    additionalProperties:
                       type: array
                   a_session:
                     type: array
@@ -42267,7 +42270,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -43041,7 +43044,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -45469,7 +45472,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -46237,13 +46240,13 @@ paths:
                 type: object
                 properties:
                   a_privilege_passport:
-                    type: array
+                    type: object
                     description: |-
                       List of privileges, if user is administrator.
 
                       There is no certain list of admin privileges, as they are name-based.
                       If you need to check access to certain place contact WellnessLiving integration team.
-                    items:
+                    additionalProperties:
                       type: string
                   a_privilege_staff:
                     type: array
@@ -55769,7 +55772,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -59539,7 +59542,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -68787,12 +68790,12 @@ paths:
                 type: object
                 properties:
                   a_option:
-                    type: array
+                    type: object
                     description: |-
                       List of config option values.
                       Key - config option class CID.
                       Values - config option value.
-                    items:
+                    additionalProperties:
                       type: string
                 required:
                   - a_option
@@ -89749,7 +89752,7 @@ paths:
                         - k_resource_category
                         - sid_deny_reason
                   a_asset_busy:
-                    type: array
+                    type: object
                     description: |-
                       A list of reserved assets.
 
@@ -89762,9 +89765,9 @@ paths:
 
                       If you're rebooking an appointment, check the value of `a_resource_busy['15']['10']`.
                       If it's equal to the key of your current appointment booking, you can assume the asset is available.
-                    items:
-                      type: array
-                      items:
+                    additionalProperties:
+                      type: object
+                      additionalProperties:
                         oneOf:
                           -
                             type: string
@@ -90063,25 +90066,25 @@ paths:
 
         **1. Broadcast strategy** (default)
 
-        Set `$id_delivery_strategy` to `0` or [OtpDeliveryStrategyEnum::BROADCAST](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum) (or omit it entirely).
-        Use `$is_mail` and/or `$is_phone` to specify which channels to use.
+        Set [PassportOtpApi::$id_delivery_strategy](/Wl/Passport/Login/Enter/PassportOtp.json) to `null` or [OtpDeliveryStrategyEnum::BROADCAST](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum) (or omit it entirely).
+        Use [PassportOtpApi::$is_mail](/Wl/Passport/Login/Enter/PassportOtp.json) and/or [PassportOtpApi::$is_phone](/Wl/Passport/Login/Enter/PassportOtp.json) to specify which channels to use.
         At least one of them must be `true`; the OTP is sent to every channel that is enabled.
-        The user must have a corresponding contact — a phone number when `$is_phone` is `true`, an email when
-        `$is_mail` is `true` — otherwise an error is thrown.
+        The user must have a corresponding contact — a phone number when [PassportOtpApi::$is_phone](/Wl/Passport/Login/Enter/PassportOtp.json) is `true`, an email when
+        [PassportOtpApi::$is_mail](/Wl/Passport/Login/Enter/PassportOtp.json) is `true` — otherwise an error is thrown.
 
-        Example: set `$is_mail = true` and `$is_phone = true` to send OTP via both email and SMS simultaneously.
+        Example: set [PassportOtpApi::$is_mail](/Wl/Passport/Login/Enter/PassportOtp.json) to `true` and [PassportOtpApi::$is_phone](/Wl/Passport/Login/Enter/PassportOtp.json) to `true` to send OTP via both email and SMS simultaneously.
 
         **2. Priority strategy**
 
-        Set `$id_delivery_strategy` to [OtpDeliveryStrategyEnum::PRIORITY](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum).
-        Provide `$text_delivery_priority` — a comma-separated list of `sms` and `email` values in the preferred
+        Set [PassportOtpApi::$id_delivery_strategy](/Wl/Passport/Login/Enter/PassportOtp.json) to [OtpDeliveryStrategyEnum::PRIORITY](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum).
+        Provide [PassportOtpApi::$text_delivery_priority](/Wl/Passport/Login/Enter/PassportOtp.json) — a comma-separated list of `sms` and `email` values in the preferred
         order, e.g. `"sms,email"`.
         The system picks the first channel from the list for which the user has valid contact data and sends the OTP
-        only to that one channel. The selected channel is returned in `$text_delivery_selected`; when SMS is
-        selected, the last four digits of the phone are returned in `$text_phone_masked`.
+        only to that one channel. The selected channel is returned in [PassportOtpApi::$text_delivery_selected](/Wl/Passport/Login/Enter/PassportOtp.json); when SMS is
+        selected, the last four digits of the phone are returned in [PassportOtpApi::$text_phone_masked](/Wl/Passport/Login/Enter/PassportOtp.json).
         If none of the listed channels can be used, an error is thrown.
 
-        Example: set `$text_delivery_priority = "sms,email"` to prefer SMS but fall back to email if the user
+        Example: set [PassportOtpApi::$text_delivery_priority](/Wl/Passport/Login/Enter/PassportOtp.json) set to `sms,email` to prefer SMS but fall back to email if the user
         has no phone number.
       tags:
         - Authentication
@@ -90091,7 +90094,7 @@ paths:
         -
           name: id_delivery_strategy
           in: query
-          required: true
+          required: false
           schema:
             $ref: '#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum'
           description: 'Type of delivery strategy from [OtpDeliveryStrategyEnum](#/components/schemas/Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum).'
@@ -92151,7 +92154,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -95950,7 +95953,7 @@ paths:
                 type: object
                 properties:
                   a_resource_busy:
-                    type: array
+                    type: object
                     description: |-
                       A list of reserved assets.
 
@@ -95963,10 +95966,14 @@ paths:
 
                       If you're rebooking an appointment, check the value of `a_resource_busy['15']['10']`.
                       If it's equal to the key of your current appointment booking, you can assume the asset is available.
-                    items:
-                      type: array
-                      items:
-                        type: string
+                    additionalProperties:
+                      type: object
+                      additionalProperties:
+                        oneOf:
+                          -
+                            type: string
+                          -
+                            type: boolean
                   a_resource_type:
                     type: object
                     description: |-
@@ -96345,8 +96352,8 @@ paths:
           in: query
           required: true
           schema:
-            type: array
-            items:
+            type: object
+            additionalProperties:
               type: string
           description: |-
             The list of notes for product options in the store.
@@ -96356,8 +96363,8 @@ paths:
           in: query
           required: true
           schema:
-            type: array
-            items:
+            type: object
+            additionalProperties:
               type: integer
               format: int32
           description: |-
@@ -96413,8 +96420,8 @@ paths:
           in: query
           required: true
           schema:
-            type: array
-            items:
+            type: object
+            additionalProperties:
               type: string
           description: |-
             The list of notes for product options in the store.
@@ -96424,8 +96431,8 @@ paths:
           in: query
           required: true
           schema:
-            type: array
-            items:
+            type: object
+            additionalProperties:
               type: integer
               format: int32
           description: |-
@@ -110018,7 +110025,9 @@ components:
         - 'Hide price.'
         - 'Various price.'
     Wl.Passport.Login.Enter.OtpDeliveryStrategyEnum:
-      type: integer
+      type:
+        - integer
+        - 'null'
       format: int32
       description: |-
         List of different OTP code delivery strategies.
