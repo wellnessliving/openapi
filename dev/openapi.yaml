@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260710163005
+  version: 1.1.20260713045344
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -65963,6 +65963,86 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Tuition/Enrollment/TuitionClientsSummary.json:
+    get:
+      operationId: Wl.Tuition.Enrollment.TuitionClientsSummary.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_summary:
+                    type: array
+                    description: |-
+                      Summary of clients and events enrolled, per tuition.
+
+                      Keys - tuition IDs from $a_tuition_id. Values - summary information:
+                    items:
+                      type: object
+                      properties:
+                        i_clients_enrolled:
+                          type: integer
+                          format: int32
+                          description: 'Number of unique clients having at least one not cancelled enrolled event.'
+                        i_enrolled_total:
+                          type: integer
+                          format: int32
+                          description: 'Total number of not cancelled event enrollments.'
+                        i_events_unique:
+                          type: integer
+                          format: int32
+                          description: 'Number of unique events having at least one not cancelled enrollment.'
+                      required:
+                        - i_clients_enrolled
+                        - i_enrolled_total
+                        - i_events_unique
+                required:
+                  - a_summary
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns summary of clients and events enrolled for the given tuitions.'
+      description: |-
+        For each requested tuition, returns the number of unique clients enrolled in at least one not cancelled
+        event, the number of unique events with at least one not cancelled enrollment, and the total number of
+        not cancelled event enrollments.
+      tags:
+        - Tuition
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_tuition_id
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 'Keys of the tuitions in the tuition microservice to get summary for.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Pay/Account/Charge/Charge.json:
     post:
       operationId: Wl.Pay.Account.Charge.Charge.post
@@ -79350,19 +79430,19 @@ paths:
                       type: object
                       description: 'Selected instructors. Used in [RsClassModifyStepSid::FORM](#/components/schemas/RsClassModifyStepSid):'
                       properties:
+                        is_quick_substitute:
+                          type: boolean
+                          description: 'Whether this staff member is a quick substitute. Optional.'
                         k_staff:
                           type: string
-                          description: '@deprecated Staff key.'
+                          description: '<b>Deprecated.</b> Staff key.'
                         uid_staff:
                           type: string
                           description: 'Staff user key.  Optional.'
-                        k_staff_pay:
-                          type: string
-                          description: 'Staff pay rate ID.'
                       required:
+                        - is_quick_substitute
                         - k_staff
                         - uid_staff
-                        - k_staff_pay
                     is_inform_mail:
                       type: boolean
                       description: 'Send email notification to clients. Used in [RsClassModifyStepSid::CLIENT](#/components/schemas/RsClassModifyStepSid).'
@@ -95228,6 +95308,22 @@ paths:
           schema:
             type: string
           description: 'Mail pattern key.'
+        -
+          name: k_service
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Key of the service being booked.
+
+            Used to prefer a service-specific custom notification template, when one is configured,
+            over the business-level template.
+
+            `null` when no single service is in context (e.g. several services are selected at once),
+            in which case the business-level template is returned.
         -
           name: sid_mail_form
           in: query
