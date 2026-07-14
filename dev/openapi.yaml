@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260714060132
+  version: 1.1.20260714102448
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -18675,6 +18675,9 @@ paths:
                   has_form_quiz:
                     type: boolean
                     description: 'Whether exists form to confirm during registration process.'
+                  has_home:
+                    type: boolean
+                    description: '`true` if the "home" page is turned on for the current business; `false` otherwise.'
                   has_merchant:
                     type: boolean
                     description: "Whether the merchant is configured for the client's home location or for business [EnvironmentApi::$k_business](/Wl/Session/Environment.json)."
@@ -18802,6 +18805,7 @@ paths:
                 required:
                   - dtl_now
                   - has_form_quiz
+                  - has_home
                   - has_merchant
                   - id_currency
                   - id_locale
