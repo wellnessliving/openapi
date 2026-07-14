@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260714103757
+  version: 1.1.20260714142258
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -90758,13 +90758,6 @@ paths:
                                   required:
                                     - m_discount
                                     - text_discount
-                                a_tax:
-                                  type: array
-                                  description: |-
-                                    List of taxes to be applied to the event price:
-                                         Keys are internal system tax keys. 
-                                         Values are amount of taxes to be applied to the event price.
-                                         If not specified or `null`, taxes will be calculated based on the class setup.
                                 k_class:
                                   type: string
                                   description: 'Key of the event class within the tuition which should be granted to the client.'
@@ -90799,12 +90792,6 @@ paths:
                                   required:
                                     - m_discount
                                     - text_discount
-                                a_tax:
-                                  type: array
-                                  description: |-
-                                    List of taxes to be applied to the registration fee:
-                                         Keys are internal system tax keys. 
-                                         Values are amount of taxes to be applied to the registration fee.
                                 m_amount:
                                   type: string
                                   description: 'Registration fee amount for the tuition participant.'
@@ -91021,13 +91008,6 @@ paths:
                           required:
                             - m_discount
                             - text_discount
-                        a_tax:
-                          type: array
-                          description: |-
-                            List of taxes to be applied to the event price:
-                                 Keys are internal system tax keys. 
-                                 Values are amount of taxes to be applied to the event price.
-                                 If not specified or `null`, taxes will be calculated based on the class setup.
                         k_class:
                           type: string
                           description: 'Key of the event class within the tuition which should be granted to the client.'
@@ -91062,12 +91042,6 @@ paths:
                           required:
                             - m_discount
                             - text_discount
-                        a_tax:
-                          type: array
-                          description: |-
-                            List of taxes to be applied to the registration fee:
-                                 Keys are internal system tax keys. 
-                                 Values are amount of taxes to be applied to the registration fee.
                         m_amount:
                           type: string
                           description: 'Registration fee amount for the tuition participant.'
