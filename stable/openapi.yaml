@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260715042445
+  version: 1.1.20260715092006
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -66395,9 +66395,14 @@ paths:
                           format: int32
                           description: 'Number of payments total at the moment of enrollment.'
                         id_installment_status:
-                          type: integer
+                          type:
+                            - integer
+                            - 'null'
                           format: int32
-                          description: 'Installment plan status.'
+                          description: |-
+                            Installment plan status.
+
+                            `null` if tuition paid in full without installment.
                         k_purchase_item_tuition:
                           type: string
                           description: 'Key of the tuition purchase item. This is enrollment key, which can be used to modify and cancel the enrollment.'
@@ -66422,7 +66427,6 @@ paths:
                         - dtl_enrollment
                         - i_payments_left
                         - i_payments_total
-                        - id_installment_status
                         - k_purchase_item_tuition
                         - m_payment
                         - m_rest
