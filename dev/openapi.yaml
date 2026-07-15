@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260715070117
+  version: 1.1.20260715075934
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -81325,6 +81325,132 @@ paths:
       deprecated: true
       x-deprecated: 'Use {@link \Wl\Profile\Edit\Email\EditEmail67Api} instead.'
       x-instance-get-key: 'k_business,text_mail,uid_want'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Profile/Account/Select/Select.json:
+    get:
+      operationId: Wl.Profile.Account.Select.Select.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_user:
+                    type: array
+                    description: 'Array with information about current user and his relationship with sub accounts.'
+                required:
+                  - a_user
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: |-
+        Retrieves information about user specified in [SelectApi::$uid](/Wl/Profile/Account/Select/Select.json)
+        and his relationship with sub accounts.
+      description: |-
+        Returns all user's relatives and type of relationship, which are allowed to sign in with.
+        So, you can use this list to sign in user as hist relative, but this is not the best way to get full family.
+        Business can set that parent can sign in as his child, but child cannot sign in as his parent. So, this method
+        will return children for parent, but will not return parents for child.
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Business to retrieve relationship information.
+
+            Primary key in RsBusinessSql.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            UID to retrieve relationship information.
+
+            Primary key in PassportLoginSql.
+      x-instance-get-key: 'uid,k_business'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Profile.Account.Select.Select.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Signs in user specified in [SelectApi::$uid_in](/Wl/Profile/Account/Select/Select.json).'
+      description: 'Returns an error if you try to sign in user not according to the business permissions.'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Business to retrieve relationship information.
+
+            Primary key in RsBusinessSql.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            UID to retrieve relationship information.
+
+            Primary key in PassportLoginSql.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                uid_in:
+                  type: string
+                  description: |-
+                    ID of relative to sign in.
+
+                    Primary key in PassportLoginSql.
+              required:
+                - uid_in
+      x-instance-get-key: 'uid,k_business'
       x-rate-limit:
         -
           limit: 200000
