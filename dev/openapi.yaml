@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260715104031
+  version: 1.1.20260715173907
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -65859,6 +65859,86 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Widget/Analytics/WidgetAnalyticsEvent.json:
+    post:
+      operationId: Wl.Widget.Analytics.WidgetAnalyticsEvent.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_accepted:
+                    type: boolean
+                    description: 'Whether the event was durably accepted for asynchronous processing.'
+                required:
+                  - is_accepted
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Accepts a Widget analytics event.'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_payload:
+                  type: array
+                  description: 'Event-specific payload.'
+                i_event_version:
+                  type: integer
+                  format: int32
+                  minimum: 1
+                  description: 'Event schema version.'
+                  default: 1
+                k_business:
+                  type: string
+                  description: 'Business key used for shard and datacenter routing.'
+                s_event_id:
+                  type: string
+                  minLength: 1
+                  maxLength: 64
+                  pattern: '^[A-Za-z0-9._:-]+$'
+                  description: |-
+                    Client-generated idempotency identifier.
+                    A retry of the same logical event must use the same value.
+                s_event_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 64
+                  description: 'Event name. Initially only `abandoned_checkout` is supported.'
+              required:
+                - a_payload
+                - i_event_version
+                - k_business
+                - s_event_id
+                - s_event_name
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+        -
+          limit: 10
+          period: 60
+        -
+          limit: 100
+          period: 3600
   /Wl/Tuition/Enrollment/TuitionEnrollmentList.json:
     get:
       operationId: Wl.Tuition.Enrollment.TuitionEnrollmentList.get
@@ -65922,9 +66002,14 @@ paths:
                           format: int32
                           description: 'Number of payments total at the moment of enrollment.'
                         id_installment_status:
-                          type: integer
+                          type:
+                            - integer
+                            - 'null'
                           format: int32
-                          description: 'Installment plan status.'
+                          description: |-
+                            Installment plan status.
+
+                            `null` if tuition paid in full without installment.
                         k_purchase_item_tuition:
                           type: string
                           description: 'Key of the tuition purchase item. This is enrollment key, which can be used to modify and cancel the enrollment.'
@@ -65949,7 +66034,6 @@ paths:
                         - dtl_enrollment
                         - i_payments_left
                         - i_payments_total
-                        - id_installment_status
                         - k_purchase_item_tuition
                         - m_payment
                         - m_rest
@@ -66453,6 +66537,11 @@ paths:
                       id_card_system:
                         $ref: '#/components/schemas/ACardSystemSid'
                         description: 'The card system ID. This is one of the [ACardSystemSid](#/components/schemas/ACardSystemSid) constants.'
+                      is_autopay:
+                        type: boolean
+                        description: |-
+                          If `true`, this card backs at least one active autopay membership or package.
+                          If `false`, no active autopay membership or package is pinned to this card.
                       is_default:
                         type: boolean
                         description: |-
@@ -66481,6 +66570,7 @@ paths:
                       - i_month
                       - i_year
                       - id_card_system
+                      - is_autopay
                       - is_default
                       - k_pay_address
                       - k_pay_bank
@@ -66506,6 +66596,11 @@ paths:
                         id_card_system:
                           $ref: '#/components/schemas/ACardSystemSid'
                           description: 'The card system ID. This is one of the [ACardSystemSid](#/components/schemas/ACardSystemSid) constants.'
+                        is_autopay:
+                          type: boolean
+                          description: |-
+                            If `true`, this card backs at least one active autopay membership or package.
+                            If `false`, no active autopay membership or package is pinned to this card.
                         is_default:
                           type: boolean
                           description: |-
@@ -66534,6 +66629,7 @@ paths:
                         - i_month
                         - i_year
                         - id_card_system
+                        - is_autopay
                         - is_default
                         - k_pay_address
                         - k_pay_bank
@@ -66547,10 +66643,18 @@ paths:
 
                       `true` if new cards can be added.
                       `false` if new cards can not be added.
+                  can_remove_self:
+                    type: boolean
+                    description: |-
+                      Whether the client is allowed to remove their own saved credit cards.
+
+                      `true` if the client can remove their own saved credit cards.
+                      `false` if the client must contact the business to remove a saved credit card.
                 required:
                   - a_bank_card
                   - a_list
                   - can_add
+                  - can_remove_self
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -93715,6 +93819,48 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Bank/Card/Remove/Remove.json:
+    delete:
+      operationId: Wl.Pay.Bank.Card.Remove.Remove.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Removes the card.'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the business the card is being removed for. The card must belong to this business, see
+            PayBank::payBusinessTrx().
+        -
+          name: k_pay_bank
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the card to remove.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Pay/Bank/Ach/Add/Add.json:
     delete:
       operationId: Wl.Pay.Bank.Ach.Add.Add.delete
@@ -96974,6 +97120,8 @@ paths:
     $ref: '#/paths/~1Wl~1Pay~1Bank~1Card~1Add~1Add.json'
   /Thoth/WlPay/Bank/Card/Widget/WidgetSelect.json:
     $ref: '#/paths/~1Wl~1Pay~1Bank~1Card~1Widget~1WidgetSelect.json'
+  /Thoth/WlPay/Bank/Card/Remove/Remove.json:
+    $ref: '#/paths/~1Wl~1Pay~1Bank~1Card~1Remove~1Remove.json'
   /Thoth/WlPay/Bank/Ach/Add/Add.json:
     $ref: '#/paths/~1Wl~1Pay~1Bank~1Ach~1Add~1Add.json'
 components:
