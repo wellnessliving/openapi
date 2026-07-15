@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260715092006
+  version: 1.1.20260715183543
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25101,6 +25101,51 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Core/Testing/Automation/CacheFlush.json:
+    get:
+      operationId: Core.Testing.Automation.CacheFlush.get
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Flushes all application caches.'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: s_action
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Name of the action to perform within this endpoint.'
+        -
+          name: s_token
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Request authentication token.
+
+            A hex-encoded `sha256` signature that proves the caller knows the shared secret.
+            See `checkAccess()` for the expected formula.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+      security: []
   /Core/Request/Api/KeySecret.json:
     get:
       operationId: Core.Request.Api.KeySecret.get
