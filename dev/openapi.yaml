@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260715233938
+  version: 1.1.20260716120927
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -65950,27 +65950,74 @@ paths:
               type: object
               properties:
                 a_payload:
-                  oneOf:
-                    -
+                  type: object
+                  description: 'Event-specific payload.'
+                  properties:
+                    a_item:
                       type: object
-                    -
-                      type: object
-                  description: |-
-                    Event-specific payload.
-
-                    Structure:
-                    - `a_item`: Selected checkout items.
-                    - `id_checkout_type`: Checkout type.
-                    - `k_location`: Location key.
-                    - `k_skin`: Widget skin key, or `null`.
-                    - `m_total`: Checkout total.
-                    - `s_funnel_step`: Last funnel step reached.
-                    - `s_session_id`: Widget checkout session identifier.
-                    - `s_utm_campaign`: UTM campaign value.
-                    - `s_utm_medium`: UTM medium value.
-                    - `s_utm_source`: UTM source value.
-                    - `uid`: User key.
-                    - `url_continue`: Continuation URL.
+                      description: 'Selected checkout items. Each entry has the following structure:'
+                      properties:
+                        id_item:
+                          $ref: '#/components/schemas/RsPurchaseItemSid'
+                          description: 'Item type. A [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constant for store checkout or a [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constant for booking.'
+                        k_item:
+                          type: string
+                          description: 'Selected item key.'
+                        k_item_extra:
+                          type: string
+                          description: 'Event enrollment block key, or an empty string.'
+                      required:
+                        - id_item
+                        - k_item
+                        - k_item_extra
+                    id_checkout_type:
+                      $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid'
+                      description: 'Checkout type. One of [WidgetAnalyticsCheckoutTypeSid](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid) constants.'
+                    k_location:
+                      type: string
+                      description: 'Location key.'
+                    k_skin:
+                      type:
+                        - string
+                        - 'null'
+                      description: 'Widget skin key, or `null` if the Widget does not use a registered skin.'
+                    m_total:
+                      type: string
+                      description: 'Checkout total.'
+                    s_funnel_step:
+                      type: string
+                      description: 'Last funnel step reached.'
+                    s_session_id:
+                      type: string
+                      description: 'Widget checkout session identifier.'
+                    s_utm_campaign:
+                      type: string
+                      description: 'UTM campaign value.'
+                    s_utm_medium:
+                      type: string
+                      description: 'UTM medium value.'
+                    s_utm_source:
+                      type: string
+                      description: 'UTM source value.'
+                    uid:
+                      type: string
+                      description: 'User key.'
+                    url_continue:
+                      type: string
+                      description: 'Continuation URL.'
+                  required:
+                    - a_item
+                    - id_checkout_type
+                    - k_location
+                    - k_skin
+                    - m_total
+                    - s_funnel_step
+                    - s_session_id
+                    - s_utm_campaign
+                    - s_utm_medium
+                    - s_utm_source
+                    - uid
+                    - url_continue
                 i_event_version:
                   type: integer
                   format: int32
@@ -66150,6 +66197,11 @@ paths:
                 items:
                   type: integer
                   format: int32
+              a_purchase_item_tuition:
+                type: array
+                description: 'List of tuition enrollments ids to leave only.'
+                items:
+                  type: string
               a_uid_any:
                 type: array
                 description: 'Leave only enrollments with the given payers or enrolled clients.'
@@ -66168,6 +66220,7 @@ paths:
             required:
               - a_event
               - a_statuses
+              - a_purchase_item_tuition
               - a_uid_any
               - a_uid_enrolled
               - a_uid_payer
@@ -81515,8 +81568,22 @@ paths:
                 type: object
                 properties:
                   a_user:
-                    type: array
+                    type: object
                     description: 'Array with information about current user and his relationship with sub accounts.'
+                    properties:
+                      id_family_relation:
+                        type: string
+                        description: 'ID of relationship between current user and sub account.'
+                      s_name:
+                        type: string
+                        description: 'Name of sub account.'
+                      uid:
+                        type: string
+                        description: 'UID of sub account.'
+                    required:
+                      - id_family_relation
+                      - s_name
+                      - uid
                 required:
                   - a_user
         '400':
@@ -81539,6 +81606,8 @@ paths:
         So, you can use this list to sign in user as hist relative, but this is not the best way to get full family.
         Business can set that parent can sign in as his child, but child cannot sign in as his parent. So, this method
         will return children for parent, but will not return parents for child.
+      tags:
+        - Family
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -81548,20 +81617,14 @@ paths:
           required: true
           schema:
             type: string
-          description: |-
-            Business to retrieve relationship information.
-
-            Primary key in RsBusinessSql.
+          description: 'Business to retrieve relationship information.'
         -
           name: uid
           in: query
           required: true
           schema:
             type: string
-          description: |-
-            UID to retrieve relationship information.
-
-            Primary key in PassportLoginSql.
+          description: 'UID to retrieve relationship information.'
       x-instance-get-key: 'uid,k_business'
       x-rate-limit:
         -
@@ -81586,6 +81649,8 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Signs in user specified in [SelectApi::$uid_in](/Wl/Profile/Account/Select/Select.json).'
       description: 'Returns an error if you try to sign in user not according to the business permissions.'
+      tags:
+        - Family
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -81595,20 +81660,14 @@ paths:
           required: true
           schema:
             type: string
-          description: |-
-            Business to retrieve relationship information.
-
-            Primary key in RsBusinessSql.
+          description: 'Business to retrieve relationship information.'
         -
           name: uid
           in: query
           required: true
           schema:
             type: string
-          description: |-
-            UID to retrieve relationship information.
-
-            Primary key in PassportLoginSql.
+          description: 'UID to retrieve relationship information.'
       requestBody:
         required: true
         content:
@@ -81618,10 +81677,7 @@ paths:
               properties:
                 uid_in:
                   type: string
-                  description: |-
-                    ID of relative to sign in.
-
-                    Primary key in PassportLoginSql.
+                  description: 'ID of relative to sign in.'
               required:
                 - uid_in
       x-instance-get-key: 'uid,k_business'
@@ -93889,48 +93945,6 @@ paths:
         -
           limit: 200000
           period: 3600
-  /Wl/Pay/Bank/Card/Remove/Remove.json:
-    delete:
-      operationId: Wl.Pay.Bank.Card.Remove.Remove.delete
-      responses:
-        '200':
-          description: 'Successful response.'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Removes the card.'
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-        -
-          name: k_business
-          in: query
-          required: true
-          schema:
-            type: string
-          description: |-
-            Key of the business the card is being removed for. The card must belong to this business, see
-            PayBank::payBusinessTrx().
-        -
-          name: k_pay_bank
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Key of the card to remove.'
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
   /Wl/Pay/Bank/Ach/Add/Add.json:
     delete:
       operationId: Wl.Pay.Bank.Ach.Add.Add.delete
@@ -97190,8 +97204,6 @@ paths:
     $ref: '#/paths/~1Wl~1Pay~1Bank~1Card~1Add~1Add.json'
   /Thoth/WlPay/Bank/Card/Widget/WidgetSelect.json:
     $ref: '#/paths/~1Wl~1Pay~1Bank~1Card~1Widget~1WidgetSelect.json'
-  /Thoth/WlPay/Bank/Card/Remove/Remove.json:
-    $ref: '#/paths/~1Wl~1Pay~1Bank~1Card~1Remove~1Remove.json'
   /Thoth/WlPay/Bank/Ach/Add/Add.json:
     $ref: '#/paths/~1Wl~1Pay~1Bank~1Ach~1Add~1Add.json'
 components:
@@ -109116,6 +109128,28 @@ components:
         - Location.
         - Purchase.
         - Review.
+    Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid:
+      type: integer
+      format: int32
+      description: |-
+        Widget analytics checkout types.
+
+        Values:
+        - 1 (`ANY`): Any checkout type.
+        - 3 (`BOOKING`): Booking checkout type.
+        - 2 (`STORE_PURCHASE`): Store purchase checkout type.
+      enum:
+        - 1
+        - 3
+        - 2
+      x-enum-varnames:
+        - ANY
+        - BOOKING
+        - STORE_PURCHASE
+      x-enum-descriptions:
+        - 'Any checkout type.'
+        - 'Booking checkout type.'
+        - 'Store purchase checkout type.'
     RsPayAccountChargeSid:
       type: integer
       format: int32
