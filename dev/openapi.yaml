@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260716161957
+  version: 1.1.20260716174753
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -65955,24 +65955,36 @@ paths:
                   properties:
                     a_item:
                       type: object
-                      description: 'Selected checkout items. Each entry has the following structure:'
+                      description: 'Selected checkout items.'
                       properties:
-                        id_item:
+                        id_purchase_item:
                           $ref: '#/components/schemas/RsPurchaseItemSid'
-                          description: 'Item type. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants. For booking checkout, interpret the value according to `id_checkout_type`.'
+                          description: |-
+                            Purchase item ID.
+                            A [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constant for store checkout or a [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constant for booking.
+                        id_service:
+                          $ref: '#/components/schemas/Wl.Service.ServiceSid'
+                          description: |-
+                            Service ID.
+                            A [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constant for booking.
                         k_item:
                           type: string
-                          description: 'Selected item key.'
+                          description: |-
+                            Selected item key.
+                            The referenced table depends on checkout type and item type.
                         k_item_extra:
                           type: string
-                          description: 'Event enrollment block key, or an empty string.'
+                          description: |-
+                            Additional item key used by an event enrollment block.
+                            Empty for all other item types.
                       required:
-                        - id_item
                         - k_item
                         - k_item_extra
                     id_checkout_type:
                       $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid'
-                      description: 'Checkout type. One of [WidgetAnalyticsCheckoutTypeSid](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid) constants.'
+                      description: |-
+                        Checkout type.
+                        One of [WidgetAnalyticsCheckoutTypeSid](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid) constants.
                     k_location:
                       type: string
                       description: 'Location key.'
@@ -65980,36 +65992,47 @@ paths:
                       type:
                         - string
                         - 'null'
-                      description: 'Widget skin key, or `null` if the Widget does not use a registered skin.'
+                      description: |-
+                        Widget skin key.
+                        `null` if the Widget does not use a registered skin.
                     m_total:
                       type: string
-                      description: 'Checkout total.'
+                      description: 'Checkout total in the location currency.'
                     s_funnel_step:
                       type: string
-                      description: 'Last funnel step reached.'
+                      description: |-
+                        Last funnel step reached by the client.
+                        Empty if it is unavailable.
                     s_session_id:
                       type: string
-                      description: 'Widget checkout session identifier.'
+                      description: |-
+                        Widget checkout session identifier.
+                        Empty if it is unavailable. It is used only for diagnostics and continuation context, not for idempotency.
                     s_utm_campaign:
                       type: string
-                      description: 'UTM campaign value.'
+                      description: |-
+                        UTM campaign value.
+                        Empty if it is unavailable.
                     s_utm_medium:
                       type: string
-                      description: 'UTM medium value.'
+                      description: |-
+                        UTM medium value.
+                        Empty if it is unavailable.
                     s_utm_source:
                       type: string
-                      description: 'UTM source value.'
+                      description: |-
+                        UTM source value.
+                        Empty if it is unavailable.
                     uid:
                       type: string
-                      description: 'User key.'
+                      description: 'User key for whom checkout was abandoned.'
                     url_continue:
                       type: string
-                      description: 'Continuation URL.'
+                      description: 'URL that restores the booking or purchase flow with the selected items.'
                   required:
                     - a_item
                     - id_checkout_type
                     - k_location
-                    - k_skin
                     - m_total
                     - s_funnel_step
                     - s_session_id
