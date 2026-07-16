@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260716120927
+  version: 1.1.20260716133600
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -65958,8 +65958,9 @@ paths:
                       description: 'Selected checkout items. Each entry has the following structure:'
                       properties:
                         id_item:
-                          $ref: '#/components/schemas/RsPurchaseItemSid'
-                          description: 'Item type. A [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constant for store checkout or a [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constant for booking.'
+                          type: integer
+                          format: int32
+                          description: 'Item type. The valid value depends on `id_checkout_type`: store purchase for store checkout or service for booking.'
                         k_item:
                           type: string
                           description: 'Selected item key.'
@@ -81572,7 +81573,8 @@ paths:
                     description: 'Array with information about current user and his relationship with sub accounts.'
                     properties:
                       id_family_relation:
-                        type: string
+                        type: integer
+                        format: int32
                         description: 'ID of relationship between current user and sub account.'
                       s_name:
                         type: string
@@ -82765,6 +82767,9 @@ paths:
                       is_virtual:
                         type: boolean
                         description: '`true` if the service is virtual. Otherwise, this will be `false`.'
+                      k_resource_location:
+                        type: string
+                        description: 'Off-site location if service requires such type of asset.'
                       k_service:
                         type: string
                         description: 'The appointment primary key.'
@@ -82829,6 +82834,7 @@ paths:
                       - is_staff_skip
                       - is_question
                       - is_virtual
+                      - k_resource_location
                       - k_service
                       - k_service_category
                       - s_duration
@@ -83196,6 +83202,9 @@ paths:
                       is_virtual:
                         type: boolean
                         description: '`true` if the service is virtual. Otherwise, this will be `false`.'
+                      k_resource_location:
+                        type: string
+                        description: 'Off-site location if service requires such type of asset.'
                       k_service:
                         type: string
                         description: 'The appointment primary key.'
@@ -83260,6 +83269,7 @@ paths:
                       - is_staff_skip
                       - is_question
                       - is_virtual
+                      - k_resource_location
                       - k_service
                       - k_service_category
                       - s_duration
