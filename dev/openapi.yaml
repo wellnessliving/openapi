@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260716144222
+  version: 1.1.20260716161957
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -65958,9 +65958,8 @@ paths:
                       description: 'Selected checkout items. Each entry has the following structure:'
                       properties:
                         id_item:
-                          type: integer
-                          format: int32
-                          description: 'Item type. The valid value depends on `id_checkout_type`: store purchase for store checkout or service for booking.'
+                          $ref: '#/components/schemas/RsPurchaseItemSid'
+                          description: 'Item type. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants. For booking checkout, interpret the value according to `id_checkout_type`.'
                         k_item:
                           type: string
                           description: 'Selected item key.'
