@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260717121718
+  version: 1.1.20260717124617
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -27345,6 +27345,969 @@ paths:
             Only active clients with at least one active Purchase Option from this list will be returned.
 
             For example: '324,123,11,556'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Report/Dashboard/ReportDashboard.json:
+    post:
+      operationId: Wl.Report.Dashboard.ReportDashboard.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Adds new report to a dashboard.'
+      description: |-
+        Creates a saved report from the specified title, description, filters and view widget settings and
+        attaches it as a widget to the dashboard identified by [ReportDashboardApi::$k_report_dashboard](/Wl/Report/Dashboard/ReportDashboard.json).
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key of the report.'
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "UID user's key of the actor."
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_filter:
+                  type: object
+                  deprecated: true
+                  x-deprecated: |-
+                    Use [ReportDashboardApi::$json_filter](/Wl/Report/Dashboard/ReportDashboard.json).
+                    This variable do not get empty values of filters from HTML forms.
+                  description: |-
+                    Filter raw data of the report.
+
+                    Keys are filter field names, values are the raw filter values.
+                  additionalProperties:
+                    type: string
+                a_settings:
+                  type: object
+                  description: |-
+                    View widget settings raw data of the saved report.
+
+                    Keys are widget setting names, values are the raw setting values.
+                  additionalProperties:
+                    type: string
+                cid_controller:
+                  $ref: '#/components/schemas/Wl.Report.View.ReportViewControllerAbstract'
+                  description: 'CID of the controller class. Subclass of [ReportViewControllerAbstract](#/components/schemas/Wl.Report.View.ReportViewControllerAbstract).'
+                json_filter:
+                  type: string
+                  description: |-
+                    Filter raw data of the saved report. Uses to save empty filter values, actual when empty filter is the same as all
+                    values are chosen.
+
+                    Use this value instead of [ReportDashboardApi::$a_filter](/Wl/Report/Dashboard/ReportDashboard.json).
+
+                    In this array, key is name of a filter field.
+                  default: '[]'
+                k_report_dashboard:
+                  type: string
+                  description: 'Report dashboard key to which report should be added.'
+                text_description:
+                  type: string
+                  description: 'Description of the report.'
+                text_title:
+                  type: string
+                  description: 'Title of the report.'
+              required:
+                - a_filter
+                - a_settings
+                - cid_controller
+                - json_filter
+                - k_report_dashboard
+                - text_description
+                - text_title
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    put:
+      operationId: Wl.Report.Dashboard.ReportDashboard.put
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Updates added report to a dashboard.'
+      description: |-
+        Rewrites the title, description, filters and view widget settings of the dashboard report identified by
+        [ReportDashboardApi::$k_report_save](/Wl/Report/Dashboard/ReportDashboard.json) within the current business.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key of the report.'
+        -
+          name: k_report_save
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Report save key.'
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "UID user's key of the actor."
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_filter:
+                  type: object
+                  deprecated: true
+                  x-deprecated: |-
+                    Use [ReportDashboardApi::$json_filter](/Wl/Report/Dashboard/ReportDashboard.json).
+                    This variable do not get empty values of filters from HTML forms.
+                  description: |-
+                    Filter raw data of the report.
+
+                    Keys are filter field names, values are the raw filter values.
+                  additionalProperties:
+                    type: string
+                a_settings:
+                  type: object
+                  description: |-
+                    View widget settings raw data of the saved report.
+
+                    Keys are widget setting names, values are the raw setting values.
+                  additionalProperties:
+                    type: string
+                cid_controller:
+                  $ref: '#/components/schemas/Wl.Report.View.ReportViewControllerAbstract'
+                  description: 'CID of the controller class. Subclass of [ReportViewControllerAbstract](#/components/schemas/Wl.Report.View.ReportViewControllerAbstract).'
+                json_filter:
+                  type: string
+                  description: |-
+                    Filter raw data of the saved report. Uses to save empty filter values, actual when empty filter is the same as all
+                    values are chosen.
+
+                    Use this value instead of [ReportDashboardApi::$a_filter](/Wl/Report/Dashboard/ReportDashboard.json).
+
+                    In this array, key is name of a filter field.
+                  default: '[]'
+                k_report_dashboard:
+                  type: string
+                  description: 'Report dashboard key to which report should be added.'
+                text_description:
+                  type: string
+                  description: 'Description of the report.'
+                text_title:
+                  type: string
+                  description: 'Title of the report.'
+              required:
+                - a_filter
+                - a_settings
+                - cid_controller
+                - json_filter
+                - k_report_dashboard
+                - text_description
+                - text_title
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Report/Save/ReportSave.json:
+    get:
+      operationId: Wl.Report.Save.ReportSave.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_filter:
+                    type: object
+                    deprecated: true
+                    x-deprecated: |-
+                      Use [ReportSaveApi::$json_filter](/Wl/Report/Save/ReportSave.json).
+                      This variable do not get empty values of filters from HTML forms.
+                    description: |-
+                      Filter raw data of the saved report.
+
+                      Keys are filter field names, values are the raw filter values.
+                    additionalProperties:
+                      type: string
+                  id_report_category:
+                    $ref: '#/components/schemas/RsReportCategorySid'
+                    description: |-
+                      Report category of the saved report.
+
+                      One of the [RsReportCategorySid](#/components/schemas/RsReportCategorySid) constants.
+                  text_description:
+                    type: string
+                    description: 'Description of the saved report.'
+                  text_title:
+                    type: string
+                    description: 'Title of the saved report.'
+                required:
+                  - a_filter
+                  - id_report_category
+                  - text_description
+                  - text_title
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns information about saved report.'
+      description: |-
+        Loads the title, description, category and stored filters of the saved report identified by
+        [ReportSaveApi::$k_report_save](/Wl/Report/Save/ReportSave.json) within the current business.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key of the saved report.'
+        -
+          name: k_report_save
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Report save key.'
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "UID user's key of the actor."
+      x-instance-get-key: k_report_save
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Report.Save.ReportSave.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves new saved report.'
+      description: |-
+        Creates a new saved report for the current business from the specified title, description, category,
+        filters and view widget settings, and stores the related customization for the report controller.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key of the saved report.'
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "UID user's key of the actor."
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_filter:
+                  type: object
+                  deprecated: true
+                  x-deprecated: |-
+                    Use [ReportSaveApi::$json_filter](/Wl/Report/Save/ReportSave.json).
+                    This variable do not get empty values of filters from HTML forms.
+                  description: |-
+                    Filter raw data of the saved report.
+
+                    Keys are filter field names, values are the raw filter values.
+                  additionalProperties:
+                    type: string
+                a_settings:
+                  type: object
+                  description: |-
+                    View widget settings raw data of the saved report.
+
+                    Keys are widget setting names, values are the raw setting values.
+                  additionalProperties:
+                    type: string
+                cid_controller:
+                  $ref: '#/components/schemas/Wl.Report.View.ReportViewControllerAbstract'
+                  description: 'CID of the controller class.'
+                id_report_category:
+                  $ref: '#/components/schemas/RsReportCategorySid'
+                  description: |-
+                    Report category of the saved report.
+
+                    One of the [RsReportCategorySid](#/components/schemas/RsReportCategorySid) constants.
+                json_filter:
+                  type: string
+                  description: |-
+                    Filter raw data of the saved report. Uses to save empty filter values, actual when empty filter is the same as all
+                    values are chosen.
+
+                    Use this value instead of [ReportSaveApi::$a_filter](/Wl/Report/Save/ReportSave.json).
+
+                    In this array, key is name of a filter field.
+                k_report_config:
+                  type: string
+                  description: 'Report save key used as a base configuration when saving a new report.'
+                text_description:
+                  type: string
+                  description: 'Description of the saved report.'
+                text_title:
+                  type: string
+                  description: 'Title of the saved report.'
+              required:
+                - a_filter
+                - a_settings
+                - cid_controller
+                - id_report_category
+                - json_filter
+                - k_report_config
+                - text_description
+                - text_title
+      x-instance-get-key: k_report_save
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    put:
+      operationId: Wl.Report.Save.ReportSave.put
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Updates existing saved report.'
+      description: |-
+        Rewrites the title, description, category, filters and view widget settings of the saved report
+        identified by [ReportSaveApi::$k_report_save](/Wl/Report/Save/ReportSave.json) within the current business.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key of the saved report.'
+        -
+          name: k_report_save
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Report save key.'
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "UID user's key of the actor."
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_filter:
+                  type: object
+                  deprecated: true
+                  x-deprecated: |-
+                    Use [ReportSaveApi::$json_filter](/Wl/Report/Save/ReportSave.json).
+                    This variable do not get empty values of filters from HTML forms.
+                  description: |-
+                    Filter raw data of the saved report.
+
+                    Keys are filter field names, values are the raw filter values.
+                  additionalProperties:
+                    type: string
+                a_settings:
+                  type: object
+                  description: |-
+                    View widget settings raw data of the saved report.
+
+                    Keys are widget setting names, values are the raw setting values.
+                  additionalProperties:
+                    type: string
+                cid_controller:
+                  $ref: '#/components/schemas/Wl.Report.View.ReportViewControllerAbstract'
+                  description: 'CID of the controller class.'
+                id_report_category:
+                  $ref: '#/components/schemas/RsReportCategorySid'
+                  description: |-
+                    Report category of the saved report.
+
+                    One of the [RsReportCategorySid](#/components/schemas/RsReportCategorySid) constants.
+                json_filter:
+                  type: string
+                  description: |-
+                    Filter raw data of the saved report. Uses to save empty filter values, actual when empty filter is the same as all
+                    values are chosen.
+
+                    Use this value instead of [ReportSaveApi::$a_filter](/Wl/Report/Save/ReportSave.json).
+
+                    In this array, key is name of a filter field.
+                text_description:
+                  type: string
+                  description: 'Description of the saved report.'
+                text_title:
+                  type: string
+                  description: 'Title of the saved report.'
+              required:
+                - a_filter
+                - a_settings
+                - cid_controller
+                - id_report_category
+                - json_filter
+                - text_description
+                - text_title
+      x-instance-get-key: k_report_save
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Report/Customization/CustomizationForm.json:
+    get:
+      operationId: Wl.Report.Customization.CustomizationForm.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_customization_form:
+                    type: object
+                    description: 'Customization form data keyed by report or page CID. Each value has the following structure:'
+                    properties:
+                      a_element:
+                        type: object
+                        description: 'Form elements keyed by element name. Each element has the following structure:'
+                        properties:
+                          a_field:
+                            type: object
+                            description: 'Element fields keyed by field alias. Each field has the following structure:'
+                            properties:
+                              text_title:
+                                type: string
+                                description: 'Localized field title.'
+                              x_value:
+                                type: string
+                                description: 'Current field value.'
+                            required:
+                              - text_title
+                              - x_value
+                          a_report:
+                            type: array
+                            description: 'Report CID list the element applies to.'
+                            items:
+                              type: integer
+                              format: int32
+                          html_title:
+                            type: string
+                            description: 'Localized element title.'
+                          html_title_tooltip:
+                            type: string
+                            description: 'Localized element tooltip.'
+                        required:
+                          - a_field
+                          - a_report
+                          - html_title
+                          - html_title_tooltip
+                      s_form:
+                        type: string
+                        description: 'Form class identifier.'
+                    required:
+                      - a_element
+                      - s_form
+                required:
+                  - a_customization_form
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Loads customization data of the customization form that corresponds to specified report / report page.'
+      description: |-
+        Populates [CustomizationFormApi::$a_customization_form](/Wl/Report/Customization/CustomizationForm.json) with the customization data of the requested
+        report or report page, optionally converted to the reports listed in [CustomizationFormApi::$s_report](/Wl/Report/Customization/CustomizationForm.json).
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: cid_page
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportPageAbstract'
+          description: 'Report page CID.'
+        -
+          name: cid_report
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract'
+          description: 'Report CID.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business primary key.'
+        -
+          name: k_report_save
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Primary key of a saved report.
+
+            `null` means that report is not saved.
+        -
+          name: s_report
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Report CID list to that page customization form must be converted. String separated with `,`.
+
+            May be specified only if [CustomizationFormApi::$cid_page](/Wl/Report/Customization/CustomizationForm.json) in not empty.
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "Current user's primary key."
+      x-instance-get-key: 'cid_page,cid_report,k_business,k_report_save,s_report,uid_actor'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Report.Customization.CustomizationForm.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves given data of a customization form into database.'
+      description: |-
+        Stores the customization data supplied in [CustomizationFormApi::$a_customization_form](/Wl/Report/Customization/CustomizationForm.json) for the
+        requested report or report page and resets the related report configuration cache.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: cid_page
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportPageAbstract'
+          description: 'Report page CID.'
+        -
+          name: cid_report
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract'
+          description: 'Report CID.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business primary key.'
+        -
+          name: k_report_save
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Primary key of a saved report.
+
+            `null` means that report is not saved.
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "Current user's primary key."
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_customization_form:
+                  type: object
+                  description: 'Customization form data keyed by report or page CID. Each value has the following structure:'
+                  properties:
+                    a_element:
+                      type: object
+                      description: 'Form elements keyed by element name. Each element has the following structure:'
+                      properties:
+                        a_field:
+                          type: object
+                          description: 'Element fields keyed by field alias. Each field has the following structure:'
+                          properties:
+                            text_title:
+                              type: string
+                              description: 'Localized field title.'
+                            x_value:
+                              type: string
+                              description: 'Current field value.'
+                          required:
+                            - text_title
+                            - x_value
+                        a_report:
+                          type: array
+                          description: 'Report CID list the element applies to.'
+                          items:
+                            type: integer
+                            format: int32
+                        html_title:
+                          type: string
+                          description: 'Localized element title.'
+                        html_title_tooltip:
+                          type: string
+                          description: 'Localized element tooltip.'
+                      required:
+                        - a_field
+                        - a_report
+                        - html_title
+                        - html_title_tooltip
+                    s_form:
+                      type: string
+                      description: 'Form class identifier.'
+                  required:
+                    - a_element
+                    - s_form
+              required:
+                - a_customization_form
+      x-instance-get-key: 'cid_page,cid_report,k_business,k_report_save,s_report,uid_actor'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Report/Favorite/ReportFavorite.json:
+    delete:
+      operationId: Wl.Report.Favorite.ReportFavorite.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Removes report controller from favorites.'
+      description: |-
+        Deletes the favorite record for the current user that matches either the specified saved report
+        or the report controller within the current business.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: cid_controller
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Report.View.ReportViewControllerAbstract'
+          description: 'CID of the controller.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key within which request is performed.'
+        -
+          name: k_report_save
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Saved report key to manage.'
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "UID user's key of the actor."
+      x-instance-get-key: 'cid_controller,k_report_save'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    get:
+      operationId: Wl.Report.Favorite.ReportFavorite.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_favorite:
+                    type: boolean
+                    description: 'Whether report is favorite.'
+                required:
+                  - is_favorite
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: |-
+        Returns information whether passed report controller (saved report controller) is favorite for the specified user
+          within specified business.
+      description: |-
+        Populates [ReportFavoriteApi::$is_favorite](/Wl/Report/Favorite/ReportFavorite.json) with the current favorite state for the specified saved
+        report or report controller.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: cid_controller
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Report.View.ReportViewControllerAbstract'
+          description: 'CID of the controller.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key within which request is performed.'
+        -
+          name: k_report_save
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Saved report key to manage.'
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "UID user's key of the actor."
+      x-instance-get-key: 'cid_controller,k_report_save'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Report.Favorite.ReportFavorite.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Adds report controller to favorites.'
+      description: |-
+        Creates a favorite record for the current user that references either the specified saved report
+        or the report controller within the current business.
+      tags:
+        - Reports
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: cid_controller
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Report.View.ReportViewControllerAbstract'
+          description: 'CID of the controller.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key within which request is performed.'
+        -
+          name: k_report_save
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Saved report key to manage.'
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "UID user's key of the actor."
+      x-instance-get-key: 'cid_controller,k_report_save'
       x-rate-limit:
         -
           limit: 200000
@@ -94534,10 +95497,49 @@ paths:
                 type: object
                 properties:
                   a_customization_form:
-                    type: array
-                    description: |-
-                      Customization form data.
-                      See CustomizationFormAbstract::toArray() for details.
+                    type: object
+                    description: 'Customization form data keyed by report or page CID. Each value has the following structure:'
+                    properties:
+                      a_element:
+                        type: object
+                        description: 'Form elements keyed by element name. Each element has the following structure:'
+                        properties:
+                          a_field:
+                            type: object
+                            description: 'Element fields keyed by field alias. Each field has the following structure:'
+                            properties:
+                              text_title:
+                                type: string
+                                description: 'Localized field title.'
+                              x_value:
+                                type: string
+                                description: 'Current field value.'
+                            required:
+                              - text_title
+                              - x_value
+                          a_report:
+                            type: array
+                            description: 'Report CID list the element applies to.'
+                            items:
+                              type: integer
+                              format: int32
+                          html_title:
+                            type: string
+                            description: 'Localized element title.'
+                          html_title_tooltip:
+                            type: string
+                            description: 'Localized element tooltip.'
+                        required:
+                          - a_field
+                          - a_report
+                          - html_title
+                          - html_title_tooltip
+                      s_form:
+                        type: string
+                        description: 'Form class identifier.'
+                    required:
+                      - a_element
+                      - s_form
                 required:
                   - a_customization_form
         '400':
@@ -94560,24 +95562,22 @@ paths:
           in: query
           required: true
           schema:
-            type: integer
-            format: int32
+            $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportPageAbstract'
           description: 'Report page CID.'
         -
           name: cid_report
           in: query
           required: true
           schema:
-            type: integer
-            format: int32
-          description: 'Page CID.'
+            $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract'
+          description: 'Report CID.'
         -
           name: k_business
           in: query
           required: true
           schema:
             type: string
-          description: 'Business primary key in RsBusinessSql table.'
+          description: 'Business primary key.'
         -
           name: k_report_query
           in: query
@@ -94600,7 +95600,7 @@ paths:
               - string
               - 'null'
           description: |-
-            Primary key of a saved report in RsReportSaveSql table.
+            Primary key of a saved report.
 
             `null` means that report is not saved.
         -
@@ -94619,7 +95619,7 @@ paths:
           required: true
           schema:
             type: string
-          description: "Current user's primary key in PassportLoginAr table."
+          description: "Current user's primary key."
       x-instance-get-key: 'cid_page,cid_report,k_business,k_report_query,k_report_save,s_report,uid_actor'
       x-rate-limit:
         -
@@ -94650,24 +95650,22 @@ paths:
           in: query
           required: true
           schema:
-            type: integer
-            format: int32
+            $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportPageAbstract'
           description: 'Report page CID.'
         -
           name: cid_report
           in: query
           required: true
           schema:
-            type: integer
-            format: int32
-          description: 'Page CID.'
+            $ref: '#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract'
+          description: 'Report CID.'
         -
           name: k_business
           in: query
           required: true
           schema:
             type: string
-          description: 'Business primary key in RsBusinessSql table.'
+          description: 'Business primary key.'
         -
           name: k_report_query
           in: query
@@ -94690,7 +95688,7 @@ paths:
               - string
               - 'null'
           description: |-
-            Primary key of a saved report in RsReportSaveSql table.
+            Primary key of a saved report.
 
             `null` means that report is not saved.
         -
@@ -94699,7 +95697,7 @@ paths:
           required: true
           schema:
             type: string
-          description: "Current user's primary key in PassportLoginAr table."
+          description: "Current user's primary key."
       requestBody:
         required: true
         content:
@@ -94708,10 +95706,49 @@ paths:
               type: object
               properties:
                 a_customization_form:
-                  type: array
-                  description: |-
-                    Customization form data.
-                    See CustomizationFormAbstract::toArray() for details.
+                  type: object
+                  description: 'Customization form data keyed by report or page CID. Each value has the following structure:'
+                  properties:
+                    a_element:
+                      type: object
+                      description: 'Form elements keyed by element name. Each element has the following structure:'
+                      properties:
+                        a_field:
+                          type: object
+                          description: 'Element fields keyed by field alias. Each field has the following structure:'
+                          properties:
+                            text_title:
+                              type: string
+                              description: 'Localized field title.'
+                            x_value:
+                              type: string
+                              description: 'Current field value.'
+                          required:
+                            - text_title
+                            - x_value
+                        a_report:
+                          type: array
+                          description: 'Report CID list the element applies to.'
+                          items:
+                            type: integer
+                            format: int32
+                        html_title:
+                          type: string
+                          description: 'Localized element title.'
+                        html_title_tooltip:
+                          type: string
+                          description: 'Localized element tooltip.'
+                      required:
+                        - a_field
+                        - a_report
+                        - html_title
+                        - html_title_tooltip
+                    s_form:
+                      type: string
+                      description: 'Form class identifier.'
+                  required:
+                    - a_element
+                    - s_form
               required:
                 - a_customization_form
       x-instance-get-key: 'cid_page,cid_report,k_business,k_report_query,k_report_save,s_report,uid_actor'
@@ -105359,6 +106396,561 @@ components:
           Token is valid but score is risky.
 
           Used by {@link \Core\Google\Captcha\CaptchaVersionSid::V3} only.
+    Wl.Report.View.ReportViewControllerAbstract:
+      type: integer
+      format: int32
+      description: |-
+        Base class for report controllers.
+
+        Values:
+        - 1848 (`Thoth\ProgressLog\Report\ProgressLogListReportPageChartController`): Progress Log (Transformation Log) report view controller. Chart representation.
+        - 753 (`Wl\Member\Report\MemberAllReportChartController`): "All clients" report controller. Chart representation.
+        - 1304 (`Wl\Member\Report\MemberReportChartController`): "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
+          Chart representation.
+        - 803 (`Thoth\Report\SalesReport\Transaction\TransactionAllReportPageChartController`): "All transactions" report page controller. Chart representation.
+        - 925 (`Thoth\ReportCore\Generator\Example\ExampleReportChartController`): "Example report" view controller. Chart representation.
+        - 1452 (`Wl\Lead\Franchise\Report\LeadByLocationReportChartController`): "Lead by location" report page controller. Chart representation.
+        - 1511 (`Wl\Login\Franchise\Detail\DetailListReportChartController`): "Enterprise Client Details" report controller.
+          Chart representation.
+        - 1527 (`Wl\Attendance\Report\Appointment\DetailReportChartController`): Controls detailed appointment analysis report in chart format.
+        - 1495 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportChartController`): "Enterprise Reports -> Memberships Details by Location" report controller. Chart representation.
+        - 1270 (`Thoth\Report\SalesReport\Tag\Summary\ListReportChartController`): Controller for "Sales Summary by Revenue Category" report. Chart view.
+        - 1047 (`Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportPageChartController`): Sales Summary By Location report page, chart representation.
+        - 1481 (`Wl\Visit\Location\Cross\Summary\VisitLocationCrossDetailSummaryReportChartController`): "Cross-Location Visit Summary" report controller. Chart representation.
+        - 1479 (`Wl\Visit\Franchise\Location\Cross\Summary\VisitFranchiseLocationCrossDetailSummaryReportChartController`): Franchise "Cross-Location Visit Summary" report controller. Chart representation.
+        - 1476 (`Wl\Visit\Franchise\Location\Cross\Summary\VisitFranchiseeLocationCrossDetailSummaryReportChartController`): Franchisee "Cross-Location Visit Summary" report controller. Chart representation.
+        - 1872 (`Thoth\ProgressLog\Report\ProgressLogListReportPageController`): Progress Log (Transformation Log) report view controller. Table representation.
+        - 802 (`Thoth\Report\SalesReport\Transaction\TransactionAllReportPageController`): "All transactions" report page controller. Table representation.
+        - 1567 (`Thoth\Report\SalesReport\Closeout\SalesCloseoutReportPageController`): "Sales and Attendance Summary" report page controller.
+        - 1044 (`Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportPageController`): "Sales Summary By Location" report page controller. Table representation.
+        - 1563 (`Thoth\Report\SalesReport\Transaction\Batch\Summary\SummaryReportPageController`): "Batch Reconciliation Summary" report page controller. Table representation.
+        - 1036 (`Thoth\Report\SalesReport\Franchise\Location\Detail\PurchaseFranchiseLocationReportPageController`): "Sales Details By Location" report page controller, table representation.
+        - 1039 (`Thoth\Report\SalesReport\Franchise\Location\Summary\PurchaseFranchiseLocationSummaryReportPageController`): Controller for "Sales Summary By Location" corporate report page.
+        - 1855 (`Thoth\ProgressLog\Report\ProgressLogClientReportController`): Controller for "Transformation Log" report that includes all clients.
+        - 1792 (`Wl\Lead\Report\LeadManagementReportController`): Controller for "Lead Management Report".
+        - 754 (`Wl\Member\Report\MemberAllReportController`): "All clients" report controller. Table representation.
+        - 1288 (`Wl\Member\Report\MemberReportController`): "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
+          Table representation.
+        - 1359 (`Wl\Login\Account\LoginAccountReportController`): Controller for "Balance Due Report".
+        - 1741 (`Wl\Visit\Report\VisitLifetimeReportController`): Controls list for "Lifetime Value & Visit Milestones" report.
+        - 1555 (`Wl\Visit\Report\VisitBuySummaryReportController`): Controls list report for attendance.
+        - 1052 (`Wl\Appointment\Report\BookingFlowReportController`): "Appointment Booking Flow report" view controller. Table representation.
+        - 1669 (`Wl\Purchase\Tip\PurchaseTipReportController`): Controller for "Tips Earned Details".
+        - 1272 (`Wl\Collector\Report\DebtReportController`): Controller for [DebtReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
+        - 1298 (`Wl\Collector\Report\TransactionCollectorReportController`): Controller for [TransactionCollectorReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
+        - 1291 (`Wl\Collector\Report\TransactionReportController`): Controller for [TransactionReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
+        - 1762 (`Thoth\MarketingCampaigns\Report\CampaignList\CampaignListReportController`): "Marketing Campaigns" list report controller.
+        - 1778 (`Thoth\MarketingCampaigns\Report\CampaignDetail\CampaignDetailReportController`): "Marketing Campaigns" detail report controller.
+        - 752 (`Thoth\Report\SalesReport\Transaction\TransactionAllItemReportController`): Controller of report "All Transactions (item view)"
+        - 800 (`Thoth\Report\SalesReport\Transaction\TransactionAllPaymentReportController`): Controller of report "All Transactions (payment view)"
+        - 1351 (`Thoth\Report\SalesReport\Transaction\TransactionFailReportController`): "Failed Transactions" report controller. Table representation.
+        - 1322 (`Thoth\Report\SalesReport\Client\TransactionAllItemStaffClientReportController`): Controller of  client's 'Purchases' report.
+        - 1256 (`Thoth\Report\SalesReport\Client\TransactionAllPaymentClientReportController`): Controller for report about user's transactions.
+        - 1323 (`Thoth\Report\SalesReport\Client\TransactionAllPaymentStaffClientReportController`): Controller of client's report "Transactions"
+        - 899 (`Thoth\Report\SalesReport\Product\ProductCostItemReportController`): "Cost of Goods Sold" report controller.
+        - 920 (`Thoth\ReportCore\Generator\Example\ExampleReportController`): "Example report" view controller. Table representation.
+        - 2229 (`Thoth\ReportCore\QueryEngine\Report\ReportQueryReportController`): View controller for [ReportQueryReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract).
+
+          Renders a registry-stored SQL report in table mode.
+        - 1453 (`Wl\Lead\Franchise\Report\LeadByLocationReportController`): "Lead by location" report page controller. Table representation.
+        - 1698 (`Wl\Mail\History\Report\MailHistoryReportController`): "Email History" report controller.
+        - 1618 (`Wl\Login\Rank\Report\LoginRankReportController`): "Belts" report controller. Table representation.
+        - 1503 (`Wl\Login\Franchise\Detail\DetailListReportController`): Franchise client detail report controller.
+          Table representation.
+        - 1386 (`Wl\Login\Franchise\Coupon\LoginFranchiseCouponReportController`): "Gift cards by location report" view controller. Table representation.
+        - 1449 (`Wl\Login\Franchise\Status\StatusListReportController`): Controller for "Enterprise Status" report.
+        - 1752 (`Wl\Staff\Pay\Report\StaffPaySummaryReportController`): Controller for "Payroll Summary".
+        - 1745 (`Wl\Staff\Pay\Report\StaffPayDetailReportController`): Controller for "Payroll Details".
+        - 1629 (`Wl\Visit\Remain\Report\VisitRemainReportController`): "Visits Remaining" report page controller. Table representation.
+        - 1607 (`Wl\Visit\Revenue\Report\VisitRevenueDetailReportController`): Controller for "Revenue by Service" report.
+        - 1604 (`Wl\Visit\Revenue\Report\VisitRevenueServiceReportController`): Controller for "Service Revenue Summary" report.
+        - 1601 (`Wl\Visit\Revenue\Report\VisitRevenueServiceTypeReportController`): Controller for "Revenue by Service Type" report.
+        - 1665 (`Wl\Purchase\Tip\Sum\PurchaseTipSumReportController`): Controller for "Tips Earned Summary".
+        - 1704 (`Wl\Franchise\Fee\Report\FeeLocationReportController`): "Royalties And Fees By Location" corporate report page controller. Table representation.
+        - 2194 (`Wl\Sms\History\Report\SmsHistoryReportController`): "SMS History" report controller.
+        - 1521 (`Wl\Attendance\Report\Appointment\DetailReportController`): Controls detailed appointment analysis report in list format.
+        - 1520 (`Wl\Attendance\Report\Appointment\SummaryReportController`): Controls appointment summary report in list format.
+        - 1286 (`Thoth\Report\SalesReport\Transaction\Batch\BatchReportController`): Controller for "Batch Report".
+        - 1573 (`Thoth\Report\SalesReport\Transaction\Cash\SummaryReportController`): Controller for "Cash Reconciliation Summary" report.
+        - 1447 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportController`): "Enterprise Reports -> Memberships Details by Location" report controller. Table representation.
+        - 1499 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReportController`): Franchise "Memberships Summary by Location" report controller. Table representation.
+        - 1296 (`Thoth\Report\SalesReport\Client\SummaryReport\SummaryReportController`): Controller for "Sales per Client" report.
+        - 1907 (`Thoth\Report\SalesReport\Client\AccountReport\AccountHistoryReportController`): Controller for "Account Balance History" report.
+        - 2224 (`Thoth\Report\SalesReport\Client\ClientStatementHistoryReport\ClientStatementHistoryReportController`): Controller for "Statement History" report.
+        - 1397 (`Thoth\Report\SalesReport\PayMethod\SummaryReport\SummaryReportController`): Controller for "Sales Summary by Payment Method" report.
+        - 1269 (`Thoth\Report\SalesReport\Tag\Summary\ListReportController`): Controller for "Sales Summary by Revenue Category" report.
+        - 1263 (`Thoth\Report\SalesReport\Tag\Detail\ListRevenueReportController`): Controller for "Sales Details by Revenue Category" report.
+        - 1030 (`Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportController`): Controller for "Sales Summary By Location" franchisee report.
+        - 1265 (`Thoth\Report\SalesReport\PurchaseOption\Summary\SummaryReportController`): Controller for "Sales Summary by Purchase Options" report.
+        - 1253 (`Thoth\WlPay\Transaction\StripeCom\PayoutReconciliation\PayoutReconciliationReportController`): "Stripe Payout Reconciliation" report controller. Table representation.
+        - 1162 (`Wl\Business\Account\Revenue\Processing\RevenueProcessingReportController`): Controller for [RevenueProcessingReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract).
+        - 2238 (`Wl\Business\Franchise\Location\Asset\LocationAssetReportController`): "Location Assets" franchise report view controller. Table representation.
+        - 1454 (`Wl\Business\Franchise\Hours\ReportGeneration\BusinessHoursReportController`): "Business Hours" report controller. Table representation.
+        - 2217 (`Wl\Login\Promotion\GuestPass\Report\GuestPassHistoryReportController`): Controller for the "Guest Pass History" report shown on the client profile under Account.
+        - 1457 (`Wl\Visit\Location\Cross\Detail\VisitLocationCrossDetailReportController`): "Cross-Location Visit Details" report controller. Table representation.
+        - 1482 (`Wl\Visit\Location\Cross\Summary\VisitLocationCrossDetailSummaryReportController`): "Cross-Location Visit Summary" report controller. Table representation.
+        - 1728 (`Wl\Shop\Product\Inventory\Report\InventoryReportController`): "Inventory On Hand" report page controller. Table representation.
+        - 1691 (`Wl\Contact\Member\History\Report\ContactHistoryClientReportController`): "Contact History" report controller.
+        - 1667 (`Wl\Contact\Member\History\Report\ContactHistoryReportController`): "Contact History" report controller.
+        - 1558 (`Thoth\Report\SalesReport\Transaction\Batch\Summary\ApprovedReportController`): Controller for "Batch Reconciliation Summary" (Approved) report.
+        - 1559 (`Thoth\Report\SalesReport\Transaction\Batch\Summary\SettledReportController`): Controller for "Batch Reconciliation Summary" (Settled) report.
+        - 962 (`Thoth\Report\SalesReport\Franchise\Location\Detail\PurchaseFranchiseLocationReportController`): Controller for "Sales Details by Location" corporate report. Table view.
+        - 1023 (`Thoth\Report\SalesReport\Franchise\Location\Summary\PurchaseFranchiseLocationSummaryReportController`): Main controller for "Sales Summary By Location" report.
+        - 1276 (`Thoth\Report\SalesReport\Franchise\Sale\Compare\CompareListReportController`): Controller for "YOY Sales Comparison" report.
+        - 1579 (`Thoth\Report\SalesReport\Closeout\Report\PurchaseOption\UsageReportController`): Controller for "Purchase Option Usage Summary" report.
+        - 1473 (`Wl\Visit\Franchise\Location\Cross\Detail\VisitFranchiseLocationCrossDetailReportController`): Franchise "Cross-Location Visit Details" report controller. Table representation.
+        - 1471 (`Wl\Visit\Franchise\Location\Cross\Detail\VisitFranchiseeLocationCrossDetailReportController`): Franchisee "Cross-Location Visit Details" report controller. Table representation.
+        - 1478 (`Wl\Visit\Franchise\Location\Cross\Summary\VisitFranchiseLocationCrossDetailSummaryReportController`): Franchise "Cross-Location Visit Summary" report controller. Table representation.
+        - 1475 (`Wl\Visit\Franchise\Location\Cross\Summary\VisitFranchiseeLocationCrossDetailSummaryReportController`): Franchisee "Cross-Location Visit Summary" report controller. Table representation.
+        - 751 (`Wl\Member\Report\MemberAllReportTableController`): "All clients" report controller. Table representation.
+        - 1699 (`Wl\Mail\History\Report\MailHistoryReportTableController`): "Email History" report controller. Table representation.
+        - 2195 (`Wl\Sms\History\Report\SmsHistoryReportTableController`): "SMS History" report controller. Table representation.
+        - 1693 (`Wl\Contact\Member\History\Report\ContactHistoryClientReportTableController`): "Contact History" report controller. Table representation.
+        - 1690 (`Wl\Contact\Member\History\Report\ContactHistoryReportTableController`): "Contact History" report controller. Table representation.
+        - 841 (`Wl\Member\Report\MemberAllReportYoyController`): "All clients" report controller. Year-over-year chart representation.
+        - 1305 (`Wl\Member\Report\MemberReportYoyController`): "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
+          Year-over-year chart representation.
+        - 845 (`Thoth\Report\SalesReport\Transaction\TransactionAllReportPageYoyController`): "All transactions" report page controller. Year-over-year representation.
+        - 1462 (`Wl\Lead\Franchise\Report\LeadByLocationReportYoyController`): "Leads by location" report page controller. Year-over-year representation.
+        - 1512 (`Wl\Login\Franchise\Detail\DetailListReportYoyController`): "Enterprise Client Details" report controller.
+          Year-over-year chart representation.
+        - 1496 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportYoyController`): "Enterprise Reports -> Memberships Details by Location" report controller. Year-over-year representation.
+        - 1048 (`Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportPageYoyController`): Sales Summary By Location report page, year-over-year chart representation.
+      enum:
+        - 1848
+        - 753
+        - 1304
+        - 803
+        - 925
+        - 1452
+        - 1511
+        - 1527
+        - 1495
+        - 1270
+        - 1047
+        - 1481
+        - 1479
+        - 1476
+        - 1872
+        - 802
+        - 1567
+        - 1044
+        - 1563
+        - 1036
+        - 1039
+        - 1855
+        - 1792
+        - 754
+        - 1288
+        - 1359
+        - 1741
+        - 1555
+        - 1052
+        - 1669
+        - 1272
+        - 1298
+        - 1291
+        - 1762
+        - 1778
+        - 752
+        - 800
+        - 1351
+        - 1322
+        - 1256
+        - 1323
+        - 899
+        - 920
+        - 2229
+        - 1453
+        - 1698
+        - 1618
+        - 1503
+        - 1386
+        - 1449
+        - 1752
+        - 1745
+        - 1629
+        - 1607
+        - 1604
+        - 1601
+        - 1665
+        - 1704
+        - 2194
+        - 1521
+        - 1520
+        - 1286
+        - 1573
+        - 1447
+        - 1499
+        - 1296
+        - 1907
+        - 2224
+        - 1397
+        - 1269
+        - 1263
+        - 1030
+        - 1265
+        - 1253
+        - 1162
+        - 2238
+        - 1454
+        - 2217
+        - 1457
+        - 1482
+        - 1728
+        - 1691
+        - 1667
+        - 1558
+        - 1559
+        - 962
+        - 1023
+        - 1276
+        - 1579
+        - 1473
+        - 1471
+        - 1478
+        - 1475
+        - 751
+        - 1699
+        - 2195
+        - 1693
+        - 1690
+        - 841
+        - 1305
+        - 845
+        - 1462
+        - 1512
+        - 1496
+        - 1048
+      x-enum-varnames:
+        - Thoth\ProgressLog\Report\ProgressLogListReportPageChartController
+        - Wl\Member\Report\MemberAllReportChartController
+        - Wl\Member\Report\MemberReportChartController
+        - Thoth\Report\SalesReport\Transaction\TransactionAllReportPageChartController
+        - Thoth\ReportCore\Generator\Example\ExampleReportChartController
+        - Wl\Lead\Franchise\Report\LeadByLocationReportChartController
+        - Wl\Login\Franchise\Detail\DetailListReportChartController
+        - Wl\Attendance\Report\Appointment\DetailReportChartController
+        - Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportChartController
+        - Thoth\Report\SalesReport\Tag\Summary\ListReportChartController
+        - Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportPageChartController
+        - Wl\Visit\Location\Cross\Summary\VisitLocationCrossDetailSummaryReportChartController
+        - Wl\Visit\Franchise\Location\Cross\Summary\VisitFranchiseLocationCrossDetailSummaryReportChartController
+        - Wl\Visit\Franchise\Location\Cross\Summary\VisitFranchiseeLocationCrossDetailSummaryReportChartController
+        - Thoth\ProgressLog\Report\ProgressLogListReportPageController
+        - Thoth\Report\SalesReport\Transaction\TransactionAllReportPageController
+        - Thoth\Report\SalesReport\Closeout\SalesCloseoutReportPageController
+        - Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportPageController
+        - Thoth\Report\SalesReport\Transaction\Batch\Summary\SummaryReportPageController
+        - Thoth\Report\SalesReport\Franchise\Location\Detail\PurchaseFranchiseLocationReportPageController
+        - Thoth\Report\SalesReport\Franchise\Location\Summary\PurchaseFranchiseLocationSummaryReportPageController
+        - Thoth\ProgressLog\Report\ProgressLogClientReportController
+        - Wl\Lead\Report\LeadManagementReportController
+        - Wl\Member\Report\MemberAllReportController
+        - Wl\Member\Report\MemberReportController
+        - Wl\Login\Account\LoginAccountReportController
+        - Wl\Visit\Report\VisitLifetimeReportController
+        - Wl\Visit\Report\VisitBuySummaryReportController
+        - Wl\Appointment\Report\BookingFlowReportController
+        - Wl\Purchase\Tip\PurchaseTipReportController
+        - Wl\Collector\Report\DebtReportController
+        - Wl\Collector\Report\TransactionCollectorReportController
+        - Wl\Collector\Report\TransactionReportController
+        - Thoth\MarketingCampaigns\Report\CampaignList\CampaignListReportController
+        - Thoth\MarketingCampaigns\Report\CampaignDetail\CampaignDetailReportController
+        - Thoth\Report\SalesReport\Transaction\TransactionAllItemReportController
+        - Thoth\Report\SalesReport\Transaction\TransactionAllPaymentReportController
+        - Thoth\Report\SalesReport\Transaction\TransactionFailReportController
+        - Thoth\Report\SalesReport\Client\TransactionAllItemStaffClientReportController
+        - Thoth\Report\SalesReport\Client\TransactionAllPaymentClientReportController
+        - Thoth\Report\SalesReport\Client\TransactionAllPaymentStaffClientReportController
+        - Thoth\Report\SalesReport\Product\ProductCostItemReportController
+        - Thoth\ReportCore\Generator\Example\ExampleReportController
+        - Thoth\ReportCore\QueryEngine\Report\ReportQueryReportController
+        - Wl\Lead\Franchise\Report\LeadByLocationReportController
+        - Wl\Mail\History\Report\MailHistoryReportController
+        - Wl\Login\Rank\Report\LoginRankReportController
+        - Wl\Login\Franchise\Detail\DetailListReportController
+        - Wl\Login\Franchise\Coupon\LoginFranchiseCouponReportController
+        - Wl\Login\Franchise\Status\StatusListReportController
+        - Wl\Staff\Pay\Report\StaffPaySummaryReportController
+        - Wl\Staff\Pay\Report\StaffPayDetailReportController
+        - Wl\Visit\Remain\Report\VisitRemainReportController
+        - Wl\Visit\Revenue\Report\VisitRevenueDetailReportController
+        - Wl\Visit\Revenue\Report\VisitRevenueServiceReportController
+        - Wl\Visit\Revenue\Report\VisitRevenueServiceTypeReportController
+        - Wl\Purchase\Tip\Sum\PurchaseTipSumReportController
+        - Wl\Franchise\Fee\Report\FeeLocationReportController
+        - Wl\Sms\History\Report\SmsHistoryReportController
+        - Wl\Attendance\Report\Appointment\DetailReportController
+        - Wl\Attendance\Report\Appointment\SummaryReportController
+        - Thoth\Report\SalesReport\Transaction\Batch\BatchReportController
+        - Thoth\Report\SalesReport\Transaction\Cash\SummaryReportController
+        - Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportController
+        - Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReportController
+        - Thoth\Report\SalesReport\Client\SummaryReport\SummaryReportController
+        - Thoth\Report\SalesReport\Client\AccountReport\AccountHistoryReportController
+        - Thoth\Report\SalesReport\Client\ClientStatementHistoryReport\ClientStatementHistoryReportController
+        - Thoth\Report\SalesReport\PayMethod\SummaryReport\SummaryReportController
+        - Thoth\Report\SalesReport\Tag\Summary\ListReportController
+        - Thoth\Report\SalesReport\Tag\Detail\ListRevenueReportController
+        - Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportController
+        - Thoth\Report\SalesReport\PurchaseOption\Summary\SummaryReportController
+        - Thoth\WlPay\Transaction\StripeCom\PayoutReconciliation\PayoutReconciliationReportController
+        - Wl\Business\Account\Revenue\Processing\RevenueProcessingReportController
+        - Wl\Business\Franchise\Location\Asset\LocationAssetReportController
+        - Wl\Business\Franchise\Hours\ReportGeneration\BusinessHoursReportController
+        - Wl\Login\Promotion\GuestPass\Report\GuestPassHistoryReportController
+        - Wl\Visit\Location\Cross\Detail\VisitLocationCrossDetailReportController
+        - Wl\Visit\Location\Cross\Summary\VisitLocationCrossDetailSummaryReportController
+        - Wl\Shop\Product\Inventory\Report\InventoryReportController
+        - Wl\Contact\Member\History\Report\ContactHistoryClientReportController
+        - Wl\Contact\Member\History\Report\ContactHistoryReportController
+        - Thoth\Report\SalesReport\Transaction\Batch\Summary\ApprovedReportController
+        - Thoth\Report\SalesReport\Transaction\Batch\Summary\SettledReportController
+        - Thoth\Report\SalesReport\Franchise\Location\Detail\PurchaseFranchiseLocationReportController
+        - Thoth\Report\SalesReport\Franchise\Location\Summary\PurchaseFranchiseLocationSummaryReportController
+        - Thoth\Report\SalesReport\Franchise\Sale\Compare\CompareListReportController
+        - Thoth\Report\SalesReport\Closeout\Report\PurchaseOption\UsageReportController
+        - Wl\Visit\Franchise\Location\Cross\Detail\VisitFranchiseLocationCrossDetailReportController
+        - Wl\Visit\Franchise\Location\Cross\Detail\VisitFranchiseeLocationCrossDetailReportController
+        - Wl\Visit\Franchise\Location\Cross\Summary\VisitFranchiseLocationCrossDetailSummaryReportController
+        - Wl\Visit\Franchise\Location\Cross\Summary\VisitFranchiseeLocationCrossDetailSummaryReportController
+        - Wl\Member\Report\MemberAllReportTableController
+        - Wl\Mail\History\Report\MailHistoryReportTableController
+        - Wl\Sms\History\Report\SmsHistoryReportTableController
+        - Wl\Contact\Member\History\Report\ContactHistoryClientReportTableController
+        - Wl\Contact\Member\History\Report\ContactHistoryReportTableController
+        - Wl\Member\Report\MemberAllReportYoyController
+        - Wl\Member\Report\MemberReportYoyController
+        - Thoth\Report\SalesReport\Transaction\TransactionAllReportPageYoyController
+        - Wl\Lead\Franchise\Report\LeadByLocationReportYoyController
+        - Wl\Login\Franchise\Detail\DetailListReportYoyController
+        - Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportYoyController
+        - Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportPageYoyController
+      x-enum-descriptions:
+        - 'Progress Log (Transformation Log) report view controller. Chart representation.'
+        - '"All clients" report controller. Chart representation.'
+        - |-
+          "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
+          Chart representation.
+        - '"All transactions" report page controller. Chart representation.'
+        - '"Example report" view controller. Chart representation.'
+        - '"Lead by location" report page controller. Chart representation.'
+        - |-
+          "Enterprise Client Details" report controller.
+          Chart representation.
+        - 'Controls detailed appointment analysis report in chart format.'
+        - '"Enterprise Reports -> Memberships Details by Location" report controller. Chart representation.'
+        - 'Controller for "Sales Summary by Revenue Category" report. Chart view.'
+        - 'Sales Summary By Location report page, chart representation.'
+        - '"Cross-Location Visit Summary" report controller. Chart representation.'
+        - 'Franchise "Cross-Location Visit Summary" report controller. Chart representation.'
+        - 'Franchisee "Cross-Location Visit Summary" report controller. Chart representation.'
+        - 'Progress Log (Transformation Log) report view controller. Table representation.'
+        - '"All transactions" report page controller. Table representation.'
+        - '"Sales and Attendance Summary" report page controller.'
+        - '"Sales Summary By Location" report page controller. Table representation.'
+        - '"Batch Reconciliation Summary" report page controller. Table representation.'
+        - '"Sales Details By Location" report page controller, table representation.'
+        - 'Controller for "Sales Summary By Location" corporate report page.'
+        - 'Controller for "Transformation Log" report that includes all clients.'
+        - 'Controller for "Lead Management Report".'
+        - '"All clients" report controller. Table representation.'
+        - |-
+          "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
+          Table representation.
+        - 'Controller for "Balance Due Report".'
+        - 'Controls list for "Lifetime Value & Visit Milestones" report.'
+        - 'Controls list report for attendance.'
+        - '"Appointment Booking Flow report" view controller. Table representation.'
+        - 'Controller for "Tips Earned Details".'
+        - 'Controller for {@link \Wl\Collector\Report\DebtReport} report.'
+        - 'Controller for {@link \Wl\Collector\Report\TransactionCollectorReport} report.'
+        - 'Controller for {@link \Wl\Collector\Report\TransactionReport} report.'
+        - '"Marketing Campaigns" list report controller.'
+        - '"Marketing Campaigns" detail report controller.'
+        - 'Controller of report "All Transactions (item view)"'
+        - 'Controller of report "All Transactions (payment view)"'
+        - '"Failed Transactions" report controller. Table representation.'
+        - "Controller of  client's 'Purchases' report."
+        - "Controller for report about user's transactions."
+        - 'Controller of client''s report "Transactions"'
+        - '"Cost of Goods Sold" report controller.'
+        - '"Example report" view controller. Table representation.'
+        - |-
+          View controller for {@link \Thoth\ReportCore\QueryEngine\Report\ReportQueryReport}.
+
+          Renders a registry-stored SQL report in table mode.
+        - '"Lead by location" report page controller. Table representation.'
+        - '"Email History" report controller.'
+        - '"Belts" report controller. Table representation.'
+        - |-
+          Franchise client detail report controller.
+          Table representation.
+        - '"Gift cards by location report" view controller. Table representation.'
+        - 'Controller for "Enterprise Status" report.'
+        - 'Controller for "Payroll Summary".'
+        - 'Controller for "Payroll Details".'
+        - '"Visits Remaining" report page controller. Table representation.'
+        - 'Controller for "Revenue by Service" report.'
+        - 'Controller for "Service Revenue Summary" report.'
+        - 'Controller for "Revenue by Service Type" report.'
+        - 'Controller for "Tips Earned Summary".'
+        - '"Royalties And Fees By Location" corporate report page controller. Table representation.'
+        - '"SMS History" report controller.'
+        - 'Controls detailed appointment analysis report in list format.'
+        - 'Controls appointment summary report in list format.'
+        - 'Controller for "Batch Report".'
+        - 'Controller for "Cash Reconciliation Summary" report.'
+        - '"Enterprise Reports -> Memberships Details by Location" report controller. Table representation.'
+        - 'Franchise "Memberships Summary by Location" report controller. Table representation.'
+        - 'Controller for "Sales per Client" report.'
+        - 'Controller for "Account Balance History" report.'
+        - 'Controller for "Statement History" report.'
+        - 'Controller for "Sales Summary by Payment Method" report.'
+        - 'Controller for "Sales Summary by Revenue Category" report.'
+        - 'Controller for "Sales Details by Revenue Category" report.'
+        - 'Controller for "Sales Summary By Location" franchisee report.'
+        - 'Controller for "Sales Summary by Purchase Options" report.'
+        - '"Stripe Payout Reconciliation" report controller. Table representation.'
+        - 'Controller for {@link \Wl\Business\Account\Revenue\Processing\RevenueProcessingReport}.'
+        - '"Location Assets" franchise report view controller. Table representation.'
+        - '"Business Hours" report controller. Table representation.'
+        - 'Controller for the "Guest Pass History" report shown on the client profile under Account.'
+        - '"Cross-Location Visit Details" report controller. Table representation.'
+        - '"Cross-Location Visit Summary" report controller. Table representation.'
+        - '"Inventory On Hand" report page controller. Table representation.'
+        - '"Contact History" report controller.'
+        - '"Contact History" report controller.'
+        - 'Controller for "Batch Reconciliation Summary" (Approved) report.'
+        - 'Controller for "Batch Reconciliation Summary" (Settled) report.'
+        - 'Controller for "Sales Details by Location" corporate report. Table view.'
+        - 'Main controller for "Sales Summary By Location" report.'
+        - 'Controller for "YOY Sales Comparison" report.'
+        - 'Controller for "Purchase Option Usage Summary" report.'
+        - 'Franchise "Cross-Location Visit Details" report controller. Table representation.'
+        - 'Franchisee "Cross-Location Visit Details" report controller. Table representation.'
+        - 'Franchise "Cross-Location Visit Summary" report controller. Table representation.'
+        - 'Franchisee "Cross-Location Visit Summary" report controller. Table representation.'
+        - '"All clients" report controller. Table representation.'
+        - '"Email History" report controller. Table representation.'
+        - '"SMS History" report controller. Table representation.'
+        - '"Contact History" report controller. Table representation.'
+        - '"Contact History" report controller. Table representation.'
+        - '"All clients" report controller. Year-over-year chart representation.'
+        - |-
+          "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
+          Year-over-year chart representation.
+        - '"All transactions" report page controller. Year-over-year representation.'
+        - '"Leads by location" report page controller. Year-over-year representation.'
+        - |-
+          "Enterprise Client Details" report controller.
+          Year-over-year chart representation.
+        - '"Enterprise Reports -> Memberships Details by Location" report controller. Year-over-year representation.'
+        - 'Sales Summary By Location report page, year-over-year chart representation.'
+    RsReportCategorySid:
+      type: integer
+      format: int32
+      description: |-
+        A list of report categories.
+
+        Last ID: 9.
+
+        Values:
+        - 2 (`ATTENDANCE`): Category reports on attendance.
+        - 1 (`CLIENT`): Category reports on clients.
+        - 9 (`DASHBOARD`): Category on dashboards.
+        - 6 (`FRANCHISE`): Corporate reports.
+
+          The one business gets summary information from the all business which are related to it.
+
+          For example, the franchisor gets information from the all franchisees.
+        - 7 (`INSURANCE`): Insurance and reimbursements reports.
+        - 5 (`MAIL`): Category reports on mail.
+        - 8 (`METRIC`): Metrics category.
+        - 4 (`SALE`): Category reports on sales.
+        - 3 (`STAFF`): Category reports on staff.
+      enum:
+        - 2
+        - 1
+        - 9
+        - 6
+        - 7
+        - 5
+        - 8
+        - 4
+        - 3
+      x-enum-varnames:
+        - ATTENDANCE
+        - CLIENT
+        - DASHBOARD
+        - FRANCHISE
+        - INSURANCE
+        - MAIL
+        - METRIC
+        - SALE
+        - STAFF
+      x-enum-descriptions:
+        - 'Category reports on attendance.'
+        - 'Category reports on clients.'
+        - 'Category on dashboards.'
+        - |-
+          Corporate reports.
+
+          The one business gets summary information from the all business which are related to it.
+
+          For example, the franchisor gets information from the all franchisees.
+        - 'Insurance and reimbursements reports.'
+        - 'Category reports on mail.'
+        - 'Metrics category.'
+        - 'Category reports on sales.'
+        - 'Category reports on staff.'
+    Thoth.ReportCore.Generator.ReportPageAbstract:
+      type: integer
+      format: int32
+      description: |-
+        Base class for all report pages in the system.
+
+        Values:
+        - 1873 (`Thoth\ProgressLog\Report\ProgressLogListReportPage`): "Progress Log" report page.
+
+          It is defined as a page rather than single report due to chart representation having multiple widgets depending on
+          business configuration.
+        - 801 (`Thoth\Report\SalesReport\Transaction\TransactionAllReportPage`): "All transactions" report page.
+        - 1566 (`Thoth\Report\SalesReport\Closeout\SalesCloseoutReportPage`): "Sales and Attendance Summary" report page.
+        - 1043 (`Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportPage`): "Sales Summary By Location" franchisee report page.
+        - 1562 (`Thoth\Report\SalesReport\Transaction\Batch\Summary\SummaryReportPage`): "Batch Reconciliation Summary" report page.
+        - 1035 (`Thoth\Report\SalesReport\Franchise\Location\Detail\PurchaseFranchiseLocationReportPage`): "Sales Details by Location" report page.
+        - 1040 (`Thoth\Report\SalesReport\Franchise\Location\Summary\PurchaseFranchiseLocationSummaryReportPage`): "Sales Summary By Location" report page.
+      enum:
+        - 1873
+        - 801
+        - 1566
+        - 1043
+        - 1562
+        - 1035
+        - 1040
+      x-enum-varnames:
+        - Thoth\ProgressLog\Report\ProgressLogListReportPage
+        - Thoth\Report\SalesReport\Transaction\TransactionAllReportPage
+        - Thoth\Report\SalesReport\Closeout\SalesCloseoutReportPage
+        - Thoth\Report\SalesReport\Location\Summary\PurchaseLocationSummaryReportPage
+        - Thoth\Report\SalesReport\Transaction\Batch\Summary\SummaryReportPage
+        - Thoth\Report\SalesReport\Franchise\Location\Detail\PurchaseFranchiseLocationReportPage
+        - Thoth\Report\SalesReport\Franchise\Location\Summary\PurchaseFranchiseLocationSummaryReportPage
+      x-enum-descriptions:
+        - |-
+          "Progress Log" report page.
+
+          It is defined as a page rather than single report due to chart representation having multiple widgets depending on
+          business configuration.
+        - '"All transactions" report page.'
+        - '"Sales and Attendance Summary" report page.'
+        - '"Sales Summary By Location" franchisee report page.'
+        - '"Batch Reconciliation Summary" report page.'
+        - '"Sales Details by Location" report page.'
+        - '"Sales Summary By Location" report page.'
     Wl.Business.Policy.BlameSid:
       type: integer
       format: int32
