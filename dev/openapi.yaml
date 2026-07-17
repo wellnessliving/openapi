@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260717124617
+  version: 1.1.20260717144434
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68118,7 +68118,7 @@ paths:
                           $ref: '#/components/schemas/RsPurchaseItemSid'
                           description: |-
                             Purchase item ID.
-                            A [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constant for store checkout or a [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constant for booking.
+                            A [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constant for store checkout.
                         id_service:
                           $ref: '#/components/schemas/Wl.Service.ServiceSid'
                           description: |-
