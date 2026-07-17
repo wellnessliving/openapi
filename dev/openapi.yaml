@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260717071437
+  version: 1.1.20260717084756
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -71635,7 +71635,7 @@ paths:
                         is_class_view:
                           type: boolean
                           description: |-
-                            `true` if this class session is visible only through the "View other staff schedules"
+                            `true` if this class or event session is visible only through the "View other staff schedules"
                             permission and must be shown read-only (no attendance roster, no booked client identities,
                             and no edit, cancel, reschedule, or booking actions); `false` otherwise.
                         is_pay:
@@ -106796,7 +106796,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 246.
+        Last Used ID: 247.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -106860,6 +106860,8 @@ components:
         - 239 (`ENROLLMENT_EDIT_SESSIONS`): Allows overriding certain event fields (capacity, price, etc.) when schedule is added.
         - 53 (`ENROLLMENT_FOREIGN`): Change/View all classes.
         - 153 (`ENROLLMENT_LOCK_SEARCH`): Lock search bar on enrollment attendance list.
+        - 247 (`ENROLLMENT_SCHEDULE_VIEW`): Allows a staff member to see other staff members' event sessions on the schedule in read-only mode
+           while the Events scope is set to only their own schedules.
         - 207 (`ENTERPRISE_CLOUD_FEES`): Manage Enterprise Cloud Fees.
         - 190 (`FITBUILDER_LEADERBOARD`): Allows to manage leaderboard in the `FitBuilder` addon.
         - 189 (`FITBUILDER_SUBSCRIPTION`): Allows to subscribe to `FitBuilder` subscription addon.
@@ -107093,6 +107095,7 @@ components:
         - 239
         - 53
         - 153
+        - 247
         - 207
         - 190
         - 189
@@ -107323,6 +107326,7 @@ components:
         - ENROLLMENT_EDIT_SESSIONS
         - ENROLLMENT_FOREIGN
         - ENROLLMENT_LOCK_SEARCH
+        - ENROLLMENT_SCHEDULE_VIEW
         - ENTERPRISE_CLOUD_FEES
         - FITBUILDER_LEADERBOARD
         - FITBUILDER_SUBSCRIPTION
@@ -107555,6 +107559,9 @@ components:
         - 'Allows overriding certain event fields (capacity, price, etc.) when schedule is added.'
         - 'Change/View all classes.'
         - 'Lock search bar on enrollment attendance list.'
+        - |-
+          Allows a staff member to see other staff members' event sessions on the schedule in read-only mode
+           while the Events scope is set to only their own schedules.
         - 'Manage Enterprise Cloud Fees.'
         - 'Allows to manage leaderboard in the `FitBuilder` addon.'
         - 'Allows to subscribe to `FitBuilder` subscription addon.'
