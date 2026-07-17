@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260717104501
+  version: 1.1.20260717121718
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -22577,9 +22577,553 @@ paths:
                         - id_pay_method
                         - k_pay_method
                   a_mobile_config:
-                    type:
-                      - array
-                      - 'null'
+                    oneOf:
+                      -
+                        type: object
+                        title: Nuvei
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Present only when at least one location has an active merchant configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: |-
+                                  Terminal lists grouped by connection type.
+                                  Both lists contain identical entries - the same terminal appears in both.
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet terminals, plus one synthetic `MagTek` USB entry appended last when
+                                      [NuveiTerminalTypeSid::supportsMagTekUsb()](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) returns `true`.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants, or\n[TerminalTypeSid::MAGTEK_USB](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) for the synthetic `MagTek` USB entry." }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Always `null`. Present only in the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: StripeCom
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Empty array if no terminals are configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: 'Terminal lists grouped by connection type:'
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid', description: 'Terminal model. One of [StripeReaderModelSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: 'Ethernet terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid', description: 'Terminal model. One of [StripeReaderModelSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid', description: 'Terminal type. One of [StripeTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              s_location_id:
+                                type: string
+                                description: 'Stripe location ID assigned by the gateway.'
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - s_location_id
+                              - text_location_name
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - a_terminal_location
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: DirectConnect
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Empty array if no terminals are configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: 'Terminal lists grouped by connection type:'
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid', description: 'Terminal model. One of [DirectConnectReaderModelSid](#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet and USB terminals. Always includes one synthetic `MagTek` USB entry appended last.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid', description: "Terminal model. One of [DirectConnectReaderModelSid](#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid', description: 'Terminal type. One of [TerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) constants.' }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Terminal serial number. `null` for the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          id_device:
+                            $ref: '#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid'
+                            description: 'Device type identifier. One of [CordovaCcrDeviceSid](#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid) constants.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - a_terminal_location
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - id_device
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: Nmi
+                        properties:
+                          id_device:
+                            $ref: '#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid'
+                            description: 'Device type identifier. One of [CordovaCcrDeviceSid](#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid) constants.'
+                          s_key:
+                            type: string
+                            description: 'NMI SDK key for the card reader plugin.'
+                        required:
+                          - id_device
+                          - s_key
+                      -
+                        type: object
+                        title: Nuvei
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Present only when at least one location has an active merchant configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: |-
+                                  Terminal lists grouped by connection type.
+                                  Both lists contain identical entries - the same terminal appears in both.
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet terminals, plus one synthetic `MagTek` USB entry appended last when
+                                      [NuveiTerminalTypeSid::supportsMagTekUsb()](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) returns `true`.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants, or\n[TerminalTypeSid::MAGTEK_USB](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) for the synthetic `MagTek` USB entry." }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Always `null`. Present only in the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: StripeCom
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Empty array if no terminals are configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: 'Terminal lists grouped by connection type:'
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid', description: 'Terminal model. One of [StripeReaderModelSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: 'Ethernet terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid', description: 'Terminal model. One of [StripeReaderModelSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid', description: 'Terminal type. One of [StripeTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              s_location_id:
+                                type: string
+                                description: 'Stripe location ID assigned by the gateway.'
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - s_location_id
+                              - text_location_name
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - a_terminal_location
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: DirectConnect
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Empty array if no terminals are configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: 'Terminal lists grouped by connection type:'
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid', description: 'Terminal model. One of [DirectConnectReaderModelSid](#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet and USB terminals. Always includes one synthetic `MagTek` USB entry appended last.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid', description: "Terminal model. One of [DirectConnectReaderModelSid](#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid', description: 'Terminal type. One of [TerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) constants.' }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Terminal serial number. `null` for the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          id_device:
+                            $ref: '#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid'
+                            description: 'Device type identifier. One of [CordovaCcrDeviceSid](#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid) constants.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - a_terminal_location
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - id_device
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: Nmi
+                        properties:
+                          id_device:
+                            $ref: '#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid'
+                            description: 'Device type identifier. One of [CordovaCcrDeviceSid](#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid) constants.'
+                          s_key:
+                            type: string
+                            description: 'NMI SDK key for the card reader plugin.'
+                        required:
+                          - id_device
+                          - s_key
+                      -
+                        type: 'null'
                     description: |-
                       The configuration array that's sent to mobile card reader plugin.
                       The structure of this array depends on the payment processor being used.
@@ -22601,20 +23145,38 @@ paths:
                       properties:
                         a_public_keys:
                           type:
-                            - array
+                            - object
                             - 'null'
                           description: |-
                             Public keys configured for this payment processor.
 
                             `null` if this payment processor does not support public keys.
+                          properties:
+                            s_checkout:
+                              type:
+                                - string
+                                - 'null'
+                              description: 'Checkout SDK public key. `null` if 3DS is disabled for this merchant.'
+                          required:
+                            - s_checkout
                         a_public_info:
                           type:
-                            - array
+                            - object
                             - 'null'
                           description: |-
                             Public info configured for this payment processor.
 
                             `null` if this payment processor does not support public info.
+                          properties:
+                            s_merchant_site:
+                              type: string
+                              description: 'Merchant site identifier assigned by Nuvei.'
+                            s_nuvei_id:
+                              type: string
+                              description: 'Nuvei merchant identifier.'
+                          required:
+                            - s_merchant_site
+                            - s_nuvei_id
                         hide_save_source:
                           type: boolean
                           description: 'Whether `save payment method` option should be hidden. `true` if hidden, `false` - otherwise.'
@@ -22834,9 +23396,553 @@ paths:
                         - id_pay_method
                         - k_pay_method
                   a_mobile_config:
-                    type:
-                      - array
-                      - 'null'
+                    oneOf:
+                      -
+                        type: object
+                        title: Nuvei
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Present only when at least one location has an active merchant configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: |-
+                                  Terminal lists grouped by connection type.
+                                  Both lists contain identical entries - the same terminal appears in both.
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet terminals, plus one synthetic `MagTek` USB entry appended last when
+                                      [NuveiTerminalTypeSid::supportsMagTekUsb()](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) returns `true`.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants, or\n[TerminalTypeSid::MAGTEK_USB](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) for the synthetic `MagTek` USB entry." }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Always `null`. Present only in the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: StripeCom
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Empty array if no terminals are configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: 'Terminal lists grouped by connection type:'
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid', description: 'Terminal model. One of [StripeReaderModelSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: 'Ethernet terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid', description: 'Terminal model. One of [StripeReaderModelSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid', description: 'Terminal type. One of [StripeTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              s_location_id:
+                                type: string
+                                description: 'Stripe location ID assigned by the gateway.'
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - s_location_id
+                              - text_location_name
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - a_terminal_location
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: DirectConnect
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Empty array if no terminals are configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: 'Terminal lists grouped by connection type:'
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid', description: 'Terminal model. One of [DirectConnectReaderModelSid](#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet and USB terminals. Always includes one synthetic `MagTek` USB entry appended last.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid', description: "Terminal model. One of [DirectConnectReaderModelSid](#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid', description: 'Terminal type. One of [TerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) constants.' }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Terminal serial number. `null` for the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          id_device:
+                            $ref: '#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid'
+                            description: 'Device type identifier. One of [CordovaCcrDeviceSid](#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid) constants.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - a_terminal_location
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - id_device
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: Nmi
+                        properties:
+                          id_device:
+                            $ref: '#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid'
+                            description: 'Device type identifier. One of [CordovaCcrDeviceSid](#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid) constants.'
+                          s_key:
+                            type: string
+                            description: 'NMI SDK key for the card reader plugin.'
+                        required:
+                          - id_device
+                          - s_key
+                      -
+                        type: object
+                        title: Nuvei
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Present only when at least one location has an active merchant configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: |-
+                                  Terminal lists grouped by connection type.
+                                  Both lists contain identical entries - the same terminal appears in both.
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet terminals, plus one synthetic `MagTek` USB entry appended last when
+                                      [NuveiTerminalTypeSid::supportsMagTekUsb()](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) returns `true`.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants, or\n[TerminalTypeSid::MAGTEK_USB](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) for the synthetic `MagTek` USB entry." }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Always `null`. Present only in the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: StripeCom
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Empty array if no terminals are configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: 'Terminal lists grouped by connection type:'
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid', description: 'Terminal model. One of [StripeReaderModelSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: 'Ethernet terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid', description: 'Terminal model. One of [StripeReaderModelSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid', description: 'Terminal type. One of [StripeTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              s_location_id:
+                                type: string
+                                description: 'Stripe location ID assigned by the gateway.'
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - s_location_id
+                              - text_location_name
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - a_terminal_location
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: DirectConnect
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Empty array if no terminals are configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: 'Terminal lists grouped by connection type:'
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid', description: 'Terminal model. One of [DirectConnectReaderModelSid](#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      s_serial_number: { type: string, description: 'Terminal serial number.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet and USB terminals. Always includes one synthetic `MagTek` USB entry appended last.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid', description: "Terminal model. One of [DirectConnectReaderModelSid](#/components/schemas/Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid', description: 'Terminal type. One of [TerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) constants.' }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Terminal serial number. `null` for the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          id_device:
+                            $ref: '#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid'
+                            description: 'Device type identifier. One of [CordovaCcrDeviceSid](#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid) constants.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - a_terminal_location
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - id_device
+                          - is_support_magtek
+                      -
+                        type: object
+                        title: Nmi
+                        properties:
+                          id_device:
+                            $ref: '#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid'
+                            description: 'Device type identifier. One of [CordovaCcrDeviceSid](#/components/schemas/Thoth.WlPay.Cordova.CordovaCcrDeviceSid) constants.'
+                          s_key:
+                            type: string
+                            description: 'NMI SDK key for the card reader plugin.'
+                        required:
+                          - id_device
+                          - s_key
+                      -
+                        type: 'null'
                     description: |-
                       The configuration array that's sent to mobile card reader plugin.
                       The structure of this array depends on the payment processor being used.
@@ -22858,20 +23964,38 @@ paths:
                       properties:
                         a_public_keys:
                           type:
-                            - array
+                            - object
                             - 'null'
                           description: |-
                             Public keys configured for this payment processor.
 
                             `null` if this payment processor does not support public keys.
+                          properties:
+                            s_checkout:
+                              type:
+                                - string
+                                - 'null'
+                              description: 'Checkout SDK public key. `null` if 3DS is disabled for this merchant.'
+                          required:
+                            - s_checkout
                         a_public_info:
                           type:
-                            - array
+                            - object
                             - 'null'
                           description: |-
                             Public info configured for this payment processor.
 
                             `null` if this payment processor does not support public info.
+                          properties:
+                            s_merchant_site:
+                              type: string
+                              description: 'Merchant site identifier assigned by Nuvei.'
+                            s_nuvei_id:
+                              type: string
+                              description: 'Nuvei merchant identifier.'
+                          required:
+                            - s_merchant_site
+                            - s_nuvei_id
                         hide_save_source:
                           type: boolean
                           description: 'Whether `save payment method` option should be hidden. `true` if hidden, `false` - otherwise.'
@@ -103780,6 +104904,347 @@ components:
       x-enum-descriptions:
         - 'Credit Card.'
         - 'Debit Card.'
+    Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid:
+      type: integer
+      format: int32
+      description: |-
+        List of [PayProcessorSid::NUVEI](#/components/schemas/Thoth.PayProcessor.PayProcessorSid) supported terminal types.
+
+        Values:
+        - 2 (`OMNICHANNEL`): Card terminals that work via OMNI Channel API.
+          Requires registration on Hardware page.
+
+          See Nuvei/doc/OMNI_Channel_ISO20022_V2.38.pdf
+        - 1 (`MAGTEK_USB`): Magtek USB.
+          This type of terminal does not require registration on Hardware page.
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - OMNICHANNEL
+        - MAGTEK_USB
+      x-enum-descriptions:
+        - |-
+          Card terminals that work via OMNI Channel API.
+          Requires registration on Hardware page.
+
+          See Nuvei/doc/OMNI_Channel_ISO20022_V2.38.pdf
+        - |-
+          Magtek USB.
+          This type of terminal does not require registration on Hardware page.
+    Thoth.PayProcessor.Terminal.TerminalStatusSid:
+      type: integer
+      format: int32
+      description: |-
+        List of possible status of readers.
+
+        Last ID: 3.
+
+        Values:
+        - 1 (`ACTIVE`): Status active.
+        - 2 (`INACTIVE`): Status inactive.
+        - 3 (`SETUP`): Status setup, reader is active but not added to stripe yet.
+      enum:
+        - 1
+        - 2
+        - 3
+      x-enum-varnames:
+        - ACTIVE
+        - INACTIVE
+        - SETUP
+      x-enum-descriptions:
+        - 'Status active.'
+        - 'Status inactive.'
+        - 'Status setup, reader is active but not added to stripe yet.'
+    Thoth.PayProcessor.StripeCom.Terminal.StripeReaderModelSid:
+      type: integer
+      format: int32
+      description: |-
+        Stripe device type of reader.
+
+        Values:
+        - 1 (`BBPOS_WISEPAD3`): The BBPOS Wise Pad 3 is a handheld reader for use with mobile applications.
+        - 4 (`BBPOS_WISEPOS_E`): The BBPOS Wise POS E is a countertop reader for Stripe Terminal apps.
+          It connects to the Stripe Terminal SDK over the internet.
+        - 6 (`SIMULATED_WISEPOS_E`): SIMULATED Wise POS E.
+        - 2 (`STRIPE_M2`): Stripe Reader M2 is a small, robust reader for use with mobile applications.
+      enum:
+        - 1
+        - 4
+        - 6
+        - 2
+      x-enum-varnames:
+        - BBPOS_WISEPAD3
+        - BBPOS_WISEPOS_E
+        - SIMULATED_WISEPOS_E
+        - STRIPE_M2
+      x-enum-descriptions:
+        - 'The BBPOS Wise Pad 3 is a handheld reader for use with mobile applications.'
+        - |-
+          The BBPOS Wise POS E is a countertop reader for Stripe Terminal apps.
+          It connects to the Stripe Terminal SDK over the internet.
+        - 'SIMULATED Wise POS E.'
+        - 'Stripe Reader M2 is a small, robust reader for use with mobile applications.'
+    Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid:
+      type: integer
+      format: int32
+      description: |-
+        List of [PayProcessorSid::STRIPE_COM](#/components/schemas/Thoth.PayProcessor.PayProcessorSid) supported terminal types.
+
+        Values:
+        - 2 (`JS_SDK`): Terminals that work via Stripe javascript SDK.
+          Requires registration on Hardware page.
+        - 1 (`MAGTEK_USB`): Magtek USB.
+          This type of terminal does not require registration on Hardware page.
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - JS_SDK
+        - MAGTEK_USB
+      x-enum-descriptions:
+        - |-
+          Terminals that work via Stripe javascript SDK.
+          Requires registration on Hardware page.
+        - |-
+          Magtek USB.
+          This type of terminal does not require registration on Hardware page.
+    Thoth.PayProcessor.DirectConnect.Terminal.DirectConnectReaderModelSid:
+      type: integer
+      format: int32
+      description: |-
+        Paragon device type of reader.
+
+        Last used id: 7.
+
+        Values:
+        - 1 (`E285`): Verifone e285 reader.
+        - 2 (`P200`): Verifone P200 reader.
+        - 3 (`P400_PLUS`): Verifone P400 plus reader.
+        - 4 (`V200_C`): Verifone V200c reader.
+        - 5 (`V200_C_PLUS`): Verifone V200c plus reader.
+        - 7 (`V400_C_PLUS`): Verifone V400c plus reader.
+        - 6 (`V400_M`): Verifone V400m reader.
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 7
+        - 6
+      x-enum-varnames:
+        - E285
+        - P200
+        - P400_PLUS
+        - V200_C
+        - V200_C_PLUS
+        - V400_C_PLUS
+        - V400_M
+      x-enum-descriptions:
+        - 'Verifone e285 reader.'
+        - 'Verifone P200 reader.'
+        - 'Verifone P400 plus reader.'
+        - 'Verifone V200c reader.'
+        - 'Verifone V200c plus reader.'
+        - 'Verifone V400c plus reader.'
+        - 'Verifone V400m reader.'
+    Thoth.PayProcessor.Terminal.TerminalTypeSid:
+      type: integer
+      format: int32
+      description: |-
+        List of supported terminal interaction types.
+        Note: this list is rather internal Wellnessliving application list rather than common-known list. Each of types
+        determines the way how we interact with terminal on application level.
+
+        Values:
+        - 1 (`MAGTEK_USB`): Magtek USB.
+          This type of terminal does not require registration on Hardware page.
+      enum:
+        - 1
+      x-enum-varnames:
+        - MAGTEK_USB
+      x-enum-descriptions:
+        - |-
+          Magtek USB.
+          This type of terminal does not require registration on Hardware page.
+    Thoth.WlPay.Cordova.CordovaCcrDeviceSid:
+      type: integer
+      format: int32
+      description: |-
+        A list of devices supported by credit card reader plugin.
+
+        <b>*** ATTENTION ***</b> If you modify this class, you should also modify its counterparts in Java and ObjectiveC.
+
+        Last used ID: 17.
+
+        Values:
+        - 4 (`DC_IDT_AUGUSTA`): Payment processor: Direct Connect.
+
+          Device: `IDTech/Augusta`.
+        - 5 (`DC_IDT_BT_MAG`): Payment processor: Direct Connect.
+
+          Device: `IDTech/BTMag`.
+        - 6 (`DC_IDT_UNI_MAG`): Payment processor: Direct Connect.
+
+          Device: `IDTech/UniMag`.
+        - 7 (`DC_IDT_UNI_PAY`): Payment processor: Direct Connect.
+
+          Device: `IDTech/UniPay`.
+
+          Not supported in iOS.
+        - 11 (`DC_MAGTEK_AUDIO`): Payment processor: Direct Connect.
+
+          Device: `Magtek`, connection over audio jack. Supported devices: `uDynamo`, `aDynamo`.
+        - 13 (`DC_MAGTEK_BLUETOOTH`): Payment processor: Paragon (ex. Direct Connect).
+
+          Device: `Magtek`, bluetooth connection. Supported device - `eDynamo`.
+        - 12 (`DC_MAGTEK_LIGHTNING`): Payment processor: Direct Connect.
+
+          Device: `iDynamo` (for iOS only).
+        - 8 (`DC_MIURA`): Payment processor: Direct Connect.
+
+          Device: `IDTech/Miura`.
+        - 9 (`DC_PAX`): Payment processor: Direct Connect.
+
+          Device: `PAX`.
+
+          Documentation says that this device manager is not implemented.
+          In Direct Connect SDK we see that there is a library for iOS, but not for Android.
+        - 3 (`NMI_ENTERPRISE`): Payment processor: NMI.
+
+          Device: Enterprise.
+        - 2 (`NMI_IPS`): Payment processor: NMI.
+
+          Device: IPS.
+        - 1 (`NMI_UNIMAG`): Payment processor: NMI.
+
+          Device: Unimag.
+        - 17 (`STRIPE_BBPOS_SIMULATED_WISEPOS_E`): Payment processor: Stripe.
+
+          Device: Simulated BBPOS WisePOS E.
+        - 14 (`STRIPE_BBPOS_WISEPAD_3_BLUETOOTH`): Payment processor: Stripe.
+
+          Device: BBPOS Wisepad 3.
+        - 15 (`STRIPE_BBPOS_WISEPOS_E_INTERNET`): Payment processor: Stripe.
+
+          Device: BBPOS WisePOS E.
+        - 16 (`STRIPE_READER_M2_BLUETOOTH`): Payment processor: Stripe.
+
+          Device: Stripe Reader M2.
+        - 10 (`VIRTUAL`): Virtual device for testing purposes.
+
+          Currently supported only by Direct Connect.
+      enum:
+        - 4
+        - 5
+        - 6
+        - 7
+        - 11
+        - 13
+        - 12
+        - 8
+        - 9
+        - 3
+        - 2
+        - 1
+        - 17
+        - 14
+        - 15
+        - 16
+        - 10
+      x-enum-varnames:
+        - DC_IDT_AUGUSTA
+        - DC_IDT_BT_MAG
+        - DC_IDT_UNI_MAG
+        - DC_IDT_UNI_PAY
+        - DC_MAGTEK_AUDIO
+        - DC_MAGTEK_BLUETOOTH
+        - DC_MAGTEK_LIGHTNING
+        - DC_MIURA
+        - DC_PAX
+        - NMI_ENTERPRISE
+        - NMI_IPS
+        - NMI_UNIMAG
+        - STRIPE_BBPOS_SIMULATED_WISEPOS_E
+        - STRIPE_BBPOS_WISEPAD_3_BLUETOOTH
+        - STRIPE_BBPOS_WISEPOS_E_INTERNET
+        - STRIPE_READER_M2_BLUETOOTH
+        - VIRTUAL
+      x-enum-descriptions:
+        - |-
+          Payment processor: Direct Connect.
+
+          Device: `IDTech/Augusta`.
+        - |-
+          Payment processor: Direct Connect.
+
+          Device: `IDTech/BTMag`.
+        - |-
+          Payment processor: Direct Connect.
+
+          Device: `IDTech/UniMag`.
+        - |-
+          Payment processor: Direct Connect.
+
+          Device: `IDTech/UniPay`.
+
+          Not supported in iOS.
+        - |-
+          Payment processor: Direct Connect.
+
+          Device: `Magtek`, connection over audio jack. Supported devices: `uDynamo`, `aDynamo`.
+        - |-
+          Payment processor: Paragon (ex. Direct Connect).
+
+          Device: `Magtek`, bluetooth connection. Supported device - `eDynamo`.
+        - |-
+          Payment processor: Direct Connect.
+
+          Device: `iDynamo` (for iOS only).
+        - |-
+          Payment processor: Direct Connect.
+
+          Device: `IDTech/Miura`.
+        - |-
+          Payment processor: Direct Connect.
+
+          Device: `PAX`.
+
+          Documentation says that this device manager is not implemented.
+          In Direct Connect SDK we see that there is a library for iOS, but not for Android.
+        - |-
+          Payment processor: NMI.
+
+          Device: Enterprise.
+        - |-
+          Payment processor: NMI.
+
+          Device: IPS.
+        - |-
+          Payment processor: NMI.
+
+          Device: Unimag.
+        - |-
+          Payment processor: Stripe.
+
+          Device: Simulated BBPOS WisePOS E.
+        - |-
+          Payment processor: Stripe.
+
+          Device: BBPOS Wisepad 3.
+        - |-
+          Payment processor: Stripe.
+
+          Device: BBPOS WisePOS E.
+        - |-
+          Payment processor: Stripe.
+
+          Device: Stripe Reader M2.
+        - |-
+          Virtual device for testing purposes.
+
+          Currently supported only by Direct Connect.
     Thoth.PayProcessor.PayProcessorSid:
       type: integer
       format: int32
