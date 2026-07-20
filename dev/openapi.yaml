@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260720135144
+  version: 1.1.20260720183718
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -66697,6 +66697,9 @@ paths:
                         k_discount_code:
                           type: string
                           description: 'Discount code key.'
+                        s_code:
+                          type: string
+                          description: 'Actual discount code string.'
                         text_discount_code:
                           type: string
                           description: 'Discount code title.'
@@ -66704,6 +66707,7 @@ paths:
                         - is_active
                         - is_remove
                         - k_discount_code
+                        - s_code
                         - text_discount_code
                 required:
                   - a_list
