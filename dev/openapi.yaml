@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260720120403
+  version: 1.1.20260720135144
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -52705,9 +52705,6 @@ paths:
                           description: |-
                             Whether service will be hidden in the White Label mobile application.
                              `true` means that service will not be displayed, `false` otherwise.
-                        is_active:
-                          type: boolean
-                          description: 'Whether appointment type is active.'
                         k_service:
                           type: string
                           description: 'Appointment type identifier, primary key.'
@@ -52722,7 +52719,6 @@ paths:
                           description: 'Appointment type name.'
                       required:
                         - hide_application
-                        - is_active
                         - k_service
                         - k_service_category
                         - text_category
