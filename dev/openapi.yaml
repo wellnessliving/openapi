@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260720073142
+  version: 1.1.20260720100446
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68124,19 +68124,19 @@ paths:
                           description: |-
                             Service ID.
                             A [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constant for booking.
+                        k_enrollment_block:
+                          type: string
+                          description: |-
+                            Enrollment block key for an event item.
+                            Empty for all other item types.
                         k_item:
                           type: string
                           description: |-
                             Selected item key.
                             The referenced table depends on checkout type and item type.
-                        k_item_extra:
-                          type: string
-                          description: |-
-                            Additional item key used by an event enrollment block.
-                            Empty for all other item types.
                       required:
+                        - k_enrollment_block
                         - k_item
-                        - k_item_extra
                     id_checkout_type:
                       $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid'
                       description: |-
