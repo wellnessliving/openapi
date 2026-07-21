@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260720104508
+  version: 1.1.20260721082553
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -87551,11 +87551,12 @@ paths:
                           Last used ID: 5.
 
                           Values:
-                          - 4 (`CHAT_AGENT`): Chat Agent
                           - 5 (`DENTAL_PHONE_AGENT`): Dental Phone Agent
                           - 1 (`FREE`): None
                           - 2 (`PROFESSIONAL`): Professional
+                          - 6 (`PROFESSIONAL_TRIAL`): Professional subscription, which will be automatically converted to [AiAgentSubscriptionSid::PROFESSIONAL](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
                           - 3 (`STANDARD`): Assistant
+                          - 7 (`STANDARD_TRIAL`): Standard subscription, which will be automatically converted to [AiAgentSubscriptionSid::STANDARD](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
                       -
                         $ref: '#/components/schemas/Wl.Business.Account.Subscription.Achieve.AchieveSubscriptionSid'
                         description: |-
@@ -108768,29 +108769,33 @@ components:
         Last used ID: 5.
 
         Values:
-        - 4 (`CHAT_AGENT`): Chat Agent
         - 5 (`DENTAL_PHONE_AGENT`): Dental Phone Agent
         - 1 (`FREE`): None
         - 2 (`PROFESSIONAL`): Professional
+        - 6 (`PROFESSIONAL_TRIAL`): Professional subscription, which will be automatically converted to [AiAgentSubscriptionSid::PROFESSIONAL](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
         - 3 (`STANDARD`): Assistant
+        - 7 (`STANDARD_TRIAL`): Standard subscription, which will be automatically converted to [AiAgentSubscriptionSid::STANDARD](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
       enum:
-        - 4
         - 5
         - 1
         - 2
+        - 6
         - 3
+        - 7
       x-enum-varnames:
-        - CHAT_AGENT
         - DENTAL_PHONE_AGENT
         - FREE
         - PROFESSIONAL
+        - PROFESSIONAL_TRIAL
         - STANDARD
+        - STANDARD_TRIAL
       x-enum-descriptions:
-        - 'Chat Agent'
         - 'Dental Phone Agent'
         - None
         - Professional
+        - 'Professional subscription, which will be automatically converted to {@link \Wl\Business\Account\Subscription\AiAgent\AiAgentSubscriptionSid::PROFESSIONAL} after the 5th lead.'
         - Assistant
+        - 'Standard subscription, which will be automatically converted to {@link \Wl\Business\Account\Subscription\AiAgent\AiAgentSubscriptionSid::STANDARD} after the 5th lead.'
     Wl.Business.Account.Subscription.Sms.SmsSubscriptionSid:
       type: integer
       format: int32
