@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260721140744
+  version: 1.1.20260721142623
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -104238,7 +104238,7 @@ components:
       description: |-
         The source of a visit.
 
-        Last used ID: 31.
+        Last used ID: 32.
 
         Values:
         - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
@@ -104261,6 +104261,7 @@ components:
           It is also names as directory listing.
         - 24 (`MICROSOFT`): Indicating that the source is Microsoft.
         - 13 (`MY_PRESENCE_SITE`): Client booked session on My Presence Site.
+        - 32 (`PASSPORT_DOOR_ACCESS`): Visit has been created by `Passport Door Access`.
         - 17 (`SMS`): Action made via SMS.
         - 4 (`SPA_BACKEND`): Staff booked session from spa backend.
         - 3 (`SPA_FRONTEND`): Client booked session from spa frontend.
@@ -104291,6 +104292,7 @@ components:
         - 12
         - 24
         - 13
+        - 32
         - 17
         - 4
         - 3
@@ -104321,6 +104323,7 @@ components:
         - MICROSITE
         - MICROSOFT
         - MY_PRESENCE_SITE
+        - PASSPORT_DOOR_ACCESS
         - SMS
         - SPA_BACKEND
         - SPA_FRONTEND
@@ -104354,6 +104357,7 @@ components:
           It is also names as directory listing.
         - 'Indicating that the source is Microsoft.'
         - 'Client booked session on My Presence Site.'
+        - 'Visit has been created by `Passport Door Access`.'
         - 'Action made via SMS.'
         - 'Staff booked session from spa backend.'
         - 'Client booked session from spa frontend.'
