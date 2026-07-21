@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260720183718
+  version: 1.1.20260721060518
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -56191,6 +56191,15 @@ paths:
             The program type ID, which will be one of the [RsProgramTypeSid](#/components/schemas/RsProgramTypeSid) constants.
 
             `0` to not filter Purchase Options with type of the Purchase Option.
+        -
+          name: k_business
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: 'The business key.'
         -
           name: k_location
           in: query
