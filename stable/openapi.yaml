@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260721103607
+  version: 1.1.20260721120126
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -91945,6 +91945,9 @@ paths:
                   type: string
                   maxLength: 100
                   description: 'Reversed client ID of the iOS application on Firebase.'
+                s_splash_color_android:
+                  type: string
+                  description: 'Android splash screen background color in hex format.'
                 s_version_name:
                   type: string
                   maxLength: 255
@@ -92006,6 +92009,7 @@ paths:
                 - id_version_change
                 - k_business
                 - s_firebase_ios
+                - s_splash_color_android
                 - s_version_name
                 - text_annotation
                 - text_country
