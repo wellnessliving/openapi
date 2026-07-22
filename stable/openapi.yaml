@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260721120126
+  version: 1.1.20260722031855
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -89845,6 +89845,13 @@ paths:
                                 k_class:
                                   type: string
                                   description: 'Key of the event class within the tuition which should be granted to the client.'
+                                m_checkout:
+                                  type: string
+                                  description: |-
+                                    The amount that will be charged for this event when the tuition is purchased.
+                                         Calculated based on the payment schedule (full amount or the prorated part due now).
+                                         Can be overridden manually. If not specified or `null`, the amount will be calculated
+                                         automatically.
                                 m_price:
                                   type: string
                                   description: |-
@@ -90095,6 +90102,13 @@ paths:
                         k_class:
                           type: string
                           description: 'Key of the event class within the tuition which should be granted to the client.'
+                        m_checkout:
+                          type: string
+                          description: |-
+                            The amount that will be charged for this event when the tuition is purchased.
+                                 Calculated based on the payment schedule (full amount or the prorated part due now).
+                                 Can be overridden manually. If not specified or `null`, the amount will be calculated
+                                 automatically.
                         m_price:
                           type: string
                           description: |-
