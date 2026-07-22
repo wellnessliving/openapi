@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260722071251
+  version: 1.1.20260722085423
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -4896,6 +4896,9 @@ paths:
                         is_booked:
                           type: boolean
                           description: 'Whether event is already booked.'
+                        is_cancellation_enabled:
+                          type: boolean
+                          description: '`true` if clients can cancel this event. Otherwise, this will be `false`.'
                         is_closed:
                           type: boolean
                           description: |-
@@ -5001,6 +5004,7 @@ paths:
                         - is_book_for_guest
                         - is_bookable
                         - is_booked
+                        - is_cancellation_enabled
                         - is_closed
                         - is_full
                         - is_online
@@ -37705,6 +37709,9 @@ paths:
                         is_cancel:
                           type: boolean
                           description: 'If `true`, this class period was canceled. Otherwise, this will be `false`.'
+                        is_cancellation_enabled:
+                          type: boolean
+                          description: '`true` if clients can cancel this session. Otherwise, this will be `false`.'
                         is_event:
                           type: boolean
                           description: 'If `true`, this is an event. Otherwise, this will be `false`.'
@@ -37751,6 +37758,7 @@ paths:
                         - i_wait
                         - is_book_for_guest
                         - is_cancel
+                        - is_cancellation_enabled
                         - is_event
                         - is_virtual
                         - is_wait_list_enabled
@@ -38108,6 +38116,9 @@ paths:
                         is_cancel:
                           type: boolean
                           description: 'If `true`, this class period was canceled. Otherwise, this will be `false`.'
+                        is_cancellation_enabled:
+                          type: boolean
+                          description: '`true` if clients can cancel this session. Otherwise, this will be `false`.'
                         is_event:
                           type: boolean
                           description: 'If `true`, this is an event. Otherwise, this will be `false`.'
@@ -38151,6 +38162,7 @@ paths:
                         - i_wait
                         - is_book_for_guest
                         - is_cancel
+                        - is_cancellation_enabled
                         - is_event
                         - is_virtual
                         - is_wait_list_enabled
@@ -38709,6 +38721,9 @@ paths:
                       is_cancel:
                         type: boolean
                         description: '`true` if class period was cancelled; `false` otherwise.'
+                      is_cancellation_enabled:
+                        type: boolean
+                        description: '`true` if clients can cancel this session. Otherwise, this will be `false`.'
                       is_event:
                         type: boolean
                         description: '`true` if it is event; `false` if it is class.'
@@ -38763,6 +38778,7 @@ paths:
                       - is_book
                       - is_book_for_guest
                       - is_cancel
+                      - is_cancellation_enabled
                       - is_event
                       - is_promotion_only
                       - is_virtual
@@ -38998,6 +39014,9 @@ paths:
                             is_cancel:
                               type: boolean
                               description: '`true` if class period was cancelled; `false` otherwise.'
+                            is_cancellation_enabled:
+                              type: boolean
+                              description: '`true` if clients can cancel this session. Otherwise, this will be `false`.'
                             is_event:
                               type: boolean
                               description: '`true` if it is event; `false` if it is class.'
@@ -39052,6 +39071,7 @@ paths:
                             - is_book
                             - is_book_for_guest
                             - is_cancel
+                            - is_cancellation_enabled
                             - is_event
                             - is_promotion_only
                             - is_virtual
@@ -39558,6 +39578,9 @@ paths:
                       is_cancel:
                         type: boolean
                         description: '`true` if class period was cancelled; `false` otherwise.'
+                      is_cancellation_enabled:
+                        type: boolean
+                        description: '`true` if clients can cancel this session. Otherwise, this will be `false`.'
                       is_event:
                         type: boolean
                         description: '`true` if it is event; `false` if it is class.'
@@ -39612,6 +39635,7 @@ paths:
                       - is_book
                       - is_book_for_guest
                       - is_cancel
+                      - is_cancellation_enabled
                       - is_event
                       - is_promotion_only
                       - is_virtual
@@ -39847,6 +39871,9 @@ paths:
                             is_cancel:
                               type: boolean
                               description: '`true` if class period was cancelled; `false` otherwise.'
+                            is_cancellation_enabled:
+                              type: boolean
+                              description: '`true` if clients can cancel this session. Otherwise, this will be `false`.'
                             is_event:
                               type: boolean
                               description: '`true` if it is event; `false` if it is class.'
@@ -39901,6 +39928,7 @@ paths:
                             - is_book
                             - is_book_for_guest
                             - is_cancel
+                            - is_cancellation_enabled
                             - is_event
                             - is_promotion_only
                             - is_virtual
@@ -92772,6 +92800,13 @@ paths:
                                 k_class:
                                   type: string
                                   description: 'Key of the event class within the tuition which should be granted to the client.'
+                                m_checkout:
+                                  type: string
+                                  description: |-
+                                    The amount that will be charged for this event when the tuition is purchased.
+                                         Calculated based on the payment schedule (full amount or the prorated part due now).
+                                         Can be overridden manually. If not specified or `null`, the amount will be calculated
+                                         automatically.
                                 m_price:
                                   type: string
                                   description: |-
@@ -93022,6 +93057,13 @@ paths:
                         k_class:
                           type: string
                           description: 'Key of the event class within the tuition which should be granted to the client.'
+                        m_checkout:
+                          type: string
+                          description: |-
+                            The amount that will be charged for this event when the tuition is purchased.
+                                 Calculated based on the payment schedule (full amount or the prorated part due now).
+                                 Can be overridden manually. If not specified or `null`, the amount will be calculated
+                                 automatically.
                         m_price:
                           type: string
                           description: |-
