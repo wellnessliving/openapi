@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260723135313
+  version: 1.1.20260723152617
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -111992,6 +111992,8 @@ components:
       description: |-
         Widget analytics event schema versions.
 
+         Last ID: 1
+
         Values:
         - 1 (`V1`): Initial event schema.
       enum:
@@ -112007,7 +112009,7 @@ components:
       description: |-
         Widget analytics event types.
 
-        Last ID: 33
+        Last ID: 1
 
         Values:
         - 1 (`ABANDONED_CHECKOUT`): Checkout abandonment event.
