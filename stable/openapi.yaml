@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260723053106
+  version: 1.1.20260723074726
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -40406,6 +40406,55 @@ paths:
           schema:
             type: string
           description: 'The email address to check for.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Login/Rank/LoginRankElement.json:
+    delete:
+      operationId: Wl.Login.Rank.LoginRankElement.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Deletes a rank record for a user.'
+      tags:
+        - Login
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_rank_category
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'To delete entire rank category from this user.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_login_rank
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Login rank key. Primary key in RsLoginRankSql table.'
       x-rate-limit:
         -
           limit: 200000
