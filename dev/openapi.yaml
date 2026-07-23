@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260723091322
+  version: 1.1.20260723114116
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -34517,6 +34517,55 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Login/Rank/LoginRankElement.json:
+    delete:
+      operationId: Wl.Login.Rank.LoginRankElement.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Deletes a rank record for a user.'
+      tags:
+        - Login
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_rank_category
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'To delete entire rank category from this user.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_login_rank
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Login rank key. Primary key in RsLoginRankSql table.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Login/Promotion/PromotionPayPause.json:
     delete:
       operationId: Wl.Login.Promotion.PromotionPayPause.delete
@@ -67659,16 +67708,6 @@ paths:
       responses:
         '200':
           description: 'Successful response.'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  is_accepted:
-                    type: boolean
-                    description: 'Whether the event was durably accepted for asynchronous processing.'
-                required:
-                  - is_accepted
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -67704,33 +67743,60 @@ paths:
                       description: 'Selected checkout items.'
                       properties:
                         id_purchase_item:
-                          $ref: '#/components/schemas/RsPurchaseItemSid'
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
                           description: |-
                             Purchase item ID.
-                            A [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constant for store checkout.
+
+                            Required when the parent checkout type is
+                            [WidgetAnalyticsCheckoutTypeSid::STORE_PURCHASE](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid); `null` for
+                            [WidgetAnalyticsCheckoutTypeSid::BOOKING](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid).
                         id_service:
-                          $ref: '#/components/schemas/Wl.Service.ServiceSid'
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
                           description: |-
                             Service ID.
-                            A [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constant for booking.
+
+                            Required when checkout type is
+                            [WidgetAnalyticsCheckoutTypeSid::BOOKING](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid); `null` for
+                            [WidgetAnalyticsCheckoutTypeSid::STORE_PURCHASE](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid).
                         k_enrollment_block:
-                          type: string
+                          type:
+                            - string
+                            - 'null'
                           description: |-
                             Enrollment block key for an event item.
                             Empty for all other item types.
+
+                            Required when checkout type is
+                            [WidgetAnalyticsCheckoutTypeSid::BOOKING](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid) and the item type is
+                            [ServiceSid::EVENT](#/components/schemas/Wl.Service.ServiceSid); `null` for all other item types.
                         k_item:
                           type: string
                           description: |-
                             Selected item key.
-                            The referenced table depends on checkout type and item type.
+
+                            When `id_purchase_item` is:
+                            - [RsPurchaseItemSid::COUPON](#/components/schemas/RsPurchaseItemSid), this is a coupon key. Primary key in RsCouponSql.
+                            - [RsPurchaseItemSid::ENROLLMENT](#/components/schemas/RsPurchaseItemSid), this is an event class key. Primary key in RsClassSql.
+                            - [RsPurchaseItemSid::PRODUCT](#/components/schemas/RsPurchaseItemSid), this is a product key. Primary key in RsShopProductSql.
+                            - [RsPurchaseItemSid::PROMOTION](#/components/schemas/RsPurchaseItemSid), this is a Purchase Option key. Primary key in RsPromotionSql.
+
+                            When `id_service` is:
+                            - [ServiceSid::APPOINTMENT](#/components/schemas/Wl.Service.ServiceSid), this is a service key. Primary key in RsServiceSql.
+                            - [ServiceSid::BOOKABLE_ASSET](#/components/schemas/Wl.Service.ServiceSid), this is an asset key. Primary key in RsResourceSql.
+                            - [ServiceSid::CLASSES](#/components/schemas/Wl.Service.ServiceSid) or [ServiceSid::EVENT](#/components/schemas/Wl.Service.ServiceSid), this is a class key. Primary key in
+                              RsClassSql.
                       required:
-                        - k_enrollment_block
                         - k_item
                     id_checkout_type:
-                      $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid'
-                      description: |-
-                        Checkout type.
-                        One of [WidgetAnalyticsCheckoutTypeSid](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid) constants.
+                      type: integer
+                      format: int32
+                      description: 'Checkout type.'
                     k_location:
                       type: string
                       description: 'Location key.'
@@ -67788,11 +67854,11 @@ paths:
                     - uid
                     - url_continue
                 i_event_version:
-                  type: integer
-                  format: int32
-                  minimum: 1
-                  description: 'Event schema version.'
-                  default: 1
+                  $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid'
+                  description: 'Event schema version. Currently only [WidgetAnalyticsEventVersionSid::V1](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid) is supported.'
+                id_event_name:
+                  $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventSid'
+                  description: 'Event name. Initially only [WidgetAnalyticsEventSid::ABANDONED_CHECKOUT](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventSid) is supported.'
                 k_business:
                   type: string
                   description: 'Business key used for shard and datacenter routing.'
@@ -67804,17 +67870,12 @@ paths:
                   description: |-
                     Client-generated idempotency identifier.
                     A retry of the same logical event must use the same value.
-                s_event_name:
-                  type: string
-                  minLength: 1
-                  maxLength: 64
-                  description: 'Event name. Initially only `abandoned_checkout` is supported.'
               required:
                 - a_payload
                 - i_event_version
+                - id_event_name
                 - k_business
                 - s_event_id
-                - s_event_name
       x-rate-limit:
         -
           limit: 200000
@@ -111906,28 +111967,37 @@ components:
         - Location.
         - Purchase.
         - Review.
-    Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid:
+    Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid:
       type: integer
       format: int32
       description: |-
-        Widget analytics checkout types.
+        Widget analytics event schema versions.
 
         Values:
-        - 1 (`ANY`): Any checkout type.
-        - 3 (`BOOKING`): Booking checkout type.
-        - 2 (`STORE_PURCHASE`): Store purchase checkout type.
+        - 1 (`V1`): Initial event schema.
       enum:
         - 1
-        - 3
-        - 2
       x-enum-varnames:
-        - ANY
-        - BOOKING
-        - STORE_PURCHASE
+        - V1
       x-enum-descriptions:
-        - 'Any checkout type.'
-        - 'Booking checkout type.'
-        - 'Store purchase checkout type.'
+        - 'Initial event schema.'
+      default: 1
+    Wl.Widget.Analytics.WidgetAnalyticsEventSid:
+      type: integer
+      format: int32
+      description: |-
+        Widget analytics event types.
+
+        Last ID: 33
+
+        Values:
+        - 1 (`ABANDONED_CHECKOUT`): Checkout abandonment event.
+      enum:
+        - 1
+      x-enum-varnames:
+        - ABANDONED_CHECKOUT
+      x-enum-descriptions:
+        - 'Checkout abandonment event.'
     RsPayAccountChargeSid:
       type: integer
       format: int32
