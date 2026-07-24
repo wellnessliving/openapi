@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260724082844
+  version: 1.1.20260724090919
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -67850,12 +67850,12 @@ paths:
                     - s_utm_source
                     - uid
                     - url_continue
-                i_event_version:
-                  $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid'
-                  description: 'Event schema version. Currently only [WidgetAnalyticsEventVersionSid::V1](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid) is supported.'
                 id_event_name:
                   $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventSid'
                   description: 'Event name. Initially only [WidgetAnalyticsEventSid::ABANDONED_CHECKOUT](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventSid) is supported.'
+                id_event_version:
+                  $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid'
+                  description: 'Event schema version. Currently only [WidgetAnalyticsEventVersionSid::V1](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid) is supported.'
                 k_business:
                   type: string
                   description: 'Business key used for shard and datacenter routing.'
@@ -67869,8 +67869,8 @@ paths:
                     A retry of the same logical event must use the same value.
               required:
                 - a_payload
-                - i_event_version
                 - id_event_name
+                - id_event_version
                 - k_business
                 - s_event_id
       x-rate-limit:
@@ -111966,6 +111966,22 @@ components:
         - 'Any checkout type.'
         - 'Booking checkout type.'
         - 'Store purchase checkout type.'
+    Wl.Widget.Analytics.WidgetAnalyticsEventSid:
+      type: integer
+      format: int32
+      description: |-
+        Widget analytics event types.
+
+        Last ID: 1
+
+        Values:
+        - 1 (`ABANDONED_CHECKOUT`): Checkout abandonment event.
+      enum:
+        - 1
+      x-enum-varnames:
+        - ABANDONED_CHECKOUT
+      x-enum-descriptions:
+        - 'Checkout abandonment event.'
     Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid:
       type: integer
       format: int32
@@ -111983,22 +111999,6 @@ components:
       x-enum-descriptions:
         - 'Initial event schema.'
       default: 1
-    Wl.Widget.Analytics.WidgetAnalyticsEventSid:
-      type: integer
-      format: int32
-      description: |-
-        Widget analytics event types.
-
-        Last ID: 1
-
-        Values:
-        - 1 (`ABANDONED_CHECKOUT`): Checkout abandonment event.
-      enum:
-        - 1
-      x-enum-varnames:
-        - ABANDONED_CHECKOUT
-      x-enum-descriptions:
-        - 'Checkout abandonment event.'
     RsPayAccountChargeSid:
       type: integer
       format: int32
