@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260723080557
+  version: 1.1.20260724041845
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -40429,6 +40429,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Deletes a rank record for a user.'
+      description: 'Removes the rank record from the database and logs the action in the belt history.'
       tags:
         - Login
       parameters:
@@ -40454,7 +40455,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Login rank key. Primary key in RsLoginRankSql table.'
+          description: 'Login rank key.'
       x-rate-limit:
         -
           limit: 200000
