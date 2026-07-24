@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260724094131
+  version: 1.1.20260724102459
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -42685,12 +42685,19 @@ paths:
                   is_event:
                     type: boolean
                     description: '`true` means event, `false` means class.'
+                  k_enrollment_block:
+                    type: string
+                    description: |-
+                      Key of the group of events, which are different instances of the same event.
+
+                      Is always `0` for classes.
                   text_title:
                     type: string
                     description: 'Title of the class.'
                 required:
                   - a_logo
                   - is_event
+                  - k_enrollment_block
                   - text_title
         '400':
           $ref: '#/components/responses/400'
