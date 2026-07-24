@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260723165341
+  version: 1.1.20260724020704
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -1266,7 +1266,7 @@ paths:
                                 Not `null` when [PaymentStatusChannel::$id_payment_status](#/components/schemas/Core.WebSocket.ChannelBroadcast)
                                 is equal [CSResponseSid::APPROVED](#/components/schemas/Thoth.PayProcessor.Nuvei.Code.CSResponseSid).
                             id_card_type:
-                              $ref: '#/components/schemas/Wl.Pay.Bank.Card.CardTypeEnum'
+                              $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
                               description: |-
                                 Card type ID.
 
@@ -102210,7 +102210,7 @@ components:
         - 'Ticket is processed.'
         - 'Ticket is opened.'
         - 'Ticket was reversed.'
-    Wl.Pay.Bank.Card.CardTypeEnum:
+    Thoth.WlPay.Bank.Card.CardTypeEnum:
       type:
         - integer
         - 'null'
@@ -105591,26 +105591,6 @@ components:
 
           The funds are now in your account and you can confidently fulfill the order. If you need to refund the customer,
           you can use the Refunds API.
-    Thoth.WlPay.Bank.Card.CardTypeEnum:
-      type: integer
-      format: int32
-      description: |-
-        An enum of credit card types.
-
-        Last used ID: 2
-
-        Values:
-        - 1 (`CREDIT`): Credit Card.
-        - 2 (`DEBIT`): Debit Card.
-      enum:
-        - 1
-        - 2
-      x-enum-varnames:
-        - CREDIT
-        - DEBIT
-      x-enum-descriptions:
-        - 'Credit Card.'
-        - 'Debit Card.'
     Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid:
       type: integer
       format: int32
