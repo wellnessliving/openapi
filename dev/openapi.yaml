@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260724124918
+  version: 1.1.20260724132821
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -53662,26 +53662,52 @@ paths:
                       or when age restriction are public.
                     properties:
                       i_age_from:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
                         format: int32
-                        description: "The minimum age permitted for the event. This will be `null` if a minimum age isn't set or available."
+                        description: 'Minimum age for service (years part).'
+                      i_age_from_month:
+                        type: integer
+                        format: int32
+                        description: 'Minimum age for service (months part).'
+                      i_age_from_year:
+                        type: integer
+                        format: int32
+                        description: 'Minimum age for service (years part).'
                       i_age_to:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
                         format: int32
-                        description: "The maximum age permitted for the event. This will be `null` if a maximum age isn't set or available."
+                        description: 'Maximum age for service (years part).'
+                      i_age_to_month:
+                        type: integer
+                        format: int32
+                        description: 'Maximum age for service (months part).'
+                      i_age_to_year:
+                        type: integer
+                        format: int32
+                        description: 'Maximum age for service (years part).'
                       is_age_public:
                         type: boolean
                         description: |-
-                          If `true`, age restrictions are public and available. Otherwise, this will be `false` if they're hidden.
-                          When restrictions are hidden and the current user isn't a staff member, the age range will be empty.
+                          Is service public even if user does not meet age requirements or not?
+
+                          `true` - to show service to everyone.
+                          `false` - to show service only to users who meet age requirements.
+                      is_month_enabled:
+                        type: boolean
+                        description: |-
+                          Whether months are enabled for age restrictions.
+
+                          `true` - age restrictions can include number of months.
+                          `false` - age restrictions can include only years.
                     required:
                       - i_age_from
+                      - i_age_from_month
+                      - i_age_from_year
                       - i_age_to
+                      - i_age_to_month
+                      - i_age_to_year
                       - is_age_public
+                      - is_month_enabled
                   a_data:
                     type: object
                     description: |-
@@ -81715,33 +81741,55 @@ paths:
                     description: |-
                       Displays information about age restrictions for this event.
 
-                      An empty array if there are no age restrictions.
+                      Will be empty array if there are no age restrictions.
                     properties:
                       i_age_from:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
                         format: int32
-                        description: |-
-                          The minimum age for participation in the event.
-                          `null` if there's no minimum age set or information isn't available.
+                        description: 'Minimum age for service (years part).'
+                      i_age_from_month:
+                        type: integer
+                        format: int32
+                        description: 'Minimum age for service (months part).'
+                      i_age_from_year:
+                        type: integer
+                        format: int32
+                        description: 'Minimum age for service (years part).'
                       i_age_to:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
                         format: int32
-                        description: |-
-                          The age limit for participation in the event.
-                             `null` if there's no age limit set or information isn't available.
+                        description: 'Maximum age for service (years part).'
+                      i_age_to_month:
+                        type: integer
+                        format: int32
+                        description: 'Maximum age for service (months part).'
+                      i_age_to_year:
+                        type: integer
+                        format: int32
+                        description: 'Maximum age for service (years part).'
                       is_age_public:
                         type: boolean
                         description: |-
-                          `true` if age restrictions are public and available, `false` if they're hidden.
-                          When restrictions are hidden and the current user isn't a staff member, the age range will be empty.
+                          Is service public even if user does not meet age requirements or not?
+
+                          `true` - to show service to everyone.
+                          `false` - to show service only to users who meet age requirements.
+                      is_month_enabled:
+                        type: boolean
+                        description: |-
+                          Whether months are enabled for age restrictions.
+
+                          `true` - age restrictions can include number of months.
+                          `false` - age restrictions can include only years.
                     required:
                       - i_age_from
+                      - i_age_from_month
+                      - i_age_from_year
                       - i_age_to
+                      - i_age_to_month
+                      - i_age_to_year
                       - is_age_public
+                      - is_month_enabled
                   a_book_available:
                     type: array
                     description: |-
@@ -84530,11 +84578,19 @@ paths:
                       i_age_from:
                         type: integer
                         format: int32
-                        description: 'The required minimum client age to book an appointment.'
+                        description: 'The required minimum client age to book an appointment (years part).'
+                      i_age_from_month:
+                        type: integer
+                        format: int32
+                        description: 'The required minimum client age to book an appointment (months part).'
                       i_age_to:
                         type: integer
                         format: int32
-                        description: 'The required maximum client age to book an appointment.'
+                        description: 'The required maximum client age to book an appointment (years part).'
+                      i_age_to_month:
+                        type: integer
+                        format: int32
+                        description: 'The required maximum client age to book an appointment (months part).'
                       i_price:
                         type: integer
                         format: int32
@@ -84647,7 +84703,9 @@ paths:
                       - hide_application
                       - html_deny_reason
                       - i_age_from
+                      - i_age_from_month
                       - i_age_to
+                      - i_age_to_month
                       - i_price
                       - i_duration
                       - id_book_flow
@@ -84965,11 +85023,19 @@ paths:
                       i_age_from:
                         type: integer
                         format: int32
-                        description: 'The required minimum client age to book an appointment.'
+                        description: 'The required minimum client age to book an appointment (years part).'
+                      i_age_from_month:
+                        type: integer
+                        format: int32
+                        description: 'The required minimum client age to book an appointment (months part).'
                       i_age_to:
                         type: integer
                         format: int32
-                        description: 'The required maximum client age to book an appointment.'
+                        description: 'The required maximum client age to book an appointment (years part).'
+                      i_age_to_month:
+                        type: integer
+                        format: int32
+                        description: 'The required maximum client age to book an appointment (months part).'
                       i_price:
                         type: integer
                         format: int32
@@ -85082,7 +85148,9 @@ paths:
                       - hide_application
                       - html_deny_reason
                       - i_age_from
+                      - i_age_from_month
                       - i_age_to
+                      - i_age_to_month
                       - i_price
                       - i_duration
                       - id_book_flow
@@ -92153,13 +92221,25 @@ paths:
                                 - integer
                                 - 'null'
                               format: int32
-                              description: "The minimum age permitted for the event. This will be `null` if a minimum age isn't set or available."
+                              description: "The minimum age permitted for the event (years part). This will be `null` if a minimum age isn't set or available."
+                            i_age_from_month:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: "The minimum age permitted for the event (month part). This will be `null` if a minimum age isn't set or available."
                             i_age_to:
                               type:
                                 - integer
                                 - 'null'
                               format: int32
-                              description: "The maximum age permitted for the event. This will be `null` if a maximum age isn't set or available."
+                              description: "The maximum age permitted for the event (years part). This will be `null` if a maximum age isn't set or available."
+                            i_age_to_month:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: "The maximum age permitted for the event (month part). This will be `null` if a maximum age isn't set or available."
                             is_age_public:
                               type: boolean
                               description: |-
@@ -92167,7 +92247,9 @@ paths:
                                 When restrictions are hidden and current user isn't a staff member, the age range will be empty.
                           required:
                             - i_age_from
+                            - i_age_from_month
                             - i_age_to
+                            - i_age_to_month
                             - is_age_public
                         a_class_tab:
                           type: array
