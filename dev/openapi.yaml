@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260724163532
+  version: 1.1.20260724184142
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -86408,6 +86408,101 @@ paths:
             In case of back-to-back booking - staff user key of first appointment.
             `0` means any available staff.
       x-instance-get-key: 'id_gender_staff,dt_date,k_location,k_service,k_resource,i_index,i_duration,uid,s_product,s_appointment,is_staff,is_back_to_back,k_timezone,k_class_tab,is_tab_all,uid_staff'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Book/Schedule/ServiceAvailability.json:
+    get:
+      operationId: Wl.Appointment.Book.Schedule.ServiceAvailability.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_time:
+                    type: object
+                    description: |-
+                      An array with a schedule of available appointment booking times.
+
+                      Each record contains availability data of one staff and have next structure:
+                    properties:
+                      a_availability:
+                        type: array
+                        description: 'Availability data of the staff. Keys are dates and values are lists of available appointment start times.'
+                        items:
+                          type: array
+                      text_name:
+                        type: string
+                        description: 'Staff name.'
+                      uid_staff:
+                        type: string
+                        description: 'Staff user key.'
+                    required:
+                      - a_availability
+                      - text_name
+                      - uid_staff
+                required:
+                  - a_time
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Retrieves a list of available appointment booking schedule.'
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dl_end
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: 'End date of search period in MySQL format, in location time zone.'
+        -
+          name: dl_start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: 'Start date of search period in MySQL format, in location time zone.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Location key.'
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Service key.'
+      x-instance-get-key: ''
       x-rate-limit:
         -
           limit: 200000
