@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260727110507
+  version: 1.1.20260727131008
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -84609,6 +84609,9 @@ paths:
                       id_service_require:
                         $ref: '#/components/schemas/RsServiceRequireSid'
                         description: 'The required payment type ID. One of [RsServiceRequireSid](#/components/schemas/RsServiceRequireSid) constants.'
+                      id_virtual_provider:
+                        $ref: '#/components/schemas/Wl.Virtual.VirtualProviderSid'
+                        description: 'Virtual provider ID. One of [VirtualProviderSid](#/components/schemas/Wl.Virtual.VirtualProviderSid) constants. `null` for non-virtual services.'
                       is_age_public:
                         type: boolean
                         description: '`true` if age restrictions are public. Otherwise, `false` if they should be hidden from clients.'
@@ -84710,6 +84713,7 @@ paths:
                       - id_book_flow
                       - id_deny_reason
                       - id_service_require
+                      - id_virtual_provider
                       - is_age_public
                       - is_age_restricted
                       - is_back_to_back
@@ -85054,6 +85058,9 @@ paths:
                       id_service_require:
                         $ref: '#/components/schemas/RsServiceRequireSid'
                         description: 'The required payment type ID. One of [RsServiceRequireSid](#/components/schemas/RsServiceRequireSid) constants.'
+                      id_virtual_provider:
+                        $ref: '#/components/schemas/Wl.Virtual.VirtualProviderSid'
+                        description: 'Virtual provider ID. One of [VirtualProviderSid](#/components/schemas/Wl.Virtual.VirtualProviderSid) constants. `null` for non-virtual services.'
                       is_age_public:
                         type: boolean
                         description: '`true` if age restrictions are public. Otherwise, `false` if they should be hidden from clients.'
@@ -85155,6 +85162,7 @@ paths:
                       - id_book_flow
                       - id_deny_reason
                       - id_service_require
+                      - id_virtual_provider
                       - is_age_public
                       - is_age_restricted
                       - is_back_to_back
@@ -86434,6 +86442,8 @@ paths:
                         description: 'Availability data of the staff. Keys are dates and values are lists of available appointment start times.'
                         items:
                           type: array
+                          items:
+                            type: string
                       text_name:
                         type: string
                         description: 'Staff name.'
@@ -86459,6 +86469,9 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Retrieves a list of available appointment booking schedule.'
+      description: |-
+        Returns list of staff that can provide selected appointment. Each staff data contains list of dates from
+        selected period when appointment can be booked. Each date contains list of available appointment start times.
       tags:
         - Appointments
       parameters:
