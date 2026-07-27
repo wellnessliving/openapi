@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260727052928
+  version: 1.1.20260727064234
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -85696,9 +85696,8 @@ paths:
                     description: 'Array with information about current user and his relationship with sub accounts.'
                     properties:
                       id_family_relation:
-                        type: integer
-                        format: int32
-                        description: 'ID of relationship between current user and sub account.'
+                        $ref: '#/components/schemas/RsFamilyRelationSid'
+                        description: 'ID of relationship between current user and sub account from [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).'
                       s_name:
                         type: string
                         description: 'Name of sub account.'
