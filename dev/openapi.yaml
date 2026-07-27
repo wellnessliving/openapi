@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260727162833
+  version: 1.1.20260727194722
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -9024,6 +9024,9 @@ paths:
                         is_active:
                           type: boolean
                           description: 'Whether the promotion is active.'
+                        is_component:
+                          type: boolean
+                          description: 'Whether the promotion is a component.'
                         k_promotion:
                           type: string
                           description: 'The key of the promotion.'
@@ -9034,6 +9037,7 @@ paths:
                         - id_program
                         - id_program_type
                         - is_active
+                        - is_component
                         - k_promotion
                         - text_title
                 required:
@@ -67948,6 +67952,17 @@ paths:
                       type: object
                       description: 'Selected checkout items.'
                       properties:
+                        dtu_session:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Selected booking session datetime.
+                            `null` if not available.
+                        i_order:
+                          type: integer
+                          format: int32
+                          description: 'Zero-based item order in the checkout list.'
                         id_purchase_item:
                           $ref: '#/components/schemas/RsPurchaseItemSid'
                           description: |-
@@ -67992,8 +68007,20 @@ paths:
                             - [ServiceSid::APPOINTMENT](#/components/schemas/Wl.Service.ServiceSid), this is a service key.
                             - [ServiceSid::BOOKABLE_ASSET](#/components/schemas/Wl.Service.ServiceSid), this is an asset key.
                             - [ServiceSid::CLASSES](#/components/schemas/Wl.Service.ServiceSid) or [ServiceSid::EVENT](#/components/schemas/Wl.Service.ServiceSid), this is a class key.
+                        m_price:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Checkout item price in the location currency.
+                            `null` if not available.
+                        text_service_name:
+                          type: string
+                          description: 'Item name snapshot from checkout.'
                       required:
+                        - i_order
                         - k_item
+                        - text_service_name
                     id_checkout_type:
                       $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid'
                       description: |-
@@ -68057,7 +68084,7 @@ paths:
                     - url_continue
                 id_event_name:
                   $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventSid'
-                  description: 'Event name. Initially only [WidgetAnalyticsEventSid::ABANDONED_CHECKOUT](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventSid) is supported.'
+                  description: 'Event name.'
                 id_event_version:
                   $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid'
                   description: 'Event schema version. Currently only [WidgetAnalyticsEventVersionSid::V1](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid) is supported.'
@@ -107611,9 +107638,10 @@ components:
 
         Pay attention that all `\MailPrioritySid` must start with backslash.
 
-        Last used ID: 219.
+        Last used ID: 220.
 
         Values:
+        - 220 (`ABANDONED_CHECKOUT`): Sent when a client abandons a checkout (used in automations).
         - 206 (`AI_LINK_BOOK`): Sent by CASSI phone agent, when client requests a booking url.
         - 207 (`AI_LINK_PURCHASE`): Sent by CASSI phone agent, when client requests a purchase url.
         - 71 (`APPOINTMENT_APPROVE_STAFF`): Appointment approved by staff.
@@ -108052,6 +108080,7 @@ components:
         - 190 (`VISIT_RECEIPT_RECEIPT`): Visit receipt.
         - 149 (`ZOOM_LICENSE_LACK`): Email, which is sent when a Zoom license is lack.
       enum:
+        - 220
         - 206
         - 207
         - 71
@@ -108246,6 +108275,7 @@ components:
         - 190
         - 149
       x-enum-varnames:
+        - ABANDONED_CHECKOUT
         - AI_LINK_BOOK
         - AI_LINK_PURCHASE
         - APPOINTMENT_APPROVE_STAFF
@@ -108440,6 +108470,7 @@ components:
         - VISIT_RECEIPT_RECEIPT
         - ZOOM_LICENSE_LACK
       x-enum-descriptions:
+        - 'Sent when a client abandons a checkout (used in automations).'
         - 'Sent by CASSI phone agent, when client requests a booking url.'
         - 'Sent by CASSI phone agent, when client requests a purchase url.'
         - 'Appointment approved by staff.'
@@ -112340,16 +112371,24 @@ components:
       description: |-
         Widget analytics event types.
 
-        Last ID: 1
+        Last ID: 3
 
         Values:
         - 1 (`ABANDONED_CHECKOUT`): Checkout abandonment event.
+        - 2 (`BEGIN_CHECKOUT`): Begin checkout event.
+        - 3 (`PURCHASE`): Purchase event.
       enum:
         - 1
+        - 2
+        - 3
       x-enum-varnames:
         - ABANDONED_CHECKOUT
+        - BEGIN_CHECKOUT
+        - PURCHASE
       x-enum-descriptions:
         - 'Checkout abandonment event.'
+        - 'Begin checkout event.'
+        - 'Purchase event.'
     Wl.Widget.Analytics.WidgetAnalyticsEventVersionSid:
       type: integer
       format: int32
