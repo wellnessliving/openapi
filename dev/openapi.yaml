@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260728110852
+  version: 1.1.20260728120850
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -50118,6 +50118,39 @@ paths:
                         - s_answer
                         - s_key
                         - s_question
+                  a_repeat:
+                    type: object
+                    description: |-
+                      Repeat settings for appointment reschedule.
+
+                      Empty array for non-recurring appointment.
+
+                      Has next keys:
+                    properties:
+                      a_day:
+                        type: array
+                        description: 'Days of week to repeat appointment. Constants from [ADateWeekSid](#/components/schemas/ADateWeekSid).'
+                        items:
+                          type: integer
+                          format: int32
+                      dl_date:
+                        type: string
+                        description: 'Current appointment date in location timezone in MySQL date format.'
+                      dl_edit_from:
+                        type: string
+                        description: 'Start date for range edit in location timezone in MySQL date format.'
+                      dl_edit_to:
+                        type: string
+                        description: 'End date for range edit in location timezone in MySQL date format.'
+                      tl_time:
+                        type: string
+                        description: 'Current appointment local start time in MySQL time format.'
+                    required:
+                      - a_day
+                      - dl_date
+                      - dl_edit_from
+                      - dl_edit_to
+                      - tl_time
                   a_resource:
                     type: array
                     description: 'List of assets used by this appointment. Each element contains:'
@@ -50271,6 +50304,7 @@ paths:
                   - a_next
                   - a_previous
                   - a_question
+                  - a_repeat
                   - a_resource
                   - a_shop_product_option
                   - dt_date_local
@@ -50307,7 +50341,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Class identifier to get information for.'
+          description: 'Appointment key to get information for.'
       x-instance-get-key: k_appointment
       x-rate-limit:
         -
@@ -86724,7 +86758,6 @@ paths:
           schema:
             type: string
           description: 'Service key.'
-      x-instance-get-key: ''
       x-rate-limit:
         -
           limit: 200000
