@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260728141413
+  version: 1.1.20260728144420
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -38727,17 +38727,29 @@ paths:
                         type: string
                         description: 'Timezone title.'
                       i_age_from:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
                         format: int32
-                        description: 'Age from that class is allowed. `null` if information is not available.'
+                        description: 'The minimum age restriction. Deprecated and is left only for back compatibility.'
+                      i_age_from_month:
+                        type: integer
+                        format: int32
+                        description: 'The minimum age restriction (months).'
+                      i_age_from_year:
+                        type: integer
+                        format: int32
+                        description: 'The minimum age restriction (years).'
                       i_age_to:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
                         format: int32
-                        description: 'Age to that class is allowed. `null` if information is not available.'
+                        description: 'The maximum age restriction. Deprecated and is left only for back compatibility.'
+                      i_age_to_month:
+                        type: integer
+                        format: int32
+                        description: 'The maximum age restriction (months).'
+                      i_age_to_year:
+                        type: integer
+                        format: int32
+                        description: 'The maximum age restriction (years).'
                       i_book:
                         type: integer
                         format: int32
@@ -38825,7 +38837,11 @@ paths:
                       - html_special
                       - text_timezone
                       - i_age_from
+                      - i_age_from_month
+                      - i_age_from_year
                       - i_age_to
+                      - i_age_to_month
+                      - i_age_to_year
                       - i_book
                       - i_book_active
                       - i_capacity
@@ -39020,17 +39036,29 @@ paths:
                               type: string
                               description: 'Timezone title.'
                             i_age_from:
-                              type:
-                                - integer
-                                - 'null'
+                              type: integer
                               format: int32
-                              description: 'Age from that class is allowed. `null` if information is not available.'
+                              description: 'The minimum age restriction. Deprecated and is left only for back compatibility.'
+                            i_age_from_month:
+                              type: integer
+                              format: int32
+                              description: 'The minimum age restriction (months).'
+                            i_age_from_year:
+                              type: integer
+                              format: int32
+                              description: 'The minimum age restriction (years).'
                             i_age_to:
-                              type:
-                                - integer
-                                - 'null'
+                              type: integer
                               format: int32
-                              description: 'Age to that class is allowed. `null` if information is not available.'
+                              description: 'The maximum age restriction. Deprecated and is left only for back compatibility.'
+                            i_age_to_month:
+                              type: integer
+                              format: int32
+                              description: 'The maximum age restriction (months).'
+                            i_age_to_year:
+                              type: integer
+                              format: int32
+                              description: 'The maximum age restriction (years).'
                             i_book:
                               type: integer
                               format: int32
@@ -39118,7 +39146,11 @@ paths:
                             - html_special
                             - text_timezone
                             - i_age_from
+                            - i_age_from_month
+                            - i_age_from_year
                             - i_age_to
+                            - i_age_to_month
+                            - i_age_to_year
                             - i_book
                             - i_book_active
                             - i_capacity
@@ -39584,17 +39616,29 @@ paths:
                         type: string
                         description: 'Timezone title.'
                       i_age_from:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
                         format: int32
-                        description: 'Age from that class is allowed. `null` if information is not available.'
+                        description: 'The minimum age restriction. Deprecated and is left only for back compatibility.'
+                      i_age_from_month:
+                        type: integer
+                        format: int32
+                        description: 'The minimum age restriction (months).'
+                      i_age_from_year:
+                        type: integer
+                        format: int32
+                        description: 'The minimum age restriction (years).'
                       i_age_to:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
                         format: int32
-                        description: 'Age to that class is allowed. `null` if information is not available.'
+                        description: 'The maximum age restriction. Deprecated and is left only for back compatibility.'
+                      i_age_to_month:
+                        type: integer
+                        format: int32
+                        description: 'The maximum age restriction (months).'
+                      i_age_to_year:
+                        type: integer
+                        format: int32
+                        description: 'The maximum age restriction (years).'
                       i_book:
                         type: integer
                         format: int32
@@ -39682,7 +39726,11 @@ paths:
                       - html_special
                       - text_timezone
                       - i_age_from
+                      - i_age_from_month
+                      - i_age_from_year
                       - i_age_to
+                      - i_age_to_month
+                      - i_age_to_year
                       - i_book
                       - i_book_active
                       - i_capacity
@@ -39877,17 +39925,29 @@ paths:
                               type: string
                               description: 'Timezone title.'
                             i_age_from:
-                              type:
-                                - integer
-                                - 'null'
+                              type: integer
                               format: int32
-                              description: 'Age from that class is allowed. `null` if information is not available.'
+                              description: 'The minimum age restriction. Deprecated and is left only for back compatibility.'
+                            i_age_from_month:
+                              type: integer
+                              format: int32
+                              description: 'The minimum age restriction (months).'
+                            i_age_from_year:
+                              type: integer
+                              format: int32
+                              description: 'The minimum age restriction (years).'
                             i_age_to:
-                              type:
-                                - integer
-                                - 'null'
+                              type: integer
                               format: int32
-                              description: 'Age to that class is allowed. `null` if information is not available.'
+                              description: 'The maximum age restriction. Deprecated and is left only for back compatibility.'
+                            i_age_to_month:
+                              type: integer
+                              format: int32
+                              description: 'The maximum age restriction (months).'
+                            i_age_to_year:
+                              type: integer
+                              format: int32
+                              description: 'The maximum age restriction (years).'
                             i_book:
                               type: integer
                               format: int32
@@ -39975,7 +40035,11 @@ paths:
                             - html_special
                             - text_timezone
                             - i_age_from
+                            - i_age_from_month
+                            - i_age_from_year
                             - i_age_to
+                            - i_age_to_month
+                            - i_age_to_year
                             - i_book
                             - i_book_active
                             - i_capacity
@@ -42381,11 +42445,27 @@ paths:
                         i_age_from:
                           type: integer
                           format: int32
-                          description: 'The minimum age restriction.'
+                          description: 'The minimum age restriction. Deprecated and is left only for back compatibility.'
+                        i_age_from_month:
+                          type: integer
+                          format: int32
+                          description: 'The minimum age restriction (months).'
+                        i_age_from_year:
+                          type: integer
+                          format: int32
+                          description: 'The minimum age restriction (years).'
                         i_age_to:
                           type: integer
                           format: int32
-                          description: 'The maximum age restriction.'
+                          description: 'The maximum age restriction. Deprecated and is left only for back compatibility.'
+                        i_age_to_month:
+                          type: integer
+                          format: int32
+                          description: 'The maximum age restriction (months).'
+                        i_age_to_year:
+                          type: integer
+                          format: int32
+                          description: 'The maximum age restriction (years).'
                         is_age_public:
                           type: boolean
                           description: 'Determines whether age restriction exist and should be taken into account prior to booking this class/event.'
@@ -42455,7 +42535,11 @@ paths:
                         - html_description
                         - html_special_instruction
                         - i_age_from
+                        - i_age_from_month
+                        - i_age_from_year
                         - i_age_to
+                        - i_age_to_month
+                        - i_age_to_year
                         - is_age_public
                         - is_bookable
                         - is_online_private
