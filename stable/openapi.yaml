@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260728080850
+  version: 1.1.20260728101418
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -30291,7 +30291,7 @@ paths:
                       dl_edit_to:
                         type: string
                         description: 'End date for range edit in location timezone in MySQL date format.'
-                      tl_time:
+                      s_time:
                         type: string
                         description: 'Current appointment local start time in MySQL time format.'
                     required:
@@ -30299,7 +30299,7 @@ paths:
                       - dl_date
                       - dl_edit_from
                       - dl_edit_to
-                      - tl_time
+                      - s_time
                   a_resource:
                     type: array
                     description: 'List of assets used by this appointment. Each element contains:'
@@ -86875,6 +86875,11 @@ paths:
                             - k_pay_installment_template
                             - m_amount
                             - s_duration
+                        a_makeup_class:
+                          type: array
+                          description: 'Classes selected for make-up sessions. See [ElementApi::$a_makeup_class](/Wl/Event/Book/EventView/Element.json).'
+                          items:
+                            type: array
                         a_schedule:
                           type: object
                           description: 'Schedule of event sessions. See [ElementApi::$a_schedule](/Wl/Event/Book/EventView/Element.json).'
@@ -87050,6 +87055,12 @@ paths:
                         html_special:
                           type: string
                           description: 'Special instruction for event.'
+                        i_makeup_cap:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of allowed make-up sessions for event.
+                            `0` if make-up sessions are disabled for event or all missed sessions are available for make-up.
                         i_session:
                           type: integer
                           format: int32
@@ -87105,6 +87116,7 @@ paths:
                         - a_class_logo
                         - a_class_tab
                         - a_installment_template
+                        - a_makeup_class
                         - a_schedule
                         - a_shop_category
                         - a_staff_logo
@@ -87116,6 +87128,7 @@ paths:
                         - html_start
                         - hide_application
                         - html_special
+                        - i_makeup_cap
                         - i_session
                         - i_session_remain
                         - is_availability_checked
@@ -87169,6 +87182,26 @@ paths:
                         - k_pay_installment_template
                         - m_amount
                         - s_duration
+                  a_makeup_class:
+                    type: array
+                    description: |-
+                      Class selected for make-up sessions.
+
+                      Every element has the following keys:
+                    items:
+                      type: object
+                      properties:
+                        k_class:
+                          type: string
+                          description: 'Class key. Primary key in table RsClassSql.'
+                        s_title:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Class title. `null` if title is unavailable for the selected language.'
+                      required:
+                        - k_class
+                        - s_title
                   a_schedule:
                     type: array
                     description: 'A list of event sessions. Every element has the following next keys:'
@@ -87419,6 +87452,13 @@ paths:
                       Class capacity.
 
                       `null` if no set.
+                  i_makeup_cap:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of allowed make-up sessions for event.
+
+                      `0` if make-up sessions are disabled for event or all missed sessions are available for make-up.
                   i_session:
                     type: integer
                     format: int32
@@ -87554,6 +87594,7 @@ paths:
                   - a_class_tab
                   - a_event
                   - a_installment_template
+                  - a_makeup_class
                   - a_schedule
                   - a_shop_category
                   - a_staff_logo
@@ -87563,6 +87604,7 @@ paths:
                   - dt_start
                   - hide_application
                   - html_special
+                  - i_makeup_cap
                   - i_session
                   - i_session_remain
                   - id_pay_require
