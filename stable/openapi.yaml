@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260728022907
+  version: 1.1.20260728045411
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -60062,6 +60062,13 @@ paths:
           schema:
             type: string
           description: "Action type. Must be 'purchase' or 'booking'."
+        -
+          name: text_url_suffix
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'URL suffix for the link. Optional.'
         -
           name: uid
           in: query
