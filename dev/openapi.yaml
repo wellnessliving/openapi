@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260728120850
+  version: 1.1.20260728124345
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68031,12 +68031,8 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Enrollment block key for an event item.
-                            Empty for all other item types.
-
-                            Required when checkout type is
-                            [WidgetAnalyticsCheckoutTypeSid::BOOKING](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid) and the item type is
-                            [ServiceSid::EVENT](#/components/schemas/Wl.Service.ServiceSid); `null` for all other item types.
+                            Optional enrollment block key for an event item.
+                            `''` when an enrollment block is not available.
                         k_item:
                           type: string
                           description: |-
@@ -68093,7 +68089,7 @@ paths:
                       type: string
                       description: |-
                         Widget checkout session identifier.
-                        Empty if it is unavailable. It is used only for diagnostics and continuation context, not for idempotency.
+                        Used for diagnostics and continuation context, not for idempotency.
                     s_utm_campaign:
                       type: string
                       description: |-
@@ -95056,9 +95052,14 @@ paths:
                   maxLength: 100
                   description: 'Bundle ID / package name (e.g. `com.fitness.studio`).'
                 text_email:
-                  type: string
+                  type:
+                    - string
+                    - 'null'
                   format: email
-                  description: 'Support email address shown in the store listing.'
+                  description: |-
+                    Support email address shown in the store listing.
+
+                    `null` to not change exists email.
                 text_information:
                   type: string
                   maxLength: 4000
@@ -95096,7 +95097,6 @@ paths:
                 - text_description
                 - text_description_google
                 - text_domain
-                - text_email
                 - text_information
                 - text_keyword
                 - text_name
