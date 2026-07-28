@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260725043937
+  version: 1.1.20260728064232
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5639,10 +5639,10 @@ paths:
         Site keys for initialize Google reCAPTCHA:
         * Version 2 (invisible):
           * Demo/Staging - `6Ldqwe0gAAAAANve1TEPFb_Yxgb9wsoIfrNL6-2Z`
-          * Production - `6LeOGp4hAAAAACDoQeLUxnu2TAXXZWhdSm118auy`
+          * Production - `6LeyHWMtAAAAAHvGsUJgYmNlnVIoj82Z4rg4yHmv`
         * Version 3:
           * Demo/Staging - `6Lc7bukqAAAAAHzXhG6WytHsGbz6rYYyklg_0kMb`
-          * Production - `6LcGn18rAAAAAPJNY1pGuoaTCM1MOBxz5HgE_4Vy`
+          * Production - `6LfMH2MtAAAAABzJMxRl6JQ6NQ2W-__HYD9uajPs`
       tags:
         - 'Google Captcha'
       parameters:
@@ -26158,10 +26158,10 @@ paths:
         Site keys for initialize Google reCAPTCHA:
         * Version 2 (invisible):
           * Demo/Staging - `6Ldqwe0gAAAAANve1TEPFb_Yxgb9wsoIfrNL6-2Z`
-          * Production - `6LeOGp4hAAAAACDoQeLUxnu2TAXXZWhdSm118auy`
+          * Production - `6LeyHWMtAAAAAHvGsUJgYmNlnVIoj82Z4rg4yHmv`
         * Version 3:
           * Demo/Staging - `6Lc7bukqAAAAAHzXhG6WytHsGbz6rYYyklg_0kMb`
-          * Production - `6LcGn18rAAAAAPJNY1pGuoaTCM1MOBxz5HgE_4Vy`
+          * Production - `6LfMH2MtAAAAABzJMxRl6JQ6NQ2W-__HYD9uajPs`
       tags:
         - 'Google Captcha'
       parameters:
@@ -33725,12 +33725,19 @@ paths:
                   is_event:
                     type: boolean
                     description: '`true` means event, `false` means class.'
+                  k_enrollment_block:
+                    type: string
+                    description: |-
+                      Key of the group of events, which are different instances of the same event.
+
+                      Is always `0` for classes.
                   text_title:
                     type: string
                     description: 'Title of the class.'
                 required:
                   - a_logo
                   - is_event
+                  - k_enrollment_block
                   - text_title
         '400':
           $ref: '#/components/responses/400'
@@ -45321,6 +45328,56 @@ paths:
             type: string
           description: 'The business key used internally by WellnessLiving.'
       x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Login/Rank/LoginRankElement.json:
+    delete:
+      operationId: Wl.Login.Rank.LoginRankElement.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Deletes a rank record for a user.'
+      description: 'Removes the rank record from the database and logs the action in the belt history.'
+      tags:
+        - Login
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_rank_category
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'To delete entire rank category from this user.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_login_rank
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Login rank key.'
       x-rate-limit:
         -
           limit: 200000
@@ -69592,9 +69649,8 @@ paths:
                     description: 'Array with information about current user and his relationship with sub accounts.'
                     properties:
                       id_family_relation:
-                        type: integer
-                        format: int32
-                        description: 'ID of relationship between current user and sub account.'
+                        $ref: '#/components/schemas/RsFamilyRelationSid'
+                        description: 'ID of relationship between current user and sub account from [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).'
                       s_name:
                         type: string
                         description: 'Name of sub account.'
@@ -70220,11 +70276,12 @@ paths:
                           Last used ID: 5.
 
                           Values:
-                          - 4 (`CHAT_AGENT`): Chat Agent
                           - 5 (`DENTAL_PHONE_AGENT`): Dental Phone Agent
                           - 1 (`FREE`): None
                           - 2 (`PROFESSIONAL`): Professional
+                          - 6 (`PROFESSIONAL_TRIAL`): Professional subscription, which will be automatically converted to [AiAgentSubscriptionSid::PROFESSIONAL](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
                           - 3 (`STANDARD`): Assistant
+                          - 7 (`STANDARD_TRIAL`): Standard subscription, which will be automatically converted to [AiAgentSubscriptionSid::STANDARD](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
                       -
                         $ref: '#/components/schemas/Wl.Business.Account.Subscription.Achieve.AchieveSubscriptionSid'
                         description: |-
@@ -74841,6 +74898,9 @@ paths:
                       id_service_require:
                         $ref: '#/components/schemas/RsServiceRequireSid'
                         description: 'The required payment type ID. One of [RsServiceRequireSid](#/components/schemas/RsServiceRequireSid) constants.'
+                      id_virtual_provider:
+                        $ref: '#/components/schemas/Wl.Virtual.VirtualProviderSid'
+                        description: 'Virtual provider ID. One of [VirtualProviderSid](#/components/schemas/Wl.Virtual.VirtualProviderSid) constants. `null` for non-virtual services.'
                       is_age_public:
                         type: boolean
                         description: '`true` if age restrictions are public. Otherwise, `false` if they should be hidden from clients.'
@@ -74940,6 +75000,7 @@ paths:
                       - id_book_flow
                       - id_deny_reason
                       - id_service_require
+                      - id_virtual_provider
                       - is_age_public
                       - is_age_restricted
                       - is_back_to_back
@@ -75429,6 +75490,9 @@ paths:
                       id_service_require:
                         $ref: '#/components/schemas/RsServiceRequireSid'
                         description: 'The required payment type ID. One of [RsServiceRequireSid](#/components/schemas/RsServiceRequireSid) constants.'
+                      id_virtual_provider:
+                        $ref: '#/components/schemas/Wl.Virtual.VirtualProviderSid'
+                        description: 'Virtual provider ID. One of [VirtualProviderSid](#/components/schemas/Wl.Virtual.VirtualProviderSid) constants. `null` for non-virtual services.'
                       is_age_public:
                         type: boolean
                         description: '`true` if age restrictions are public. Otherwise, `false` if they should be hidden from clients.'
@@ -75528,6 +75592,7 @@ paths:
                       - id_book_flow
                       - id_deny_reason
                       - id_service_require
+                      - id_virtual_provider
                       - is_age_public
                       - is_age_restricted
                       - is_back_to_back
@@ -82321,6 +82386,13 @@ paths:
                                 k_class:
                                   type: string
                                   description: 'Key of the event class within the tuition which should be granted to the client.'
+                                m_checkout:
+                                  type: string
+                                  description: |-
+                                    The amount that will be charged for this event when the tuition is purchased.
+                                         Calculated based on the payment schedule (full amount or the prorated part due now).
+                                         Can be overridden manually. If not specified or `null`, the amount will be calculated
+                                         automatically.
                                 m_price:
                                   type: string
                                   description: |-
@@ -82571,6 +82643,13 @@ paths:
                         k_class:
                           type: string
                           description: 'Key of the event class within the tuition which should be granted to the client.'
+                        m_checkout:
+                          type: string
+                          description: |-
+                            The amount that will be charged for this event when the tuition is purchased.
+                                 Calculated based on the payment schedule (full amount or the prorated part due now).
+                                 Can be overridden manually. If not specified or `null`, the amount will be calculated
+                                 automatically.
                         m_price:
                           type: string
                           description: |-
@@ -109805,29 +109884,33 @@ components:
         Last used ID: 5.
 
         Values:
-        - 4 (`CHAT_AGENT`): Chat Agent
         - 5 (`DENTAL_PHONE_AGENT`): Dental Phone Agent
         - 1 (`FREE`): None
         - 2 (`PROFESSIONAL`): Professional
+        - 6 (`PROFESSIONAL_TRIAL`): Professional subscription, which will be automatically converted to [AiAgentSubscriptionSid::PROFESSIONAL](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
         - 3 (`STANDARD`): Assistant
+        - 7 (`STANDARD_TRIAL`): Standard subscription, which will be automatically converted to [AiAgentSubscriptionSid::STANDARD](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
       enum:
-        - 4
         - 5
         - 1
         - 2
+        - 6
         - 3
+        - 7
       x-enum-varnames:
-        - CHAT_AGENT
         - DENTAL_PHONE_AGENT
         - FREE
         - PROFESSIONAL
+        - PROFESSIONAL_TRIAL
         - STANDARD
+        - STANDARD_TRIAL
       x-enum-descriptions:
-        - 'Chat Agent'
         - 'Dental Phone Agent'
         - None
         - Professional
+        - 'Professional subscription, which will be automatically converted to {@link \Wl\Business\Account\Subscription\AiAgent\AiAgentSubscriptionSid::PROFESSIONAL} after the 5th lead.'
         - Assistant
+        - 'Standard subscription, which will be automatically converted to {@link \Wl\Business\Account\Subscription\AiAgent\AiAgentSubscriptionSid::STANDARD} after the 5th lead.'
     Wl.Business.Account.Subscription.Sms.SmsSubscriptionSid:
       type: integer
       format: int32
