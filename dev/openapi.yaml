@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260728164739
+  version: 1.1.20260728191801
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68185,9 +68185,6 @@ paths:
                     uid:
                       type: string
                       description: 'User key for whom checkout was abandoned.'
-                    url_continue:
-                      type: string
-                      description: 'URL that restores the booking or purchase flow with the selected items.'
                   required:
                     - a_item
                     - id_checkout_type
@@ -68199,7 +68196,6 @@ paths:
                     - s_utm_medium
                     - s_utm_source
                     - uid
-                    - url_continue
                 id_event_name:
                   $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsEventSid'
                   description: 'Event name.'
