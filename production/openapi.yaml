@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260728064232
+  version: 1.1.20260728124823
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5639,10 +5639,10 @@ paths:
         Site keys for initialize Google reCAPTCHA:
         * Version 2 (invisible):
           * Demo/Staging - `6Ldqwe0gAAAAANve1TEPFb_Yxgb9wsoIfrNL6-2Z`
-          * Production - `6LeyHWMtAAAAAHvGsUJgYmNlnVIoj82Z4rg4yHmv`
+          * Production - `6LfMH2MtAAAAABzJMxRl6JQ6NQ2W-__HYD9uajPs`
         * Version 3:
           * Demo/Staging - `6Lc7bukqAAAAAHzXhG6WytHsGbz6rYYyklg_0kMb`
-          * Production - `6LfMH2MtAAAAABzJMxRl6JQ6NQ2W-__HYD9uajPs`
+          * Production - `6LeyHWMtAAAAAHvGsUJgYmNlnVIoj82Z4rg4yHmv`
       tags:
         - 'Google Captcha'
       parameters:
@@ -26158,10 +26158,10 @@ paths:
         Site keys for initialize Google reCAPTCHA:
         * Version 2 (invisible):
           * Demo/Staging - `6Ldqwe0gAAAAANve1TEPFb_Yxgb9wsoIfrNL6-2Z`
-          * Production - `6LeyHWMtAAAAAHvGsUJgYmNlnVIoj82Z4rg4yHmv`
+          * Production - `6LfMH2MtAAAAABzJMxRl6JQ6NQ2W-__HYD9uajPs`
         * Version 3:
           * Demo/Staging - `6Lc7bukqAAAAAHzXhG6WytHsGbz6rYYyklg_0kMb`
-          * Production - `6LfMH2MtAAAAABzJMxRl6JQ6NQ2W-__HYD9uajPs`
+          * Production - `6LeyHWMtAAAAAHvGsUJgYmNlnVIoj82Z4rg4yHmv`
       tags:
         - 'Google Captcha'
       parameters:
@@ -71761,9 +71761,14 @@ paths:
                   maxLength: 100
                   description: 'Bundle ID / package name (e.g. `com.fitness.studio`).'
                 text_email:
-                  type: string
+                  type:
+                    - string
+                    - 'null'
                   format: email
-                  description: 'Support email address shown in the store listing.'
+                  description: |-
+                    Support email address shown in the store listing.
+
+                    `null` to not change exists email.
                 text_information:
                   type: string
                   maxLength: 4000
@@ -71801,7 +71806,6 @@ paths:
                 - text_description
                 - text_description_google
                 - text_domain
-                - text_email
                 - text_information
                 - text_keyword
                 - text_name
