@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260727203136
+  version: 1.1.20260728083428
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8086,6 +8086,9 @@ paths:
                         text_address:
                           type: string
                           description: "The location's full address."
+                        text_region_code:
+                          type: string
+                          description: "The location's region abbreviation."
                         url_logo:
                           type: string
                           description: "The location logo's URL. This will only be set if the location has a logo and contains small thumbnail of the image."
@@ -8106,6 +8109,7 @@ paths:
                         - s_phone
                         - s_title
                         - text_address
+                        - text_region_code
                 required:
                   - a_location
         '400':
@@ -65919,6 +65923,13 @@ paths:
           schema:
             type: string
           description: "Action type. Must be 'purchase' or 'booking'."
+        -
+          name: text_url_suffix
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'URL suffix for the link. Optional.'
         -
           name: uid
           in: query
