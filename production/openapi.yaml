@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260728124823
+  version: 1.1.20260729084944
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -24801,6 +24801,11 @@ paths:
                       id_card_system:
                         $ref: '#/components/schemas/ACardSystemSid'
                         description: 'The card system ID. This is one of the [ACardSystemSid](#/components/schemas/ACardSystemSid) constants.'
+                      is_autopay:
+                        type: boolean
+                        description: |-
+                          If `true`, this card backs at least one active autopay membership or package.
+                          If `false`, no active autopay membership or package is pinned to this card.
                       is_default:
                         type: boolean
                         description: |-
@@ -24829,6 +24834,7 @@ paths:
                       - i_month
                       - i_year
                       - id_card_system
+                      - is_autopay
                       - is_default
                       - k_pay_address
                       - k_pay_bank
@@ -24854,6 +24860,11 @@ paths:
                         id_card_system:
                           $ref: '#/components/schemas/ACardSystemSid'
                           description: 'The card system ID. This is one of the [ACardSystemSid](#/components/schemas/ACardSystemSid) constants.'
+                        is_autopay:
+                          type: boolean
+                          description: |-
+                            If `true`, this card backs at least one active autopay membership or package.
+                            If `false`, no active autopay membership or package is pinned to this card.
                         is_default:
                           type: boolean
                           description: |-
@@ -24882,6 +24893,7 @@ paths:
                         - i_month
                         - i_year
                         - id_card_system
+                        - is_autopay
                         - is_default
                         - k_pay_address
                         - k_pay_bank
@@ -24895,10 +24907,18 @@ paths:
 
                       `true` if new cards can be added.
                       `false` if new cards can not be added.
+                  can_remove_self:
+                    type: boolean
+                    description: |-
+                      Whether the client is allowed to remove their own saved credit cards.
+
+                      `true` if the client can remove their own saved credit cards.
+                      `false` if the client must contact the business to remove a saved credit card.
                 required:
                   - a_bank_card
                   - a_list
                   - can_add
+                  - can_remove_self
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -67366,6 +67386,203 @@ paths:
           schema:
             type: string
           description: 'Key of the tuition in tuition microservice.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/ReportCore/QueryEngine/Report/Customization/ReportQueryCustomizationForm.json:
+    get:
+      operationId: Thoth.ReportCore.QueryEngine.Report.Customization.ReportQueryCustomizationForm.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_customization_form:
+                    type: array
+                    description: |-
+                      Customization form data.
+                      See CustomizationFormAbstract::toArray() for details.
+                required:
+                  - a_customization_form
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: cid_page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: 'Report page CID.'
+        -
+          name: cid_report
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: 'Page CID.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business primary key in RsBusinessSql table.'
+        -
+          name: k_report_query
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            SQL query primary key. Primary key in ReportQuerySql.
+
+            Scopes the customization record to a specific SQL query.
+            `null` loads the generic shared row as a backward-compatible fallback.
+        -
+          name: k_report_save
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Primary key of a saved report in RsReportSaveSql table.
+
+            `null` means that report is not saved.
+        -
+          name: s_report
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Report CID list to that page customization form must be converted. String separated with `,`.
+
+            May be specified only if [CustomizationFormApi::$cid_page](/Wl/Report/Customization/CustomizationForm.json) in not empty.
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "Current user's primary key in PassportLoginAr table."
+      x-instance-get-key: 'cid_page,cid_report,k_business,k_report_query,k_report_save,s_report,uid_actor'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Thoth.ReportCore.QueryEngine.Report.Customization.ReportQueryCustomizationForm.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: cid_page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: 'Report page CID.'
+        -
+          name: cid_report
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: 'Page CID.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business primary key in RsBusinessSql table.'
+        -
+          name: k_report_query
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            SQL query primary key. Primary key in ReportQuerySql.
+
+            Scopes the customization record to a specific SQL query.
+            `null` loads the generic shared row as a backward-compatible fallback.
+        -
+          name: k_report_save
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Primary key of a saved report in RsReportSaveSql table.
+
+            `null` means that report is not saved.
+        -
+          name: uid_actor
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "Current user's primary key in PassportLoginAr table."
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_customization_form:
+                  type: array
+                  description: |-
+                    Customization form data.
+                    See CustomizationFormAbstract::toArray() for details.
+              required:
+                - a_customization_form
+      x-instance-get-key: 'cid_page,cid_report,k_business,k_report_query,k_report_save,s_report,uid_actor'
       x-rate-limit:
         -
           limit: 200000
