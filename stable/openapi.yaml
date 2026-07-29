@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260729064930
+  version: 1.1.20260729081405
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -29739,7 +29739,9 @@ paths:
                     description: 'The name of class or service.'
                   text_location:
                     type: string
-                    description: 'Location title.'
+                    description: |-
+                      Location title. If the visit is assigned a resource whose category is [ResourceCategoryEnum::LOCATION](#/components/schemas/Wl.Resource.ResourceCategoryEnum),
+                      this is that resource's title instead of the actual location's title.
                   text_room:
                     type: string
                     description: 'Room where session takes place.'
@@ -41522,7 +41524,10 @@ paths:
             type:
               - string
               - 'null'
-          description: 'The business key.'
+          description: |-
+            The business key.
+
+            `null` to get a business from location.
         -
           name: k_location
           in: query
