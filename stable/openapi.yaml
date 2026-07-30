@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260730111440
+  version: 1.1.20260730150819
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -30445,23 +30445,60 @@ paths:
                         items:
                           type: integer
                           format: int32
-                      dl_date:
-                        type: string
-                        description: 'Current appointment date in location timezone in MySQL date format.'
                       dl_edit_from:
                         type: string
-                        description: 'Start date for range edit in location timezone in MySQL date format.'
+                        description: |-
+                          Start date for range edit in location timezone.
+                            This is a current appointment date.
                       dl_edit_to:
                         type: string
-                        description: 'End date for range edit in location timezone in MySQL date format.'
+                        description: |-
+                          End date for range edit in location timezone.
+                            This is a date of last created appointment in repeatable group.
+                      dl_repeat_end:
+                        type: string
+                        description: |-
+                          Date when the repeat cycle stops, in location timezone.
+                          Empty if the repeat cycle does not stop at a certain date.
+                      i_repeat_count:
+                        type: integer
+                        format: int32
+                        description: |-
+                          Number of occurrences after that the repeat cycle stops.
+                          `0` if the repeat cycle does not stop after a certain number of occurrences.
+                      i_repeat_period:
+                        type: integer
+                        format: int32
+                        description: 'Frequency of the repeats. For example, `2` for every second week.'
+                      id_repeat_duration:
+                        $ref: '#/components/schemas/ADurationSid'
+                        description: 'Measurement unit of `i_repeat_period`. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
+                      id_repeat_end:
+                        $ref: '#/components/schemas/RsRepeatEndSid'
+                        description: 'Type of repeat cycle end. One of [RsRepeatEndSid](#/components/schemas/RsRepeatEndSid) constants.'
+                      is_month:
+                        type: boolean
+                        description: |-
+                          `true` if the appointment repeats monthly at the same date.
+                          `false` if the appointment repeats monthly at the same week day or does not repeat monthly.
                       s_time:
                         type: string
-                        description: 'Current appointment local start time in MySQL time format.'
+                        description: |-
+                          Current appointment local start time in MySQL time format.
+                           This time is intended to be used to fill in empty fields on the form.
+                           <p><b>WARNING!</b></p>
+                           <p>If the session you are starting the reschedule with was previously changed, its time may NOT match
+                           the time of the remaining sessions.</p>
                     required:
                       - a_day
-                      - dl_date
                       - dl_edit_from
                       - dl_edit_to
+                      - dl_repeat_end
+                      - i_repeat_count
+                      - i_repeat_period
+                      - id_repeat_duration
+                      - id_repeat_end
+                      - is_month
                       - s_time
                   a_resource:
                     type: array
@@ -68464,8 +68501,8 @@ paths:
                     - 'null'
                   format: date
                   description: |-
-                    The scheduled billing date in `Y-m-d` format (business local time).
-                    When empty, the billing runs immediately.
+                    The scheduled billing date (business local time).
+                    When `null` the billing runs immediately.
                 k_business:
                   type: string
                   description: 'The business key.'
@@ -68541,8 +68578,8 @@ paths:
                     - 'null'
                   format: date
                   description: |-
-                    The scheduled billing date in `Y-m-d` format (business local time).
-                    When empty, the billing runs immediately.
+                    The scheduled billing date (business local time).
+                    When `null` the billing runs immediately.
                 k_business:
                   type: string
                   description: 'The business key.'
@@ -69016,6 +69053,7 @@ paths:
                   description: 'List of client user keys to bill joined with comma.'
                 text_note:
                   type: string
+                  maxLength: 256
                   description: 'A note to store with each client purchase and to show on the receipt. Empty string for no note.'
               required:
                 - a_purchase_item
@@ -107111,6 +107149,31 @@ components:
       x-enum-descriptions:
         - 'Virtual integration non implemented.'
         - 'Virtual Zoom service integration.'
+    RsRepeatEndSid:
+      type: integer
+      format: int32
+      description: |-
+        Possible ways to stop repeatable events.
+
+        Values:
+        - 2 (`COUNT`): Stop after a certain number of repeats.
+        - 3 (`DATE`): Stop after a certain date. Including this date.
+        - 1 (`ETERNAL`): Eternal appointments. Such appointments are scheduled for one year
+          and will be scheduled again every month.
+      enum:
+        - 2
+        - 3
+        - 1
+      x-enum-varnames:
+        - COUNT
+        - DATE
+        - ETERNAL
+      x-enum-descriptions:
+        - 'Stop after a certain number of repeats.'
+        - 'Stop after a certain date. Including this date.'
+        - |-
+          Eternal appointments. Such appointments are scheduled for one year
+          and will be scheduled again every month.
     RsAppointmentPaySid:
       type: integer
       format: int32
@@ -107137,31 +107200,6 @@ components:
         - 'Appointment is free and does not require payment.'
         - 'The full price was paid.'
         - 'Nothing was paid.'
-    RsRepeatEndSid:
-      type: integer
-      format: int32
-      description: |-
-        Possible ways to stop repeatable events.
-
-        Values:
-        - 2 (`COUNT`): Stop after a certain number of repeats.
-        - 3 (`DATE`): Stop after a certain date. Including this date.
-        - 1 (`ETERNAL`): Eternal appointments. Such appointments are scheduled for one year
-          and will be scheduled again every month.
-      enum:
-        - 2
-        - 3
-        - 1
-      x-enum-varnames:
-        - COUNT
-        - DATE
-        - ETERNAL
-      x-enum-descriptions:
-        - 'Stop after a certain number of repeats.'
-        - 'Stop after a certain date. Including this date.'
-        - |-
-          Eternal appointments. Such appointments are scheduled for one year
-          and will be scheduled again every month.
     RsFamilyRelationSid:
       type: integer
       format: int32
