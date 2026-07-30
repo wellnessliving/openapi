@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260730055933
+  version: 1.1.20260730104424
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68664,9 +68664,17 @@ paths:
                         - m_price
                         - text_title
                         - text_payment_period
+                  is_surcharge_ach:
+                    type: boolean
+                    description: 'Whether to apply the ACH surcharge.'
+                  is_surcharge_ecommerce:
+                    type: boolean
+                    description: 'Whether to apply the e-commerce surcharge.'
                 required:
                   - a_product
                   - a_promotion
+                  - is_surcharge_ach
+                  - is_surcharge_ecommerce
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -68736,6 +68744,14 @@ paths:
                         type: object
                         description: 'The list of clients that will be billed. Each element has the following structure:'
                         properties:
+                          id_pay_method:
+                            $ref: '#/components/schemas/RsPayMethodSid'
+                            description: |-
+                              The payment method this client is charged with, which decides whether the client is surcharged and
+                              which surcharge applies. One of the [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants:
+                              [RsPayMethodSid::ECOMMERCE](#/components/schemas/RsPayMethodSid) for a stored card, [RsPayMethodSid::ACH](#/components/schemas/RsPayMethodSid) for a stored bank
+                              account, and [RsPayMethodSid::ACCOUNT](#/components/schemas/RsPayMethodSid) when the client account is billed, which is never
+                              surcharged.
                           is_warning:
                             type: boolean
                             description: |-
@@ -68761,6 +68777,7 @@ paths:
                             type: string
                             description: 'The client user key.'
                         required:
+                          - id_pay_method
                           - is_warning
                           - text_mail
                           - text_name
@@ -68823,20 +68840,70 @@ paths:
                       - a_warning
                       - has_client_group_restrict
                       - has_client_type_restrict
-                  m_batch:
-                    type: string
+                  a_total:
+                    type: object
                     description: |-
-                      The total amount charged across every client that will be billed (per-client total multiplied by the number
-                       of billed clients). Excludes taxes when [PurchaseItemListApi::$is_tax](/Wl/Billing/Bulk/PurchaseItemList.json) is `false`.
-                  m_subtotal:
-                    type: string
-                    description: 'The subtotal per client (sum of the selected purchase item prices, excluding taxes).'
-                  m_tax:
-                    type: string
-                    description: 'The tax amount per client. Always `0` when [PurchaseItemListApi::$is_tax](/Wl/Billing/Bulk/PurchaseItemList.json) is `false`.'
-                  m_total:
-                    type: string
-                    description: 'The total per client (subtotal plus tax).'
+                      The totals of the bulk billing: the price of the selected items for a single client, and what the whole batch
+                       adds up to once the client type discount of every client is applied. All amounts are money strings in the
+                       currency of the business. Has the following structure:
+                    properties:
+                      a_discount_list:
+                        type: object
+                        description: |-
+                          One entry per client type that discounts at least one of the selected items for at least one of the
+                          clients. Empty when no client type discount applies. Each element has the following structure:
+                        properties:
+                          i_user:
+                            type: integer
+                            format: int32
+                            description: 'The number of clients that get this discount.'
+                          k_login_type:
+                            type: string
+                            description: 'The client type that gives the discount.'
+                          m_discount:
+                            type: string
+                            description: 'The discount this client type gives, summed over all its clients and all the selected items.'
+                          text_title:
+                            type: string
+                            description: 'The client type title.'
+                        required:
+                          - i_user
+                          - k_login_type
+                          - m_discount
+                          - text_title
+                      m_subtotal_after_discount:
+                        type: string
+                        description: 'The price of the selected items for all the clients, with the client type discounts applied.'
+                      m_subtotal_before_discount:
+                        type: string
+                        description: 'The price of the selected items for all the clients, before any discount.'
+                      m_subtotal_per_client:
+                        type: string
+                        description: |-
+                          The price of the selected items for one client, before any discount. It is the same for every client,
+                          because a discount depends on the client type.
+                      m_total_batch:
+                        type: string
+                        description: |-
+                          The amount the whole batch charges, with the client type discounts applied, the taxes accounted and
+                          surcharges added.
+                      m_total_surcharge:
+                        type: string
+                        description: |-
+                          The surcharges of all the clients, each derived from the amount that single client is charged. Only the
+                          clients whose payment method the business surcharges are counted in. Zero when the client accounts are
+                          billed, or when neither `is_surcharge_ach` nor `is_surcharge_ecommerce` is requested.
+                      m_total_tax:
+                        type: string
+                        description: 'The taxes of the selected items for all the clients. Zero when `is_tax` is `false`.'
+                    required:
+                      - a_discount_list
+                      - m_subtotal_after_discount
+                      - m_subtotal_before_discount
+                      - m_subtotal_per_client
+                      - m_total_batch
+                      - m_total_surcharge
+                      - m_total_tax
                   s_id:
                     type: string
                     description: |-
@@ -68845,10 +68912,7 @@ paths:
                 required:
                   - a_client_bill
                   - a_client_restrict
-                  - m_batch
-                  - m_subtotal
-                  - m_tax
-                  - m_total
+                  - a_total
                   - s_id
         '400':
           $ref: '#/components/responses/400'
@@ -68910,6 +68974,12 @@ paths:
                 is_receipt_send:
                   type: boolean
                   description: 'Whether to send a receipt to the client email address after billing.'
+                is_surcharge_ach:
+                  type: boolean
+                  description: 'Whether to apply the ACH surcharge.'
+                is_surcharge_ecommerce:
+                  type: boolean
+                  description: 'Whether to apply the e-commerce surcharge.'
                 is_tax:
                   type: boolean
                   description: 'Whether to include the pre-configured taxes into the totals.'
@@ -68923,6 +68993,8 @@ paths:
                 - a_purchase_item
                 - is_payment_method_default
                 - is_receipt_send
+                - is_surcharge_ach
+                - is_surcharge_ecommerce
                 - is_tax
                 - s_uid
                 - text_note
