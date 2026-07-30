@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260730094730
+  version: 1.1.20260730190355
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -11795,6 +11795,10 @@ paths:
                     Used when client purchases tuition for an event list.
                   - 27 (`TUITION_FEE`): Tuition fee purchase item.
                     Used when client purchases tuition for an event list.
+                  - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
+
+                    Represents the amount due right now for a tuition purchase (the part not deferred to the
+                    installment plan). See TuitionProrate.
           description: |-
             List of purchase items for which this form is loaded in JSON format.
 
@@ -16004,6 +16008,10 @@ paths:
                     Used when client purchases tuition for an event list.
                   - 27 (`TUITION_FEE`): Tuition fee purchase item.
                     Used when client purchases tuition for an event list.
+                  - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
+
+                    Represents the amount due right now for a tuition purchase (the part not deferred to the
+                    installment plan). See TuitionProrate.
           description: |-
             List of purchase items for which this form is loaded in JSON format.
 
@@ -25589,6 +25597,45 @@ paths:
             type: string
           description: 'Unique ID of application.'
       x-instance-get-key: s_application
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Core/AI/LogTriage/ConnectionCheck.json:
+    get:
+      operationId: Core.AI.LogTriage.ConnectionCheck.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  i_result:
+                    type: integer
+                    format: int32
+                    description: 'Connection check value.'
+                required:
+                  - i_result
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns a fixed value used to verify the signed SDK connection.'
+      tags:
+        - System
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
       x-rate-limit:
         -
           limit: 200000
@@ -42916,9 +42963,17 @@ paths:
                         - m_price
                         - text_title
                         - text_payment_period
+                  is_surcharge_ach:
+                    type: boolean
+                    description: 'Whether to apply the ACH surcharge.'
+                  is_surcharge_ecommerce:
+                    type: boolean
+                    description: 'Whether to apply the e-commerce surcharge.'
                 required:
                   - a_product
                   - a_promotion
+                  - is_surcharge_ach
+                  - is_surcharge_ecommerce
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -42988,6 +43043,14 @@ paths:
                         type: object
                         description: 'The list of clients that will be billed. Each element has the following structure:'
                         properties:
+                          id_pay_method:
+                            $ref: '#/components/schemas/RsPayMethodSid'
+                            description: |-
+                              The payment method this client is charged with, which decides whether the client is surcharged and
+                              which surcharge applies. One of the [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants:
+                              [RsPayMethodSid::ECOMMERCE](#/components/schemas/RsPayMethodSid) for a stored card, [RsPayMethodSid::ACH](#/components/schemas/RsPayMethodSid) for a stored bank
+                              account, and [RsPayMethodSid::ACCOUNT](#/components/schemas/RsPayMethodSid) when the client account is billed, which is never
+                              surcharged.
                           is_warning:
                             type: boolean
                             description: |-
@@ -43013,6 +43076,7 @@ paths:
                             type: string
                             description: 'The client user key.'
                         required:
+                          - id_pay_method
                           - is_warning
                           - text_mail
                           - text_name
@@ -43075,20 +43139,70 @@ paths:
                       - a_warning
                       - has_client_group_restrict
                       - has_client_type_restrict
-                  m_batch:
-                    type: string
+                  a_total:
+                    type: object
                     description: |-
-                      The total amount charged across every client that will be billed (per-client total multiplied by the number
-                       of billed clients). Excludes taxes when [PurchaseItemListApi::$is_tax](/Wl/Billing/Bulk/PurchaseItemList.json) is `false`.
-                  m_subtotal:
-                    type: string
-                    description: 'The subtotal per client (sum of the selected purchase item prices, excluding taxes).'
-                  m_tax:
-                    type: string
-                    description: 'The tax amount per client. Always `0` when [PurchaseItemListApi::$is_tax](/Wl/Billing/Bulk/PurchaseItemList.json) is `false`.'
-                  m_total:
-                    type: string
-                    description: 'The total per client (subtotal plus tax).'
+                      The totals of the bulk billing: the price of the selected items for a single client, and what the whole batch
+                       adds up to once the client type discount of every client is applied. All amounts are money strings in the
+                       currency of the business. Has the following structure:
+                    properties:
+                      a_discount_list:
+                        type: object
+                        description: |-
+                          One entry per client type that discounts at least one of the selected items for at least one of the
+                          clients. Empty when no client type discount applies. Each element has the following structure:
+                        properties:
+                          i_user:
+                            type: integer
+                            format: int32
+                            description: 'The number of clients that get this discount.'
+                          k_login_type:
+                            type: string
+                            description: 'The client type that gives the discount.'
+                          m_discount:
+                            type: string
+                            description: 'The discount this client type gives, summed over all its clients and all the selected items.'
+                          text_title:
+                            type: string
+                            description: 'The client type title.'
+                        required:
+                          - i_user
+                          - k_login_type
+                          - m_discount
+                          - text_title
+                      m_subtotal_after_discount:
+                        type: string
+                        description: 'The price of the selected items for all the clients, with the client type discounts applied.'
+                      m_subtotal_before_discount:
+                        type: string
+                        description: 'The price of the selected items for all the clients, before any discount.'
+                      m_subtotal_per_client:
+                        type: string
+                        description: |-
+                          The price of the selected items for one client, before any discount. It is the same for every client,
+                          because a discount depends on the client type.
+                      m_total_batch:
+                        type: string
+                        description: |-
+                          The amount the whole batch charges, with the client type discounts applied, the taxes accounted and
+                          surcharges added.
+                      m_total_surcharge:
+                        type: string
+                        description: |-
+                          The surcharges of all the clients, each derived from the amount that single client is charged. Only the
+                          clients whose payment method the business surcharges are counted in. Zero when the client accounts are
+                          billed, or when neither `is_surcharge_ach` nor `is_surcharge_ecommerce` is requested.
+                      m_total_tax:
+                        type: string
+                        description: 'The taxes of the selected items for all the clients. Zero when `is_tax` is `false`.'
+                    required:
+                      - a_discount_list
+                      - m_subtotal_after_discount
+                      - m_subtotal_before_discount
+                      - m_subtotal_per_client
+                      - m_total_batch
+                      - m_total_surcharge
+                      - m_total_tax
                   s_id:
                     type: string
                     description: |-
@@ -43097,10 +43211,7 @@ paths:
                 required:
                   - a_client_bill
                   - a_client_restrict
-                  - m_batch
-                  - m_subtotal
-                  - m_tax
-                  - m_total
+                  - a_total
                   - s_id
         '400':
           $ref: '#/components/responses/400'
@@ -43162,6 +43273,12 @@ paths:
                 is_receipt_send:
                   type: boolean
                   description: 'Whether to send a receipt to the client email address after billing.'
+                is_surcharge_ach:
+                  type: boolean
+                  description: 'Whether to apply the ACH surcharge.'
+                is_surcharge_ecommerce:
+                  type: boolean
+                  description: 'Whether to apply the e-commerce surcharge.'
                 is_tax:
                   type: boolean
                   description: 'Whether to include the pre-configured taxes into the totals.'
@@ -43170,11 +43287,14 @@ paths:
                   description: 'List of client user keys to bill joined with comma.'
                 text_note:
                   type: string
+                  maxLength: 256
                   description: 'A note to store with each client purchase and to show on the receipt. Empty string for no note.'
               required:
                 - a_purchase_item
                 - is_payment_method_default
                 - is_receipt_send
+                - is_surcharge_ach
+                - is_surcharge_ecommerce
                 - is_tax
                 - s_uid
                 - text_note
@@ -43298,8 +43418,8 @@ paths:
                     - 'null'
                   format: date
                   description: |-
-                    The scheduled billing date in `Y-m-d` format (business local time).
-                    When empty, the billing runs immediately.
+                    The scheduled billing date (business local time).
+                    When `null` the billing runs immediately.
                 k_business:
                   type: string
                   description: 'The business key.'
@@ -43375,8 +43495,8 @@ paths:
                     - 'null'
                   format: date
                   description: |-
-                    The scheduled billing date in `Y-m-d` format (business local time).
-                    When empty, the billing runs immediately.
+                    The scheduled billing date (business local time).
+                    When `null` the billing runs immediately.
                 k_business:
                   type: string
                   description: 'The business key.'
@@ -50219,23 +50339,60 @@ paths:
                         items:
                           type: integer
                           format: int32
-                      dl_date:
-                        type: string
-                        description: 'Current appointment date in location timezone in MySQL date format.'
                       dl_edit_from:
                         type: string
-                        description: 'Start date for range edit in location timezone in MySQL date format.'
+                        description: |-
+                          Start date for range edit in location timezone.
+                            This is a current appointment date.
                       dl_edit_to:
                         type: string
-                        description: 'End date for range edit in location timezone in MySQL date format.'
+                        description: |-
+                          End date for range edit in location timezone.
+                            This is a date of last created appointment in repeatable group.
+                      dl_repeat_end:
+                        type: string
+                        description: |-
+                          Date when the repeat cycle stops, in location timezone.
+                          Empty if the repeat cycle does not stop at a certain date.
+                      i_repeat_count:
+                        type: integer
+                        format: int32
+                        description: |-
+                          Number of occurrences after that the repeat cycle stops.
+                          `0` if the repeat cycle does not stop after a certain number of occurrences.
+                      i_repeat_period:
+                        type: integer
+                        format: int32
+                        description: 'Frequency of the repeats. For example, `2` for every second week.'
+                      id_repeat_duration:
+                        $ref: '#/components/schemas/ADurationSid'
+                        description: 'Measurement unit of `i_repeat_period`. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
+                      id_repeat_end:
+                        $ref: '#/components/schemas/RsRepeatEndSid'
+                        description: 'Type of repeat cycle end. One of [RsRepeatEndSid](#/components/schemas/RsRepeatEndSid) constants.'
+                      is_month:
+                        type: boolean
+                        description: |-
+                          `true` if the appointment repeats monthly at the same date.
+                          `false` if the appointment repeats monthly at the same week day or does not repeat monthly.
                       s_time:
                         type: string
-                        description: 'Current appointment local start time in MySQL time format.'
+                        description: |-
+                          Current appointment local start time in MySQL time format.
+                           This time is intended to be used to fill in empty fields on the form.
+                           <p><b>WARNING!</b></p>
+                           <p>If the session you are starting the reschedule with was previously changed, its time may NOT match
+                           the time of the remaining sessions.</p>
                     required:
                       - a_day
-                      - dl_date
                       - dl_edit_from
                       - dl_edit_to
+                      - dl_repeat_end
+                      - i_repeat_count
+                      - i_repeat_period
+                      - id_repeat_duration
+                      - id_repeat_end
+                      - is_month
                       - s_time
                   a_resource:
                     type: array
@@ -53564,6 +53721,13 @@ paths:
                               k_class:
                                 type: string
                                 description: 'Key of the event class.'
+                              m_checkout:
+                                type: string
+                                description: |-
+                                  The amount charged for this event at checkout. Staff-only: ignored when sent by a client.
+                                  When provided for all events in the list, per-event amounts are used as-is without
+                                  aggregate redistribution, allowing a non-uniform distribution across events (Mode 2).
+                                  If omitted for any event, falls back to item-level `m_checkout` redistribution.
                               m_price:
                                 type: string
                                 description: |-
@@ -53724,6 +53888,13 @@ paths:
                                 <li>[ProgramListApi](/Wl/Insurance/Catalog/ProgramList.json) to obtain list of active programs.</li>
                                 <li>[EnrollmentFieldListApi](/Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json) to get and validate fields for a given program.</li>
                               </ul>
+                          m_checkout:
+                            type: string
+                            description: |-
+                              Staff-only: ignored when sent by a client.
+                              Total amount to charge for the tuition item at checkout (Mode 1). Distributed
+                              proportionally across `a_event_list` entries based on their own final cost.
+                              Ignored when all entries in `a_event_list` already contain `m_checkout` values (Mode 2).
                           m_prorate_custom:
                             type: string
                             description: 'The custom prorate price, used only for memberships. This is only used if `is_prorate_fix` is `true`.'
@@ -55261,6 +55432,9 @@ paths:
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
                                 - m_amount
+                            m_checkout:
+                              type: string
+                              description: 'The total amount that will be charged for the tuition item when during purchase.'
                         k_login_prize:
                           type: string
                           description: 'Key of login prize used on item.'
@@ -55496,6 +55670,9 @@ paths:
                           description: 'Registration fee amount for the tuition participant.'
                       required:
                         - m_amount
+                    m_checkout:
+                      type: string
+                      description: 'The total amount that will be charged for the tuition item when during purchase.'
                 k_login_prize:
                   type: string
                   description: 'Key of login prize used on item.'
@@ -93570,6 +93747,9 @@ paths:
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
                                 - m_amount
+                            m_checkout:
+                              type: string
+                              description: 'The total amount that will be charged for the tuition item during purchase.'
                             f_price:
                               type: string
                               description: 'The custom price.'
@@ -93827,6 +94007,9 @@ paths:
                           description: 'Registration fee amount for the tuition participant.'
                       required:
                         - m_amount
+                    m_checkout:
+                      type: string
+                      description: 'The total amount that will be charged for the tuition item during purchase.'
                     f_price:
                       type: string
                       description: 'The custom price.'
@@ -105500,6 +105683,10 @@ components:
           Used when client purchases tuition for an event list.
         - 27 (`TUITION_FEE`): Tuition fee purchase item.
           Used when client purchases tuition for an event list.
+        - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
+
+          Represents the amount due right now for a tuition purchase (the part not deferred to the
+          installment plan). See TuitionProrate.
       enum:
         - 7
         - 11
@@ -105527,6 +105714,7 @@ components:
         - 6
         - 26
         - 27
+        - 28
       x-enum-varnames:
         - ACCOUNT
         - ACCOUNT_BUSINESS
@@ -105554,6 +105742,7 @@ components:
         - SERVICE
         - TUITION
         - TUITION_FEE
+        - TUITION_PRORATE
       x-enum-descriptions:
         - "Personal user's account refill."
         - 'Business account payment.'
@@ -105621,6 +105810,11 @@ components:
         - |-
           Tuition fee purchase item.
           Used when client purchases tuition for an event list.
+        - |-
+          Tuition prorate purchase item.
+
+          Represents the amount due right now for a tuition purchase (the part not deferred to the
+          installment plan). See {@link \Wl\Purchase\Item\TuitionProrate}.
     RsCurrencySid:
       type: integer
       format: int32
