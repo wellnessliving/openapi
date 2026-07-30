@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260729135010
+  version: 1.1.20260730094730
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -85802,6 +85802,9 @@ paths:
                       dt_date:
                         type: string
                         description: 'Date of the calendar.'
+                      dtu_date:
+                        type: string
+                        description: 'Same moment as `dt_date`, converted to real UTC date and time, in MySQL format.'
                       i_count:
                         type: integer
                         format: int32
@@ -85832,6 +85835,7 @@ paths:
                         description: 'String representation of appointment schedule time.'
                     required:
                       - dt_date
+                      - dtu_date
                       - i_count
                       - i_time
                       - i_wait
@@ -86164,6 +86168,9 @@ paths:
                       dt_date:
                         type: string
                         description: 'Date of the calendar.'
+                      dtu_date:
+                        type: string
+                        description: 'Same moment as `dt_date`, converted to real UTC date and time, in MySQL format.'
                       i_count:
                         type: integer
                         format: int32
@@ -86194,6 +86201,7 @@ paths:
                         description: 'String representation of appointment schedule time.'
                     required:
                       - dt_date
+                      - dtu_date
                       - i_count
                       - i_time
                       - i_wait
