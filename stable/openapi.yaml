@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260730150819
+  version: 1.1.20260730154139
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -30439,7 +30439,7 @@ paths:
 
                       Has next keys:
                     properties:
-                      a_day:
+                      a_week:
                         type: array
                         description: 'Days of week to repeat appointment. Constants from [ADateWeekSid](#/components/schemas/ADateWeekSid).'
                         items:
@@ -30455,27 +30455,27 @@ paths:
                         description: |-
                           End date for range edit in location timezone.
                             This is a date of last created appointment in repeatable group.
-                      dl_repeat_end:
+                      dl_end:
                         type: string
                         description: |-
                           Date when the repeat cycle stops, in location timezone.
                           Empty if the repeat cycle does not stop at a certain date.
-                      i_repeat_count:
+                      i_occurrence:
                         type: integer
                         format: int32
                         description: |-
                           Number of occurrences after that the repeat cycle stops.
                           `0` if the repeat cycle does not stop after a certain number of occurrences.
-                      i_repeat_period:
+                      i_period:
                         type: integer
                         format: int32
                         description: 'Frequency of the repeats. For example, `2` for every second week.'
-                      id_repeat_duration:
-                        $ref: '#/components/schemas/ADurationSid'
-                        description: 'Measurement unit of `i_repeat_period`. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
-                      id_repeat_end:
+                      id_end:
                         $ref: '#/components/schemas/RsRepeatEndSid'
                         description: 'Type of repeat cycle end. One of [RsRepeatEndSid](#/components/schemas/RsRepeatEndSid) constants.'
+                      id_period:
+                        $ref: '#/components/schemas/ADurationSid'
+                        description: 'Measurement unit of `i_period`. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
                       is_month:
                         type: boolean
                         description: |-
@@ -30490,14 +30490,14 @@ paths:
                            <p>If the session you are starting the reschedule with was previously changed, its time may NOT match
                            the time of the remaining sessions.</p>
                     required:
-                      - a_day
+                      - a_week
                       - dl_edit_from
                       - dl_edit_to
-                      - dl_repeat_end
-                      - i_repeat_count
-                      - i_repeat_period
-                      - id_repeat_duration
-                      - id_repeat_end
+                      - dl_end
+                      - i_occurrence
+                      - i_period
+                      - id_end
+                      - id_period
                       - is_month
                       - s_time
                   a_resource:
