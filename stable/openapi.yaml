@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260730104424
+  version: 1.1.20260730111440
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -13881,6 +13881,10 @@ paths:
                     Used when client purchases tuition for an event list.
                   - 27 (`TUITION_FEE`): Tuition fee purchase item.
                     Used when client purchases tuition for an event list.
+                  - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
+
+                    Represents the amount due right now for a tuition purchase (the part not deferred to the
+                    installment plan). See TuitionProrate.
           description: |-
             List of purchase items for which this form is loaded in JSON format.
 
@@ -18090,6 +18094,10 @@ paths:
                     Used when client purchases tuition for an event list.
                   - 27 (`TUITION_FEE`): Tuition fee purchase item.
                     Used when client purchases tuition for an event list.
+                  - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
+
+                    Represents the amount due right now for a tuition purchase (the part not deferred to the
+                    installment plan). See TuitionProrate.
           description: |-
             List of purchase items for which this form is loaded in JSON format.
 
@@ -56814,6 +56822,13 @@ paths:
                               k_class:
                                 type: string
                                 description: 'Key of the event class.'
+                              m_checkout:
+                                type: string
+                                description: |-
+                                  The amount charged for this event at checkout. Staff-only: ignored when sent by a client.
+                                  When provided for all events in the list, per-event amounts are used as-is without
+                                  aggregate redistribution, allowing a non-uniform distribution across events (Mode 2).
+                                  If omitted for any event, falls back to item-level `m_checkout` redistribution.
                               m_price:
                                 type: string
                                 description: |-
@@ -56974,6 +56989,13 @@ paths:
                                 <li>[ProgramListApi](/Wl/Insurance/Catalog/ProgramList.json) to obtain list of active programs.</li>
                                 <li>[EnrollmentFieldListApi](/Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json) to get and validate fields for a given program.</li>
                               </ul>
+                          m_checkout:
+                            type: string
+                            description: |-
+                              Staff-only: ignored when sent by a client.
+                              Total amount to charge for the tuition item at checkout (Mode 1). Distributed
+                              proportionally across `a_event_list` entries based on their own final cost.
+                              Ignored when all entries in `a_event_list` already contain `m_checkout` values (Mode 2).
                           m_prorate_custom:
                             type: string
                             description: 'The custom prorate price, used only for memberships. This is only used if `is_prorate_fix` is `true`.'
@@ -57266,6 +57288,9 @@ paths:
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
                                 - m_amount
+                            m_checkout:
+                              type: string
+                              description: 'The total amount that will be charged for the tuition item when during purchase.'
                         k_login_prize:
                           type: string
                           description: 'Key of login prize used on item.'
@@ -57501,6 +57526,9 @@ paths:
                           description: 'Registration fee amount for the tuition participant.'
                       required:
                         - m_amount
+                    m_checkout:
+                      type: string
+                      description: 'The total amount that will be charged for the tuition item when during purchase.'
                 k_login_prize:
                   type: string
                   description: 'Key of login prize used on item.'
@@ -93212,6 +93240,9 @@ paths:
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
                                 - m_amount
+                            m_checkout:
+                              type: string
+                              description: 'The total amount that will be charged for the tuition item during purchase.'
                             f_price:
                               type: string
                               description: 'The custom price.'
@@ -93469,6 +93500,9 @@ paths:
                           description: 'Registration fee amount for the tuition participant.'
                       required:
                         - m_amount
+                    m_checkout:
+                      type: string
+                      description: 'The total amount that will be charged for the tuition item during purchase.'
                     f_price:
                       type: string
                       description: 'The custom price.'
@@ -105986,6 +106020,10 @@ components:
           Used when client purchases tuition for an event list.
         - 27 (`TUITION_FEE`): Tuition fee purchase item.
           Used when client purchases tuition for an event list.
+        - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
+
+          Represents the amount due right now for a tuition purchase (the part not deferred to the
+          installment plan). See TuitionProrate.
       enum:
         - 7
         - 11
@@ -106013,6 +106051,7 @@ components:
         - 6
         - 26
         - 27
+        - 28
       x-enum-varnames:
         - ACCOUNT
         - ACCOUNT_BUSINESS
@@ -106040,6 +106079,7 @@ components:
         - SERVICE
         - TUITION
         - TUITION_FEE
+        - TUITION_PRORATE
       x-enum-descriptions:
         - "Personal user's account refill."
         - 'Business account payment.'
@@ -106107,6 +106147,11 @@ components:
         - |-
           Tuition fee purchase item.
           Used when client purchases tuition for an event list.
+        - |-
+          Tuition prorate purchase item.
+
+          Represents the amount due right now for a tuition purchase (the part not deferred to the
+          installment plan). See {@link \Wl\Purchase\Item\TuitionProrate}.
     Wl.Video.VideoEmbedSourceSid:
       type:
         - integer
