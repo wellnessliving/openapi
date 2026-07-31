@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260731112402
+  version: 1.1.20260731221949
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25637,11 +25637,43 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_log:
+                    type: array
+                    description: |-
+                      Grouped log findings.
+
+                      One element contains:
+                    items:
+                      type: object
+                      properties:
+                        i_occurrence_count:
+                          type: integer
+                          format: int32
+                          description: 'Number of matching records.'
+                        s_first_seen:
+                          type: string
+                          description: 'Date of the first matching record.'
+                        s_last_seen:
+                          type: string
+                          description: 'Date of the last matching record.'
+                        s_message:
+                          type: string
+                          description: 'Log message.'
+                        s_source:
+                          type: string
+                          description: 'Log source: `error` or `slow`.'
+                      required:
+                        - i_occurrence_count
+                        - s_first_seen
+                        - s_last_seen
+                        - s_message
+                        - s_source
                   i_result:
                     type: integer
                     format: int32
                     description: 'Connection check value.'
                 required:
+                  - a_log
                   - i_result
         '400':
           $ref: '#/components/responses/400'
@@ -25655,12 +25687,44 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Returns a fixed value used to verify the signed SDK connection.'
+      summary: 'Returns a fixed connection value and, when requested, selected log findings.'
       tags:
         - System
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_log
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Whether log findings must be returned.'
+        -
+          name: s_date_mask
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Date/time mask accepted by LogSearchQuery.
+
+            Empty string selects the current UTC date.
+        -
+          name: s_search
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Optional case-insensitive message substring.'
+        -
+          name: s_source
+          in: query
+          required: true
+          schema:
+            type: string
+            default: all
+          description: 'Log source: `all`, `error`, or `slow`.'
       x-rate-limit:
         -
           limit: 200000
@@ -68484,15 +68548,29 @@ paths:
                               - m_event_tax
                               - uid
                         dl_next:
-                          type: string
-                          description: 'Next payment date in local business timezone and MySQL format.'
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Next payment date in local business timezone and MySQL format.
+
+                            `null` for membership-based tuition.
                         dtl_enrollment:
                           type: string
                           description: 'Date and time of the enrollment in local business timezone.'
-                        i_payments_left:
+                        i_payments_done:
                           type: integer
                           format: int32
-                          description: 'Number of payments left.'
+                          description: 'Number of payments done.'
+                        i_payments_left:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            Number of payments left.
+
+                            `null` for membership-based tuition.
                         i_payments_total:
                           type: integer
                           format: int32
@@ -68509,15 +68587,28 @@ paths:
                         k_purchase_item_tuition:
                           type: string
                           description: 'Key of the tuition purchase item. This is enrollment key, which can be used to modify and cancel the enrollment.'
+                        m_paid:
+                          type: string
+                          description: 'Rest amount has been already paid.'
                         m_payment:
                           type: string
                           description: 'One payment amount.'
                         m_rest:
-                          type: string
-                          description: 'Rest amount to be paid.'
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Rest amount to be paid.
+
+                            `null` for membership-based tuition.
                         m_total:
-                          type: string
-                          description: 'Total initial amount to be paid.'
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Total initial amount to be paid.
+
+                            `null` for membership-based tuition.
                         uid_payer:
                           type: string
                           description: |-
@@ -68526,14 +68617,12 @@ paths:
                             This user can be enrolled or not, but he pays for the entire enrollment.
                       required:
                         - a_events
-                        - dl_next
                         - dtl_enrollment
-                        - i_payments_left
+                        - i_payments_done
                         - i_payments_total
                         - k_purchase_item_tuition
+                        - m_paid
                         - m_payment
-                        - m_rest
-                        - m_total
                         - uid_payer
                 required:
                   - a_enrollment
@@ -68723,7 +68812,7 @@ paths:
                     description: |-
                       Summary of clients and events enrolled, per tuition.
 
-                      Keys - tuition IDs from $a_tuition_id. Values - summary information:
+                      Keys - tuition IDs from [TuitionClientsSummaryApi::$a_tuition_id](/Wl/Tuition/Enrollment/TuitionClientsSummary.json). Values - summary information:
                     items:
                       type: object
                       properties:
