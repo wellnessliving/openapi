@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260731103105
+  version: 1.1.20260731105100
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -69313,15 +69313,29 @@ paths:
                               - m_event_tax
                               - uid
                         dl_next:
-                          type: string
-                          description: 'Next payment date in local business timezone and MySQL format.'
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Next payment date in local business timezone and MySQL format.
+
+                            `null` for membership-based tuition.
                         dtl_enrollment:
                           type: string
                           description: 'Date and time of the enrollment in local business timezone.'
-                        i_payments_left:
+                        i_payments_done:
                           type: integer
                           format: int32
-                          description: 'Number of payments left.'
+                          description: 'Number of payments done.'
+                        i_payments_left:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            Number of payments left.
+
+                            `null` for membership-based tuition.
                         i_payments_total:
                           type: integer
                           format: int32
@@ -69338,15 +69352,28 @@ paths:
                         k_purchase_item_tuition:
                           type: string
                           description: 'Key of the tuition purchase item. This is enrollment key, which can be used to modify and cancel the enrollment.'
+                        m_paid:
+                          type: string
+                          description: 'Rest amount has been already paid.'
                         m_payment:
                           type: string
                           description: 'One payment amount.'
                         m_rest:
-                          type: string
-                          description: 'Rest amount to be paid.'
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Rest amount to be paid.
+
+                            `null` for membership-based tuition.
                         m_total:
-                          type: string
-                          description: 'Total initial amount to be paid.'
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Total initial amount to be paid.
+
+                            `null` for membership-based tuition.
                         uid_payer:
                           type: string
                           description: |-
@@ -69355,14 +69382,12 @@ paths:
                             This user can be enrolled or not, but he pays for the entire enrollment.
                       required:
                         - a_events
-                        - dl_next
                         - dtl_enrollment
-                        - i_payments_left
+                        - i_payments_done
                         - i_payments_total
                         - k_purchase_item_tuition
+                        - m_paid
                         - m_payment
-                        - m_rest
-                        - m_total
                         - uid_payer
                 required:
                   - a_enrollment
@@ -69552,7 +69577,7 @@ paths:
                     description: |-
                       Summary of clients and events enrolled, per tuition.
 
-                      Keys - tuition IDs from $a_tuition_id. Values - summary information:
+                      Keys - tuition IDs from [TuitionClientsSummaryApi::$a_tuition_id](/Wl/Tuition/Enrollment/TuitionClientsSummary.json). Values - summary information:
                     items:
                       type: object
                       properties:
