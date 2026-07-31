@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260730190355
+  version: 1.1.20260731112402
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -50,6 +50,9 @@ tags:
   -
     name: 'Automated Marketing'
     description: 'Automated marketing notification template endpoints.'
+  -
+    name: 'Automation Testing'
+    description: 'Internal endpoints used by automation tests to control test server state.'
   -
     name: Billing
     description: 'Charge many clients for the same promotions and products at once.'
@@ -5103,9 +5106,12 @@ paths:
             type:
               - array
               - 'null'
+            deprecated: true
+            x-deprecated: 'Use [EventListApi::$a_uid_staff](/Wl/Event/EventList.json) instead.'
             items:
               type: string
           description: 'List of staff keys applied by filter.'
+          deprecated: true
         -
           name: a_time
           in: query
@@ -5117,6 +5123,20 @@ paths:
             items:
               $ref: '#/components/schemas/RsScheduleTimeSid'
           description: 'List of time day applied by filter [RsScheduleTimeSid](#/components/schemas/RsScheduleTimeSid).'
+        -
+          name: a_uid_staff
+          in: query
+          required: false
+          schema:
+            type:
+              - array
+              - 'null'
+            items:
+              type: string
+          description: |-
+            List of staff UIDs applied by filter.
+
+            Cannot be specified together with [EventListApi::$a_staff](/Wl/Event/EventList.json).
         -
           name: a_virtual
           in: query
@@ -11798,7 +11818,7 @@ paths:
                   - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
 
                     Represents the amount due right now for a tuition purchase (the part not deferred to the
-                    installment plan). See TuitionProrate.
+                    installment plan).
           description: |-
             List of purchase items for which this form is loaded in JSON format.
 
@@ -16011,7 +16031,7 @@ paths:
                   - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
 
                     Represents the amount due right now for a tuition purchase (the part not deferred to the
-                    installment plan). See TuitionProrate.
+                    installment plan).
           description: |-
             List of purchase items for which this form is loaded in JSON format.
 
@@ -25183,6 +25203,11 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Flushes all application caches.'
+      description: |-
+        Clears every cache layer used by the application via `CoreCache::flush_all()`. Intended for use by
+        automation tests that need a clean cache state before or between test runs.
+      tags:
+        - 'Automation Testing'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -43287,7 +43312,6 @@ paths:
                   description: 'List of client user keys to bill joined with comma.'
                 text_note:
                   type: string
-                  maxLength: 256
                   description: 'A note to store with each client purchase and to show on the receipt. Empty string for no note.'
               required:
                 - a_purchase_item
@@ -50333,7 +50357,7 @@ paths:
 
                       Has next keys:
                     properties:
-                      a_day:
+                      a_week:
                         type: array
                         description: 'Days of week to repeat appointment. Constants from [ADateWeekSid](#/components/schemas/ADateWeekSid).'
                         items:
@@ -50349,27 +50373,27 @@ paths:
                         description: |-
                           End date for range edit in location timezone.
                             This is a date of last created appointment in repeatable group.
-                      dl_repeat_end:
+                      dl_end:
                         type: string
                         description: |-
                           Date when the repeat cycle stops, in location timezone.
                           Empty if the repeat cycle does not stop at a certain date.
-                      i_repeat_count:
+                      i_occurrence:
                         type: integer
                         format: int32
                         description: |-
                           Number of occurrences after that the repeat cycle stops.
                           `0` if the repeat cycle does not stop after a certain number of occurrences.
-                      i_repeat_period:
+                      i_period:
                         type: integer
                         format: int32
                         description: 'Frequency of the repeats. For example, `2` for every second week.'
-                      id_repeat_duration:
-                        $ref: '#/components/schemas/ADurationSid'
-                        description: 'Measurement unit of `i_repeat_period`. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
-                      id_repeat_end:
+                      id_end:
                         $ref: '#/components/schemas/RsRepeatEndSid'
                         description: 'Type of repeat cycle end. One of [RsRepeatEndSid](#/components/schemas/RsRepeatEndSid) constants.'
+                      id_period:
+                        $ref: '#/components/schemas/ADurationSid'
+                        description: 'Measurement unit of `i_period`. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
                       is_month:
                         type: boolean
                         description: |-
@@ -50384,14 +50408,14 @@ paths:
                            <p>If the session you are starting the reschedule with was previously changed, its time may NOT match
                            the time of the remaining sessions.</p>
                     required:
-                      - a_day
+                      - a_week
                       - dl_edit_from
                       - dl_edit_to
-                      - dl_repeat_end
-                      - i_repeat_count
-                      - i_repeat_period
-                      - id_repeat_duration
-                      - id_repeat_end
+                      - dl_end
+                      - i_occurrence
+                      - i_period
+                      - id_end
+                      - id_period
                       - is_month
                       - s_time
                   a_resource:
@@ -105686,7 +105710,7 @@ components:
         - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
 
           Represents the amount due right now for a tuition purchase (the part not deferred to the
-          installment plan). See TuitionProrate.
+          installment plan).
       enum:
         - 7
         - 11
@@ -105814,7 +105838,7 @@ components:
           Tuition prorate purchase item.
 
           Represents the amount due right now for a tuition purchase (the part not deferred to the
-          installment plan). See {@link \Wl\Purchase\Item\TuitionProrate}.
+          installment plan).
     RsCurrencySid:
       type: integer
       format: int32
