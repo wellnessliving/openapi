@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260730154139
+  version: 1.1.20260731035621
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -50,6 +50,9 @@ tags:
   -
     name: 'Automated Marketing'
     description: 'Automated marketing notification template endpoints.'
+  -
+    name: 'Automation Testing'
+    description: 'Internal endpoints used by automation tests to control test server state.'
   -
     name: Billing
     description: 'Charge many clients for the same promotions and products at once.'
@@ -25753,6 +25756,11 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Flushes all application caches.'
+      description: |-
+        Clears every cache layer used by the application via `CoreCache::flush_all()`. Intended for use by
+        automation tests that need a clean cache state before or between test runs.
+      tags:
+        - 'Automation Testing'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
