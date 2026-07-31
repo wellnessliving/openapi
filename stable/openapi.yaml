@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260731062811
+  version: 1.1.20260731065003
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -13887,7 +13887,7 @@ paths:
                   - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
 
                     Represents the amount due right now for a tuition purchase (the part not deferred to the
-                    installment plan). See TuitionProrate.
+                    installment plan).
           description: |-
             List of purchase items for which this form is loaded in JSON format.
 
@@ -18100,7 +18100,7 @@ paths:
                   - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
 
                     Represents the amount due right now for a tuition purchase (the part not deferred to the
-                    installment plan). See TuitionProrate.
+                    installment plan).
           description: |-
             List of purchase items for which this form is loaded in JSON format.
 
@@ -69061,7 +69061,6 @@ paths:
                   description: 'List of client user keys to bill joined with comma.'
                 text_note:
                   type: string
-                  maxLength: 256
                   description: 'A note to store with each client purchase and to show on the receipt. Empty string for no note.'
               required:
                 - a_purchase_item
@@ -106069,7 +106068,7 @@ components:
         - 28 (`TUITION_PRORATE`): Tuition prorate purchase item.
 
           Represents the amount due right now for a tuition purchase (the part not deferred to the
-          installment plan). See TuitionProrate.
+          installment plan).
       enum:
         - 7
         - 11
@@ -106197,7 +106196,7 @@ components:
           Tuition prorate purchase item.
 
           Represents the amount due right now for a tuition purchase (the part not deferred to the
-          installment plan). See {@link \Wl\Purchase\Item\TuitionProrate}.
+          installment plan).
     Wl.Video.VideoEmbedSourceSid:
       type:
         - integer
