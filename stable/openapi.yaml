@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260803120914
+  version: 1.1.20260803155956
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -30512,8 +30512,7 @@ paths:
                       s_time:
                         type: string
                         description: |-
-                          Current appointment local start time in MySQL time format.
-                           This time is intended to be used to fill in empty fields on the form.
+                          Current appointment local start time in MySQL time format (`HH:MM:SS`).
                            <p><b>WARNING!</b></p>
                            <p>If the session you are starting the reschedule with was previously changed, its time may NOT match
                            the time of the remaining sessions.</p>
@@ -69150,6 +69149,10 @@ paths:
                           type: integer
                           format: int32
                           description: 'Zero-based item order in the checkout list.'
+                        i_quantity:
+                          type: integer
+                          format: int32
+                          description: 'Quantity of selected items.'
                         id_purchase_item:
                           $ref: '#/components/schemas/RsPurchaseItemSid'
                           description: |-
@@ -69168,6 +69171,13 @@ paths:
                             Required when checkout type is
                             [WidgetAnalyticsCheckoutTypeSid::BOOKING](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid); `null` for
                             [WidgetAnalyticsCheckoutTypeSid::STORE_PURCHASE](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid).
+                        k_class_period:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Selected class period key for classes/events booking items.
+                            `null` if class period is not specified or not applicable.
                         k_enrollment_block:
                           type:
                             - string
@@ -69207,6 +69217,7 @@ paths:
                             Empty if staff was not selected.
                       required:
                         - i_order
+                        - i_quantity
                         - k_item
                         - text_service_name
                         - uid_staff
@@ -73746,15 +73757,42 @@ paths:
                   type: object
                   description: 'Information for sending an appointment notification.'
                   properties:
+                    is_attach:
+                      type: boolean
+                      description: '`true` to attach calendar file, `false` to not attach calendar file.'
+                    is_campaign:
+                      type: boolean
+                      description: 'Whether mail should track as a part of campaign. `true` if yes, `false` if no.'
                     is_mail:
                       type: boolean
                       description: '`true` to send mail; `false` to not send.'
-                    is_sms:
-                      type: boolean
-                      description: '`true` to send SMS; `false` to not send.'
                     is_push:
                       type: boolean
                       description: '`true` to send push notification; `false` to not send.'
+                    is_sms:
+                      type: boolean
+                      description: '`true` to send SMS; `false` to not send.'
+                    text_business_name:
+                      type: string
+                      description: 'Business name.'
+                    text_business_reply:
+                      type: string
+                      description: 'Reply email address.'
+                    text_campaign:
+                      type: string
+                      description: 'Campaign name.'
+                    text_content_mail:
+                      type: string
+                      description: 'Email content.'
+                    text_push:
+                      type: string
+                      description: 'Push notification content.'
+                    text_sms:
+                      type: string
+                      description: 'SMS content.'
+                    text_subject:
+                      type: string
+                      description: 'Email subject.'
                 a_paid:
                   type: array
                   deprecated: true
@@ -73930,15 +73968,42 @@ paths:
                     type: object
                     description: 'Information for sending an appointment notification.'
                     properties:
+                      is_attach:
+                        type: boolean
+                        description: '`true` to attach calendar file, `false` to not attach calendar file.'
+                      is_campaign:
+                        type: boolean
+                        description: 'Whether mail should track as a part of campaign. `true` if yes, `false` if no.'
                       is_mail:
                         type: boolean
                         description: '`true` to send mail; `false` to not send.'
-                      is_sms:
-                        type: boolean
-                        description: '`true` to send SMS; `false` to not send.'
                       is_push:
                         type: boolean
                         description: '`true` to send push notification; `false` to not send.'
+                      is_sms:
+                        type: boolean
+                        description: '`true` to send SMS; `false` to not send.'
+                      text_business_name:
+                        type: string
+                        description: 'Business name.'
+                      text_business_reply:
+                        type: string
+                        description: 'Reply email address.'
+                      text_campaign:
+                        type: string
+                        description: 'Campaign name.'
+                      text_content_mail:
+                        type: string
+                        description: 'Email content.'
+                      text_push:
+                        type: string
+                        description: 'Push notification content.'
+                      text_sms:
+                        type: string
+                        description: 'SMS content.'
+                      text_subject:
+                        type: string
+                        description: 'Email subject.'
                   k_location:
                     type: string
                     description: 'Location to show available appointment booking schedule.'
@@ -74415,15 +74480,42 @@ paths:
                   type: object
                   description: 'Information for sending an appointment notification.'
                   properties:
+                    is_attach:
+                      type: boolean
+                      description: '`true` to attach calendar file, `false` to not attach calendar file.'
+                    is_campaign:
+                      type: boolean
+                      description: 'Whether mail should track as a part of campaign. `true` if yes, `false` if no.'
                     is_mail:
                       type: boolean
                       description: '`true` to send mail; `false` to not send.'
-                    is_sms:
-                      type: boolean
-                      description: '`true` to send SMS; `false` to not send.'
                     is_push:
                       type: boolean
                       description: '`true` to send push notification; `false` to not send.'
+                    is_sms:
+                      type: boolean
+                      description: '`true` to send SMS; `false` to not send.'
+                    text_business_name:
+                      type: string
+                      description: 'Business name.'
+                    text_business_reply:
+                      type: string
+                      description: 'Reply email address.'
+                    text_campaign:
+                      type: string
+                      description: 'Campaign name.'
+                    text_content_mail:
+                      type: string
+                      description: 'Email content.'
+                    text_push:
+                      type: string
+                      description: 'Push notification content.'
+                    text_sms:
+                      type: string
+                      description: 'SMS content.'
+                    text_subject:
+                      type: string
+                      description: 'Email subject.'
                 a_pay_form:
                   type: array
                   description: 'A list of payment sources to pay with.'
@@ -74579,15 +74671,42 @@ paths:
                     type: object
                     description: 'Information for sending an appointment notification.'
                     properties:
+                      is_attach:
+                        type: boolean
+                        description: '`true` to attach calendar file, `false` to not attach calendar file.'
+                      is_campaign:
+                        type: boolean
+                        description: 'Whether mail should track as a part of campaign. `true` if yes, `false` if no.'
                       is_mail:
                         type: boolean
                         description: '`true` to send mail; `false` to not send.'
-                      is_sms:
-                        type: boolean
-                        description: '`true` to send SMS; `false` to not send.'
                       is_push:
                         type: boolean
                         description: '`true` to send push notification; `false` to not send.'
+                      is_sms:
+                        type: boolean
+                        description: '`true` to send SMS; `false` to not send.'
+                      text_business_name:
+                        type: string
+                        description: 'Business name.'
+                      text_business_reply:
+                        type: string
+                        description: 'Reply email address.'
+                      text_campaign:
+                        type: string
+                        description: 'Campaign name.'
+                      text_content_mail:
+                        type: string
+                        description: 'Email content.'
+                      text_push:
+                        type: string
+                        description: 'Push notification content.'
+                      text_sms:
+                        type: string
+                        description: 'SMS content.'
+                      text_subject:
+                        type: string
+                        description: 'Email subject.'
                   k_location:
                     type: string
                     description: 'Location to show available appointment booking schedule.'
@@ -75058,15 +75177,42 @@ paths:
                   type: object
                   description: 'Information for sending an appointment notification.'
                   properties:
+                    is_attach:
+                      type: boolean
+                      description: '`true` to attach calendar file, `false` to not attach calendar file.'
+                    is_campaign:
+                      type: boolean
+                      description: 'Whether mail should track as a part of campaign. `true` if yes, `false` if no.'
                     is_mail:
                       type: boolean
                       description: '`true` to send mail; `false` to not send.'
-                    is_sms:
-                      type: boolean
-                      description: '`true` to send SMS; `false` to not send.'
                     is_push:
                       type: boolean
                       description: '`true` to send push notification; `false` to not send.'
+                    is_sms:
+                      type: boolean
+                      description: '`true` to send SMS; `false` to not send.'
+                    text_business_name:
+                      type: string
+                      description: 'Business name.'
+                    text_business_reply:
+                      type: string
+                      description: 'Reply email address.'
+                    text_campaign:
+                      type: string
+                      description: 'Campaign name.'
+                    text_content_mail:
+                      type: string
+                      description: 'Email content.'
+                    text_push:
+                      type: string
+                      description: 'Push notification content.'
+                    text_sms:
+                      type: string
+                      description: 'SMS content.'
+                    text_subject:
+                      type: string
+                      description: 'Email subject.'
                 a_pay_form:
                   type: array
                   description: 'A list of payment sources to pay with.'
