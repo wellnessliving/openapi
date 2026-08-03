@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260801081439
+  version: 1.1.20260803024248
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -69095,7 +69095,10 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Accepts a Widget analytics event.'
-      description: 'Validates the event envelope and payload, stores the event, and schedules asynchronous processing.'
+      description: |-
+        Validates the event envelope and payload. An `abandoned_checkout` event is stored and scheduled for
+        asynchronous processing. A `purchase` event marks any pending abandoned checkout event for the same client
+        and checkout type as checkout-complete, so the "Abandoned checkout" trigger stops enrolling the client for it.
       tags:
         - 'Widget Analytics'
       parameters:
