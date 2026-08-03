@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260803091920
+  version: 1.1.20260803120914
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -69183,7 +69183,7 @@ paths:
                             When `id_purchase_item` is:
                             - [RsPurchaseItemSid::COUPON](#/components/schemas/RsPurchaseItemSid), this is a coupon key.
                             - [RsPurchaseItemSid::ENROLLMENT](#/components/schemas/RsPurchaseItemSid), this is an event class key.
-                            - [RsPurchaseItemSid::PRODUCT](#/components/schemas/RsPurchaseItemSid), this is a product key.
+                            - [RsPurchaseItemSid::PRODUCT](#/components/schemas/RsPurchaseItemSid), this is a product option key.
                             - [RsPurchaseItemSid::PROMOTION](#/components/schemas/RsPurchaseItemSid), this is a Purchase Option key.
 
                             When `id_service` is:
@@ -69200,10 +69200,16 @@ paths:
                         text_service_name:
                           type: string
                           description: 'Item name snapshot from checkout.'
+                        uid_staff:
+                          type: string
+                          description: |-
+                            Selected staff user key.
+                            Empty if staff was not selected.
                       required:
                         - i_order
                         - k_item
                         - text_service_name
+                        - uid_staff
                     id_checkout_type:
                       $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid'
                       description: |-
