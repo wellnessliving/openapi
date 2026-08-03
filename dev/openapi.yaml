@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260803195956
+  version: 1.1.20260803205845
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25719,10 +25719,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  a_log:
+                  a_finding:
                     type: array
                     description: |-
-                      Grouped log findings.
+                      Grouped findings.
 
                       One element contains:
                     items:
@@ -25732,30 +25732,42 @@ paths:
                           type: integer
                           format: int32
                           description: 'Number of matching records.'
-                        s_first_seen:
+                        id_source:
+                          $ref: '#/components/schemas/Core.AI.LogTriage.TriageSourceSid'
+                          description: 'Finding source from [TriageSourceSid](#/components/schemas/Core.AI.LogTriage.TriageSourceSid).'
+                        text_message:
                           type: string
-                          description: 'Date of the first matching record.'
-                        s_last_seen:
+                          description: 'Log message. Present for log sources.'
+                        dtu_first_seen:
                           type: string
-                          description: 'Date of the last matching record.'
-                        s_message:
+                          description: 'UTC date/time of the first matching log record.'
+                        dtu_last_seen:
                           type: string
-                          description: 'Log message.'
-                        s_source:
+                          description: 'UTC date/time of the last matching log record.'
+                        s_object:
                           type: string
-                          description: 'Log source: `error` or `slow`.'
+                          description: 'WatchUsageStat object. Present for this source.'
+                        dl_first_seen:
+                          type: string
+                          description: 'Local date of the first WatchUsageStat record.'
+                        dl_last_seen:
+                          type: string
+                          description: 'Local date of the last WatchUsageStat record.'
                       required:
                         - i_occurrence_count
-                        - s_first_seen
-                        - s_last_seen
-                        - s_message
-                        - s_source
+                        - id_source
+                        - text_message
+                        - dtu_first_seen
+                        - dtu_last_seen
+                        - s_object
+                        - dl_first_seen
+                        - dl_last_seen
                   i_result:
                     type: integer
                     format: int32
                     description: 'Connection check value.'
                 required:
-                  - a_log
+                  - a_finding
                   - i_result
         '400':
           $ref: '#/components/responses/400'
@@ -25769,19 +25781,28 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Returns a fixed connection value and, when requested, selected log findings.'
+      summary: 'Returns a fixed connection value and, when requested, selected findings.'
       tags:
         - System
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
         -
-          name: is_log
+          name: a_id_source
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Core.AI.LogTriage.TriageSourceSid'
+          description: 'IDs of finding sources from [TriageSourceSid](#/components/schemas/Core.AI.LogTriage.TriageSourceSid).'
+        -
+          name: is_finding
           in: query
           required: true
           schema:
             type: boolean
-          description: 'Whether log findings must be returned.'
+          description: 'Whether findings must be returned.'
         -
           name: s_date_mask
           in: query
@@ -25793,20 +25814,12 @@ paths:
 
             Empty string selects the current UTC date.
         -
-          name: s_search
+          name: text_search
           in: query
           required: true
           schema:
             type: string
           description: 'Optional case-insensitive message substring.'
-        -
-          name: s_source
-          in: query
-          required: true
-          schema:
-            type: string
-            default: all
-          description: 'Log source: `all`, `error`, or `slow`.'
       x-rate-limit:
         -
           limit: 200000
@@ -107167,6 +107180,28 @@ components:
           Token is valid but score is risky.
 
           Used by {@link \Core\Google\Captcha\CaptchaVersionSid::V3} only.
+    Core.AI.LogTriage.TriageSourceSid:
+      type: integer
+      format: int32
+      description: |-
+        Sources from which log triage findings can be collected.
+
+        Values:
+        - 1 (`ERROR_LOG`): PHP error log represented by [DebugPhpLog](#/components/schemas/Core.Log.CoreLog).
+        - 2 (`SLOW_LOG`): Slow-operation log represented by [DebugSlowLog](#/components/schemas/Core.Log.CoreLog).
+        - 3 (`WATCH_USAGE_STAT`): Aggregated usage statistics stored by WatchUsageStat.
+      enum:
+        - 1
+        - 2
+        - 3
+      x-enum-varnames:
+        - ERROR_LOG
+        - SLOW_LOG
+        - WATCH_USAGE_STAT
+      x-enum-descriptions:
+        - 'PHP error log represented by {@link \Core\Debug\DebugPhpLog}.'
+        - 'Slow-operation log represented by {@link \Core\Debug\DebugSlowLog}.'
+        - 'Aggregated usage statistics stored by {@link \Core\Watch\WatchUsageStat}.'
     Wl.Report.View.ReportViewControllerAbstract:
       type: integer
       format: int32
