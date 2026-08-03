@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260803060703
+  version: 1.1.20260803063402
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -10977,12 +10977,21 @@ paths:
                                   description: 'Key of the appointment type.'
                               required:
                                 - k_service
+                            id_class_access:
+                              $ref: '#/components/schemas/AFlagSid'
+                              description: |-
+                                Class access flag, one of [AFlagSid](#/components/schemas/AFlagSid) constants.
+                                [AFlagSid::ALL](#/components/schemas/AFlagSid) if any class in the business can be visited with this Purchase Option,
+                                including classes created later.
+                                [AFlagSid::ON](#/components/schemas/AFlagSid) if only selected classes can be visited with this Purchase Option.
+                                Selected classes can be found in the list of available classes and events.
                             is_class_all:
                               type: boolean
                               description: |-
                                 This will be `true` if any class in the business can be visited with this Purchase Option.
                                 Otherwise, this will be `false` if only selected classes can be visited with this Purchase Option.
                                 Selected classes can be found in the list of available classes and events.
+                                Equivalent to `id_class_access` being [AFlagSid::ALL](#/components/schemas/AFlagSid).
                             is_event_all:
                               type: boolean
                               description: |-
@@ -10994,6 +11003,7 @@ paths:
                             - a_event
                             - a_resource
                             - a_service
+                            - id_class_access
                             - is_class_all
                             - is_event_all
                         a_image:
@@ -11328,12 +11338,21 @@ paths:
                                 description: 'Key of the appointment type.'
                             required:
                               - k_service
+                          id_class_access:
+                            $ref: '#/components/schemas/AFlagSid'
+                            description: |-
+                              Class access flag, one of [AFlagSid](#/components/schemas/AFlagSid) constants.
+                              [AFlagSid::ALL](#/components/schemas/AFlagSid) if any class in the business can be visited with this Purchase Option,
+                              including classes created later.
+                              [AFlagSid::ON](#/components/schemas/AFlagSid) if only selected classes can be visited with this Purchase Option.
+                              Selected classes can be found in the list of available classes and events.
                           is_class_all:
                             type: boolean
                             description: |-
                               This will be `true` if any class in the business can be visited with this Purchase Option.
                               Otherwise, this will be `false` if only selected classes can be visited with this Purchase Option.
                               Selected classes can be found in the list of available classes and events.
+                              Equivalent to `id_class_access` being [AFlagSid::ALL](#/components/schemas/AFlagSid).
                           is_event_all:
                             type: boolean
                             description: |-
@@ -11345,6 +11364,7 @@ paths:
                           - a_event
                           - a_resource
                           - a_service
+                          - id_class_access
                           - is_class_all
                           - is_event_all
                       a_image:
