@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260801122342
+  version: 1.1.20260803071911
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -7030,6 +7030,24 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_level_filter:
+                    type: array
+                    description: |-
+                      All levels to offer in the level filter of the video catalog.
+
+                      Empty array if levels are not shown in this business. Each element:
+                    items:
+                      type: object
+                      properties:
+                        k_video_level:
+                          type: string
+                          description: 'Level key.'
+                        text_title:
+                          type: string
+                          description: 'Level name.'
+                      required:
+                        - k_video_level
+                        - text_title
                   a_list:
                     type: array
                     description: |-
@@ -7227,6 +7245,45 @@ paths:
                         description: '`true` if this entry represents a skipped page range (ellipsis). Only present on skip entries.'
                     required:
                       - page
+                  a_staff_filter:
+                    type: array
+                    description: |-
+                      All staff members to offer in the staff filter of the video catalog.
+
+                      Each element:
+                    items:
+                      type: object
+                      properties:
+                        text_name:
+                          type: string
+                          description: 'Full name of the staff member.'
+                        uid_staff:
+                          type: string
+                          description: 'User key of the staff member.'
+                        k_staff:
+                          type: string
+                          description: 'Staff member key. Only for legacy applications.'
+                      required:
+                        - text_name
+                        - uid_staff
+                  a_video_tag_filter:
+                    type: array
+                    description: |-
+                      All tags to offer in the tag filter of the video catalog.
+
+                      Each element:
+                    items:
+                      type: object
+                      properties:
+                        k_video_tag:
+                          type: string
+                          description: 'Tag key.'
+                        text_title:
+                          type: string
+                          description: 'Tag name.'
+                      required:
+                        - k_video_tag
+                        - text_title
                   id_embed_source:
                     $ref: '#/components/schemas/Wl.Video.VideoEmbedSourceSid'
                     description: |-
@@ -7257,8 +7314,11 @@ paths:
                                });
                            </script>
                 required:
+                  - a_level_filter
                   - a_list
                   - a_page
+                  - a_staff_filter
+                  - a_video_tag_filter
                   - json_setup
         '400':
           $ref: '#/components/responses/400'
@@ -68330,7 +68390,10 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Accepts a Widget analytics event.'
-      description: 'Validates the event envelope and payload, stores the event, and schedules asynchronous processing.'
+      description: |-
+        Validates the event envelope and payload. An `abandoned_checkout` event is stored and scheduled for
+        asynchronous processing. A `purchase` event marks any pending abandoned checkout event for the same client
+        and checkout type as checkout-complete, so the "Abandoned checkout" trigger stops enrolling the client for it.
       tags:
         - 'Widget Analytics'
       parameters:
