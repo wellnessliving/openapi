@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260804032035
+  version: 1.1.20260804223521
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -4700,6 +4700,20 @@ paths:
                                 items:
                                   type: integer
                                   format: int32
+                              a_repeat:
+                                type: object
+                                description: 'Information about event repeating.'
+                                properties:
+                                  i_repeat:
+                                    type: integer
+                                    format: int32
+                                    description: 'Count of the periods which are specified in `id_repeat`.'
+                                  id_repeat:
+                                    $ref: '#/components/schemas/ADurationSid'
+                                    description: 'Measuring unit of `i_repeat` (week, month, year) from [ADurationSid](#/components/schemas/ADurationSid).'
+                                required:
+                                  - i_repeat
+                                  - id_repeat
                               a_staff_member:
                                 type: object
                                 description: 'List of staff members providing event session.'
@@ -4767,6 +4781,7 @@ paths:
                                 description: 'Start and end time of the scheduled sessions in human readable format.'
                             required:
                               - a_day
+                              - a_repeat
                               - a_staff_member
                               - dl_end
                               - dl_start
@@ -24637,6 +24652,335 @@ paths:
                 - text_captcha
                 - text_mail
                 - url_reset
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Core/Passport/Passkey/PasskeyCredential.json:
+    delete:
+      operationId: Core.Passport.Passkey.PasskeyCredential.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: "Revokes one of the signed-in user's passkey credentials."
+      description: |-
+        Marks the credential as revoked rather than deleting the row, so its immutable identity data
+        remains available for audit purposes. Only a credential owned by the signed-in user can be
+        revoked - specifying another user's credential key has no effect.
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_passkey_credential
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the credential to revoke.
+
+            Only used to revoke a credential.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    get:
+      operationId: Core.Passport.Passkey.PasskeyCredential.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_credential:
+                    type: object
+                    description: "List of the signed-in user's registered passkey credentials. Structure of each element:"
+                    properties:
+                      dtu_create:
+                        type: string
+                        description: 'Date and time when this credential was registered.'
+                      dtu_last_use:
+                        type:
+                          - string
+                          - 'null'
+                        description: 'Date and time when this credential was last used to sign in, or `null` if never used.'
+                      id_device_type:
+                        $ref: '#/components/schemas/Core.Passport.Passkey.PasskeyDeviceTypeEnum'
+                        description: 'One of [PasskeyDeviceTypeEnum](#/components/schemas/Core.Passport.Passkey.PasskeyDeviceTypeEnum) values.'
+                      id_status:
+                        $ref: '#/components/schemas/Core.Passport.Passkey.PasskeyCredentialStatusEnum'
+                        description: 'One of [PasskeyCredentialStatusEnum](#/components/schemas/Core.Passport.Passkey.PasskeyCredentialStatusEnum) values.'
+                      is_backed_up:
+                        type: boolean
+                        description: '`true` if the credential is currently backed up.'
+                      k_passkey_credential:
+                        type: string
+                        description: 'Credential key.'
+                      text_device:
+                        type: string
+                        description: 'User-supplied friendly label of this credential.'
+                    required:
+                      - dtu_create
+                      - dtu_last_use
+                      - id_device_type
+                      - id_status
+                      - is_backed_up
+                      - k_passkey_credential
+                      - text_device
+                required:
+                  - a_credential
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: "Lists the signed-in user's registered passkey credentials."
+      description: |-
+        Returns each credential's own metadata (label, device type, backup state, timestamps) for the account-settings
+        management. Does not reveal the raw credential ID or public key.
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Core/Passport/Passkey/PasskeyEnter.json:
+    get:
+      operationId: Core.Passport.Passkey.PasskeyEnter.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  json_options:
+                    type: string
+                    description: |-
+                      JSON-encoded `PublicKeyCredentialRequestOptions` to pass to `navigator.credentials.get()`.
+
+                      Filled in when starting the ceremony.
+                required:
+                  - json_options
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Starts the authentication ceremony.'
+      description: |-
+        Issues a PublicKeyCredentialRequestOptions challenge with an empty `allowCredentials` list,
+        so the browser or OS surfaces a picker of every passkey registered for this `rpId` without the
+        caller identifying a user first.
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Core.Passport.Passkey.PasskeyEnter.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url_redirect:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      An optional URL for redirection after the user has signed in.
+
+                      Only used to finish the ceremony.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Finishes the authentication ceremony.'
+      description: |-
+        Looks up the credential by the ID carried in the assertion, verifies the assertion against it
+        and the challenge issued by `get()`, then signs the credential's owner
+        in the same way a successful password login would. Fails if the caller is already signed in,
+        the credential is unknown or revoked, or the assertion does not verify.
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                json_credential:
+                  type: string
+                  description: |-
+                    JSON-encoded `PublicKeyCredential` produced by `navigator.credentials.get()`, sent back to
+                    finish the authentication ceremony.
+
+                    Empty when starting the ceremony.
+                url_return:
+                  type: string
+                  description: |-
+                    Url of previous page if the user was redirected to the login page.
+
+                    Only used to finish the ceremony.
+              required:
+                - json_credential
+                - url_return
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Core/Passport/Passkey/PasskeyRegister.json:
+    get:
+      operationId: Core.Passport.Passkey.PasskeyRegister.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  json_options:
+                    type: string
+                    description: |-
+                      JSON-encoded `PublicKeyCredentialCreationOptions` to pass to `navigator.credentials.create()`.
+
+                      Filled in when starting the ceremony.
+                required:
+                  - json_options
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Starts the registration ceremony.'
+      description: |-
+        Issues a PublicKeyCredentialCreationOptions challenge for `navigator.credentials.create()`,
+        scoped to the signed-in user and excluding their already-registered active credentials so the
+        same authenticator cannot register a duplicate one.
+        The options are also stashed in session so `post()` can verify the same
+        challenge when finishing the ceremony.</i>
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Core.Passport.Passkey.PasskeyRegister.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Finishes the registration ceremony.'
+      description: |-
+        Verifies the attestation response against the challenge issued by
+        `get()`, then stores the new credential under the signed-in user.
+        Fails if the ceremony was never started or has expired, or if the response does not match the
+        expected origin, `rpId`, or challenge.
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                json_credential:
+                  type: string
+                  description: |-
+                    JSON-encoded `PublicKeyCredential` produced by `navigator.credentials.create()`, sent back
+                    to finish the registration ceremony.
+
+                    Empty when starting the ceremony.
+                text_device:
+                  type: string
+                  description: |-
+                    User-supplied friendly label of the passkey being registered, for example `"MacBook Touch ID"`.
+
+                    Only used to finish the ceremony.
+              required:
+                - json_credential
+                - text_device
       x-rate-limit:
         -
           limit: 200000
@@ -85373,6 +85717,18 @@ paths:
                         type: integer
                         format: int32
                         description: 'The appointment duration in minutes.'
+                      i_padding_after:
+                        type: integer
+                        format: int32
+                        description: |-
+                          Padding time after the end of the appointment, in minutes. Used to detect when a staff member is
+                            busy after this appointment when booking back-to-back appointments.
+                      i_padding_before:
+                        type: integer
+                        format: int32
+                        description: |-
+                          Padding time before the beginning of the appointment, in minutes. Used to detect when a staff member is
+                            busy before this appointment when booking back-to-back appointments.
                       id_book_flow:
                         $ref: '#/components/schemas/Wl.Service.ServiceBookFlowSid'
                         description: 'The type of client booking flow. One of [ServiceBookFlowSid](#/components/schemas/Wl.Service.ServiceBookFlowSid) constants.'
@@ -85485,6 +85841,8 @@ paths:
                       - i_age_to_month
                       - i_price
                       - i_duration
+                      - i_padding_after
+                      - i_padding_before
                       - id_book_flow
                       - id_deny_reason
                       - id_service_require
@@ -85822,6 +86180,18 @@ paths:
                         type: integer
                         format: int32
                         description: 'The appointment duration in minutes.'
+                      i_padding_after:
+                        type: integer
+                        format: int32
+                        description: |-
+                          Padding time after the end of the appointment, in minutes. Used to detect when a staff member is
+                            busy after this appointment when booking back-to-back appointments.
+                      i_padding_before:
+                        type: integer
+                        format: int32
+                        description: |-
+                          Padding time before the beginning of the appointment, in minutes. Used to detect when a staff member is
+                            busy before this appointment when booking back-to-back appointments.
                       id_book_flow:
                         $ref: '#/components/schemas/Wl.Service.ServiceBookFlowSid'
                         description: 'The type of client booking flow. One of [ServiceBookFlowSid](#/components/schemas/Wl.Service.ServiceBookFlowSid) constants.'
@@ -85934,6 +86304,8 @@ paths:
                       - i_age_to_month
                       - i_price
                       - i_duration
+                      - i_padding_after
+                      - i_padding_before
                       - id_book_flow
                       - id_deny_reason
                       - id_service_require
@@ -104188,6 +104560,14 @@ components:
           Batching is a process when all transactions are sent to processing by merchant in a certain time of next day.
         - 1572 (`Thoth\Report\SalesReport\Transaction\Cash\SummaryReport`): "Cash Reconciliation Summary" report.
           This report is only accessible as a part of "Sales and Attendance Summary" report.
+        - 2316 (`Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport`): "Bulk Charges" report. Summary of Bulk Billing batches created from the Clients tab.
+
+          There is no persisted "expected total" for a batch - PurchaseBatchManager::create() does
+          not compute or store one, and the actual charge amount is only known once
+          PurchaseBatchBill::billClient() prices each client live at billing time. `Total Amount`
+          therefore combines the already-charged clients' actual `f_sum`/`m_surcharge` with a live
+          re-pricing (via BulkBillingManager::purchaseItemTotal()) of the clients still pending/failed - see
+          [BulkChargesReport::_batchAmountGet()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract).
         - 1448 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReport`): "Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.
         - 1498 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReport`): Franchise "Memberships Summary by Location" report.
         - 1295 (`Thoth\Report\SalesReport\Client\SummaryReport\SummaryReport`): "Sales Summary by Client" report.
@@ -104290,6 +104670,7 @@ components:
         - 1522
         - 1283
         - 1572
+        - 2316
         - 1448
         - 1498
         - 1295
@@ -104374,6 +104755,7 @@ components:
         - Wl\Attendance\Report\Appointment\DetailReport
         - Thoth\Report\SalesReport\Transaction\Batch\BatchReport
         - Thoth\Report\SalesReport\Transaction\Cash\SummaryReport
+        - Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport
         - Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReport
         - Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReport
         - Thoth\Report\SalesReport\Client\SummaryReport\SummaryReport
@@ -104476,6 +104858,15 @@ components:
         - |-
           "Cash Reconciliation Summary" report.
           This report is only accessible as a part of "Sales and Attendance Summary" report.
+        - |-
+          "Bulk Charges" report. Summary of Bulk Billing batches created from the Clients tab.
+
+          There is no persisted "expected total" for a batch - {@link \Wl\Billing\Bulk\PurchaseBatchManager::create()} does
+          not compute or store one, and the actual charge amount is only known once
+          {@link \Wl\Billing\Bulk\PurchaseBatchBill::billClient()} prices each client live at billing time. `Total Amount`
+          therefore combines the already-charged clients' actual {@link \RsPurchaseSql::$f_sum}/`m_surcharge` with a live
+          re-pricing (via {@link \Wl\Billing\Bulk\BulkBillingManager::purchaseItemTotal()}) of the clients still pending/failed - see
+          {@link \Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport::_batchAmountGet()}.
         - '"Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.'
         - 'Franchise "Memberships Summary by Location" report.'
         - '"Sales Summary by Client" report.'
@@ -104890,6 +105281,53 @@ components:
         - 'Gif image.'
         - 'Jpeg image.'
         - 'Png image.'
+    ADurationSid:
+      type: integer
+      format: int32
+      description: |-
+        A class for managing time intervals.
+        Last ID: 9.
+
+        Values:
+        - 4 (`DAY`): Days.
+        - 3 (`HOUR`): Hours.
+        - 2 (`MINUTE`): Minutes.
+        - 5 (`MONTH`): Months.
+        - 1 (`SECOND`): Seconds.
+        - 7 (`WEEK`): Weeks (7 days).
+        - 9 (`WEEK2`): Two weeks (14 days).
+        - 8 (`WEEK4`): Foursome of weeks (28 days).
+        - 6 (`YEAR`): Years.
+      enum:
+        - 4
+        - 3
+        - 2
+        - 5
+        - 1
+        - 7
+        - 9
+        - 8
+        - 6
+      x-enum-varnames:
+        - DAY
+        - HOUR
+        - MINUTE
+        - MONTH
+        - SECOND
+        - WEEK
+        - WEEK2
+        - WEEK4
+        - YEAR
+      x-enum-descriptions:
+        - Days.
+        - Hours.
+        - Minutes.
+        - Months.
+        - Seconds.
+        - 'Weeks (7 days).'
+        - 'Two weeks (14 days).'
+        - 'Foursome of weeks (28 days).'
+        - Years.
     RsScheduleTimeSid:
       type: integer
       format: int32
@@ -105819,53 +106257,6 @@ components:
 
           Such passes cannot be bought, they can be only components of the special system packages,
           packages with `k_business` = `null`.
-    ADurationSid:
-      type: integer
-      format: int32
-      description: |-
-        A class for managing time intervals.
-        Last ID: 9.
-
-        Values:
-        - 4 (`DAY`): Days.
-        - 3 (`HOUR`): Hours.
-        - 2 (`MINUTE`): Minutes.
-        - 5 (`MONTH`): Months.
-        - 1 (`SECOND`): Seconds.
-        - 7 (`WEEK`): Weeks (7 days).
-        - 9 (`WEEK2`): Two weeks (14 days).
-        - 8 (`WEEK4`): Foursome of weeks (28 days).
-        - 6 (`YEAR`): Years.
-      enum:
-        - 4
-        - 3
-        - 2
-        - 5
-        - 1
-        - 7
-        - 9
-        - 8
-        - 6
-      x-enum-varnames:
-        - DAY
-        - HOUR
-        - MINUTE
-        - MONTH
-        - SECOND
-        - WEEK
-        - WEEK2
-        - WEEK4
-        - YEAR
-      x-enum-descriptions:
-        - Days.
-        - Hours.
-        - Minutes.
-        - Months.
-        - Seconds.
-        - 'Weeks (7 days).'
-        - 'Two weeks (14 days).'
-        - 'Foursome of weeks (28 days).'
-        - Years.
     RsDurationTypeSid:
       type: integer
       format: int32
@@ -107130,6 +107521,55 @@ components:
         - 'Anonymous user (Walk-In).'
         - Business.
         - 'System user.'
+    Core.Passport.Passkey.PasskeyDeviceTypeEnum:
+      type: integer
+      format: int32
+      description: |-
+        `WebAuthn` `credentialDeviceType` values, per the `WebAuthn` specification.
+
+        Values:
+        - 1 (`SINGLE_DEVICE`): The credential is bound to a single physical authenticator and cannot be backed up or
+          synced to another device.
+        - 2 (`MULTI_DEVICE`): The credential can be backed up and synced across multiple devices, for example through
+          iCloud Keychain or Google Password Manager.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - SINGLE_DEVICE
+        - MULTI_DEVICE
+      x-enum-descriptions:
+        - |-
+          The credential is bound to a single physical authenticator and cannot be backed up or
+          synced to another device.
+        - |-
+          The credential can be backed up and synced across multiple devices, for example through
+          iCloud Keychain or Google Password Manager.
+    Core.Passport.Passkey.PasskeyCredentialStatusEnum:
+      type: integer
+      format: int32
+      description: |-
+        Statuses of a registered passkey credential.
+
+        Values:
+        - 1 (`ACTIVE`): The credential is active and may be used to sign in.
+        - 2 (`REVOKED`): The credential was revoked by its owner and may no longer be used to sign in.
+
+          The row is kept (never hard-deleted) so its immutable `s_credential_id`/`s_public_key` remain
+          available for audit purposes.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - ACTIVE
+        - REVOKED
+      x-enum-descriptions:
+        - 'The credential is active and may be used to sign in.'
+        - |-
+          The credential was revoked by its owner and may no longer be used to sign in.
+
+          The row is kept (never hard-deleted) so its immutable `s_credential_id`/`s_public_key` remain
+          available for audit purposes.
     Core.Google.Captcha.CaptchaResponseSid:
       type: integer
       format: int32
@@ -107278,6 +107718,7 @@ components:
         - 1520 (`Wl\Attendance\Report\Appointment\SummaryReportController`): Controls appointment summary report in list format.
         - 1286 (`Thoth\Report\SalesReport\Transaction\Batch\BatchReportController`): Controller for "Batch Report".
         - 1573 (`Thoth\Report\SalesReport\Transaction\Cash\SummaryReportController`): Controller for "Cash Reconciliation Summary" report.
+        - 2317 (`Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReportController`): "Bulk Charges" report controller. Table representation.
         - 1447 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportController`): "Enterprise Reports -> Memberships Details by Location" report controller. Table representation.
         - 1499 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReportController`): Franchise "Memberships Summary by Location" report controller. Table representation.
         - 1296 (`Thoth\Report\SalesReport\Client\SummaryReport\SummaryReportController`): Controller for "Sales per Client" report.
@@ -107386,6 +107827,7 @@ components:
         - 1520
         - 1286
         - 1573
+        - 2317
         - 1447
         - 1499
         - 1296
@@ -107492,6 +107934,7 @@ components:
         - Wl\Attendance\Report\Appointment\SummaryReportController
         - Thoth\Report\SalesReport\Transaction\Batch\BatchReportController
         - Thoth\Report\SalesReport\Transaction\Cash\SummaryReportController
+        - Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReportController
         - Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportController
         - Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReportController
         - Thoth\Report\SalesReport\Client\SummaryReport\SummaryReportController
@@ -107609,6 +108052,7 @@ components:
         - 'Controls appointment summary report in list format.'
         - 'Controller for "Batch Report".'
         - 'Controller for "Cash Reconciliation Summary" report.'
+        - '"Bulk Charges" report controller. Table representation.'
         - '"Enterprise Reports -> Memberships Details by Location" report controller. Table representation.'
         - 'Franchise "Memberships Summary by Location" report controller. Table representation.'
         - 'Controller for "Sales per Client" report.'
