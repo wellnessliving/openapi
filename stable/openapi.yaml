@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260804102734
+  version: 1.1.20260804105207
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -7960,6 +7960,21 @@ paths:
                                 items:
                                   type: integer
                                   format: int32
+                              a_repeat:
+                                type: object
+                                description: 'Information about event repeating.'
+                                properties:
+                                  i_repeat:
+                                    type: integer
+                                    format: int32
+                                    description: 'Count of the periods which are specified in `id_repeat`.'
+                                  id_repeat:
+                                    type: integer
+                                    format: int32
+                                    description: 'Measuring unit of `i_repeat` (week, month, year).'
+                                required:
+                                  - i_repeat
+                                  - id_repeat
                               a_staff_member:
                                 type: object
                                 description: 'List of staff members providing event session.'
@@ -8027,6 +8042,7 @@ paths:
                                 description: 'Start and end time of the scheduled sessions in human readable format.'
                             required:
                               - a_day
+                              - a_repeat
                               - a_staff_member
                               - dl_end
                               - dl_start
