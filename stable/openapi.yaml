@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260804105207
+  version: 1.1.20260804150354
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -7969,9 +7969,8 @@ paths:
                                     format: int32
                                     description: 'Count of the periods which are specified in `id_repeat`.'
                                   id_repeat:
-                                    type: integer
-                                    format: int32
-                                    description: 'Measuring unit of `i_repeat` (week, month, year).'
+                                    $ref: '#/components/schemas/ADurationSid'
+                                    description: 'Measuring unit of `i_repeat` (week, month, year) from [ADurationSid](#/components/schemas/ADurationSid).'
                                 required:
                                   - i_repeat
                                   - id_repeat
@@ -105322,6 +105321,53 @@ components:
         - 'Gif image.'
         - 'Jpeg image.'
         - 'Png image.'
+    ADurationSid:
+      type: integer
+      format: int32
+      description: |-
+        A class for managing time intervals.
+        Last ID: 9.
+
+        Values:
+        - 4 (`DAY`): Days.
+        - 3 (`HOUR`): Hours.
+        - 2 (`MINUTE`): Minutes.
+        - 5 (`MONTH`): Months.
+        - 1 (`SECOND`): Seconds.
+        - 7 (`WEEK`): Weeks (7 days).
+        - 9 (`WEEK2`): Two weeks (14 days).
+        - 8 (`WEEK4`): Foursome of weeks (28 days).
+        - 6 (`YEAR`): Years.
+      enum:
+        - 4
+        - 3
+        - 2
+        - 5
+        - 1
+        - 7
+        - 9
+        - 8
+        - 6
+      x-enum-varnames:
+        - DAY
+        - HOUR
+        - MINUTE
+        - MONTH
+        - SECOND
+        - WEEK
+        - WEEK2
+        - WEEK4
+        - YEAR
+      x-enum-descriptions:
+        - Days.
+        - Hours.
+        - Minutes.
+        - Months.
+        - Seconds.
+        - 'Weeks (7 days).'
+        - 'Two weeks (14 days).'
+        - 'Foursome of weeks (28 days).'
+        - Years.
     RsScheduleTimeSid:
       type: integer
       format: int32
@@ -106060,53 +106106,6 @@ components:
 
           Such passes cannot be bought, they can be only components of the special system packages,
           packages with `k_business` = `null`.
-    ADurationSid:
-      type: integer
-      format: int32
-      description: |-
-        A class for managing time intervals.
-        Last ID: 9.
-
-        Values:
-        - 4 (`DAY`): Days.
-        - 3 (`HOUR`): Hours.
-        - 2 (`MINUTE`): Minutes.
-        - 5 (`MONTH`): Months.
-        - 1 (`SECOND`): Seconds.
-        - 7 (`WEEK`): Weeks (7 days).
-        - 9 (`WEEK2`): Two weeks (14 days).
-        - 8 (`WEEK4`): Foursome of weeks (28 days).
-        - 6 (`YEAR`): Years.
-      enum:
-        - 4
-        - 3
-        - 2
-        - 5
-        - 1
-        - 7
-        - 9
-        - 8
-        - 6
-      x-enum-varnames:
-        - DAY
-        - HOUR
-        - MINUTE
-        - MONTH
-        - SECOND
-        - WEEK
-        - WEEK2
-        - WEEK4
-        - YEAR
-      x-enum-descriptions:
-        - Days.
-        - Hours.
-        - Minutes.
-        - Months.
-        - Seconds.
-        - 'Weeks (7 days).'
-        - 'Two weeks (14 days).'
-        - 'Foursome of weeks (28 days).'
-        - Years.
     RsDurationTypeSid:
       type: integer
       format: int32
