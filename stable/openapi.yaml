@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260805041323
+  version: 1.1.20260805051444
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -69193,13 +69193,6 @@ paths:
                           description: |-
                             Selected class period key for classes/events booking items.
                             `null` if class period is not specified or not applicable.
-                        k_enrollment_block:
-                          type:
-                            - string
-                            - 'null'
-                          description: |-
-                            Optional enrollment block key for an event item.
-                            `''` when an enrollment block is not available.
                         k_item:
                           type: string
                           description: |-
