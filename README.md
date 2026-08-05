@@ -8,7 +8,7 @@ Interactive API documentation for the WellnessLiving platform, rendered with [Re
 
 | Version         | Docs                                                         | OpenAPI spec                        |
 |-----------------|--------------------------------------------------------------|-------------------------------------|
-| **Production**  | coming soon                                                  | -                                   |
+| **Production**  | [/production/](https://wellnessliving.github.io/openapi/production/) | [openapi.yaml](production/openapi.yaml) |
 | **Stable**      | [/stable/](https://wellnessliving.github.io/openapi/stable/) | [openapi.yaml](stable/openapi.yaml) |
 | **Development** | [/dev/](https://wellnessliving.github.io/openapi/dev/)       | [openapi.yaml](dev/openapi.yaml)    |
 

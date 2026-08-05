@@ -56,8 +56,8 @@
   <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
   <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
   <script>
-    const branch = new URLSearchParams(location.search).get('branch') || 'stable';
-    const branchLabels = {'dev': 'Development', 'stable': 'Stable'};
+    const branch = new URLSearchParams(location.search).get('branch') || 'production';
+    const branchLabels = {'production': 'Production', 'stable': 'Stable', 'dev': 'Development'};
 
     document.title = 'WellnessLiving API - ' + (branchLabels[branch] || branch);
     document.getElementById('branch-label').textContent = branchLabels[branch] || branch;
