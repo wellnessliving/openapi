@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260805075402
+  version: 1.1.20260805082625
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -89221,8 +89221,7 @@ paths:
                   type: string
                   description: |-
                     Selected pay option to apply. The key has structure [PayChangeApi::$text_key](/Wl/Visit/Pay/PayChange.json), plus an
-                     extra `k_promotion:0` (Drop-in) and `k_appointment_deposit:[k_appointment]` (deposit-only) formats
-                     returned by `_getPromotionApplicable()`.
+                     extra `k_promotion:0` (Drop-in) and `k_appointment_deposit:[k_appointment]` (deposit-only).
                 uid:
                   type: string
                   description: 'The user key.'
