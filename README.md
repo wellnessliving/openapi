@@ -6,22 +6,25 @@ Interactive API documentation for the WellnessLiving platform, rendered with [Re
 
 ## Versions
 
-| Version         | Docs                                                         | OpenAPI spec                        |
-|-----------------|--------------------------------------------------------------|-------------------------------------|
+| Version         | Docs                                                                 | OpenAPI spec                            |
+|-----------------|----------------------------------------------------------------------|-----------------------------------------|
 | **Production**  | [/production/](https://wellnessliving.github.io/openapi/production/) | [openapi.yaml](production/openapi.yaml) |
-| **Stable**      | [/stable/](https://wellnessliving.github.io/openapi/stable/) | [openapi.yaml](stable/openapi.yaml) |
-| **Development** | [/dev/](https://wellnessliving.github.io/openapi/dev/)       | [openapi.yaml](dev/openapi.yaml)    |
+| **Stable**      | [/stable/](https://wellnessliving.github.io/openapi/stable/)         | [openapi.yaml](stable/openapi.yaml)     |
+| **Development** | [/dev/](https://wellnessliving.github.io/openapi/dev/)               | [openapi.yaml](dev/openapi.yaml)        |
 
 ## Structure
 
 ```
-index.html         - version picker landing page
+production/
+  openapi.yaml     - OpenAPI 3.1 specification
 stable/
-  index.html       - Redoc / Swagger UI viewer
   openapi.yaml     - OpenAPI 3.1 specification
 dev/
-  index.html       - Redoc / Swagger UI viewer
   openapi.yaml     - OpenAPI 3.1 specification
+docs/
+  index.html       - version picker landing page
+  redoc.html       - Redoc viewer
+  swagger.html     - Swagger UI viewer
 ```
 
 ## Related repositories
