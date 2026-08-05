@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260805152406
+  version: 1.1.20260805181001
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -9128,6 +9128,9 @@ paths:
                         is_component:
                           type: boolean
                           description: 'Whether the promotion is a component.'
+                        is_expired:
+                          type: boolean
+                          description: 'Whether the promotion is expired.'
                         k_promotion:
                           type: string
                           description: 'The key of the promotion.'
@@ -9139,6 +9142,7 @@ paths:
                         - id_program_type
                         - is_active
                         - is_component
+                        - is_expired
                         - k_promotion
                         - text_title
                 required:
