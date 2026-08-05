@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260805081431
+  version: 1.1.20260805101548
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -41118,19 +41118,27 @@ paths:
                     items:
                       type: object
                       properties:
+                        uid_staff:
+                          type: string
+                          description: 'The staff user key.'
                         k_staff:
                           type: string
-                          description: 'The staff member key.'
+                          description: 'Deprecated staff key. Returned only to applications in `APPS_USE_OLD_K_STAFF`.'
                         s_family:
                           type: string
                           description: 'The surname of the staff member.'
                         s_name:
                           type: string
                           description: 'The first name of the staff member.'
+                        s_name_full:
+                          type: string
+                          description: 'The full name of the staff member.'
                       required:
+                        - uid_staff
                         - k_staff
                         - s_family
                         - s_name
+                        - s_name_full
                   dt_cancel:
                     type: string
                     format: date-time
@@ -68832,13 +68840,6 @@ paths:
                           description: |-
                             Selected class period key for classes/events booking items.
                             `null` if class period is not specified or not applicable.
-                        k_enrollment_block:
-                          type:
-                            - string
-                            - 'null'
-                          description: |-
-                            Optional enrollment block key for an event item.
-                            `''` when an enrollment block is not available.
                         k_item:
                           type: string
                           description: |-
@@ -93588,6 +93589,130 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Appointment/Book/Quiz/Quiz.json:
+    get:
+      operationId: Wl.Appointment.Book.Quiz.Quiz.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_quiz:
+                    type: array
+                    description: 'List of required quizzes.'
+                    items:
+                      type: object
+                      properties:
+                        is_require:
+                          type: boolean
+                          description: 'Whether the quiz is required.'
+                        k_quiz:
+                          type: string
+                          description: 'Quiz key.'
+                        text_title:
+                          type: string
+                          description: 'Quiz title.'
+                      required:
+                        - is_require
+                        - k_quiz
+                        - text_title
+                required:
+                  - a_quiz
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets a list of required quizzes.'
+      description: 'Gets a list of required quizzes which associated with requested service/resourse.'
+      tags:
+        - Appointments
+        - Quiz
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_purchase_item
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/RsPurchaseItemSid'
+          description: 'Purchase item ID.'
+        -
+          name: is_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: '`true` to return both optional and required forms; `false` to return only required forms.'
+        -
+          name: json_shop_product_option
+          in: query
+          required: true
+          schema:
+            type: string
+            default: '[]'
+          description: 'List of add-ons keys.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_id
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: 'Promotion key or appointment key. Depends on [QuizApi::$id_purchase_item](/Wl/Appointment/Book/Quiz/Quiz.json).'
+        -
+          name: k_resource
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: 'Resource key.'
+        -
+          name: k_service
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: 'Service key.'
+        -
+          name: uid
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            User key.
+            Empty if guest.
+      x-instance-get-key: 'k_business,k_service,k_resource,uid,id_purchase_item,k_id,is_all,json_shop_product_option'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Appointment/Book/Asset/AssetList.json:
     get:
       operationId: Wl.Appointment.Book.Asset.AssetList.get
@@ -104562,11 +104687,11 @@ components:
           This report is only accessible as a part of "Sales and Attendance Summary" report.
         - 2316 (`Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport`): "Bulk Charges" report. Summary of Bulk Billing batches created from the Clients tab.
 
-          There is no persisted "expected total" for a batch - PurchaseBatchManager::create() does
+          There is no persisted "expected total" for a batch - `\Wl\Billing\Bulk\PurchaseBatchManager::create()` does
           not compute or store one, and the actual charge amount is only known once
-          PurchaseBatchBill::billClient() prices each client live at billing time. `Total Amount`
+          `\Wl\Billing\Bulk\PurchaseBatchBill::billClient()` prices each client live at billing time. `Total Amount`
           therefore combines the already-charged clients' actual `f_sum`/`m_surcharge` with a live
-          re-pricing (via BulkBillingManager::purchaseItemTotal()) of the clients still pending/failed - see
+          re-pricing (via `BulkBillingManager::purchaseItemTotal()`) of the clients still pending/failed - see
           [BulkChargesReport::_batchAmountGet()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract).
         - 1448 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReport`): "Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.
         - 1498 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReport`): Franchise "Memberships Summary by Location" report.
@@ -104861,11 +104986,11 @@ components:
         - |-
           "Bulk Charges" report. Summary of Bulk Billing batches created from the Clients tab.
 
-          There is no persisted "expected total" for a batch - {@link \Wl\Billing\Bulk\PurchaseBatchManager::create()} does
+          There is no persisted "expected total" for a batch - `\Wl\Billing\Bulk\PurchaseBatchManager::create()` does
           not compute or store one, and the actual charge amount is only known once
-          {@link \Wl\Billing\Bulk\PurchaseBatchBill::billClient()} prices each client live at billing time. `Total Amount`
+          `\Wl\Billing\Bulk\PurchaseBatchBill::billClient()` prices each client live at billing time. `Total Amount`
           therefore combines the already-charged clients' actual {@link \RsPurchaseSql::$f_sum}/`m_surcharge` with a live
-          re-pricing (via {@link \Wl\Billing\Bulk\BulkBillingManager::purchaseItemTotal()}) of the clients still pending/failed - see
+          re-pricing (via `BulkBillingManager::purchaseItemTotal()`) of the clients still pending/failed - see
           {@link \Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport::_batchAmountGet()}.
         - '"Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.'
         - 'Franchise "Memberships Summary by Location" report.'
