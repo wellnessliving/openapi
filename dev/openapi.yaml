@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260807125445
+  version: 1.1.20260807154652
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -91488,7 +91488,207 @@ paths:
             The user key for whom the service is booking.
 
             `null` when not set.
+      deprecated: true
+      x-deprecated: 'Use {@link \Wl\Appointment\Book\Staff\StaffListApi} instead.'
       x-instance-get-key: 'k_location,k_service,dt_date,is_unavailable,id_role,k_appointment_ignore,k_timezone,uid'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Book/Staff/StaffList.json:
+    get:
+      operationId: Wl.Appointment.Book.Staff.StaffList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_staff:
+                    type: array
+                    description: 'A list of staff members with information about them.'
+                    items:
+                      type: object
+                      properties:
+                        id_gender:
+                          $ref: '#/components/schemas/AGenderSid'
+                          description: "Staff member's gender. One of [AGenderSid](#/components/schemas/AGenderSid) constants."
+                        is_available:
+                          type: boolean
+                          description: |-
+                            Whether staff member is available for booking. Note, if staff member reached daily limits, this field
+                            will be different for client and staff booking flows. If client books, such staff member is not available and
+                            this field is `false`. If staff member books, such staff member is available.
+                        is_daily_limit:
+                          type: boolean
+                          description: 'Whether staff member reached daily limits on number or total duration of the appointments for one day.'
+                        is_wait_list:
+                          type: boolean
+                          description: 'Whether staff member available only for wait list booking.'
+                        k_staff:
+                          type: string
+                          description: '@deprecated Legacy staff key.  Returned only for allow-listed apps.'
+                        s_position:
+                          type: string
+                          description: 'Position of the staff member in the business.'
+                        s_staff:
+                          type: string
+                          description: 'Name of the staff member.'
+                        uid:
+                          type: string
+                          description: 'UID of the staff member.'
+                        xml_biography:
+                          type: string
+                          description: 'Biography of the staff member.'
+                      required:
+                        - id_gender
+                        - is_available
+                        - is_daily_limit
+                        - is_wait_list
+                        - k_staff
+                        - s_position
+                        - s_staff
+                        - uid
+                        - xml_biography
+                  can_book_unavailable_staff:
+                    type: boolean
+                    description: 'Can staff booked unavailable staff.'
+                  has_gender:
+                    type: boolean
+                    description: "Determines whether to select the staff member's gender for the appointment."
+                  has_staff:
+                    type: boolean
+                    description: 'Determines whether to select staff member(s) for the appointment.'
+                  is_gender_different:
+                    type: boolean
+                    description: 'Determines if the staff list has male and female members.'
+                required:
+                  - a_staff
+                  - can_book_unavailable_staff
+                  - has_gender
+                  - has_staff
+                  - is_gender_different
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Retrieves an information about staff members for the current service.'
+      description: |-
+        Returns the list of staff members who can perform the specified service at the given location
+         on the specified date and time. Each entry includes the staff member's name, image, gender,
+         and availability. An 'any staff' option is included when the service allows random staff assignment.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dt_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: "The date/time of the appointment selected by user, in the location's time zone."
+        -
+          name: i_client
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            default: 1
+          description: |-
+            Count of clients on the appointment.
+
+            Default value is 1.
+        -
+          name: i_duration_custom
+          in: query
+          required: false
+          schema:
+            type:
+              - integer
+              - 'null'
+            format: int32
+          description: |-
+            Custom appointment duration in minutes.
+
+            `null` if not set.
+        -
+          name: id_role
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Login.LoginRoleSid'
+          description: |-
+            User role by whom this api called.
+            For different roles different results might be generated.
+        -
+          name: is_unavailable
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - returns service categories that have no staff members available to conduct them.
+            `false` - returns only service categories that have staff members available to conduct them.
+        -
+          name: k_appointment_ignore
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of appointment which must be ignored when searches available staff.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the location.'
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of a service for which to show information.'
+        -
+          name: k_timezone
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            User's timezone.
+
+            `null` until initialized or to use location timezone.
+        -
+          name: uid
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            The user key for whom the service is booking.
+
+            `null` when not set.
+      x-instance-get-key: 'k_location,k_service,dt_date,is_unavailable,id_role,k_appointment_ignore,k_timezone,uid,i_client'
       x-rate-limit:
         -
           limit: 200000
