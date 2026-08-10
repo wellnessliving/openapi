@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260810084947
+  version: 1.1.20260810104457
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -73961,11 +73961,12 @@ paths:
                 a_purchase_item:
                   type: array
                   description: |-
-                    The purchase items keys.
-                    This will be empty if no purchases have been made for the appointment booking.
+                    The keys of purchased items.
 
-                    Keys refer to provider indexes.
-                    Value is array of item keys.
+                    The first level of the array is the list of providers from the batch.
+                    The second level of the array is the list of purchased items for this booking.
+
+                    If a purchased item was transferred, the transferred purchase item key is returned instead of the original one.
                   items:
                     type: array
                     items:
@@ -79557,6 +79558,9 @@ paths:
 
                       The first level of the array is the list of appointments from the batch.
                       The second level of the array is the list of items purchased for this appointment.
+
+                      If a purchased item was transferred, the key of the transferred purchase item will be returned instead of the
+                      key of the purchased one. Otherwise the original purchase item is kept.
                     items:
                       type: array
                       items:
