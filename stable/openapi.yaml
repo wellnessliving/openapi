@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260810063658
+  version: 1.1.20260810075652
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68982,6 +68982,20 @@ paths:
                           - k_login_type
                           - m_discount
                           - text_title
+                      i_pay_account:
+                        type: integer
+                        format: int32
+                        description: 'The number of clients that paid by account.'
+                      i_pay_card:
+                        type: integer
+                        format: int32
+                        description: 'The number of clients that paid by card or ACH.'
+                      m_pay_account:
+                        type: string
+                        description: 'The total amount paid by account.'
+                      m_pay_card:
+                        type: string
+                        description: 'The total amount paid by card or ACH.'
                       m_subtotal_after_discount:
                         type: string
                         description: 'The price of the selected items for all the clients, with the client type discounts applied.'
@@ -69009,6 +69023,10 @@ paths:
                         description: 'The taxes of the selected items for all the clients. Zero when `is_tax` is `false`.'
                     required:
                       - a_discount_list
+                      - i_pay_account
+                      - i_pay_card
+                      - m_pay_account
+                      - m_pay_card
                       - m_subtotal_after_discount
                       - m_subtotal_before_discount
                       - m_subtotal_per_client
