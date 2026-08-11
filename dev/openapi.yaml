@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260811150249
+  version: 1.1.20260811185509
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25765,13 +25765,13 @@ paths:
                           description: 'UTC date/time of the last matching log or async-task record. Empty for background tasks.'
                         s_object:
                           type: string
-                          description: 'WatchUsageStat object. Present for this source.'
+                          description: 'Usage-statistics object. Present for the usage-statistics source.'
                         dl_first_seen:
                           type: string
-                          description: 'Local date of the first WatchUsageStat record.'
+                          description: 'Local date of the first usage-statistics record.'
                         dl_last_seen:
                           type: string
-                          description: 'Local date of the last WatchUsageStat record.'
+                          description: 'Local date of the last usage-statistics record.'
                       required:
                         - i_occurrence_count
                         - id_source
@@ -107679,11 +107679,11 @@ components:
         Sources from which log triage findings can be collected.
 
         Values:
-        - 5 (`ASYNC_TASK`): Erroneous asynchronous tasks stored by AsyncErrorSql.
-        - 4 (`BACKGROUND_TASK`): Erroneous background tasks stored by CmsTaskQueueSql.
+        - 5 (`ASYNC_TASK`): Erroneous asynchronous tasks.
+        - 4 (`BACKGROUND_TASK`): Erroneous background tasks.
         - 1 (`ERROR_LOG`): PHP error log represented by [DebugPhpLog](#/components/schemas/Core.Log.CoreLog).
         - 2 (`SLOW_LOG`): Slow-operation log represented by [DebugSlowLog](#/components/schemas/Core.Log.CoreLog).
-        - 3 (`WATCH_USAGE_STAT`): Aggregated usage statistics stored by WatchUsageStat.
+        - 3 (`WATCH_USAGE_STAT`): Aggregated usage statistics.
       enum:
         - 5
         - 4
@@ -107697,11 +107697,11 @@ components:
         - SLOW_LOG
         - WATCH_USAGE_STAT
       x-enum-descriptions:
-        - 'Erroneous asynchronous tasks stored by {@link \Core\Async\Error\AsyncErrorSql}.'
-        - 'Erroneous background tasks stored by {@link \CmsTaskQueueSql}.'
+        - 'Erroneous asynchronous tasks.'
+        - 'Erroneous background tasks.'
         - 'PHP error log represented by {@link \Core\Debug\DebugPhpLog}.'
         - 'Slow-operation log represented by {@link \Core\Debug\DebugSlowLog}.'
-        - 'Aggregated usage statistics stored by {@link \Core\Watch\WatchUsageStat}.'
+        - 'Aggregated usage statistics.'
     Wl.Report.View.ReportViewControllerAbstract:
       type: integer
       format: int32
