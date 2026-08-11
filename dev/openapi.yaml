@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260811195729
+  version: 1.1.20260811201520
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -87851,79 +87851,17 @@ paths:
                     $ref: '#/components/schemas/RsPurchaseItemSid'
                 a_pay_form:
                   type: array
+                  deprecated: true
+                  x-deprecated: 'Not used. See documentation.'
                   description: |-
-                    A list of payment sources to pay with.
+                    Payment is not processed by this API.
 
-                    Each source contains:
+                    Use the following APIs for payment:
+                    * [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json)
+                    * [PaymentPostApi](/Wl/Appointment/Book/Payment/PaymentPost.json)
+                    * [PaymentMultipleApi](/Wl/Appointment/Book/Payment/PaymentMultiple.json)
                   items:
-                    type: object
-                    properties:
-                      f_amount:
-                        type: number
-                        format: float
-                        description: 'Amount of money to withdraw with this payment source.'
-                      id_pay_method:
-                        $ref: '#/components/schemas/RsPayMethodSid'
-                        description: 'Payment method. One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.'
-                      is_hide:
-                        type: boolean
-                        description: 'Whether this payment method is hidden.'
-                      is_success:
-                        type: boolean
-                        description: 'Whether this source was successfully charged.'
-                      m_fee:
-                        type: string
-                        description: 'Fee amount for this payment source.'
-                      m_surcharge:
-                        type: string
-                        description: 'Surcharge amount for this payment source.'
-                      pa:
-                        type: object
-                        description: |-
-                          Payer authentication data. Element may not present for payment sources that do not support payer authentication,
-                           or payer authentication is not implemented by this payment processor.
-
-                           This array is represented by
-                           `namespace.Wl/Pay/Processor/ProcessorInterface/PayerAuthenticationForm.xml`
-                           at browser side.
-
-                           Structure of the array:
-                        properties:
-                          json_data:
-                            type: string
-                            description: |-
-                              Additional payer authentication data.
-
-                               Copy of value set with
-                               `Wl_Pay_Processor_ProcessorInterface_Abstract.paDataSet()`.
-
-                               An empty string (or element not passed) if this payment processor does not provide additional payer
-                               authentication data, or payer authentication was not performed.
-                          m_amount:
-                            type: string
-                            description: |-
-                              Authenticated payment amount.
-
-                               Copy of value set with
-                               `Wl_Pay_Processor_ProcessorInterface_Abstract.paAmountSet()`.
-
-                               An empty string (or element not passed) if payer authentication was not performed.
-                          k_pay_transaction:
-                            type: string
-                            description: |-
-                              Key of the payment transaction that was created during payer authentication.
-                               In this case, payment transaction should be attached to this transaction.
-
-                               An empty string (or element not passed) if transaction was not created during payer authentication, or payer
-                               authentication was not executed.
-                      s_index:
-                        type: string
-                        description: 'Index of this form. This corresponds the key this item is written in this array with.'
-                    required:
-                      - f_amount
-                      - id_pay_method
-                      - is_hide
-                      - s_index
+                    type: array
                 a_payment_data:
                   type: array
                   deprecated: true
@@ -88554,76 +88492,17 @@ paths:
                       description: 'Email subject.'
                 a_pay_form:
                   type: array
-                  description: 'A list of payment sources to pay with.'
+                  deprecated: true
+                  x-deprecated: 'Not used. See documentation.'
+                  description: |-
+                    Payment is not processed by this API.
+
+                    Use the following APIs for payment:
+                    * [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json)
+                    * [PaymentPostApi](/Wl/Appointment/Book/Payment/PaymentPost.json)
+                    * [PaymentMultipleApi](/Wl/Appointment/Book/Payment/PaymentMultiple.json)
                   items:
-                    type: object
-                    properties:
-                      f_amount:
-                        type: number
-                        format: float
-                        description: 'Amount of money to withdraw with this payment source.'
-                      id_pay_method:
-                        $ref: '#/components/schemas/RsPayMethodSid'
-                        description: 'Payment method. One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.'
-                      is_hide:
-                        type: boolean
-                        description: 'Whether this payment method is hidden.'
-                      is_success:
-                        type: boolean
-                        description: 'Whether this source was successfully charged.'
-                      m_fee:
-                        type: string
-                        description: 'Fee amount for this payment source.'
-                      m_surcharge:
-                        type: string
-                        description: 'Surcharge amount for this payment source.'
-                      pa:
-                        type: object
-                        description: |-
-                          Payer authentication data. Element may not present for payment sources that do not support payer authentication,
-                           or payer authentication is not implemented by this payment processor.
-
-                           This array is represented by
-                           `namespace.Wl/Pay/Processor/ProcessorInterface/PayerAuthenticationForm.xml`
-                           at browser side.
-
-                           Structure of the array:
-                        properties:
-                          json_data:
-                            type: string
-                            description: |-
-                              Additional payer authentication data.
-
-                               Copy of value set with
-                               `Wl_Pay_Processor_ProcessorInterface_Abstract.paDataSet()`.
-
-                               An empty string (or element not passed) if this payment processor does not provide additional payer
-                               authentication data, or payer authentication was not performed.
-                          m_amount:
-                            type: string
-                            description: |-
-                              Authenticated payment amount.
-
-                               Copy of value set with
-                               `Wl_Pay_Processor_ProcessorInterface_Abstract.paAmountSet()`.
-
-                               An empty string (or element not passed) if payer authentication was not performed.
-                          k_pay_transaction:
-                            type: string
-                            description: |-
-                              Key of the payment transaction that was created during payer authentication.
-                               In this case, payment transaction should be attached to this transaction.
-
-                               An empty string (or element not passed) if transaction was not created during payer authentication, or payer
-                               authentication was not executed.
-                      s_index:
-                        type: string
-                        description: 'Index of this form. This corresponds the key this item is written in this array with.'
-                    required:
-                      - f_amount
-                      - id_pay_method
-                      - is_hide
-                      - s_index
+                    type: array
                 a_payment_data:
                   type: object
                   description: 'Data required for payment. Has next structure:'
@@ -89251,76 +89130,17 @@ paths:
                       description: 'Email subject.'
                 a_pay_form:
                   type: array
-                  description: 'A list of payment sources to pay with.'
+                  deprecated: true
+                  x-deprecated: 'Not used. See documentation.'
+                  description: |-
+                    Payment is not processed by this API.
+
+                    Use the following APIs for payment:
+                    * [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json)
+                    * [PaymentPostApi](/Wl/Appointment/Book/Payment/PaymentPost.json)
+                    * [PaymentMultipleApi](/Wl/Appointment/Book/Payment/PaymentMultiple.json)
                   items:
-                    type: object
-                    properties:
-                      f_amount:
-                        type: number
-                        format: float
-                        description: 'Amount of money to withdraw with this payment source.'
-                      id_pay_method:
-                        $ref: '#/components/schemas/RsPayMethodSid'
-                        description: 'Payment method. One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.'
-                      is_hide:
-                        type: boolean
-                        description: 'Whether this payment method is hidden.'
-                      is_success:
-                        type: boolean
-                        description: 'Whether this source was successfully charged.'
-                      m_fee:
-                        type: string
-                        description: 'Fee amount for this payment source.'
-                      m_surcharge:
-                        type: string
-                        description: 'Surcharge amount for this payment source.'
-                      pa:
-                        type: object
-                        description: |-
-                          Payer authentication data. Element may not present for payment sources that do not support payer authentication,
-                           or payer authentication is not implemented by this payment processor.
-
-                           This array is represented by
-                           `namespace.Wl/Pay/Processor/ProcessorInterface/PayerAuthenticationForm.xml`
-                           at browser side.
-
-                           Structure of the array:
-                        properties:
-                          json_data:
-                            type: string
-                            description: |-
-                              Additional payer authentication data.
-
-                               Copy of value set with
-                               `Wl_Pay_Processor_ProcessorInterface_Abstract.paDataSet()`.
-
-                               An empty string (or element not passed) if this payment processor does not provide additional payer
-                               authentication data, or payer authentication was not performed.
-                          m_amount:
-                            type: string
-                            description: |-
-                              Authenticated payment amount.
-
-                               Copy of value set with
-                               `Wl_Pay_Processor_ProcessorInterface_Abstract.paAmountSet()`.
-
-                               An empty string (or element not passed) if payer authentication was not performed.
-                          k_pay_transaction:
-                            type: string
-                            description: |-
-                              Key of the payment transaction that was created during payer authentication.
-                               In this case, payment transaction should be attached to this transaction.
-
-                               An empty string (or element not passed) if transaction was not created during payer authentication, or payer
-                               authentication was not executed.
-                      s_index:
-                        type: string
-                        description: 'Index of this form. This corresponds the key this item is written in this array with.'
-                    required:
-                      - f_amount
-                      - id_pay_method
-                      - is_hide
-                      - s_index
+                    type: array
                 a_payment_data:
                   type: object
                   description: 'Data required for payment. Has next structure:'
