@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260812101900
+  version: 1.1.20260812115546
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -88484,8 +88484,6 @@ paths:
                     * [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json)
                     * [PaymentPostApi](/Wl/Appointment/Book/Payment/PaymentPost.json)
                     * [PaymentMultipleApi](/Wl/Appointment/Book/Payment/PaymentMultiple.json)
-                  items:
-                    type: array
                 a_payment_data:
                   type: array
                   deprecated: true
@@ -89125,8 +89123,6 @@ paths:
                     * [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json)
                     * [PaymentPostApi](/Wl/Appointment/Book/Payment/PaymentPost.json)
                     * [PaymentMultipleApi](/Wl/Appointment/Book/Payment/PaymentMultiple.json)
-                  items:
-                    type: array
                 a_payment_data:
                   type: object
                   description: 'Data required for payment. Has next structure:'
@@ -89763,8 +89759,6 @@ paths:
                     * [PaymentApi](/Wl/Appointment/Book/Payment/Payment.json)
                     * [PaymentPostApi](/Wl/Appointment/Book/Payment/PaymentPost.json)
                     * [PaymentMultipleApi](/Wl/Appointment/Book/Payment/PaymentMultiple.json)
-                  items:
-                    type: array
                 a_payment_data:
                   type: object
                   description: 'Data required for payment. Has next structure:'
