@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260812061242
+  version: 1.1.20260812093056
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -55662,6 +55662,9 @@ paths:
                             m_checkout:
                               type: string
                               description: 'The total amount that will be charged for the tuition item when during purchase.'
+                            m_deferred:
+                              type: string
+                              description: 'The part of the tuition cost that is not charged during purchase.'
                         k_login_prize:
                           type: string
                           description: 'Key of login prize used on item.'
@@ -55769,6 +55772,16 @@ paths:
                       - 'null'
                     format: int32
                     description: "Amount of client's reward points."
+                  m_checkout:
+                    type: string
+                    description: |-
+                      The amount that has to be charged right now for the cart.
+
+                      Equals [CartApi::$m_total](/Wl/Catalog/Cart/Cart.json) for everything that is paid for in full at once. A tuition
+                      defers a part of its cost to an installment plan or to a membership schedule, and `m_total`
+                      covers the full cost regardless, so this is the amount to put into the payment form. It is
+                      `m_total` minus `a_config.m_deferred` of every tuition item in [CartApi::$a_item](/Wl/Catalog/Cart/Cart.json).
+                    default: '0.00'
                   m_discount:
                     type:
                       - string
@@ -55816,6 +55829,7 @@ paths:
                   - a_reward_item
                   - a_reward_propose
                   - a_tax_list
+                  - m_checkout
                   - m_discount_total
         '400':
           $ref: '#/components/responses/400'
@@ -55900,6 +55914,9 @@ paths:
                     m_checkout:
                       type: string
                       description: 'The total amount that will be charged for the tuition item when during purchase.'
+                    m_deferred:
+                      type: string
+                      description: 'The part of the tuition cost that is not charged during purchase.'
                 k_login_prize:
                   type: string
                   description: 'Key of login prize used on item.'
@@ -68470,9 +68487,9 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Accepts a Widget analytics event.'
       description: |-
-        Validates the event envelope and payload. An `abandoned_checkout` event is stored and scheduled for
-        asynchronous processing. A `purchase` event marks any pending abandoned checkout event for the same client
-        and checkout type as checkout-complete, so the "Abandoned checkout" trigger stops enrolling the client for it.
+        Validates the event envelope and payload. `begin_checkout` and `abandoned_checkout` events are stored and
+        scheduled for asynchronous processing. A `purchase` event marks pending checkout events for the same client
+        and checkout type as checkout-complete, so the "Abandoned checkout" trigger stops enrolling the client for them.
       tags:
         - 'Widget Analytics'
       parameters:
@@ -75898,6 +75915,190 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_purchase_item:
+                    type: array
+                    description: 'A list of purchase items. Each item is an associative array with the following keys:'
+                    items:
+                      type: object
+                      properties:
+                        a_config:
+                          type: object
+                          description: |-
+                            Additional item configurations.
+                                  Only `a_event_list` is
+                                 expected in the request, and only `k_class` and `uid` are accepted in every its entry.
+                                 Prices, discounts, and taxes can not be overridden here: this booking flow is never
+                                 authenticated as a staff member, so Tuition::verifyObjectFromSource() strips
+                                 such fields. In the response `a_event_list` comes back recomputed, and
+                                 `a_registration_fee_list`, `m_checkout`, and `m_deferred` are added.
+                          properties:
+                            a_event_list:
+                              type: object
+                              description: |-
+                                List of tuition events, one entry per participant and event class.
+                                     Each entry has the next structure:
+                              properties:
+                                a_discount:
+                                  type:
+                                    - object
+                                    - 'null'
+                                  description: |-
+                                    Discounts applied to the event, `null` if there are none. Every row has the
+                                         next keys:
+                                  properties:
+                                    id_discount_rule:
+                                      $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                                      description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                                    m_discount:
+                                      type: string
+                                      description: 'Discount amount of this rule.'
+                                    text_discount:
+                                      type: string
+                                      description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                                  required:
+                                    - id_discount_rule
+                                    - m_discount
+                                a_tax:
+                                  type:
+                                    - array
+                                    - 'null'
+                                  description: 'Taxes of the event. Keys are tax keys, values are tax amounts.'
+                                  items:
+                                    type: string
+                                k_class:
+                                  type: string
+                                  description: 'Key of the event class.'
+                                m_checkout:
+                                  type:
+                                    - string
+                                    - 'null'
+                                  description: |-
+                                    The amount charged for this event right now, including tax. `0.00` when every
+                                         installment payment is still ahead. `null` when it is not calculated yet.
+                                m_deferred:
+                                  type: string
+                                  description: |-
+                                    The part of the event cost that is not charged right now, including tax. Goes
+                                         to the installment plan or to the membership schedule, depending on the
+                                         tuition billing mode.
+                                m_discount:
+                                  type: string
+                                  description: 'Total discount amount applied to the event, `0.00` if there is none.'
+                                m_price:
+                                  type:
+                                    - string
+                                    - 'null'
+                                  description: 'Price of the event within the tuition, before discount and tax.'
+                                uid:
+                                  type: string
+                                  description: 'Key of the tuition participant.'
+                              required:
+                                - a_discount
+                                - a_tax
+                                - k_class
+                                - m_checkout
+                                - m_deferred
+                                - m_discount
+                                - m_price
+                                - uid
+                            a_registration_fee_list:
+                              type: object
+                              description: |-
+                                Registration fees, keyed by participant key.
+                                     
+                                     Filled by the server, never accepted from the caller in this flow.
+                                     Each value has the next structure:
+                              properties:
+                                a_discount:
+                                  type:
+                                    - array
+                                    - 'null'
+                                  description: |-
+                                    Discounts applied to the fee, `null` if there are none. Rows have the same
+                                         keys as in `a_event_list`.
+                                  items:
+                                    type: array
+                                a_tax:
+                                  type: array
+                                  description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
+                                  items:
+                                    type: string
+                                m_amount:
+                                  type: string
+                                  description: 'Registration fee amount for the participant, before discount and tax.'
+                                m_checkout:
+                                  type:
+                                    - string
+                                    - 'null'
+                                  description: |-
+                                    The amount charged for this fee right now, including tax. A fee is either
+                                         charged in full or deferred entirely, so `null` means it is fully deferred.
+                                m_deferred:
+                                  type: string
+                                  description: 'The whole fee amount if the fee is deferred, `0.00` if it is charged now.'
+                              required:
+                                - a_discount
+                                - a_tax
+                                - m_amount
+                                - m_checkout
+                                - m_deferred
+                            m_checkout:
+                              type: string
+                              description: |-
+                                The amount charged for this tuition right now, including tax. The sum of
+                                     `m_checkout` of every its event and registration fee.
+                            m_deferred:
+                              type: string
+                              description: |-
+                                The amount that is not charged right now, including tax. Together with
+                                     `m_checkout` it adds up to the full cost of this tuition.
+                          required:
+                            - a_registration_fee_list
+                            - m_checkout
+                            - m_deferred
+                        i_session:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of sessions which are booked simultaneously.
+                                 Make sense only when `id_purchase_item` = [RsPurchaseItemSid::CLASS_PERIOD](#/components/schemas/RsPurchaseItemSid).
+                        id_purchase_item:
+                          $ref: '#/components/schemas/RsPurchaseItemSid'
+                          description: 'The ID of the purchase item type. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid).'
+                        k_id:
+                          type: string
+                          description: 'The key of the purchase item in the database.'
+                        k_login_prize:
+                          type: string
+                          description: |-
+                            The key of the user's prize.
+                             Not empty only if the user wants to make a free visit from the prize.
+                        k_pay_installment_template:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Installment template key. 
+                             This property is optional.
+                             * can only be set for the purchase option which supports installment plan. 
+                             * `null` if installment plan doesn't exist for bought item;
+                             * `0` if installment plan doesn't selected for bought item from the list of installment plans.
+                             NOTE:
+                             * Calculations of discounts and taxes for installment plans are for demonstration purposes only!
+                             * Installment is not an independent purchase item and has no discounts or taxes.
+                             * Installment is a division of the final amount (with taxes and discounts), of some purchase option, into N parts.
+                        k_reward_prize:
+                          type: string
+                          description: |-
+                            The key of the reward prize.
+                             Not empty only if the user wants to redeem prize and use it to pay for a visit.
+                        uid:
+                          type: string
+                          description: 'The key of the user for whom the purchase item is being bought.'
+                      required:
+                        - id_purchase_item
+                        - k_id
+                        - uid
                   a_tax:
                     type: array
                     description: |-
@@ -75905,9 +76106,23 @@ paths:
                       Keys - tax keys, values - tax amounts.
                     items:
                       type: string
+                  m_checkout:
+                    type: string
+                    description: |-
+                      The amount that has to be charged right now for the given purchase options.
+
+                      Equals [PurchaseElementGroupApi::$m_cost](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) for everything that is paid for in full at
+                      once. A tuition defers a part of its cost to an installment plan or to a membership schedule,
+                      and `m_cost` covers the full cost regardless, so this is the amount to put into the payment
+                      form. It is `m_cost` minus `a_config.m_deferred` of every tuition item in
+                      [PurchaseElementGroupApi::$a_purchase_item](/Wl/Book/Process/Purchase/PurchaseElementGroup.json).
                   m_cost:
                     type: string
-                    description: 'The total cost of the given purchase options.'
+                    description: |-
+                      The total cost of the given purchase options.
+
+                      For a tuition this is the full cost, including whatever is deferred to an installment plan or
+                      to a membership schedule.
                   m_discount:
                     type: string
                     description: 'The amount of the whole discount for the given purchase options.'
@@ -75927,7 +76142,9 @@ paths:
                     type: string
                     description: 'The amount of taxes for the given purchase options.'
                 required:
+                  - a_purchase_item
                   - a_tax
+                  - m_checkout
                   - m_cost
                   - m_discount
                   - m_discount_code
@@ -75951,7 +76168,10 @@ paths:
       description: |-
         Validates each item in `a_purchase_item` (type, key, installment eligibility, and prize applicability),
         applies discount codes, login-type discounts, and installment adjustments, then accumulates price, subtotal,
-        discount, tax, and cost totals across all items and returns them as result fields.
+        discount, tax, and cost totals across all items and returns them as result fields. For tuition
+        items the totals cover the full cost, so the amount that has to be charged right now is
+        reported separately in [PurchaseElementGroupApi::$m_checkout](/Wl/Book/Process/Purchase/PurchaseElementGroup.json), and its per-component
+        split is written back into `a_config` of the item it belongs to.
       tags:
         - Booking
       parameters:
@@ -75968,23 +76188,139 @@ paths:
               properties:
                 a_config:
                   type: object
-                  description: 'Additional item configurations.'
+                  description: |-
+                    Additional item configurations.
+                          Only `a_event_list` is
+                         expected in the request, and only `k_class` and `uid` are accepted in every its entry.
+                         Prices, discounts, and taxes can not be overridden here: this booking flow is never
+                         authenticated as a staff member, so Tuition::verifyObjectFromSource() strips
+                         such fields. In the response `a_event_list` comes back recomputed, and
+                         `a_registration_fee_list`, `m_checkout`, and `m_deferred` are added.
                   properties:
                     a_event_list:
                       type: object
                       description: |-
-                        List of tuition events. 
+                        List of tuition events, one entry per participant and event class.
                              Each entry has the next structure:
                       properties:
+                        a_discount:
+                          type:
+                            - object
+                            - 'null'
+                          description: |-
+                            Discounts applied to the event, `null` if there are none. Every row has the
+                                 next keys:
+                          properties:
+                            id_discount_rule:
+                              $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                              description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                            m_discount:
+                              type: string
+                              description: 'Discount amount of this rule.'
+                            text_discount:
+                              type: string
+                              description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                          required:
+                            - id_discount_rule
+                            - m_discount
+                        a_tax:
+                          type:
+                            - array
+                            - 'null'
+                          description: 'Taxes of the event. Keys are tax keys, values are tax amounts.'
+                          items:
+                            type: string
                         k_class:
                           type: string
                           description: 'Key of the event class.'
+                        m_checkout:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The amount charged for this event right now, including tax. `0.00` when every
+                                 installment payment is still ahead. `null` when it is not calculated yet.
+                        m_deferred:
+                          type: string
+                          description: |-
+                            The part of the event cost that is not charged right now, including tax. Goes
+                                 to the installment plan or to the membership schedule, depending on the
+                                 tuition billing mode.
+                        m_discount:
+                          type: string
+                          description: 'Total discount amount applied to the event, `0.00` if there is none.'
+                        m_price:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Price of the event within the tuition, before discount and tax.'
                         uid:
                           type: string
                           description: 'Key of the tuition participant.'
                       required:
+                        - a_discount
+                        - a_tax
                         - k_class
+                        - m_checkout
+                        - m_deferred
+                        - m_discount
+                        - m_price
                         - uid
+                    a_registration_fee_list:
+                      type: object
+                      description: |-
+                        Registration fees, keyed by participant key.
+                             
+                             Filled by the server, never accepted from the caller in this flow.
+                             Each value has the next structure:
+                      properties:
+                        a_discount:
+                          type:
+                            - array
+                            - 'null'
+                          description: |-
+                            Discounts applied to the fee, `null` if there are none. Rows have the same
+                                 keys as in `a_event_list`.
+                          items:
+                            type: array
+                        a_tax:
+                          type: array
+                          description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
+                          items:
+                            type: string
+                        m_amount:
+                          type: string
+                          description: 'Registration fee amount for the participant, before discount and tax.'
+                        m_checkout:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The amount charged for this fee right now, including tax. A fee is either
+                                 charged in full or deferred entirely, so `null` means it is fully deferred.
+                        m_deferred:
+                          type: string
+                          description: 'The whole fee amount if the fee is deferred, `0.00` if it is charged now.'
+                      required:
+                        - a_discount
+                        - a_tax
+                        - m_amount
+                        - m_checkout
+                        - m_deferred
+                    m_checkout:
+                      type: string
+                      description: |-
+                        The amount charged for this tuition right now, including tax. The sum of
+                             `m_checkout` of every its event and registration fee.
+                    m_deferred:
+                      type: string
+                      description: |-
+                        The amount that is not charged right now, including tax. Together with
+                             `m_checkout` it adds up to the full cost of this tuition.
+                  required:
+                    - a_registration_fee_list
+                    - m_checkout
+                    - m_deferred
                 i_session:
                   type: integer
                   format: int32
@@ -76755,6 +77091,141 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_config:
+                    type: object
+                    description: |-
+                      Additional configuration for the purchase item.
+                      Depending on purchase item type different configuration parameters can be passed.
+
+                      For purchase items with [RsPurchaseItemSid::TUITION](#/components/schemas/RsPurchaseItemSid) type only `a_event_list` is
+                      expected in the request, and only `k_class` and `uid` are accepted in every its entry. Prices,
+                      discounts, and taxes can not be overridden here: this booking flow is never authenticated as a
+                      staff member, so Tuition::verifyObjectFromSource() strips such fields.
+
+                      In the response this is not an echo: `a_event_list` comes back recomputed, and
+                      `a_registration_fee_list`, `m_checkout`, and `m_deferred` are added.
+                    properties:
+                      a_event_list:
+                        type: object
+                        description: |-
+                          List of tuition events, one entry per participant and event class.
+                          Each entry has the next structure:
+                        properties:
+                          a_discount:
+                            type:
+                              - object
+                              - 'null'
+                            description: 'Discounts applied to the event, `null` if there are none. Every row has the next keys:'
+                            properties:
+                              id_discount_rule:
+                                $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                                description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                              m_discount:
+                                type: string
+                                description: 'Discount amount of this rule.'
+                              text_discount:
+                                type: string
+                                description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                            required:
+                              - id_discount_rule
+                              - m_discount
+                          a_tax:
+                            type:
+                              - array
+                              - 'null'
+                            description: 'Taxes of the event. Keys are tax keys, values are tax amounts.'
+                            items:
+                              type: string
+                          k_class:
+                            type: string
+                            description: 'Key of the event class.'
+                          m_checkout:
+                            type:
+                              - string
+                              - 'null'
+                            description: |-
+                              The amount charged for this event right now, including tax. `0.00` when every
+                              installment payment is still ahead. `null` when the amount is not calculated yet.
+                          m_deferred:
+                            type: string
+                            description: |-
+                              The part of the event cost that is not charged right now, including tax. Goes to the
+                              installment plan or to the membership schedule, depending on the tuition billing mode.
+                          m_discount:
+                            type: string
+                            description: 'Total discount amount applied to the event, `0.00` if there is none.'
+                          m_price:
+                            type:
+                              - string
+                              - 'null'
+                            description: 'Price of the event within the tuition, before discount and tax.'
+                          uid:
+                            type: string
+                            description: 'Key of the tuition participant.'
+                        required:
+                          - a_discount
+                          - a_tax
+                          - k_class
+                          - m_checkout
+                          - m_deferred
+                          - m_discount
+                          - m_price
+                          - uid
+                      a_registration_fee_list:
+                        type: object
+                        description: |-
+                          Registration fees, keyed by participant key.
+
+                          Filled by the server, never accepted from the caller in this flow.
+                          Each value has the next structure:
+                        properties:
+                          a_discount:
+                            type:
+                              - array
+                              - 'null'
+                            description: |-
+                              Discounts applied to the fee, `null` if there are none. Rows have the same keys as in
+                              `a_event_list`.
+                            items:
+                              type: array
+                          a_tax:
+                            type: array
+                            description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
+                            items:
+                              type: string
+                          m_amount:
+                            type: string
+                            description: 'Registration fee amount for the participant, before discount and tax.'
+                          m_checkout:
+                            type:
+                              - string
+                              - 'null'
+                            description: |-
+                              The amount charged for this fee right now, including tax. A fee is either charged in
+                              full or deferred entirely, so `null` means the whole fee is deferred.
+                          m_deferred:
+                            type: string
+                            description: 'The whole fee amount if the fee is deferred, `0.00` if it is charged right now.'
+                        required:
+                          - a_discount
+                          - a_tax
+                          - m_amount
+                          - m_checkout
+                          - m_deferred
+                      m_checkout:
+                        type: string
+                        description: |-
+                          The total amount charged for the tuition right now, including tax. The sum of `m_checkout`
+                          of every event and every registration fee.
+                      m_deferred:
+                        type: string
+                        description: |-
+                          The total amount that is not charged right now, including tax. Together with `m_checkout`
+                          it adds up to the full cost of the tuition.
+                    required:
+                      - a_registration_fee_list
+                      - m_checkout
+                      - m_deferred
                   a_tax:
                     type: array
                     description: |-
@@ -76762,9 +77233,23 @@ paths:
                       Keys - tax keys, values - tax amounts.
                     items:
                       type: string
+                  m_checkout:
+                    type: string
+                    description: |-
+                      The amount that has to be charged right now for the given purchase options.
+
+                      Equals [PurchaseElementGroupApi::$m_cost](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) for everything that is paid for in full at
+                      once. A tuition defers a part of its cost to an installment plan or to a membership schedule,
+                      and `m_cost` covers the full cost regardless, so this is the amount to put into the payment
+                      form. It is `m_cost` minus `a_config.m_deferred` of every tuition item in
+                      [PurchaseElementGroupApi::$a_purchase_item](/Wl/Book/Process/Purchase/PurchaseElementGroup.json).
                   m_cost:
                     type: string
-                    description: 'The total cost of the given purchase options.'
+                    description: |-
+                      The total cost of the given purchase options.
+
+                      For a tuition this is the full cost, including whatever is deferred to an installment plan or
+                      to a membership schedule.
                   m_discount:
                     type: string
                     description: 'The amount of the whole discount for the given purchase options.'
@@ -76784,7 +77269,9 @@ paths:
                     type: string
                     description: 'The amount of taxes for the given purchase options.'
                 required:
+                  - a_config
                   - a_tax
+                  - m_checkout
                   - m_cost
                   - m_discount
                   - m_discount_code
@@ -76824,23 +77311,135 @@ paths:
               a_event_list:
                 type: object
                 description: |-
-                  List of tuition events.
+                  List of tuition events, one entry per participant and event class.
                   Each entry has the next structure:
                 properties:
+                  a_discount:
+                    type:
+                      - object
+                      - 'null'
+                    description: 'Discounts applied to the event, `null` if there are none. Every row has the next keys:'
+                    properties:
+                      id_discount_rule:
+                        $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                        description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                      m_discount:
+                        type: string
+                        description: 'Discount amount of this rule.'
+                      text_discount:
+                        type: string
+                        description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                    required:
+                      - id_discount_rule
+                      - m_discount
+                  a_tax:
+                    type:
+                      - array
+                      - 'null'
+                    description: 'Taxes of the event. Keys are tax keys, values are tax amounts.'
+                    items:
+                      type: string
                   k_class:
                     type: string
                     description: 'Key of the event class.'
+                  m_checkout:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The amount charged for this event right now, including tax. `0.00` when every
+                      installment payment is still ahead. `null` when the amount is not calculated yet.
+                  m_deferred:
+                    type: string
+                    description: |-
+                      The part of the event cost that is not charged right now, including tax. Goes to the
+                      installment plan or to the membership schedule, depending on the tuition billing mode.
+                  m_discount:
+                    type: string
+                    description: 'Total discount amount applied to the event, `0.00` if there is none.'
+                  m_price:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'Price of the event within the tuition, before discount and tax.'
                   uid:
                     type: string
                     description: 'Key of the tuition participant.'
                 required:
+                  - a_discount
+                  - a_tax
                   - k_class
+                  - m_checkout
+                  - m_deferred
+                  - m_discount
+                  - m_price
                   - uid
+              a_registration_fee_list:
+                type: object
+                description: |-
+                  Registration fees, keyed by participant key.
+
+                  Filled by the server, never accepted from the caller in this flow.
+                  Each value has the next structure:
+                properties:
+                  a_discount:
+                    type:
+                      - array
+                      - 'null'
+                    description: |-
+                      Discounts applied to the fee, `null` if there are none. Rows have the same keys as in
+                      `a_event_list`.
+                    items:
+                      type: array
+                  a_tax:
+                    type: array
+                    description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
+                    items:
+                      type: string
+                  m_amount:
+                    type: string
+                    description: 'Registration fee amount for the participant, before discount and tax.'
+                  m_checkout:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The amount charged for this fee right now, including tax. A fee is either charged in
+                      full or deferred entirely, so `null` means the whole fee is deferred.
+                  m_deferred:
+                    type: string
+                    description: 'The whole fee amount if the fee is deferred, `0.00` if it is charged right now.'
+                required:
+                  - a_discount
+                  - a_tax
+                  - m_amount
+                  - m_checkout
+                  - m_deferred
+              m_checkout:
+                type: string
+                description: |-
+                  The total amount charged for the tuition right now, including tax. The sum of `m_checkout`
+                  of every event and every registration fee.
+              m_deferred:
+                type: string
+                description: |-
+                  The total amount that is not charged right now, including tax. Together with `m_checkout`
+                  it adds up to the full cost of the tuition.
+            required:
+              - a_registration_fee_list
+              - m_checkout
+              - m_deferred
           description: |-
             Additional configuration for the purchase item.
             Depending on purchase item type different configuration parameters can be passed.
 
-            For purchase items with [RsPurchaseItemSid::TUITION](#/components/schemas/RsPurchaseItemSid) type next structure expected:
+            For purchase items with [RsPurchaseItemSid::TUITION](#/components/schemas/RsPurchaseItemSid) type only `a_event_list` is
+            expected in the request, and only `k_class` and `uid` are accepted in every its entry. Prices,
+            discounts, and taxes can not be overridden here: this booking flow is never authenticated as a
+            staff member, so Tuition::verifyObjectFromSource() strips such fields.
+
+            In the response this is not an echo: `a_event_list` comes back recomputed, and
+            `a_registration_fee_list`, `m_checkout`, and `m_deferred` are added.
         -
           name: dtu_date
           in: query
@@ -76972,6 +77571,16 @@ paths:
                     items:
                       type: object
                       properties:
+                        a_event_list:
+                          type: array
+                          description: 'Tuition events with calculated amounts.'
+                          items:
+                            type: array
+                        a_registration_fee_list:
+                          type: array
+                          description: 'Registration fees with calculated amounts, keyed by participant key.'
+                          items:
+                            type: array
                         a_tax:
                           type: array
                           description: 'Information about taxes. The key refers to the tax key, and the value refers to the tax amount.'
@@ -76983,6 +77592,19 @@ paths:
                         k_id:
                           type: string
                           description: 'The key of the purchase item in the database.'
+                        m_checkout:
+                          type: string
+                          description: |-
+                            The amount that has to be charged for the tuition right now, including tax. The other
+                            amounts of this row cover the full cost, including whatever is deferred to an installment
+                            plan or to a membership schedule.
+                        m_deferred:
+                          type: string
+                          description: |-
+                            The part of the tuition cost that is not charged right now, including tax. Equals
+                            `m_cost` minus `m_checkout`. Rows for everything else are always paid for in full at once,
+                            so the amount to charge for the whole list is the sum of `m_cost` minus the sum of
+                            `m_deferred`.
                         m_cost:
                           type: string
                           description: 'The cost of the purchase item (with taxes).'
@@ -77025,7 +77647,9 @@ paths:
       description: |-
         Validates the business, location, and user, then for each item in `a_purchase_item_request` computes the price,
         applicable discount code reduction, login-type discount, and taxes, and returns per-item cost, discount,
-        price, tax, and subtotal amounts in `a_purchase_item_result`.
+        price, tax, and subtotal amounts in `a_purchase_item_result`. For a tuition the amounts cover the
+        full cost, and the split between what is charged right now and what is deferred is added to the
+        same row.
       tags:
         - Booking
       parameters:
@@ -94406,6 +95030,9 @@ paths:
                             m_checkout:
                               type: string
                               description: 'The total amount that will be charged for the tuition item during purchase.'
+                            m_deferred:
+                              type: string
+                              description: 'The part of the tuition cost that is not charged during purchase.'
                             f_price:
                               type: string
                               description: 'The custom price.'
@@ -94515,6 +95142,17 @@ paths:
                   is_receipt_note:
                     type: boolean
                     description: 'Determines whether to display custom receipt notes at checkout.'
+                  m_checkout:
+                    type: string
+                    description: |-
+                      The amount that has to be charged right now for the cart.
+
+                      Equals [CatalogCartApi::$m_total](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for everything that is paid for in full at once. A
+                      tuition defers a part of its cost to an installment plan or to a membership schedule, and
+                      `m_total` covers the full cost regardless, so this is the amount to put into the payment form.
+                      It is `m_total` minus `a_config.m_deferred` of every tuition item in
+                      [CatalogCartApi::$a_item](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json).
+                    default: '0.00'
                   m_discount:
                     type: string
                     description: 'The discount amount in dollars, excluding tax.'
@@ -94558,6 +95196,7 @@ paths:
                   - is_commission
                   - is_discount_code_mode_select
                   - is_receipt_note
+                  - m_checkout
                   - m_discount
                   - m_discount_total
                   - m_subtotal
@@ -94666,6 +95305,9 @@ paths:
                     m_checkout:
                       type: string
                       description: 'The total amount that will be charged for the tuition item during purchase.'
+                    m_deferred:
+                      type: string
+                      description: 'The part of the tuition cost that is not charged during purchase.'
                     f_price:
                       type: string
                       description: 'The custom price.'
@@ -114784,6 +115426,42 @@ components:
       x-enum-descriptions:
         - 'Check that a client has a credit card.'
         - 'Check a client has no unsigned waiver.'
+    Wl.Discount.DiscountRuleSid:
+      type: integer
+      format: int32
+      description: |-
+        Discount types.
+
+        Last used ID: 6.
+
+        Values:
+        - 5 (`CART`): Discount for catalog cart.
+        - 4 (`CODE`): Discount by discount code.
+        - 6 (`CUSTOM`): Group of custom discounts applied individually to a purchase item.
+        - 1 (`LOGIN_TYPE`): Discount by login type.
+        - 3 (`MANUAL`): Manual discount for element of purchase.
+        - 2 (`PRIZE`): Discount by reward prize.
+      enum:
+        - 5
+        - 4
+        - 6
+        - 1
+        - 3
+        - 2
+      x-enum-varnames:
+        - CART
+        - CODE
+        - CUSTOM
+        - LOGIN_TYPE
+        - MANUAL
+        - PRIZE
+      x-enum-descriptions:
+        - 'Discount for catalog cart.'
+        - 'Discount by discount code.'
+        - 'Group of custom discounts applied individually to a purchase item.'
+        - 'Discount by login type.'
+        - 'Manual discount for element of purchase.'
+        - 'Discount by reward prize.'
     RsClassModifyActionSid:
       type: integer
       format: int32
