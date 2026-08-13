@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260807060256
+  version: 1.1.20260813054105
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -74178,7 +74178,23 @@ paths:
                       - s_title
                   a_purchase:
                     type: object
-                    description: 'Fields refer to strings in the format `id_purchase_item-k_id`. Values refer to an array with the next stricture:'
+                    deprecated: true
+                    x-deprecated: |-
+                      This field contains incorrect data for multiple bookings.
+                       Use [PaymentMultipleApi::$a_purchase_provider](/Wl/Appointment/Book/Payment/PaymentMultiple.json) instead.
+                       However, this field can still return valid data for an Appointment Tip purchase that does not belong
+                       to any provider, and the field can still be used for a single booking.
+                    description: |-
+                      List of purchase options to be purchased.
+
+                      <b>Warning:</b>
+                      * This field contains incorrect data for multiple bookings. Use [PaymentMultipleApi::$a_purchase_provider](/Wl/Appointment/Book/Payment/PaymentMultiple.json) instead.
+                      * This field can be safely used for a single booking.
+                      * This field can contain valid data for the [RsPurchaseItemSid::APPOINTMENT_TIP](#/components/schemas/RsPurchaseItemSid) purchase that does not belong to any provider.
+
+                      Array structure:
+                      * Keys refer to strings in the format `id_purchase_item-k_id`.
+                      * Values refer to an array with the next stricture:
                     properties:
                       a_tax:
                         type: object
@@ -74217,9 +74233,61 @@ paths:
                       - m_discount
                       - m_pay
                       - m_price
+                  a_purchase_provider:
+                    type: array
+                    description: |-
+                      A list of purchase options grouped by provider.
+
+                      * The first level keys are provider indexes from [PaymentMultipleApi::$a_book_data](/Wl/Appointment/Book/Payment/PaymentMultiple.json) field.
+                      * The second level keys are strings in the format `id_purchase_item-k_id`.
+                      * Each value has the same structure as [PaymentMultipleApi::$a_purchase](/Wl/Appointment/Book/Payment/PaymentMultiple.json).
+                    items:
+                      type: object
+                      properties:
+                        a_tax:
+                          type: object
+                          description: |-
+                            A list of taxes to apply containing information about taxes.
+                            The array keys are `k_tax` keys. Each element contains the following fields:
+                          properties:
+                            m_tax:
+                              type: string
+                              description: 'The tax rate.'
+                            text_title:
+                              type: string
+                              description: 'The name of the tax.'
+                          required:
+                            - m_tax
+                            - text_title
+                        id_purchase_item:
+                          $ref: '#/components/schemas/RsPurchaseItemSid'
+                          description: 'The purchase item ID. One of the [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.'
+                        k_id:
+                          type: string
+                          description: 'The value of the discount used for the purchase.'
+                        m_discount:
+                          type: string
+                          description: 'The value of the discount used for the purchase.'
+                        m_pay:
+                          type: string
+                          description: 'The payment for the promotion (or single visit) without taxes.'
+                        m_price:
+                          type: string
+                          description: 'The price of the promotion (or single visit).'
+                      required:
+                        - a_tax
+                        - id_purchase_item
+                        - k_id
+                        - m_discount
+                        - m_pay
+                        - m_price
                   a_total:
                     type: array
-                    description: 'The list of amounts to pay for appointments from the batch, with taxes and without surcharges.'
+                    description: |-
+                      The list of amounts to pay for appointments from the batch, with taxes and without surcharges.
+
+                      * Keys are provider indexes from [PaymentMultipleApi::$a_book_data](/Wl/Appointment/Book/Payment/PaymentMultiple.json).
+                      * Values are the total amount for the corresponding provider, or `0.00` if the provider has nothing to pay.
                     items:
                       type: string
                   k_location:
@@ -74252,6 +74320,7 @@ paths:
                 required:
                   - a_promotion_data
                   - a_purchase
+                  - a_purchase_provider
                   - a_total
                   - k_location
                   - m_coupon
