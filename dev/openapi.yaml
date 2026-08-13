@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260813111856
+  version: 1.1.20260813115229
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68740,6 +68740,24 @@ paths:
                           items:
                             type: object
                             properties:
+                              id_enrollment_status:
+                                type:
+                                  - integer
+                                  - 'null'
+                                format: int32
+                                description: |-
+                                  Enrollment status. Active user is enrolled into the event, and there are upcoming sessions.
+                                  Canceled, if enrollment is canceled.
+                                  Completed, if all event sessions are in the past and enrollment is not canceled.
+                              id_membership_status:
+                                type:
+                                  - integer
+                                  - 'null'
+                                format: int32
+                                description: |-
+                                  Membership status.
+
+                                  `null` if tuition paid in full with installment.
                               is_cancelled:
                                 type: boolean
                                 description: 'Whether this enrollment is cancelled or not.'
