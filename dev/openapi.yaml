@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260813120635
+  version: 1.1.20260813124610
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -28365,13 +28365,12 @@ paths:
                       id_charge:
                         $ref: '#/components/schemas/Wl.Business.Policy.ChargeSid'
                         description: 'One of [ChargeSid](#/components/schemas/Wl.Business.Policy.ChargeSid) constants.'
-                      id_charge_measure:
-                        type: integer
-                        format: int32
-                        description: 'Charge measure type. `0` for percent, `1` for money amount.'
                       is_appointment_all:
                         type: boolean
                         description: '`1` if all classes are selected, `0` - otherwise.'
+                      is_charge_measure_money:
+                        type: boolean
+                        description: '`true` for a fixed money amount, `false` for a percentage.'
                       is_class_all:
                         type: boolean
                         description: '`1` if all classes are selected, `0` - otherwise.'
@@ -28399,8 +28398,8 @@ paths:
                       - id_blame
                       - id_cancel_period
                       - id_charge
-                      - id_charge_measure
                       - is_appointment_all
+                      - is_charge_measure_money
                       - is_class_all
                       - is_enable_cancel_charge
                       - is_event_all
