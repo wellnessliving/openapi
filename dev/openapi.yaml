@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260814130942
+  version: 1.1.20260814133333
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -29713,9 +29713,16 @@ paths:
                   html_waiver:
                     type: string
                     description: 'Text of the current waiver with the substituted variables.'
+                  url_waiver:
+                    type: string
+                    description: |-
+                      URL to the waiver page.
+
+                      This page is only available to logged-in clients.
                 required:
                   - has_waiver
                   - html_waiver
+                  - url_waiver
         '400':
           $ref: '#/components/responses/400'
         '401':
