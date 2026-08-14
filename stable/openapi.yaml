@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260813102214
+  version: 1.1.20260814031755
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -105942,12 +105942,13 @@ components:
       description: |-
         The source of a visit.
 
-        Last used ID: 32.
+        Last used ID: 33.
 
         Values:
         - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
         - 21 (`AZURE`): Registered through `Azure`.
         - 31 (`BRIVO_DOOR_ACCESS`): Visit has been checked-in by Brivo Door Access.
+        - 33 (`BULK_BILLING`): Purchase created by a bulk billing batch charge.
         - 23 (`CENTRED`): Visit has been created by `CENTRED`.
         - 8 (`CLASSPASS_BOOKING`): Visit has been created by `ClassPass`.
         - 22 (`COLLECTIONS`): Debt paid via collections.
@@ -105981,6 +105982,7 @@ components:
         - 28
         - 21
         - 31
+        - 33
         - 23
         - 8
         - 22
@@ -106012,6 +106014,7 @@ components:
         - API
         - AZURE
         - BRIVO_DOOR_ACCESS
+        - BULK_BILLING
         - CENTRED
         - CLASSPASS_BOOKING
         - COLLECTIONS
@@ -106043,6 +106046,7 @@ components:
         - 'Action made via Api Endpoint. Default for leads created via API, unless overridden.'
         - 'Registered through `Azure`.'
         - 'Visit has been checked-in by Brivo Door Access.'
+        - 'Purchase created by a bulk billing batch charge.'
         - 'Visit has been created by `CENTRED`.'
         - 'Visit has been created by `ClassPass`.'
         - 'Debt paid via collections.'
