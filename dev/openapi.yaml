@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260814100357
+  version: 1.1.20260814130942
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -105209,6 +105209,15 @@ components:
           actual `RsPurchaseSql::$f_sum`, `m_surcharge` with a re-pricing (via `BulkBillingManager::purchaseItemTotal()`,
           passed the same frozen `m_price`) of the clients still pending/failed - see
           [BulkChargesReport::_batchAmountGet()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract).
+        - 2325 (`Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport`): "Bulk Charges" batch detail report. Client-level drill-down for a single batch, reached from
+          [BulkChargesReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)'s `Batch ID`/`Total Clients` columns.
+
+          `Subtotal`/`Discount Amount`/`Total Taxes`/`Purchase Total` are read off PurchaseInfo once a client has
+          been billed (`\Wl\Billing\Bulk\PurchaseBatchUserStatusSid::CHARGED`). The per-tax-name `Custom tax` columns (e.g.
+          `HST Tax`/`GST Tax`) are dynamic - one per business-configured `\RsTax::get()` entry - added in
+          [BulkChargesDetailReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) and populated in [BulkChargesDetailReport::generatorRun()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)
+          from `\Wl\Purchase\PurchaseItemInfo::$a_tax`, same mechanism as
+          [TransactionAllItemReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)'s own per-tax columns.
         - 1448 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReport`): "Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.
         - 1498 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReport`): Franchise "Memberships Summary by Location" report.
         - 1295 (`Thoth\Report\SalesReport\Client\SummaryReport\SummaryReport`): "Sales Summary by Client" report.
@@ -105312,6 +105321,7 @@ components:
         - 1283
         - 1572
         - 2316
+        - 2325
         - 1448
         - 1498
         - 1295
@@ -105397,6 +105407,7 @@ components:
         - Thoth\Report\SalesReport\Transaction\Batch\BatchReport
         - Thoth\Report\SalesReport\Transaction\Cash\SummaryReport
         - Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport
+        - Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport
         - Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReport
         - Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReport
         - Thoth\Report\SalesReport\Client\SummaryReport\SummaryReport
@@ -105509,6 +105520,16 @@ components:
           actual `RsPurchaseSql::$f_sum`, `m_surcharge` with a re-pricing (via `BulkBillingManager::purchaseItemTotal()`,
           passed the same frozen `m_price`) of the clients still pending/failed - see
           {@link \Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport::_batchAmountGet()}.
+        - |-
+          "Bulk Charges" batch detail report. Client-level drill-down for a single batch, reached from
+          {@link \Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport}'s `Batch ID`/`Total Clients` columns.
+
+          `Subtotal`/`Discount Amount`/`Total Taxes`/`Purchase Total` are read off {@link \Wl\Purchase\Info\PurchaseInfo} once a client has
+          been billed (`\Wl\Billing\Bulk\PurchaseBatchUserStatusSid::CHARGED`). The per-tax-name `Custom tax` columns (e.g.
+          `HST Tax`/`GST Tax`) are dynamic - one per business-configured `\RsTax::get()` entry - added in
+          {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorDynamic()} and populated in {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorRun()}
+          from `\Wl\Purchase\PurchaseItemInfo::$a_tax`, same mechanism as
+          {@link \Thoth\Report\SalesReport\Transaction\TransactionAllItemReport::generatorDynamic()}'s own per-tax columns.
         - '"Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.'
         - 'Franchise "Memberships Summary by Location" report.'
         - '"Sales Summary by Client" report.'
@@ -108324,6 +108345,7 @@ components:
         - 1286 (`Thoth\Report\SalesReport\Transaction\Batch\BatchReportController`): Controller for "Batch Report".
         - 1573 (`Thoth\Report\SalesReport\Transaction\Cash\SummaryReportController`): Controller for "Cash Reconciliation Summary" report.
         - 2317 (`Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReportController`): "Bulk Charges" report controller. Table representation.
+        - 2326 (`Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReportController`): "Bulk Charges" batch detail report controller.
         - 1447 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportController`): "Enterprise Reports -> Memberships Details by Location" report controller. Table representation.
         - 1499 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReportController`): Franchise "Memberships Summary by Location" report controller. Table representation.
         - 1296 (`Thoth\Report\SalesReport\Client\SummaryReport\SummaryReportController`): Controller for "Sales per Client" report.
@@ -108433,6 +108455,7 @@ components:
         - 1286
         - 1573
         - 2317
+        - 2326
         - 1447
         - 1499
         - 1296
@@ -108540,6 +108563,7 @@ components:
         - Thoth\Report\SalesReport\Transaction\Batch\BatchReportController
         - Thoth\Report\SalesReport\Transaction\Cash\SummaryReportController
         - Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReportController
+        - Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReportController
         - Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReportController
         - Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReportController
         - Thoth\Report\SalesReport\Client\SummaryReport\SummaryReportController
@@ -108658,6 +108682,7 @@ components:
         - 'Controller for "Batch Report".'
         - 'Controller for "Cash Reconciliation Summary" report.'
         - '"Bulk Charges" report controller. Table representation.'
+        - '"Bulk Charges" batch detail report controller.'
         - '"Enterprise Reports -> Memberships Details by Location" report controller. Table representation.'
         - 'Franchise "Memberships Summary by Location" report controller. Table representation.'
         - 'Controller for "Sales per Client" report.'
