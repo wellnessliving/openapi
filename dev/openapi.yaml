@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260814154747
+  version: 1.1.20260814212751
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -6443,9 +6443,7 @@ paths:
                       The legacy staff keys associated with the video.
 
                       For GET requests, this field is populated only for applications listed in
-                      `APPS_USE_OLD_K_STAFF`; otherwise it is empty.
-                      An empty value outside the allow-list does not indicate that no staff members are assigned; use
-                      [VideoElementApi::$a_staff_uid](/Wl/Video/VideoElement.json) as the authoritative list.
+                      `APPS_USE_OLD_K_STAFF`; otherwise it is not returned.
                       For POST requests, applications outside the allow-list must use [VideoElementApi::$a_staff_uid](/Wl/Video/VideoElement.json).
                     items:
                       type: string
@@ -6834,9 +6832,7 @@ paths:
                     The legacy staff keys associated with the video.
 
                     For GET requests, this field is populated only for applications listed in
-                    `APPS_USE_OLD_K_STAFF`; otherwise it is empty.
-                    An empty value outside the allow-list does not indicate that no staff members are assigned; use
-                    [VideoElementApi::$a_staff_uid](/Wl/Video/VideoElement.json) as the authoritative list.
+                    `APPS_USE_OLD_K_STAFF`; otherwise it is not returned.
                     For POST requests, applications outside the allow-list must use [VideoElementApi::$a_staff_uid](/Wl/Video/VideoElement.json).
                   items:
                     type: string
