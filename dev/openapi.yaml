@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260817114611
+  version: 1.1.20260817200006
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5450,7 +5450,7 @@ paths:
                     description: |-
                       A list of clients enrolled in the specified event classes.
 
-                      Key is the class key. Primary key in RsClassSql table.
+                      Key is the class key. 
 
                       Value is a list of clients enrolled in that class. Each element contains:
                     items:
@@ -5463,7 +5463,7 @@ paths:
                               (booked the whole event); `false` otherwise.
                         uid:
                           type: string
-                          description: 'Key of the client who attended or will attend the event. Primary key in PassportLoginSql table.'
+                          description: 'Key of the client who attended or will attend the event.'
                       required:
                         - is_enrolled_full
                         - uid
@@ -68956,8 +68956,23 @@ paths:
                         - m_paid
                         - m_payment
                         - uid_payer
+                  a_enrollment_fee:
+                    type: object
+                    description: |-
+                      List of users who has paid or are scheduled to pay tuition fee.
+
+                      Keys are user ids. Values are payment information.
+                    properties:
+                      is_paid:
+                        type: string
+                        description: |-
+                          If `true`, user has paid tuition fee. If `false`, user is scheduled to pay tuition fee.
+                              If a user did not pay and does not have a scheduled payment, the key is not present.
+                    required:
+                      - is_paid
                 required:
                   - a_enrollment
+                  - a_enrollment_fee
         '400':
           $ref: '#/components/responses/400'
         '401':
