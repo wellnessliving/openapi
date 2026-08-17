@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260817100136
+  version: 1.1.20260817114611
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5430,6 +5430,82 @@ paths:
                 - k_business
                 - k_class
                 - uid
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Event/EventEnrollment.json:
+    get:
+      operationId: Wl.Event.EventEnrollment.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_enrollments:
+                    type: array
+                    description: |-
+                      A list of clients enrolled in the specified event classes.
+
+                      Key is the class key. Primary key in RsClassSql table.
+
+                      Value is a list of clients enrolled in that class. Each element contains:
+                    items:
+                      type: object
+                      properties:
+                        is_enrolled_full:
+                          type: boolean
+                          description: |-
+                            `true` if the client has a block event enrollment record set for this class
+                              (booked the whole event); `false` otherwise.
+                        uid:
+                          type: string
+                          description: 'Key of the client who attended or will attend the event. Primary key in PassportLoginSql table.'
+                      required:
+                        - is_enrolled_full
+                        - uid
+                required:
+                  - a_enrollments
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns a list of clients enrolled in the specified event classes.'
+      description: |-
+        An enrollment is considered to exist for any client that has an active (not canceled, not missed) visit,
+        past or future, for one of the specified classes.
+      tags:
+        - Events
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_class
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 'List of event classes for which enrollment must be retrieved.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business to which the event classes belong.'
       x-rate-limit:
         -
           limit: 200000
