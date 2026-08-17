@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260815092701
+  version: 1.1.20260817052456
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -73898,7 +73898,10 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Retrieves guest passes for a specific client.'
-      description: 'Returns all guest passes assigned to the given user, optionally filtered by class and location.'
+      description: |-
+        Returns all guest passes assigned to the given user, optionally filtered by class and location.
+
+        Guest passes are not applicable to events, so an empty list is returned when the specified class is an event.
       tags:
         - 'Guest Pass'
       parameters:
