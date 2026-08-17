@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260817080745
+  version: 1.1.20260817084551
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68656,9 +68656,7 @@ paths:
                         - uid_staff
                     id_checkout_type:
                       $ref: '#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid'
-                      description: |-
-                        Checkout type.
-                        See [WidgetAnalyticsCheckoutTypeSid](#/components/schemas/Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid).
+                      description: 'Checkout type.'
                     k_location:
                       type: string
                       description: 'Location key.'
@@ -114061,19 +114059,15 @@ components:
         Widget analytics checkout types.
 
         Values:
-        - 1 (`ANY`): Any checkout type.
         - 3 (`BOOKING`): Booking checkout type.
         - 2 (`STORE_PURCHASE`): Store purchase checkout type.
       enum:
-        - 1
         - 3
         - 2
       x-enum-varnames:
-        - ANY
         - BOOKING
         - STORE_PURCHASE
       x-enum-descriptions:
-        - 'Any checkout type.'
         - 'Booking checkout type.'
         - 'Store purchase checkout type.'
     Wl.Widget.Analytics.WidgetAnalyticsEventSid:
