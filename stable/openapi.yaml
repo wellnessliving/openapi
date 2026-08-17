@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260817075926
+  version: 1.1.20260817085943
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8691,7 +8691,7 @@ paths:
                     description: |-
                       A list of clients enrolled in the specified event classes.
 
-                      Key is the class key. Primary key in RsClassSql table.
+                      Key is the class key. 
 
                       Value is a list of clients enrolled in that class. Each element contains:
                     items:
@@ -8704,7 +8704,7 @@ paths:
                               (booked the whole event); `false` otherwise.
                         uid:
                           type: string
-                          description: 'Key of the client who attended or will attend the event. Primary key in PassportLoginSql table.'
+                          description: 'Key of the client who attended or will attend the event.'
                       required:
                         - is_enrolled_full
                         - uid
