@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260817110335
+  version: 1.1.20260817133048
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -69578,8 +69578,23 @@ paths:
                         - m_paid
                         - m_payment
                         - uid_payer
+                  a_enrollment_fee:
+                    type: object
+                    description: |-
+                      List of users who has paid or are scheduled to pay tuition fee.
+
+                      Keys are user ids. Values are payment information.
+                    properties:
+                      is_paid:
+                        type: string
+                        description: |-
+                          If `true`, user has paid tuition fee. If `false`, user is scheduled to pay tuition fee.
+                              If a user did not pay and does not have a scheduled payment, the key is not present.
+                    required:
+                      - is_paid
                 required:
                   - a_enrollment
+                  - a_enrollment_fee
         '400':
           $ref: '#/components/responses/400'
         '401':
