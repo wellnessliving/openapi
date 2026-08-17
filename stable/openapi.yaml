@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260817050149
+  version: 1.1.20260817060135
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8458,6 +8458,13 @@ paths:
             type: boolean
           description: 'Determines whether the endpoint is used for backend mode.'
         -
+          name: is_cache_reset
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Model cache reset flag.'
+        -
           name: is_ignore_requirement
           in: query
           required: true
@@ -8583,6 +8590,13 @@ paths:
         -
           $ref: '#/components/parameters/X-Error-Rules'
         -
+          name: is_cache_reset
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Model cache reset flag.'
+        -
           name: k_business
           in: query
           required: false
@@ -8605,18 +8619,6 @@ paths:
           description: |-
             The user key.
             Required to apply specific user rules such as age restrictions.
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                is_cache_reset:
-                  type: boolean
-                  description: 'Model cache reset flag.'
-              required:
-                - is_cache_reset
       x-rate-limit:
         -
           limit: 200000
