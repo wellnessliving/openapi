@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260818034001
+  version: 1.1.20260818045157
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -69586,7 +69586,7 @@ paths:
                       Keys are user ids. Values are payment information.
                     properties:
                       is_paid:
-                        type: string
+                        type: boolean
                         description: |-
                           If `true`, user has paid tuition fee. If `false`, user is scheduled to pay tuition fee.
                               If a user did not pay and does not have a scheduled payment, the key is not present.
