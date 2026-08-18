@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260818080559
+  version: 1.1.20260818092431
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68964,7 +68964,7 @@ paths:
                       Keys are user ids. Values are payment information.
                     properties:
                       is_paid:
-                        type: string
+                        type: boolean
                         description: |-
                           If `true`, user has paid tuition fee. If `false`, user is scheduled to pay tuition fee.
                               If a user did not pay and does not have a scheduled payment, the key is not present.
@@ -111908,7 +111908,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 247.
+        Last Used ID: 248.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -112040,6 +112040,7 @@ components:
         - 217 (`NOTIFICATION_LEAD_CAPTURE_AI`): Receive Lead Capture (AI Agent) notification.
         - 214 (`NOTIFICATION_MEMBERSHIP_CANCEL`): Staff with this role will receive the membership cancel mails.
         - 223 (`NOTIFICATION_MEMBERSHIP_QUERY`): Receive Membership or Purchase Options Query notification.
+        - 248 (`NOTIFICATION_PHONE_AGENT_CALL_RECEIVED`): Receive CAASI Phone Call Received (AI Agent) notification.
         - 90 (`NOTIFICATION_PRIZE_REDEMPTION`): Staff with this role will receive emails about reward prizes.
         - 77 (`NOTIFICATION_PRODUCT_INVENTORY`): Staff with this role will receive the inventory mails.
         - 162 (`NOTIFICATION_QUIZ`): Receive new quiz notification form staff.
@@ -112274,6 +112275,7 @@ components:
         - 217
         - 214
         - 223
+        - 248
         - 90
         - 77
         - 162
@@ -112505,6 +112507,7 @@ components:
         - NOTIFICATION_LEAD_CAPTURE_AI
         - NOTIFICATION_MEMBERSHIP_CANCEL
         - NOTIFICATION_MEMBERSHIP_QUERY
+        - NOTIFICATION_PHONE_AGENT_CALL_RECEIVED
         - NOTIFICATION_PRIZE_REDEMPTION
         - NOTIFICATION_PRODUCT_INVENTORY
         - NOTIFICATION_QUIZ
@@ -112740,6 +112743,7 @@ components:
         - 'Receive Lead Capture (AI Agent) notification.'
         - 'Staff with this role will receive the membership cancel mails.'
         - 'Receive Membership or Purchase Options Query notification.'
+        - 'Receive CAASI Phone Call Received (AI Agent) notification.'
         - 'Staff with this role will receive emails about reward prizes.'
         - 'Staff with this role will receive the inventory mails.'
         - 'Receive new quiz notification form staff.'
