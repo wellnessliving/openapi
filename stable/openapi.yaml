@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819044559
+  version: 1.1.20260819051005
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25074,11 +25074,19 @@ paths:
 
                       `true` if the client can remove their own saved credit cards.
                       `false` if the client must contact the business to remove a saved credit card.
+                  has_remove_self:
+                    type: boolean
+                    description: |-
+                      Whether the feature "client is allowed to remove their own saved credit cards" has been released.
+
+                      `true` if the feature has been released.
+                      `false` if the feature has not been released.
                 required:
                   - a_bank_card
                   - a_list
                   - can_add
                   - can_remove_self
+                  - has_remove_self
         '400':
           $ref: '#/components/responses/400'
         '401':
