@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819094836
+  version: 1.1.20260819095852
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -86630,7 +86630,12 @@ paths:
                   i_session_all:
                     type: integer
                     format: int32
-                    description: 'Total number of sessions including both past and future sessions.'
+                    description: |-
+                      Total number of sessions.
+
+                      For classes this value is always `1`.
+                      For events this value includes both past and future sessions.
+                    default: 1
                   i_wait:
                     type: integer
                     format: int32
@@ -87405,7 +87410,12 @@ paths:
                   i_session_all:
                     type: integer
                     format: int32
-                    description: 'Total number of sessions including both past and future sessions.'
+                    description: |-
+                      Total number of sessions.
+
+                      For classes this value is always `1`.
+                      For events this value includes both past and future sessions.
+                    default: 1
                   i_wait:
                     type: integer
                     format: int32
