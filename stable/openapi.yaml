@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819085407
+  version: 1.1.20260819094836
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -86627,6 +86627,10 @@ paths:
                     type: integer
                     format: int32
                     description: 'The duration of the session in minutes.'
+                  i_session_all:
+                    type: integer
+                    format: int32
+                    description: 'Total number of sessions including both past and future sessions.'
                   i_wait:
                     type: integer
                     format: int32
@@ -86723,6 +86727,7 @@ paths:
                   - html_special
                   - html_special_preview
                   - i_duration
+                  - i_session_all
                   - i_wait
                   - i_wait_spot
                   - is_book_repeat_client
@@ -87397,6 +87402,10 @@ paths:
                     type: integer
                     format: int32
                     description: 'The duration of the session in minutes.'
+                  i_session_all:
+                    type: integer
+                    format: int32
+                    description: 'Total number of sessions including both past and future sessions.'
                   i_wait:
                     type: integer
                     format: int32
@@ -87493,6 +87502,7 @@ paths:
                   - html_special
                   - html_special_preview
                   - i_duration
+                  - i_session_all
                   - i_wait
                   - i_wait_spot
                   - is_book_repeat_client
@@ -91122,6 +91132,10 @@ paths:
                           type: integer
                           format: int32
                           description: 'Session count in event.'
+                        i_session_all:
+                          type: integer
+                          format: int32
+                          description: 'Total number of sessions including both past and future sessions.'
                         i_session_remain:
                           type: integer
                           format: int32
@@ -91187,6 +91201,7 @@ paths:
                         - html_special
                         - i_makeup_cap
                         - i_session
+                        - i_session_all
                         - i_session_remain
                         - is_availability_checked
                         - is_book
@@ -91520,6 +91535,10 @@ paths:
                     type: integer
                     format: int32
                     description: 'The session count.'
+                  i_session_all:
+                    type: integer
+                    format: int32
+                    description: 'Total number of sessions including both past and future sessions.'
                   i_session_remain:
                     type: integer
                     format: int32
@@ -91663,6 +91682,7 @@ paths:
                   - html_special
                   - i_makeup_cap
                   - i_session
+                  - i_session_all
                   - i_session_remain
                   - id_pay_require
                   - is_age_restrict
