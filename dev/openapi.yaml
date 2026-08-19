@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819092121
+  version: 1.1.20260819095422
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -110005,6 +110005,7 @@ components:
         - 213 (`LOGIN_STATEMENT_NEW`): Sent to the client when a new account statement becomes available.
           Email includes the statement as a PDF attachment.
         - 9 (`LOGIN_WELCOME`): Sent to all new users after they create an account for the first time.
+        - 223 (`MARKETING_AUTOMATION_NOTIFY_STAFF`): Sent to selected staff or staff roles when a marketing automation flow reaches a Notify Staff step.
         - 214 (`MEMBER_GROUP_USER_ADD`): Client added to a member group.
         - 215 (`MEMBER_GROUP_USER_REMOVE`): Client removed from a member group.
         - 203 (`MEMBERSHIP_QUERY`): Sent to staff when the AI Agent logs a membership or purchase query.
@@ -110301,6 +110302,7 @@ components:
         - 50
         - 213
         - 9
+        - 223
         - 214
         - 215
         - 203
@@ -110498,6 +110500,7 @@ components:
         - LOGIN_RETENTION
         - LOGIN_STATEMENT_NEW
         - LOGIN_WELCOME
+        - MARKETING_AUTOMATION_NOTIFY_STAFF
         - MEMBER_GROUP_USER_ADD
         - MEMBER_GROUP_USER_REMOVE
         - MEMBERSHIP_QUERY
@@ -110903,6 +110906,7 @@ components:
           Sent to the client when a new account statement becomes available.
           Email includes the statement as a PDF attachment.
         - 'Sent to all new users after they create an account for the first time.'
+        - 'Sent to selected staff or staff roles when a marketing automation flow reaches a Notify Staff step.'
         - 'Client added to a member group.'
         - 'Client removed from a member group.'
         - 'Sent to staff when the AI Agent logs a membership or purchase query.'
