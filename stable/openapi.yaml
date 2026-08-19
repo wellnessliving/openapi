@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819112709
+  version: 1.1.20260819134207
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -96447,6 +96447,50 @@ paths:
                   description: 'Otp code integer that was random generated.'
               required:
                 - s_otp_code
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Passport/Login/Register/RegisterOtpJwtPublicKey.json:
+    get:
+      operationId: Wl.Passport.Login.Register.RegisterOtpJwtPublicKey.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_keys:
+                    type: array
+                    description: 'Public key in JWK format.'
+                    items:
+                      type: array
+                  s_public_key:
+                    type: string
+                    description: 'Public key in PEM format.'
+                required:
+                  - a_keys
+                  - s_public_key
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns public key material for OTP registration JWT verification.'
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
       x-rate-limit:
         -
           limit: 200000
