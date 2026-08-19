@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819135733
+  version: 1.1.20260819161630
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -41839,6 +41839,15 @@ paths:
             The program type ID, which will be one of the [RsProgramTypeSid](#/components/schemas/RsProgramTypeSid) constants.
 
             `0` to not filter Purchase Options with type of the Purchase Option.
+        -
+          name: is_backend
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            If `true`, purchase options are loaded for backend mode. Otherwise, this will be `false` if purchase options
+            are loaded for frontend mode.
         -
           name: k_business
           in: query
@@ -96495,6 +96504,7 @@ paths:
         -
           limit: 200000
           period: 3600
+      security: []
   /Wl/Skin/Application/Connect/ApplicationConnect.json:
     post:
       operationId: Wl.Skin.Application.Connect.ApplicationConnect.post
