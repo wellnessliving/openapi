@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819135702
+  version: 1.1.20260819201630
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -56862,6 +56862,15 @@ paths:
 
             `0` to not filter Purchase Options with type of the Purchase Option.
         -
+          name: is_backend
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            If `true`, purchase options are loaded for backend mode. Otherwise, this will be `false` if purchase options
+            are loaded for frontend mode.
+        -
           name: k_business
           in: query
           required: false
@@ -73113,6 +73122,18 @@ paths:
                     description: |-
                       Number of seconds left until the dynamic ID expires.
                       Zero means that business uses static barcode.
+                  i_qr_issued:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Unix time in seconds at which [DynamicIdApi::$text_barcode](/Wl/Login/Member/DynamicId/DynamicId.json) was issued.
+
+                      Only meaningful when [DynamicIdApi::$is_qr](/Wl/Login/Member/DynamicId/DynamicId.json) is `true`. The Achieve app combines this value with
+                      [DynamicIdApi::$text_barcode](/Wl/Login/Member/DynamicId/DynamicId.json) and a hardcoded 30-second validity window to build the QR code payload,
+                      and increments it locally every 30 seconds to refresh the QR code without an additional request to the server.
+                  is_qr:
+                    type: boolean
+                    description: '`true` if the business uses QR code as the client check-in scan format, `false` if it uses the classic barcode.'
                   text_barcode:
                     type: string
                     description: |-
@@ -73125,6 +73146,8 @@ paths:
                     description: 'URL of the barcode image.'
                 required:
                   - i_expire
+                  - i_qr_issued
+                  - is_qr
                   - text_barcode
                   - url_barcode
         '400':
@@ -73144,6 +73167,10 @@ paths:
         If the business uses dynamic barcodes, generates or refreshes a time-limited barcode and returns its value,
         expiry countdown, and an image URL. If the business uses static barcodes, returns the member's static ID
         with a zero expiry.
+
+        If the business uses QR code as the scan format ([DynamicIdApi::$is_qr](/Wl/Login/Member/DynamicId/DynamicId.json)), also returns the issue
+        timestamp ([DynamicIdApi::$i_qr_issued](/Wl/Login/Member/DynamicId/DynamicId.json)) that the Achieve app uses to build and locally refresh the QR
+        code payload, and does not generate a barcode image URL.
       tags:
         - Login
       parameters:
@@ -95293,6 +95320,51 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Passport/Login/Register/RegisterOtpJwtPublicKey.json:
+    get:
+      operationId: Wl.Passport.Login.Register.RegisterOtpJwtPublicKey.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_keys:
+                    type: array
+                    description: 'Public key in JWK format.'
+                    items:
+                      type: array
+                  s_public_key:
+                    type: string
+                    description: 'Public key in PEM format.'
+                required:
+                  - a_keys
+                  - s_public_key
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns public key material for OTP registration JWT verification.'
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+      security: []
   /Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json:
     get:
       operationId: Wl.Catalog.StaffApp.CatalogCart.CatalogCart.get
