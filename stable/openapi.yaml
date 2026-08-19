@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819071605
+  version: 1.1.20260819075340
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -82233,6 +82233,14 @@ paths:
                       and `m_cost` covers the full cost regardless, so this is the amount to put into the payment
                       form. It is `m_cost` minus `a_config.m_deferred` of every tuition item in
                       [PurchaseElementGroupApi::$a_purchase_item](/Wl/Book/Process/Purchase/PurchaseElementGroup.json).
+                  m_checkout_tax:
+                    type: string
+                    description: |-
+                      The tax portion of [PurchaseElementGroupApi::$m_checkout](/Wl/Book/Process/Purchase/PurchaseElementGroup.json).
+
+                      Equals [PurchaseElementGroupApi::$m_tax](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) for everything that is paid for in full at
+                      once. A tuition defers a part of its tax to an installment plan along with the rest of its
+                      cost, so this is the tax on the amount actually charged right now, not on the full cost.
                   m_cost:
                     type: string
                     description: |-
@@ -82262,6 +82270,7 @@ paths:
                   - a_purchase_item
                   - a_tax
                   - m_checkout
+                  - m_checkout_tax
                   - m_cost
                   - m_discount
                   - m_discount_code
@@ -82286,9 +82295,10 @@ paths:
         Validates each item in `a_purchase_item` (type, key, installment eligibility, and prize applicability),
         applies discount codes, login-type discounts, and installment adjustments, then accumulates price, subtotal,
         discount, tax, and cost totals across all items and returns them as result fields. For tuition
-        items the totals cover the full cost, so the amount that has to be charged right now is
-        reported separately in [PurchaseElementGroupApi::$m_checkout](/Wl/Book/Process/Purchase/PurchaseElementGroup.json), and its per-component
-        split is written back into `a_config` of the item it belongs to.
+        items the totals cover the full cost, so the amount that has to be charged right now, and the
+        tax portion of it, are reported separately in [PurchaseElementGroupApi::$m_checkout](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) and
+        [PurchaseElementGroupApi::$m_checkout_tax](/Wl/Book/Process/Purchase/PurchaseElementGroup.json), and the per-component split is written back
+        into `a_config` of the item it belongs to.
       tags:
         - Booking
       parameters:
@@ -83360,6 +83370,14 @@ paths:
                       and `m_cost` covers the full cost regardless, so this is the amount to put into the payment
                       form. It is `m_cost` minus `a_config.m_deferred` of every tuition item in
                       [PurchaseElementGroupApi::$a_purchase_item](/Wl/Book/Process/Purchase/PurchaseElementGroup.json).
+                  m_checkout_tax:
+                    type: string
+                    description: |-
+                      The tax portion of [PurchaseElementGroupApi::$m_checkout](/Wl/Book/Process/Purchase/PurchaseElementGroup.json).
+
+                      Equals [PurchaseElementGroupApi::$m_tax](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) for everything that is paid for in full at
+                      once. A tuition defers a part of its tax to an installment plan along with the rest of its
+                      cost, so this is the tax on the amount actually charged right now, not on the full cost.
                   m_cost:
                     type: string
                     description: |-
@@ -83389,6 +83407,7 @@ paths:
                   - a_config
                   - a_tax
                   - m_checkout
+                  - m_checkout_tax
                   - m_cost
                   - m_discount
                   - m_discount_code
