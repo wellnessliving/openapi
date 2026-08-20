@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260820150253
+  version: 1.1.20260820173838
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26476,6 +26476,112 @@ paths:
               required:
                 - k_business
                 - text_lead_source
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Lead/Stage/LeadStageList.json:
+    get:
+      operationId: Wl.Lead.Stage.LeadStageList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_lead_stage:
+                    type: array
+                    description: 'List of lead stages of the business. Ordered by `i_order`.'
+                    items:
+                      type: object
+                      properties:
+                        i_order:
+                          type: integer
+                          format: int32
+                          description: 'Sequence number of the stage in the list.'
+                        i_user:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of clients who are in this stage.
+                            Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
+                        id_lead_stage_shape:
+                          $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid'
+                          description: 'Shape of the stage icon. One of [LeadStageShapeSid](#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid) constants.'
+                        id_lead_stage_system:
+                          $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageSystemSid'
+                          description: |-
+                            System-defined lead stage. One of [LeadStageSystemSid](#/components/schemas/Wl.Lead.Stage.LeadStageSystemSid) constants.
+                            `null` for a custom stage created by the business.
+                        k_lead_stage:
+                          type: string
+                          description: 'Key of the stage.'
+                        s_color_background:
+                          type: string
+                          description: 'Background color of the icon. Hexadecimal color.'
+                        s_color_foreground:
+                          type: string
+                          description: 'Color of characters on the icon. Hexadecimal color.'
+                        s_icon:
+                          type: string
+                          description: 'Characters on the icon.'
+                        text_title:
+                          type: string
+                          description: 'Name of the stage.'
+                      required:
+                        - i_order
+                        - id_lead_stage_shape
+                        - id_lead_stage_system
+                        - k_lead_stage
+                        - s_color_background
+                        - s_color_foreground
+                        - s_icon
+                        - text_title
+                required:
+                  - a_lead_stage
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets a list of lead stages of the business.'
+      description: |-
+        Returns all lead stages configured for the specified business, both system-defined and custom ones,
+        with their order, name and icon. In a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`,
+        the number of clients of every stage is returned too.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_statistic
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Determines whether statistics of the stages must be returned.
+
+            `true` to return the number of clients of every stage in `i_user`,
+            `false` to not return the statistics.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      x-instance-get-key: k_business
       x-rate-limit:
         -
           limit: 200000
@@ -108666,6 +108772,113 @@ components:
         - 'PHP error log represented by {@link \Core\Debug\DebugPhpLog}.'
         - 'Slow-operation log represented by {@link \Core\Debug\DebugSlowLog}.'
         - 'Aggregated usage statistics.'
+    Wl.Lead.Stage.LeadStageShapeSid:
+      type: integer
+      format: int32
+      description: |-
+        Shapes of lead stage icons.
+
+        Last used ID: 7.
+
+        Values:
+        - 1 (`CIRCLE`): Circle.
+        - 2 (`HEXAGON`): Hexagon.
+        - 3 (`OVAL`): Oval.
+        - 4 (`PENTAGON`): Pentagon.
+        - 5 (`RECTANGLE`): Rectangle.
+        - 6 (`SQUARE`): Square.
+        - 7 (`STAR`): Star.
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+      x-enum-varnames:
+        - CIRCLE
+        - HEXAGON
+        - OVAL
+        - PENTAGON
+        - RECTANGLE
+        - SQUARE
+        - STAR
+      x-enum-descriptions:
+        - Circle.
+        - Hexagon.
+        - Oval.
+        - Pentagon.
+        - Rectangle.
+        - Square.
+        - Star.
+    Wl.Lead.Stage.LeadStageSystemSid:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        System-defined lead stages.
+
+        Every business has one stage of each type by default. 
+
+        Custom stages created by a business have no system ID.
+
+        Last used ID: 6.
+
+        Values:
+        - 6 (`CONTACTED`): A lead which was contacted by a staff member.
+        - 2 (`HOT`): A lead which is being actively worked with and is close to a purchase.
+
+          Replaces [RsLeadStatusSid::ACTIVE](#/components/schemas/RsLeadStatusSid).
+        - 5 (`LOST`): A lead which was lost.
+
+          Replaces [LeadConversionTypeSid::LOST](#/components/schemas/Wl.Lead.Conversion.LeadConversionTypeSid).
+        - 1 (`NEW`): A newly captured lead. This stage is set to a client when they are added as a lead.
+
+          Replaces [RsLeadStatusSid::NEWCOMER](#/components/schemas/RsLeadStatusSid).
+        - 3 (`WARM`): A lead which has shown some interest, but is not ready to purchase yet.
+
+          Replaces [RsLeadStatusSid::LEAVE](#/components/schemas/RsLeadStatusSid).
+        - 4 (`WON`): A lead which was successfully converted into a client.
+
+          Replaces [LeadConversionTypeSid::WON](#/components/schemas/Wl.Lead.Conversion.LeadConversionTypeSid).
+      enum:
+        - 6
+        - 2
+        - 5
+        - 1
+        - 3
+        - 4
+      x-enum-varnames:
+        - CONTACTED
+        - HOT
+        - LOST
+        - NEW
+        - WARM
+        - WON
+      x-enum-descriptions:
+        - 'A lead which was contacted by a staff member.'
+        - |-
+          A lead which is being actively worked with and is close to a purchase.
+
+          Replaces {@link \RsLeadStatusSid::ACTIVE}.
+        - |-
+          A lead which was lost.
+
+          Replaces {@link \Wl\Lead\Conversion\LeadConversionTypeSid::LOST}.
+        - |-
+          A newly captured lead. This stage is set to a client when they are added as a lead.
+
+          Replaces {@link \RsLeadStatusSid::NEWCOMER}.
+        - |-
+          A lead which has shown some interest, but is not ready to purchase yet.
+
+          Replaces {@link \RsLeadStatusSid::LEAVE}.
+        - |-
+          A lead which was successfully converted into a client.
+
+          Replaces {@link \Wl\Lead\Conversion\LeadConversionTypeSid::WON}.
     Wl.Report.View.ReportViewControllerAbstract:
       type: integer
       format: int32
