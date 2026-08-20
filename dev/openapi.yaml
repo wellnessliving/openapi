@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260819201630
+  version: 1.1.20260820091959
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -92260,6 +92260,15 @@ paths:
                         id_gender:
                           $ref: '#/components/schemas/AGenderSid'
                           description: "Staff member's gender. One of [AGenderSid](#/components/schemas/AGenderSid) constants."
+                        i_free_spot:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            How many clients can still be booked with the staff member at the requested time.
+                            If `dt_date` is not passed, this value is `null`.
+                            If `dt_date` is passed, this is calculated for the specific staff member at that time.
                         is_available:
                           type: boolean
                           description: |-
@@ -92289,6 +92298,7 @@ paths:
                           description: 'Biography of the staff member.'
                       required:
                         - id_gender
+                        - i_free_spot
                         - is_available
                         - is_daily_limit
                         - is_wait_list
@@ -92448,6 +92458,15 @@ paths:
                         id_gender:
                           $ref: '#/components/schemas/AGenderSid'
                           description: "Staff member's gender. One of [AGenderSid](#/components/schemas/AGenderSid) constants."
+                        i_free_spot:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            How many clients can still be booked with the staff member at the requested time.
+                            If `dt_date` is not passed, this value is `null`.
+                            If `dt_date` is passed, this is calculated for the specific staff member at that time.
                         is_available:
                           type: boolean
                           description: |-
@@ -92477,6 +92496,7 @@ paths:
                           description: 'Biography of the staff member.'
                       required:
                         - id_gender
+                        - i_free_spot
                         - is_available
                         - is_daily_limit
                         - is_wait_list
