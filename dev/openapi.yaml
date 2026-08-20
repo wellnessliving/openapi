@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260820112933
+  version: 1.1.20260820134531
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -95353,9 +95353,12 @@ paths:
                 properties:
                   a_keys:
                     type: array
-                    description: 'Public key in JWK format.'
+                    description: |-
+                      Public key in JWK format.
+
+                      Each array item is one JWK with the following structure:
                     items:
-                      type: array
+                      type: object
                   s_public_key:
                     type: string
                     description: 'Public key in PEM format.'
@@ -95488,8 +95491,12 @@ paths:
                                 m_amount:
                                   type: string
                                   description: 'Registration fee amount for the tuition participant.'
+                                m_discount:
+                                  type: string
+                                  description: 'Total discount amount actually applied to the registration fee.'
                               required:
                                 - m_amount
+                                - m_discount
                             m_checkout:
                               type: string
                               description: 'The total amount that will be charged for the tuition item during purchase.'
@@ -95763,8 +95770,12 @@ paths:
                         m_amount:
                           type: string
                           description: 'Registration fee amount for the tuition participant.'
+                        m_discount:
+                          type: string
+                          description: 'Total discount amount actually applied to the registration fee.'
                       required:
                         - m_amount
+                        - m_discount
                     m_checkout:
                       type: string
                       description: 'The total amount that will be charged for the tuition item during purchase.'
