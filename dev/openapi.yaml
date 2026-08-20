@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260820144619
+  version: 1.1.20260820150253
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -69034,8 +69034,9 @@ paths:
                             - 'null'
                           description: |-
                             Next payment date in local business timezone and MySQL format.
+                            It will be the closest date to the current date for membership tuition.
 
-                            `null` for membership-based tuition.
+                            `null` if we cannot define next payment date.
                         dtl_enrollment:
                           type: string
                           description: 'Date and time of the enrollment in local business timezone.'
