@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260820193944
+  version: 1.1.20260821075156
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -73307,6 +73307,7 @@ paths:
           schema:
             type: string
           description: 'User unique identifier.'
+      x-instance-get-key: 'k_business,uid'
       x-rate-limit:
         -
           limit: 200000
@@ -95466,6 +95467,32 @@ paths:
                       Each array item is one JWK with the following structure:
                     items:
                       type: object
+                      properties:
+                        alg:
+                          type: string
+                          description: "Signing algorithm. Always 'RS256'."
+                        e:
+                          type: string
+                          description: 'RSA public exponent in base64url format.'
+                        kid:
+                          type: string
+                          description: 'Key identifier for JWT header matching.'
+                        kty:
+                          type: string
+                          description: "Key type. Always 'RSA'."
+                        'n':
+                          type: string
+                          description: 'RSA modulus in base64url format.'
+                        use:
+                          type: string
+                          description: "Public key usage. Always 'sig'."
+                      required:
+                        - alg
+                        - e
+                        - kid
+                        - kty
+                        - 'n'
+                        - use
                   s_public_key:
                     type: string
                     description: 'Public key in PEM format.'
@@ -95484,7 +95511,8 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Returns public key material for OTP registration JWT verification.'
+      summary: 'Gets the public key material for OTP registration JWT verification.'
+      description: 'The public key is used to verify a JWT token.'
       tags:
         - Authentication
       parameters:
