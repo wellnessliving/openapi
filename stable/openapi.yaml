@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260821060412
+  version: 1.1.20260821074100
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -80752,8 +80752,8 @@ paths:
                           format: int32
                           description: |-
                             How many clients can still be booked with the staff member at the requested time.
-                            If `dt_date` is not passed, this value is `null`.
-                            If `dt_date` is passed, this is calculated for the specific staff member at that time.
+                            <p>If [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is not passed, this value is `null`.</p>
+                            <p>If [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed, this is calculated for the specific staff member at that time.</p>
                         is_available:
                           type: boolean
                           description: |-
@@ -80950,8 +80950,8 @@ paths:
                           format: int32
                           description: |-
                             How many clients can still be booked with the staff member at the requested time.
-                            If `dt_date` is not passed, this value is `null`.
-                            If `dt_date` is passed, this is calculated for the specific staff member at that time.
+                            <p>If [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is not passed, this value is `null`.</p>
+                            <p>If [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed, this is calculated for the specific staff member at that time.</p>
                         is_available:
                           type: boolean
                           description: |-
