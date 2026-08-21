@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260821075156
+  version: 1.1.20260821093002
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -73229,15 +73229,6 @@ paths:
                     description: |-
                       Number of seconds left until the dynamic ID expires.
                       Zero means that business uses static barcode.
-                  i_qr_issued:
-                    type: integer
-                    format: int32
-                    description: |-
-                      Unix time in seconds at which [DynamicIdApi::$text_barcode](/Wl/Login/Member/DynamicId/DynamicId.json) was issued.
-
-                      Only meaningful when [DynamicIdApi::$is_qr](/Wl/Login/Member/DynamicId/DynamicId.json) is `true`. The Achieve app combines this value with
-                      [DynamicIdApi::$text_barcode](/Wl/Login/Member/DynamicId/DynamicId.json) and a hardcoded 30-second validity window to build the QR code payload,
-                      and increments it locally every 30 seconds to refresh the QR code without an additional request to the server.
                   is_qr:
                     type: boolean
                     description: '`true` if the business uses QR code as the client check-in scan format, `false` if it uses the classic barcode.'
@@ -73248,14 +73239,23 @@ paths:
 
                       Dynamic, if business uses barcode as dynamic ID.
                       Or static, if business uses static ID. In this case [DynamicIdApi::$i_expire](/Wl/Login/Member/DynamicId/DynamicId.json) will be zero.
+                  tu_qr_issued:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Unix time in seconds at which [DynamicIdApi::$text_barcode](/Wl/Login/Member/DynamicId/DynamicId.json) was issued.
+
+                      Only meaningful when [DynamicIdApi::$is_qr](/Wl/Login/Member/DynamicId/DynamicId.json) is `true`. The Achieve app combines this value with
+                      [DynamicIdApi::$text_barcode](/Wl/Login/Member/DynamicId/DynamicId.json) and a hardcoded 30-second validity window to build the QR code payload,
+                      and increments it locally every 30 seconds to refresh the QR code without an additional request to the server.
                   url_barcode:
                     type: string
                     description: 'URL of the barcode image.'
                 required:
                   - i_expire
-                  - i_qr_issued
                   - is_qr
                   - text_barcode
+                  - tu_qr_issued
                   - url_barcode
         '400':
           $ref: '#/components/responses/400'
@@ -73276,7 +73276,7 @@ paths:
         with a zero expiry.
 
         If the business uses QR code as the scan format ([DynamicIdApi::$is_qr](/Wl/Login/Member/DynamicId/DynamicId.json)), also returns the issue
-        timestamp ([DynamicIdApi::$i_qr_issued](/Wl/Login/Member/DynamicId/DynamicId.json)) that the Achieve app uses to build and locally refresh the QR
+        timestamp ([DynamicIdApi::$tu_qr_issued](/Wl/Login/Member/DynamicId/DynamicId.json)) that the Achieve app uses to build and locally refresh the QR
         code payload, and does not generate a barcode image URL.
       tags:
         - Login
@@ -105745,11 +105745,14 @@ components:
           [BulkChargesReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)'s `Batch ID`/`Total Clients` columns.
 
           `Subtotal`/`Discount Amount`/`Total Taxes`/`Purchase Total` are read off `\Wl\Purchase\Info\PurchaseInfo` once a
-          client has been billed (`\Wl\Billing\Bulk\PurchaseBatchUserStatusSid::CHARGED`). The per-tax-name `Custom tax`
-          columns (e.g. `HST Tax`/`GST Tax`) are dynamic - one per business-configured `\RsTax::get()` entry - added in
-          [BulkChargesDetailReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) and populated in [BulkChargesDetailReport::generatorRun()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)
-          from `\Wl\Purchase\PurchaseItemInfo::$a_tax`, same mechanism as
-          [TransactionAllItemReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)'s own per-tax columns.
+          client has been billed (`\Wl\Billing\Bulk\PurchaseBatchUserStatusSid::CHARGED`), or re-priced via
+          [BulkChargesDetailReport::_clientExpectedGet()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) for a `PENDING`/`FAIL` client not billed yet - see
+          SAL-1180. The per-tax-name `Custom tax` columns (e.g. `HST Tax`/`GST Tax`) are dynamic - one per
+          business-configured `\RsTax::get()` entry - added in [BulkChargesDetailReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) and
+          populated in [BulkChargesDetailReport::generatorRun()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) from `\Wl\Purchase\PurchaseItemInfo::$a_tax`, same
+          mechanism as [TransactionAllItemReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)'s own
+          per-tax columns - unlike the aggregate `Total Taxes` column, this per-name breakdown is only available once
+          billed, so it stays blank for a `PENDING`/`FAIL` client.
         - 1448 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReport`): "Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.
         - 1498 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReport`): Franchise "Memberships Summary by Location" report.
         - 1295 (`Thoth\Report\SalesReport\Client\SummaryReport\SummaryReport`): "Sales Summary by Client" report.
@@ -106057,11 +106060,14 @@ components:
           {@link \Thoth\Report\SalesReport\Transaction\BulkCharges\BulkChargesReport}'s `Batch ID`/`Total Clients` columns.
 
           `Subtotal`/`Discount Amount`/`Total Taxes`/`Purchase Total` are read off `\Wl\Purchase\Info\PurchaseInfo` once a
-          client has been billed (`\Wl\Billing\Bulk\PurchaseBatchUserStatusSid::CHARGED`). The per-tax-name `Custom tax`
-          columns (e.g. `HST Tax`/`GST Tax`) are dynamic - one per business-configured `\RsTax::get()` entry - added in
-          {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorDynamic()} and populated in {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorRun()}
-          from `\Wl\Purchase\PurchaseItemInfo::$a_tax`, same mechanism as
-          {@link \Thoth\Report\SalesReport\Transaction\TransactionAllItemReport::generatorDynamic()}'s own per-tax columns.
+          client has been billed (`\Wl\Billing\Bulk\PurchaseBatchUserStatusSid::CHARGED`), or re-priced via
+          {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::_clientExpectedGet()} for a `PENDING`/`FAIL` client not billed yet - see
+          SAL-1180. The per-tax-name `Custom tax` columns (e.g. `HST Tax`/`GST Tax`) are dynamic - one per
+          business-configured `\RsTax::get()` entry - added in {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorDynamic()} and
+          populated in {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorRun()} from `\Wl\Purchase\PurchaseItemInfo::$a_tax`, same
+          mechanism as {@link \Thoth\Report\SalesReport\Transaction\TransactionAllItemReport::generatorDynamic()}'s own
+          per-tax columns - unlike the aggregate `Total Taxes` column, this per-name breakdown is only available once
+          billed, so it stays blank for a `PENDING`/`FAIL` client.
         - '"Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.'
         - 'Franchise "Memberships Summary by Location" report.'
         - '"Sales Summary by Client" report.'
