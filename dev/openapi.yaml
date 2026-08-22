@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260822082917
+  version: 1.1.20260822112421
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -105749,10 +105749,11 @@ components:
           [BulkChargesDetailReport::_clientExpectedGet()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) for a `PENDING`/`FAIL` client not billed yet - see
           SAL-1180. The per-tax-name `Custom tax` columns (e.g. `HST Tax`/`GST Tax`) are dynamic - one per
           business-configured `\RsTax::get()` entry - added in [BulkChargesDetailReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) and
-          populated in [BulkChargesDetailReport::generatorRun()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) from `\Wl\Purchase\PurchaseItemInfo::$a_tax`, same
-          mechanism as [TransactionAllItemReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)'s own
-          per-tax columns - unlike the aggregate `Total Taxes` column, this per-name breakdown is only available once
-          billed, so it stays blank for a `PENDING`/`FAIL` client.
+          populated in [BulkChargesDetailReport::generatorRun()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) from `\Wl\Purchase\PurchaseItemInfo::$a_tax` for a
+          billed client (same mechanism as
+          [TransactionAllItemReport::generatorDynamic()](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract)'s own per-tax
+          columns), or from `_clientExpectedGet()`'s own re-priced `a_tax_by_name` for a `PENDING`/`FAIL` client - see
+          SAL-1195.
         - 1448 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipDetailReport`): "Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.
         - 1498 (`Thoth\Report\SalesReport\Franchise\Membership\MembershipSummaryReport`): Franchise "Memberships Summary by Location" report.
         - 1295 (`Thoth\Report\SalesReport\Client\SummaryReport\SummaryReport`): "Sales Summary by Client" report.
@@ -106064,10 +106065,11 @@ components:
           {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::_clientExpectedGet()} for a `PENDING`/`FAIL` client not billed yet - see
           SAL-1180. The per-tax-name `Custom tax` columns (e.g. `HST Tax`/`GST Tax`) are dynamic - one per
           business-configured `\RsTax::get()` entry - added in {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorDynamic()} and
-          populated in {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorRun()} from `\Wl\Purchase\PurchaseItemInfo::$a_tax`, same
-          mechanism as {@link \Thoth\Report\SalesReport\Transaction\TransactionAllItemReport::generatorDynamic()}'s own
-          per-tax columns - unlike the aggregate `Total Taxes` column, this per-name breakdown is only available once
-          billed, so it stays blank for a `PENDING`/`FAIL` client.
+          populated in {@link \Thoth\Report\SalesReport\Transaction\BulkChargesDetail\BulkChargesDetailReport::generatorRun()} from `\Wl\Purchase\PurchaseItemInfo::$a_tax` for a
+          billed client (same mechanism as
+          {@link \Thoth\Report\SalesReport\Transaction\TransactionAllItemReport::generatorDynamic()}'s own per-tax
+          columns), or from `_clientExpectedGet()`'s own re-priced `a_tax_by_name` for a `PENDING`/`FAIL` client - see
+          SAL-1195.
         - '"Enterprise Reports -> Memberships Details by Location" report. Detailed list of all memberships in the franchise.'
         - 'Franchise "Memberships Summary by Location" report.'
         - '"Sales Summary by Client" report.'
