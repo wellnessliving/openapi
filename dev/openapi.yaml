@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260822112421
+  version: 1.1.20260823152728
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -9410,6 +9410,13 @@ paths:
                             - id_class_access
                             - is_class_all
                             - is_event_all
+                        a_franchise_region:
+                          type: array
+                          description: |-
+                            A list of franchise regions where a guest may redeem this Guest Pass, in addition to the location that
+                            sold it. Only meaningful when `is_regional_access` is `true` and `is_regional` is `true`.
+                          items:
+                            type: string
                         a_image:
                           type: object
                           description: |-
@@ -9487,9 +9494,7 @@ paths:
                             For more information, see [RsDurationTypeSid](#/components/schemas/RsDurationTypeSid).
                         id_program:
                           $ref: '#/components/schemas/RsProgramSid'
-                          description: |-
-                            The Purchase Option type.
-                            For more information, see [RsProgramSid](#/components/schemas/RsProgramSid).
+                          description: 'The Purchase Option type. For more information, see [RsProgramSid](#/components/schemas/RsProgramSid).'
                         id_restriction:
                           $ref: '#/components/schemas/Wl.Promotion.PurchaseRestrictionSid'
                           description: 'Purchase restriction for this product, one of [PurchaseRestrictionSid](#/components/schemas/Wl.Promotion.PurchaseRestrictionSid) constants.'
@@ -9508,6 +9513,23 @@ paths:
                         is_payroll:
                           type: boolean
                           description: 'Whether clients who purchase this item excluded from payroll calculations.'
+                        is_regional:
+                          type: boolean
+                          description: |-
+                            Whether a guest may redeem this Guest Pass at other locations within the regions listed in
+                            `a_franchise_region`, in addition to the location that sold it. `false` means the pass can only be
+                            redeemed at the location that sold it. Only meaningful when `is_regional_access` is `true`.
+                        is_regional_access:
+                          type: boolean
+                          description: |-
+                            Whether the regional access setting can be configured for this promotion and business at all.
+                            `false` if the business does not take part in a franchise region, in which case `is_regional`
+                            and `a_franchise_region` should be ignored.
+                        is_regional_access_readonly:
+                          type: boolean
+                          description: |-
+                            Whether the regional access setting is read-only for this business. `true` for a franchisee location,
+                            which can only view the regions selected by the franchisor.
                         is_revenue_single:
                           type: boolean
                           description: 'If `true` need to add approximate revenue per session value.'
@@ -9537,6 +9559,7 @@ paths:
                           description: 'The direct URL to the promotion details page in the online store.'
                       required:
                         - a_access
+                        - a_franchise_region
                         - a_image
                         - a_location
                         - a_login_type
@@ -9556,6 +9579,9 @@ paths:
                         - is_introductory
                         - is_online
                         - is_payroll
+                        - is_regional
+                        - is_regional_access
+                        - is_regional_access_readonly
                         - is_revenue_single
                         - is_use
                         - k_promotion
@@ -9771,6 +9797,13 @@ paths:
                           - id_class_access
                           - is_class_all
                           - is_event_all
+                      a_franchise_region:
+                        type: array
+                        description: |-
+                          A list of franchise regions where a guest may redeem this Guest Pass, in addition to the location that
+                          sold it. Only meaningful when `is_regional_access` is `true` and `is_regional` is `true`.
+                        items:
+                          type: string
                       a_image:
                         type: object
                         description: |-
@@ -9848,9 +9881,7 @@ paths:
                           For more information, see [RsDurationTypeSid](#/components/schemas/RsDurationTypeSid).
                       id_program:
                         $ref: '#/components/schemas/RsProgramSid'
-                        description: |-
-                          The Purchase Option type.
-                          For more information, see [RsProgramSid](#/components/schemas/RsProgramSid).
+                        description: 'The Purchase Option type. For more information, see [RsProgramSid](#/components/schemas/RsProgramSid).'
                       id_restriction:
                         $ref: '#/components/schemas/Wl.Promotion.PurchaseRestrictionSid'
                         description: 'Purchase restriction for this product, one of [PurchaseRestrictionSid](#/components/schemas/Wl.Promotion.PurchaseRestrictionSid) constants.'
@@ -9869,6 +9900,23 @@ paths:
                       is_payroll:
                         type: boolean
                         description: 'Whether clients who purchase this item excluded from payroll calculations.'
+                      is_regional:
+                        type: boolean
+                        description: |-
+                          Whether a guest may redeem this Guest Pass at other locations within the regions listed in
+                          `a_franchise_region`, in addition to the location that sold it. `false` means the pass can only be
+                          redeemed at the location that sold it. Only meaningful when `is_regional_access` is `true`.
+                      is_regional_access:
+                        type: boolean
+                        description: |-
+                          Whether the regional access setting can be configured for this promotion and business at all.
+                          `false` if the business does not take part in a franchise region, in which case `is_regional`
+                          and `a_franchise_region` should be ignored.
+                      is_regional_access_readonly:
+                        type: boolean
+                        description: |-
+                          Whether the regional access setting is read-only for this business. `true` for a franchisee location,
+                          which can only view the regions selected by the franchisor.
                       is_revenue_single:
                         type: boolean
                         description: 'If `true` need to add approximate revenue per session value.'
@@ -9898,6 +9946,7 @@ paths:
                         description: 'The direct URL to the promotion details page in the online store.'
                     required:
                       - a_access
+                      - a_franchise_region
                       - a_image
                       - a_location
                       - a_login_type
@@ -9917,6 +9966,9 @@ paths:
                       - is_introductory
                       - is_online
                       - is_payroll
+                      - is_regional
+                      - is_regional_access
+                      - is_regional_access_readonly
                       - is_revenue_single
                       - is_use
                       - k_promotion
