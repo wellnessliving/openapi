@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260824195631
+  version: 1.1.20260825084131
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -9481,6 +9481,10 @@ paths:
                           description: |-
                             The number of visits that the owner can use for the Purchase Option.
                             This will be `0` if the Purchase Option allows for unlimited visits.
+                        i_payment_period:
+                          type: integer
+                          format: int32
+                          description: 'The number of `id_duration` periods between payments for memberships.'
                         id_duration:
                           $ref: '#/components/schemas/ADurationSid'
                           description: |-
@@ -9570,6 +9574,7 @@ paths:
                         - f_revenue_single
                         - i_duration
                         - i_limit
+                        - i_payment_period
                         - id_duration
                         - id_duration_type
                         - id_program
@@ -9868,6 +9873,10 @@ paths:
                         description: |-
                           The number of visits that the owner can use for the Purchase Option.
                           This will be `0` if the Purchase Option allows for unlimited visits.
+                      i_payment_period:
+                        type: integer
+                        format: int32
+                        description: 'The number of `id_duration` periods between payments for memberships.'
                       id_duration:
                         $ref: '#/components/schemas/ADurationSid'
                         description: |-
@@ -9957,6 +9966,7 @@ paths:
                       - f_revenue_single
                       - i_duration
                       - i_limit
+                      - i_payment_period
                       - id_duration
                       - id_duration_type
                       - id_program
@@ -56874,6 +56884,10 @@ paths:
                           type: integer
                           format: int32
                           description: 'The maximum number of minutes or hours depending on `id_limit_duration` that the current promotion can be used in.'
+                        i_payment_period:
+                          type: integer
+                          format: int32
+                          description: 'The number of `id_duration` periods between payments for memberships.'
                         id_limit_duration:
                           $ref: '#/components/schemas/ADurationSid'
                           description: |-
@@ -56951,6 +56965,7 @@ paths:
                         - i_duration
                         - i_limit
                         - i_limit_duration
+                        - i_payment_period
                         - id_limit_duration
                         - id_duration
                         - id_duration_type
