@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260825121307
+  version: 1.1.20260825140011
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -128,6 +128,9 @@ tags:
   -
     name: Integrations
     description: 'Third-party integration endpoints.'
+  -
+    name: Language
+    description: 'Language selection endpoints.'
   -
     name: Leads
     description: 'Lead management and source endpoints.'
@@ -25650,6 +25653,12 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Switches the language.'
+      description: |-
+        Remembers the requested language for the user who makes this request, within the context this user is currently
+        in, and stores it in the session and in the cookie so that the very next request is served in this language too.
+        The language must be active in this installation, otherwise the request is rejected and nothing is stored.
+      tags:
+        - Language
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -105786,6 +105795,7 @@ components:
         - 1791 (`Wl\Lead\Report\LeadManagementReport`): "Lead Management Report".
         - 1287 (`Wl\Member\Report\MemberReport`): "All clients" report generator (this report used for the "Clients" link accessed from the top nav or WL menu).
         - 689 (`Wl\Member\Report\MemberAllReport`): "All clients" report generator.
+        - 2329 (`Wl\Member\Report\MemberProfileReport`): "Client Data" report generator.
         - 1358 (`Wl\Login\Account\LoginAccountReport`): "Balance Due Report".
           List of clients with their accounts state.
         - 1740 (`Wl\Visit\Report\VisitLifetimeReport`): Controls list for "Lifetime Value & Visit Milestones" report.
@@ -105920,6 +105930,7 @@ components:
         - 1791
         - 1287
         - 689
+        - 2329
         - 1358
         - 1740
         - 1556
@@ -106006,6 +106017,7 @@ components:
         - Wl\Lead\Report\LeadManagementReport
         - Wl\Member\Report\MemberReport
         - Wl\Member\Report\MemberAllReport
+        - Wl\Member\Report\MemberProfileReport
         - Wl\Login\Account\LoginAccountReport
         - Wl\Visit\Report\VisitLifetimeReport
         - Wl\Visit\Report\VisitBuySummaryReport
@@ -106094,6 +106106,7 @@ components:
         - '"Lead Management Report".'
         - '"All clients" report generator (this report used for the "Clients" link accessed from the top nav or WL menu).'
         - '"All clients" report generator.'
+        - '"Client Data" report generator.'
         - |-
           "Balance Due Report".
           List of clients with their accounts state.
@@ -109101,6 +109114,7 @@ components:
         - 754 (`Wl\Member\Report\MemberAllReportController`): "All clients" report controller. Table representation.
         - 1288 (`Wl\Member\Report\MemberReportController`): "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
           Table representation.
+        - 2330 (`Wl\Member\Report\MemberProfileReportController`): "Client Data" report controller. Table representation.
         - 1359 (`Wl\Login\Account\LoginAccountReportController`): Controller for "Balance Due Report".
         - 1741 (`Wl\Visit\Report\VisitLifetimeReportController`): Controls list for "Lifetime Value & Visit Milestones" report.
         - 1555 (`Wl\Visit\Report\VisitBuySummaryReportController`): Controls list report for attendance.
@@ -109214,6 +109228,7 @@ components:
         - 1792
         - 754
         - 1288
+        - 2330
         - 1359
         - 1741
         - 1555
@@ -109322,6 +109337,7 @@ components:
         - Wl\Lead\Report\LeadManagementReportController
         - Wl\Member\Report\MemberAllReportController
         - Wl\Member\Report\MemberReportController
+        - Wl\Member\Report\MemberProfileReportController
         - Wl\Login\Account\LoginAccountReportController
         - Wl\Visit\Report\VisitLifetimeReportController
         - Wl\Visit\Report\VisitBuySummaryReportController
@@ -109436,6 +109452,7 @@ components:
         - |-
           "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
           Table representation.
+        - '"Client Data" report controller. Table representation.'
         - 'Controller for "Balance Due Report".'
         - 'Controls list for "Lifetime Value & Visit Milestones" report.'
         - 'Controls list report for attendance.'
