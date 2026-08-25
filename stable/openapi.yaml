@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260825104101
+  version: 1.1.20260825124243
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -92665,6 +92665,14 @@ paths:
                           Values:
                           - 2 (`BUSINESS_SUCCESS_COACHING`): Business Success Coaching.
                           - 1 (`FREE`): No subscription.
+                      -
+                        $ref: '#/components/schemas/Wl.Business.Account.Subscription.QuickBooks.QuickBooksSubscriptionSid'
+                        description: |-
+                          List of possible plans for [QuickBooksSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
+
+                          Values:
+                          - 2 (`BASIC`): Standard
+                          - 1 (`FREE`): Free
                     description: |-
                       Currently active plan ID for requested subscription.
 
@@ -111545,7 +111553,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 247.
+        Last Used ID: 248.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -111711,6 +111719,7 @@ components:
         - 127 (`PROMOTION_MANAGE_BASE`): Allows to edit only base information about purchase option.
         - 93 (`PURCHASE_EDIT`): Access to edit client purchases (passes and memberships).
         - 92 (`PURCHASE_VIEW`): Access to view client purchases (passes and memberships).
+        - 248 (`QUICKBOOKS`): Access to set up and change quickbooks integration.
         - 193 (`RECEIVE_ALERT`): Allow to see alerts.
         - 71 (`REPORT_ALL`): Access to view reports for all staff.
 
@@ -111945,6 +111954,7 @@ components:
         - 127
         - 93
         - 92
+        - 248
         - 193
         - 71
         - 27
@@ -112176,6 +112186,7 @@ components:
         - PROMOTION_MANAGE_BASE
         - PURCHASE_EDIT
         - PURCHASE_VIEW
+        - QUICKBOOKS
         - RECEIVE_ALERT
         - REPORT_ALL
         - REPORT_ATTENDANCE
@@ -112411,6 +112422,7 @@ components:
         - 'Allows to edit only base information about purchase option.'
         - 'Access to edit client purchases (passes and memberships).'
         - 'Access to view client purchases (passes and memberships).'
+        - 'Access to set up and change quickbooks integration.'
         - 'Allow to see alerts.'
         - |-
           Access to view reports for all staff.
@@ -115334,6 +115346,24 @@ components:
       x-enum-descriptions:
         - 'Business Success Coaching.'
         - 'No subscription.'
+    Wl.Business.Account.Subscription.QuickBooks.QuickBooksSubscriptionSid:
+      type: integer
+      format: int32
+      description: |-
+        List of possible plans for [QuickBooksSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
+
+        Values:
+        - 2 (`BASIC`): Standard
+        - 1 (`FREE`): Free
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - BASIC
+        - FREE
+      x-enum-descriptions:
+        - Standard
+        - Free
     Wl.Business.Account.Subscription.SubscriptionAbstract:
       type: integer
       format: int32
@@ -115370,6 +115400,7 @@ components:
         - 2225 (`Wl\Business\Account\Subscription\BusinessCoach\BusinessCoachSubscription`): Business Success Coaching.
 
           Does not change or open any functional. Just financial subscription.
+        - 2331 (`Wl\Business\Account\Subscription\QuickBooks\QuickBooksSubscription`): Quickbooks Suite subscription.
       enum:
         - 1868
         - 858
@@ -115397,6 +115428,7 @@ components:
         - 2166
         - 2165
         - 2225
+        - 2331
       x-enum-varnames:
         - Wl\Business\Account\Subscription\AiAgent\AiAgentSubscription
         - Wl\Business\Account\Subscription\Achieve\AchieveSubscription
@@ -115424,6 +115456,7 @@ components:
         - Wl\Business\Account\Subscription\Eml\ConstantContactSubscription
         - Wl\Business\Account\Subscription\Eml\MailchimpSubscription
         - Wl\Business\Account\Subscription\BusinessCoach\BusinessCoachSubscription
+        - Wl\Business\Account\Subscription\QuickBooks\QuickBooksSubscription
       x-enum-descriptions:
         - Wl\Business\Account\Subscription\AiAgent\AiAgentSubscription
         - Wl\Business\Account\Subscription\Achieve\AchieveSubscription
@@ -115456,6 +115489,7 @@ components:
           Business Success Coaching.
 
           Does not change or open any functional. Just financial subscription.
+        - 'Quickbooks Suite subscription.'
     Wl.Promotion.Convert.PromotionConvertSid:
       type: integer
       format: int32
