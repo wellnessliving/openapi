@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260825140011
+  version: 1.1.20260825164019
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -116117,6 +116117,7 @@ components:
         - 2225 (`Wl\Business\Account\Subscription\BusinessCoach\BusinessCoachSubscription`): Business Success Coaching.
 
           Does not change or open any functional. Just financial subscription.
+        - 2331 (`Wl\Business\Account\Subscription\QuickBooks\QuickBooksSubscription`): Quickbooks Suite subscription.
       enum:
         - 861
         - 857
@@ -116144,6 +116145,7 @@ components:
         - 2166
         - 2165
         - 2225
+        - 2331
       x-enum-varnames:
         - Wl\Business\Account\Subscription\Base\BaseSubscription
         - Wl\Business\Account\Subscription\Sms\SmsSubscription
@@ -116171,6 +116173,7 @@ components:
         - Wl\Business\Account\Subscription\Eml\ConstantContactSubscription
         - Wl\Business\Account\Subscription\Eml\MailchimpSubscription
         - Wl\Business\Account\Subscription\BusinessCoach\BusinessCoachSubscription
+        - Wl\Business\Account\Subscription\QuickBooks\QuickBooksSubscription
       x-enum-descriptions:
         - 'Base subscription settings reader.'
         - Wl\Business\Account\Subscription\Sms\SmsSubscription
@@ -116203,6 +116206,7 @@ components:
           Business Success Coaching.
 
           Does not change or open any functional. Just financial subscription.
+        - 'Quickbooks Suite subscription.'
     Wl.Login.Attendance.AddOptionSid:
       type: integer
       format: int32
