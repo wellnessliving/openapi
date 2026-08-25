@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260825084131
+  version: 1.1.20260825121307
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25627,6 +25627,44 @@ paths:
 
             If `true`, this will get regions for all locales. Otherwise, this will be `false`.
       x-instance-get-key: id_locale
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Core/Locale/Language/LanguageSwitch.json:
+    post:
+      operationId: Core.Locale.Language.LanguageSwitch.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Switches the language.'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_language:
+                  $ref: '#/components/schemas/Core.Locale.Language.LocaleLanguageSid'
+                  description: 'Language to switch to.'
+              required:
+                - id_language
       x-rate-limit:
         -
           limit: 200000
@@ -108795,6 +108833,52 @@ components:
         - 'Anonymous user (Walk-In).'
         - Business.
         - 'System user.'
+    Core.Locale.Language.LocaleLanguageSid:
+      type: integer
+      format: int32
+      description: |-
+        A list of all languages.
+
+        5,7 are not used, may be used for other languages.
+
+        Last used id: 9.
+
+        Values:
+        - 6 (`DE`): German.
+        - 2 (`EN`): English.
+        - 9 (`ES`): Spanish.
+        - 4 (`FR`): French.
+        - 5 (`PT`): Portuguese.
+        - 1 (`RU`): Russian.
+        - 8 (`TR`): Turkish.
+        - 3 (`UK`): Ukrainian.
+      enum:
+        - 6
+        - 2
+        - 9
+        - 4
+        - 5
+        - 1
+        - 8
+        - 3
+      x-enum-varnames:
+        - DE
+        - EN
+        - ES
+        - FR
+        - PT
+        - RU
+        - TR
+        - UK
+      x-enum-descriptions:
+        - German.
+        - English.
+        - Spanish.
+        - French.
+        - Portuguese.
+        - Russian.
+        - Turkish.
+        - Ukrainian.
     Core.Google.Captcha.CaptchaResponseSid:
       type: integer
       format: int32
