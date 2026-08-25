@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260825164019
+  version: 1.1.20260825175527
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26021,6 +26021,18 @@ paths:
                         dl_last_seen:
                           type: string
                           description: 'Local date of the last usage-statistics record.'
+                        i_variant_count:
+                          type: integer
+                          format: int32
+                          description: 'Number of original usage-statistics objects merged into a normalized finding.'
+                        a_object_example:
+                          type: array
+                          description: 'Bounded original usage-statistics object examples.'
+                          items:
+                            type: string
+                        is_identity_incomplete:
+                          type: boolean
+                          description: 'Whether the object reached the WatchUsageStat storage limit and was therefore kept exact.'
                       required:
                         - i_occurrence_count
                         - id_source
@@ -26030,6 +26042,9 @@ paths:
                         - s_object
                         - dl_first_seen
                         - dl_last_seen
+                        - i_variant_count
+                        - a_object_example
+                        - is_identity_incomplete
                   i_result:
                     type: integer
                     format: int32
@@ -72448,6 +72463,14 @@ paths:
                           Values:
                           - 2 (`BUSINESS_SUCCESS_COACHING`): Business Success Coaching.
                           - 1 (`FREE`): No subscription.
+                      -
+                        $ref: '#/components/schemas/Wl.Business.Account.Subscription.QuickBooks.QuickBooksSubscriptionSid'
+                        description: |-
+                          List of possible plans for [QuickBooksSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
+
+                          Values:
+                          - 2 (`BASIC`): Standard
+                          - 1 (`FREE`): Free
                     description: |-
                       Currently active plan ID for requested subscription.
 
@@ -112639,7 +112662,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 248.
+        Last Used ID: 249.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -112806,6 +112829,7 @@ components:
         - 127 (`PROMOTION_MANAGE_BASE`): Allows to edit only base information about purchase option.
         - 93 (`PURCHASE_EDIT`): Access to edit client purchases (passes and memberships).
         - 92 (`PURCHASE_VIEW`): Access to view client purchases (passes and memberships).
+        - 249 (`QUICKBOOKS`): Access to set up and change quickbooks integration.
         - 193 (`RECEIVE_ALERT`): Allow to see alerts.
         - 71 (`REPORT_ALL`): Access to view reports for all staff.
 
@@ -113041,6 +113065,7 @@ components:
         - 127
         - 93
         - 92
+        - 249
         - 193
         - 71
         - 27
@@ -113273,6 +113298,7 @@ components:
         - PROMOTION_MANAGE_BASE
         - PURCHASE_EDIT
         - PURCHASE_VIEW
+        - QUICKBOOKS
         - RECEIVE_ALERT
         - REPORT_ALL
         - REPORT_ATTENDANCE
@@ -113509,6 +113535,7 @@ components:
         - 'Allows to edit only base information about purchase option.'
         - 'Access to edit client purchases (passes and memberships).'
         - 'Access to view client purchases (passes and memberships).'
+        - 'Access to set up and change quickbooks integration.'
         - 'Allow to see alerts.'
         - |-
           Access to view reports for all staff.
@@ -116081,6 +116108,24 @@ components:
       x-enum-descriptions:
         - 'Business Success Coaching.'
         - 'No subscription.'
+    Wl.Business.Account.Subscription.QuickBooks.QuickBooksSubscriptionSid:
+      type: integer
+      format: int32
+      description: |-
+        List of possible plans for [QuickBooksSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
+
+        Values:
+        - 2 (`BASIC`): Standard
+        - 1 (`FREE`): Free
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - BASIC
+        - FREE
+      x-enum-descriptions:
+        - Standard
+        - Free
     Wl.Business.Account.Subscription.SubscriptionAbstract:
       type: integer
       format: int32
