@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260825131104
+  version: 1.1.20260825171342
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -111553,7 +111553,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 248.
+        Last Used ID: 249.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -111719,7 +111719,7 @@ components:
         - 127 (`PROMOTION_MANAGE_BASE`): Allows to edit only base information about purchase option.
         - 93 (`PURCHASE_EDIT`): Access to edit client purchases (passes and memberships).
         - 92 (`PURCHASE_VIEW`): Access to view client purchases (passes and memberships).
-        - 248 (`QUICKBOOKS`): Access to set up and change quickbooks integration.
+        - 249 (`QUICKBOOKS`): Access to set up and change quickbooks integration.
         - 193 (`RECEIVE_ALERT`): Allow to see alerts.
         - 71 (`REPORT_ALL`): Access to view reports for all staff.
 
@@ -111954,7 +111954,7 @@ components:
         - 127
         - 93
         - 92
-        - 248
+        - 249
         - 193
         - 71
         - 27
