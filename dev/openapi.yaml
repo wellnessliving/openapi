@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260825175527
+  version: 1.1.20260826123342
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26032,7 +26032,7 @@ paths:
                             type: string
                         is_identity_incomplete:
                           type: boolean
-                          description: 'Whether the object reached the WatchUsageStat storage limit and was therefore kept exact.'
+                          description: 'Whether the stored object reached its length limit and was therefore kept exact.'
                       required:
                         - i_occurrence_count
                         - id_source
