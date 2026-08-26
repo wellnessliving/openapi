@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260826151413
+  version: 1.1.20260826165425
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26639,6 +26639,11 @@ paths:
                           description: |-
                             System-defined lead stage. One of [LeadStageSystemSid](#/components/schemas/Wl.Lead.Stage.LeadStageSystemSid) constants.
                             `null` for a custom stage created by the business.
+                        id_lead_stage_type:
+                          $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid'
+                          description: |-
+                            Type of the stage. One of [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid) constants.
+                            The type is set when the stage is created and can not be changed afterwards.
                         k_lead_stage:
                           type: string
                           description: 'Key of the stage.'
@@ -26658,6 +26663,7 @@ paths:
                         - i_order
                         - id_lead_stage_shape
                         - id_lead_stage_system
+                        - id_lead_stage_type
                         - k_lead_stage
                         - s_color_background
                         - s_color_foreground
@@ -26706,6 +26712,218 @@ paths:
             type: string
           description: 'Business key.'
       x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Lead/Stage/LeadStageElement.json:
+    delete:
+      operationId: Wl.Lead.Stage.LeadStageElement.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Deletes a lead stage.'
+      description: |-
+        The last remaining stage of a type ([LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid)) can not be deleted - a business must always have
+        at least one stage of every type. If the stage has leads or clients assigned,
+        [LeadStageElementApi::$k_lead_stage_replace](/Wl/Lead/Stage/LeadStageElement.json) must be given - they are moved to the replacement stage,
+        which must be of the same type.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_lead_stage_replace
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the lead stage to move leads and clients of the deleted stage to.
+
+            Required if the stage being deleted has leads or clients assigned to it. Ignored otherwise.
+            The replacement stage must be of the same [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid) as the deleted one.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_lead_stage:
+                  type: string
+                  description: 'Key of the lead stage.'
+              required:
+                - k_business
+                - k_lead_stage
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Lead.Stage.LeadStageElement.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Edits name and icon of a lead stage.'
+      description: 'Type of the stage ([LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid)) is read-only and can not be changed.'
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_lead_stage_shape:
+                  $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid'
+                  description: 'Shape of the stage icon. One of [LeadStageShapeSid](#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid) constants.'
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_lead_stage:
+                  type: string
+                  description: 'Key of the lead stage.'
+                s_color_background:
+                  type: string
+                  description: 'Background color of the icon. Hexadecimal color.'
+                s_color_foreground:
+                  type: string
+                  description: 'Color of characters on the icon. Hexadecimal color.'
+                s_icon:
+                  type: string
+                  description: |-
+                    Characters on the icon.
+
+                    Allowed length depends on [LeadStageElementApi::$id_lead_stage_shape](/Wl/Lead/Stage/LeadStageElement.json),
+                    see [LeadStageShapeSid::character()](#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid).
+                text_title:
+                  type: string
+                  description: 'Name of the stage.'
+              required:
+                - id_lead_stage_shape
+                - k_business
+                - k_lead_stage
+                - s_color_background
+                - s_color_foreground
+                - s_icon
+                - text_title
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    put:
+      operationId: Wl.Lead.Stage.LeadStageElement.put
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  k_lead_stage:
+                    type: string
+                    description: 'Key of the lead stage.'
+                required:
+                  - k_lead_stage
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Creates a new custom lead stage.'
+      description: |-
+        The name must be unique within the business and no longer than `TITLE_LENGTH_MAX`
+        characters. [LeadStageElementApi::$id_lead_stage_type](/Wl/Lead/Stage/LeadStageElement.json) is required and can not be changed afterwards.
+        A business may have no more than `STAGE_LIMIT` stages.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_lead_stage_shape:
+                  $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid'
+                  description: 'Shape of the stage icon. One of [LeadStageShapeSid](#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid) constants.'
+                id_lead_stage_type:
+                  $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid'
+                  description: |-
+                    Type of the stage. One of [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid) constants.
+
+                    Only used to create a stage. Type of an existing stage can not be changed.
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                s_color_background:
+                  type: string
+                  description: 'Background color of the icon. Hexadecimal color.'
+                s_color_foreground:
+                  type: string
+                  description: 'Color of characters on the icon. Hexadecimal color.'
+                s_icon:
+                  type: string
+                  description: |-
+                    Characters on the icon.
+
+                    Allowed length depends on [LeadStageElementApi::$id_lead_stage_shape](/Wl/Lead/Stage/LeadStageElement.json),
+                    see [LeadStageShapeSid::character()](#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid).
+                text_title:
+                  type: string
+                  description: 'Name of the stage.'
+              required:
+                - id_lead_stage_shape
+                - id_lead_stage_type
+                - k_business
+                - s_color_background
+                - s_color_foreground
+                - s_icon
+                - text_title
       x-rate-limit:
         -
           limit: 200000
@@ -109190,7 +109408,10 @@ components:
       description: |-
         System-defined lead stages.
 
-        Every business has one stage of each type by default. 
+        Every business has one stage of each of them by default. 
+
+        Type of every system stage is defined by the system and can not be changed,
+        see [LeadStageSystemSid::typeAll()](#/components/schemas/Wl.Lead.Stage.LeadStageSystemSid) and [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid).
 
         Custom stages created by a business have no system ID.
 
@@ -109198,21 +109419,28 @@ components:
 
         Values:
         - 6 (`CONTACTED`): A lead which was contacted by a staff member.
+
+          Type of the stage is [LeadStageTypeSid::OPEN](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid).
         - 2 (`HOT`): A lead which is being actively worked with and is close to a purchase.
 
           Replaces [RsLeadStatusSid::ACTIVE](#/components/schemas/RsLeadStatusSid).
+          Type of the stage is [LeadStageTypeSid::OPEN](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid).
         - 5 (`LOST`): A lead which was lost.
 
           Replaces [LeadConversionTypeSid::LOST](#/components/schemas/Wl.Lead.Conversion.LeadConversionTypeSid).
+          Type of the stage is [LeadStageTypeSid::LOST](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid).
         - 1 (`NEW`): A newly captured lead. This stage is set to a client when they are added as a lead.
 
           Replaces [RsLeadStatusSid::NEWCOMER](#/components/schemas/RsLeadStatusSid).
+          Type of the stage is [LeadStageTypeSid::OPEN](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid).
         - 3 (`WARM`): A lead which has shown some interest, but is not ready to purchase yet.
 
           Replaces [RsLeadStatusSid::LEAVE](#/components/schemas/RsLeadStatusSid).
+          Type of the stage is [LeadStageTypeSid::OPEN](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid).
         - 4 (`WON`): A lead which was successfully converted into a client.
 
           Replaces [LeadConversionTypeSid::WON](#/components/schemas/Wl.Lead.Conversion.LeadConversionTypeSid).
+          Type of the stage is [LeadStageTypeSid::WON](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid).
       enum:
         - 6
         - 2
@@ -109228,25 +109456,72 @@ components:
         - WARM
         - WON
       x-enum-descriptions:
-        - 'A lead which was contacted by a staff member.'
+        - |-
+          A lead which was contacted by a staff member.
+
+          Type of the stage is {@link \Wl\Lead\Stage\LeadStageTypeSid::OPEN}.
         - |-
           A lead which is being actively worked with and is close to a purchase.
 
           Replaces {@link \RsLeadStatusSid::ACTIVE}.
+          Type of the stage is {@link \Wl\Lead\Stage\LeadStageTypeSid::OPEN}.
         - |-
           A lead which was lost.
 
           Replaces {@link \Wl\Lead\Conversion\LeadConversionTypeSid::LOST}.
+          Type of the stage is {@link \Wl\Lead\Stage\LeadStageTypeSid::LOST}.
         - |-
           A newly captured lead. This stage is set to a client when they are added as a lead.
 
           Replaces {@link \RsLeadStatusSid::NEWCOMER}.
+          Type of the stage is {@link \Wl\Lead\Stage\LeadStageTypeSid::OPEN}.
         - |-
           A lead which has shown some interest, but is not ready to purchase yet.
 
           Replaces {@link \RsLeadStatusSid::LEAVE}.
+          Type of the stage is {@link \Wl\Lead\Stage\LeadStageTypeSid::OPEN}.
         - |-
           A lead which was successfully converted into a client.
+
+          Replaces {@link \Wl\Lead\Conversion\LeadConversionTypeSid::WON}.
+          Type of the stage is {@link \Wl\Lead\Stage\LeadStageTypeSid::WON}.
+    Wl.Lead.Stage.LeadStageTypeSid:
+      type: integer
+      format: int32
+      description: |-
+        Types of lead stages.
+
+        Every stage has a type. The type is selected when the stage is created and can not be changed afterwards,
+        neither for system stages ([LeadStageSystemSid](#/components/schemas/Wl.Lead.Stage.LeadStageSystemSid)) nor for stages created by a business.
+
+        A business must always have at least one stage of every type, so the last stage of a type can not be deleted.
+
+        Last used ID: 3.
+
+        Values:
+        - 3 (`LOST`): A lead is lost - the client will not make a purchase.
+
+          Replaces [LeadConversionTypeSid::LOST](#/components/schemas/Wl.Lead.Conversion.LeadConversionTypeSid).
+        - 1 (`OPEN`): A lead is still in the funnel - the business is working with the client.
+        - 2 (`WON`): A lead is won - the client is converted into a member.
+
+          Replaces [LeadConversionTypeSid::WON](#/components/schemas/Wl.Lead.Conversion.LeadConversionTypeSid).
+      enum:
+        - 3
+        - 1
+        - 2
+      x-enum-varnames:
+        - LOST
+        - OPEN
+        - WON
+      x-enum-descriptions:
+        - |-
+          A lead is lost - the client will not make a purchase.
+
+          Replaces {@link \Wl\Lead\Conversion\LeadConversionTypeSid::LOST}.
+        - 'A lead is still in the funnel - the business is working with the client.'
+        - |-
+          A lead is won - the client is converted into a member.
 
           Replaces {@link \Wl\Lead\Conversion\LeadConversionTypeSid::WON}.
     Wl.Report.View.ReportViewControllerAbstract:
