@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260826103512
+  version: 1.1.20260827080215
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -69598,12 +69598,6 @@ paths:
         -
           limit: 200000
           period: 3600
-        -
-          limit: 10
-          period: 60
-        -
-          limit: 100
-          period: 3600
   /Wl/Tuition/Enrollment/TuitionEnrollmentList.json:
     get:
       operationId: Wl.Tuition.Enrollment.TuitionEnrollmentList.get
@@ -82087,9 +82081,9 @@ paths:
                                   Only `a_event_list` is
                                  expected in the request, and only `k_class` and `uid` are accepted in every its entry.
                                  Prices, discounts, and taxes can not be overridden here: this booking flow is never
-                                 authenticated as a staff member, so Tuition::verifyObjectFromSource() strips
-                                 such fields. In the response `a_event_list` comes back recomputed, and
-                                 `a_registration_fee_list`, `m_checkout`, and `m_deferred` are added.
+                                 authenticated as a staff member, so such fields are stripped from the input. In the
+                                 response `a_event_list` comes back recomputed, and `a_registration_fee_list`,
+                                 `m_checkout`, and `m_deferred` are added.
                           properties:
                             a_event_list:
                               type: object
@@ -82170,13 +82164,24 @@ paths:
                               properties:
                                 a_discount:
                                   type:
-                                    - array
+                                    - object
                                     - 'null'
                                   description: |-
-                                    Discounts applied to the fee, `null` if there are none. Rows have the same
-                                         keys as in `a_event_list`.
-                                  items:
-                                    type: array
+                                    Discounts applied to the fee, `null` if there are none. Every row has the
+                                         next keys:
+                                  properties:
+                                    id_discount_rule:
+                                      $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                                      description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                                    m_discount:
+                                      type: string
+                                      description: 'Discount amount of this rule.'
+                                    text_discount:
+                                      type: string
+                                      description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                                  required:
+                                    - id_discount_rule
+                                    - m_discount
                                 a_tax:
                                   type: array
                                   description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
@@ -82362,9 +82367,9 @@ paths:
                           Only `a_event_list` is
                          expected in the request, and only `k_class` and `uid` are accepted in every its entry.
                          Prices, discounts, and taxes can not be overridden here: this booking flow is never
-                         authenticated as a staff member, so Tuition::verifyObjectFromSource() strips
-                         such fields. In the response `a_event_list` comes back recomputed, and
-                         `a_registration_fee_list`, `m_checkout`, and `m_deferred` are added.
+                         authenticated as a staff member, so such fields are stripped from the input. In the
+                         response `a_event_list` comes back recomputed, and `a_registration_fee_list`,
+                         `m_checkout`, and `m_deferred` are added.
                   properties:
                     a_event_list:
                       type: object
@@ -82445,13 +82450,24 @@ paths:
                       properties:
                         a_discount:
                           type:
-                            - array
+                            - object
                             - 'null'
                           description: |-
-                            Discounts applied to the fee, `null` if there are none. Rows have the same
-                                 keys as in `a_event_list`.
-                          items:
-                            type: array
+                            Discounts applied to the fee, `null` if there are none. Every row has the
+                                 next keys:
+                          properties:
+                            id_discount_rule:
+                              $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                              description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                            m_discount:
+                              type: string
+                              description: 'Discount amount of this rule.'
+                            text_discount:
+                              type: string
+                              description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                          required:
+                            - id_discount_rule
+                            - m_discount
                         a_tax:
                           type: array
                           description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
@@ -83269,7 +83285,7 @@ paths:
                       For purchase items with [RsPurchaseItemSid::TUITION](#/components/schemas/RsPurchaseItemSid) type only `a_event_list` is
                       expected in the request, and only `k_class` and `uid` are accepted in every its entry. Prices,
                       discounts, and taxes can not be overridden here: this booking flow is never authenticated as a
-                      staff member, so Tuition::verifyObjectFromSource() strips such fields.
+                      staff member, so such fields are stripped from the input.
 
                       In the response this is not an echo: `a_event_list` comes back recomputed, and
                       `a_registration_fee_list`, `m_checkout`, and `m_deferred` are added.
@@ -83350,13 +83366,22 @@ paths:
                         properties:
                           a_discount:
                             type:
-                              - array
+                              - object
                               - 'null'
-                            description: |-
-                              Discounts applied to the fee, `null` if there are none. Rows have the same keys as in
-                              `a_event_list`.
-                            items:
-                              type: array
+                            description: 'Discounts applied to the fee, `null` if there are none. Every row has the next keys:'
+                            properties:
+                              id_discount_rule:
+                                $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                                description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                              m_discount:
+                                type: string
+                                description: 'Discount amount of this rule.'
+                              text_discount:
+                                type: string
+                                description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                            required:
+                              - id_discount_rule
+                              - m_discount
                           a_tax:
                             type: array
                             description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
@@ -83562,13 +83587,22 @@ paths:
                 properties:
                   a_discount:
                     type:
-                      - array
+                      - object
                       - 'null'
-                    description: |-
-                      Discounts applied to the fee, `null` if there are none. Rows have the same keys as in
-                      `a_event_list`.
-                    items:
-                      type: array
+                    description: 'Discounts applied to the fee, `null` if there are none. Every row has the next keys:'
+                    properties:
+                      id_discount_rule:
+                        $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                        description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                      m_discount:
+                        type: string
+                        description: 'Discount amount of this rule.'
+                      text_discount:
+                        type: string
+                        description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                    required:
+                      - id_discount_rule
+                      - m_discount
                   a_tax:
                     type: array
                     description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
@@ -83614,7 +83648,7 @@ paths:
             For purchase items with [RsPurchaseItemSid::TUITION](#/components/schemas/RsPurchaseItemSid) type only `a_event_list` is
             expected in the request, and only `k_class` and `uid` are accepted in every its entry. Prices,
             discounts, and taxes can not be overridden here: this booking flow is never authenticated as a
-            staff member, so Tuition::verifyObjectFromSource() strips such fields.
+            staff member, so such fields are stripped from the input.
 
             In the response this is not an echo: `a_event_list` comes back recomputed, and
             `a_registration_fee_list`, `m_checkout`, and `m_deferred` are added.
@@ -83750,15 +83784,122 @@ paths:
                       type: object
                       properties:
                         a_event_list:
-                          type: array
-                          description: 'Tuition events with calculated amounts.'
-                          items:
-                            type: array
+                          type: object
+                          description: |-
+                            Tuition events with calculated amounts.
+
+                            Each entry has the next structure:
+                          properties:
+                            a_discount:
+                              type:
+                                - object
+                                - 'null'
+                              description: 'Discounts applied to the event, `null` if there are none. Every row has the next keys:'
+                              properties:
+                                id_discount_rule:
+                                  $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                                  description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                                m_discount:
+                                  type: string
+                                  description: 'Discount amount of this rule.'
+                                text_discount:
+                                  type: string
+                                  description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                              required:
+                                - id_discount_rule
+                                - m_discount
+                            a_tax:
+                              type:
+                                - array
+                                - 'null'
+                              description: 'Taxes of the event. Keys are tax keys, values are tax amounts.'
+                              items:
+                                type: string
+                            k_class:
+                              type: string
+                              description: 'Key of the event class.'
+                            m_checkout:
+                              type:
+                                - string
+                                - 'null'
+                              description: |-
+                                The amount charged for this event right now, including tax. `0.00` when every
+                                installment payment is still ahead. `null` when the amount is not calculated yet.
+                            m_deferred:
+                              type: string
+                              description: |-
+                                The part of the event cost that is not charged right now, including tax. Goes to the
+                                installment plan or to the membership schedule, depending on the tuition billing mode.
+                            m_discount:
+                              type: string
+                              description: 'Total discount amount applied to the event, `0.00` if there is none.'
+                            m_price:
+                              type:
+                                - string
+                                - 'null'
+                              description: 'Price of the event within the tuition, before discount and tax.'
+                            uid:
+                              type: string
+                              description: 'Key of the tuition participant.'
+                          required:
+                            - a_discount
+                            - a_tax
+                            - k_class
+                            - m_checkout
+                            - m_deferred
+                            - m_discount
+                            - m_price
+                            - uid
                         a_registration_fee_list:
-                          type: array
-                          description: 'Registration fees with calculated amounts, keyed by participant key.'
-                          items:
-                            type: array
+                          type: object
+                          description: |-
+                            Registration fees with calculated amounts, keyed by participant key.
+
+
+                            Each value has the next structure:
+                          properties:
+                            a_discount:
+                              type:
+                                - object
+                                - 'null'
+                              description: 'Discounts applied to the fee, `null` if there are none. Every row has the next keys:'
+                              properties:
+                                id_discount_rule:
+                                  $ref: '#/components/schemas/Wl.Discount.DiscountRuleSid'
+                                  description: 'Discount rule type. One of [DiscountRuleSid](#/components/schemas/Wl.Discount.DiscountRuleSid) constants.'
+                                m_discount:
+                                  type: string
+                                  description: 'Discount amount of this rule.'
+                                text_discount:
+                                  type: string
+                                  description: 'Discount title. Only for [DiscountRuleSid::MANUAL](#/components/schemas/Wl.Discount.DiscountRuleSid).'
+                              required:
+                                - id_discount_rule
+                                - m_discount
+                            a_tax:
+                              type: array
+                              description: 'Taxes of the fee. Keys are tax keys, values are tax amounts.'
+                              items:
+                                type: string
+                            m_amount:
+                              type: string
+                              description: 'Registration fee amount for the participant, before discount and tax.'
+                            m_checkout:
+                              type:
+                                - string
+                                - 'null'
+                              description: |-
+                                The amount charged for this fee right now, including tax. A fee is either charged in
+                                full or deferred entirely, so `null` means the whole fee is deferred.
+                            m_deferred:
+                              type: string
+                              description: 'The whole fee amount if the fee is deferred, `0.00` if it is charged right now.'
+                          required:
+                            - a_discount
+                            - a_tax
+                            - m_amount
+                            - m_checkout
+                            - m_deferred
                         a_tax:
                           type: array
                           description: 'Information about taxes. The key refers to the tax key, and the value refers to the tax amount.'
