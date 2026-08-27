@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260826165425
+  version: 1.1.20260827095533
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -3857,11 +3857,6 @@ paths:
                 s_subject:
                   type: string
                   description: "The message's subject line."
-                z_html:
-                  type: string
-                  deprecated: true
-                  x-deprecated: 'Planned to delete.'
-                  description: 'The message content.'
               required:
                 - s_business_mail
                 - s_business_name
@@ -3870,7 +3865,6 @@ paths:
                 - s_html
                 - s_mail
                 - s_subject
-                - z_html
       x-rate-limit:
         -
           limit: 200000
@@ -26746,6 +26740,20 @@ paths:
         -
           $ref: '#/components/parameters/X-Error-Rules'
         -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_lead_stage
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the lead stage.'
+        -
           name: k_lead_stage_replace
           in: query
           required: true
@@ -26756,22 +26764,85 @@ paths:
 
             Required if the stage being deleted has leads or clients assigned to it. Ignored otherwise.
             The replacement stage must be of the same [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid) as the deleted one.
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                k_business:
-                  type: string
-                  description: 'Business key.'
-                k_lead_stage:
-                  type: string
-                  description: 'Key of the lead stage.'
-              required:
-                - k_business
-                - k_lead_stage
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    get:
+      operationId: Wl.Lead.Stage.LeadStageElement.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_lead_stage_shape:
+                    $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid'
+                    description: 'Shape of the stage icon. One of [LeadStageShapeSid](#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid) constants.'
+                  id_lead_stage_type:
+                    $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid'
+                    description: |-
+                      Type of the stage. One of [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid) constants.
+
+                      Only used to create a stage. Type of an existing stage can not be changed.
+                  s_color_background:
+                    type: string
+                    description: 'Background color of the icon. Hexadecimal color.'
+                  s_color_foreground:
+                    type: string
+                    description: 'Color of characters on the icon. Hexadecimal color.'
+                  s_icon:
+                    type: string
+                    description: |-
+                      Characters on the icon.
+
+                      Allowed length depends on [LeadStageElementApi::$id_lead_stage_shape](/Wl/Lead/Stage/LeadStageElement.json),
+                      see [LeadStageShapeSid::character()](#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid).
+                  text_title:
+                    type: string
+                    description: 'Name of the stage.'
+                required:
+                  - id_lead_stage_shape
+                  - id_lead_stage_type
+                  - s_color_background
+                  - s_color_foreground
+                  - s_icon
+                  - text_title
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns information about a lead stage.'
+      description: 'The information includes the name, icon and type of the lead stage.'
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_lead_stage
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the lead stage.'
       x-rate-limit:
         -
           limit: 200000
@@ -26800,6 +26871,20 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_lead_stage
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the lead stage.'
       requestBody:
         required: true
         content:
@@ -26810,12 +26895,6 @@ paths:
                 id_lead_stage_shape:
                   $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid'
                   description: 'Shape of the stage icon. One of [LeadStageShapeSid](#/components/schemas/Wl.Lead.Stage.LeadStageShapeSid) constants.'
-                k_business:
-                  type: string
-                  description: 'Business key.'
-                k_lead_stage:
-                  type: string
-                  description: 'Key of the lead stage.'
                 s_color_background:
                   type: string
                   description: 'Background color of the icon. Hexadecimal color.'
@@ -26834,8 +26913,6 @@ paths:
                   description: 'Name of the stage.'
               required:
                 - id_lead_stage_shape
-                - k_business
-                - k_lead_stage
                 - s_color_background
                 - s_color_foreground
                 - s_icon
@@ -26881,6 +26958,13 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
       requestBody:
         required: true
         content:
@@ -26897,9 +26981,6 @@ paths:
                     Type of the stage. One of [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid) constants.
 
                     Only used to create a stage. Type of an existing stage can not be changed.
-                k_business:
-                  type: string
-                  description: 'Business key.'
                 s_color_background:
                   type: string
                   description: 'Background color of the icon. Hexadecimal color.'
@@ -26919,7 +27000,6 @@ paths:
               required:
                 - id_lead_stage_shape
                 - id_lead_stage_type
-                - k_business
                 - s_color_background
                 - s_color_foreground
                 - s_icon
@@ -69408,12 +69488,6 @@ paths:
       x-rate-limit:
         -
           limit: 200000
-          period: 3600
-        -
-          limit: 10
-          period: 60
-        -
-          limit: 100
           period: 3600
   /Wl/Tuition/Enrollment/TuitionEnrollmentList.json:
     get:
