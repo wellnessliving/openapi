@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260827120216
+  version: 1.1.20260827122603
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26619,6 +26619,12 @@ paths:
                           type: integer
                           format: int32
                           description: 'Sequence number of the stage in the list.'
+                        i_automation:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of automations used this stage.
+                            Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
                         i_user:
                           type: integer
                           format: int32
