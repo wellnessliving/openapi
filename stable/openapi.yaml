@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260828124300
+  version: 1.1.20260830062927
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -23849,6 +23849,216 @@ paths:
               required:
                 - s_command
       x-instance-get-key: 's_class,k_id,a_config'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Tag/Tag.json:
+    delete:
+      operationId: Wl.Tag.Tag.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Removes the tag.'
+      description: |-
+        Deletes the revenue category from the business. The deletion fails if the tag is currently
+        set as the primary revenue category for any linked asset, class, coupon, promotion, service,
+        or product (promotions that have already been removed are ignored). On success, notifies
+        listeners about the affected linked objects and invalidates the cached tag list of the
+        business.
+      tags:
+        - Tags
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key of the tags.'
+        -
+          name: k_tag
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The tag key.
+
+            Required for `delete()`. Optional for `get()`: if specified,
+            only this tag is returned; if not specified, all tags of the business are returned.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    get:
+      operationId: Wl.Tag.Tag.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_tag:
+                    type: array
+                    description: |-
+                      The revenue categories (tags) of the business.
+
+                      Keys refer to tag keys . Values have the next structure:
+                    items:
+                      type: object
+                      properties:
+                        a_asset:
+                          type: object
+                          description: 'Bookable assets assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The resource key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the resource.'
+                          required:
+                            - k_id
+                            - is_primary
+                        a_class:
+                          type: object
+                          description: 'Classes and events assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The class key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the class.'
+                          required:
+                            - k_id
+                            - is_primary
+                        a_coupon:
+                          type: object
+                          description: 'Gift cards assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The coupon key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the coupon.'
+                          required:
+                            - k_id
+                            - is_primary
+                        a_promotion:
+                          type: object
+                          description: 'Purchase options (passes and memberships) assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The promotion key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the promotion.'
+                          required:
+                            - k_id
+                            - is_primary
+                        a_service:
+                          type: object
+                          description: 'Appointment types assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The service key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the service.'
+                          required:
+                            - k_id
+                            - is_primary
+                        a_product:
+                          type: object
+                          description: 'Store products assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The product key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the product.'
+                          required:
+                            - k_id
+                            - is_primary
+                        i_sort:
+                          type: integer
+                          format: int32
+                          description: 'The sort order of the tag.'
+                        text_title:
+                          type: string
+                          description: 'The tag title.'
+                      required:
+                        - a_asset
+                        - a_class
+                        - a_coupon
+                        - a_promotion
+                        - a_service
+                        - a_product
+                        - i_sort
+                        - text_title
+                required:
+                  - a_tag
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns revenue categories (tags) of the business.'
+      description: |-
+        Returns tags along with the bookable assets, classes, coupons, promotions, services, and
+        products assigned to each one.
+      tags:
+        - Tags
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key of the tags.'
+        -
+          name: k_tag
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The tag key.
+
+            Required for `delete()`. Optional for `get()`: if specified,
+            only this tag is returned; if not specified, all tags of the business are returned.
       x-rate-limit:
         -
           limit: 200000
