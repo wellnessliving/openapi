@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260830221307
+  version: 1.1.20260831090238
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -49395,6 +49395,38 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_event_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of event keys to filter the discount codes by.
+
+            A discount code is returned if it applies to any of the given events, to any of the memberships in
+            [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json), or to all purchase items.
+
+            If both [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json) and [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json) are empty,
+            discount codes are not filtered by applicability.
+        -
+          name: a_promotion_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of membership and passes keys to filter the discount codes by.
+
+            A discount code is returned if it applies to any of the given memberships, to any of the events in
+            [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json), or to all purchase items.
+
+            If both [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json) and [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json) are empty,
+            discount codes are not filtered by applicability.
         -
           name: k_business
           in: query
@@ -114202,6 +114234,7 @@ components:
         - 215 (`IMPORT_CLIENT`): Allows to import clients from a CSV file.
         - 163 (`INTEGRATION_AUTYMATE`): Set up and modify Autymate integration.
         - 179 (`INTEGRATION_BRIVO`): Set up and modify Brivo integration.
+        - 249 (`INTEGRATION_QUICKBOOKS`): Access to set up and change quickbooks integration.
         - 87 (`INTERFACE_ACHIEVE_APP`): Enroll into and manage the WellnessLiving Achieve App. These settings are located under Setup > Achieve Client App.
         - 39 (`INTERFACE_WIDGET_EDIT`): Modify the look and functionality business’s widgets. These settings are located within Setup > Widgets.
         - 110 (`INTERFACE_WIDGET_VIEW`): View the look and functionality business’s widgets. These settings are located within Setup > Widgets.
@@ -114282,7 +114315,6 @@ components:
         - 127 (`PROMOTION_MANAGE_BASE`): Allows to edit only base information about purchase option.
         - 93 (`PURCHASE_EDIT`): Access to edit client purchases (passes and memberships).
         - 92 (`PURCHASE_VIEW`): Access to view client purchases (passes and memberships).
-        - 249 (`QUICKBOOKS`): Access to set up and change quickbooks integration.
         - 193 (`RECEIVE_ALERT`): Allow to see alerts.
         - 71 (`REPORT_ALL`): Access to view reports for all staff.
 
@@ -114438,6 +114470,7 @@ components:
         - 215
         - 163
         - 179
+        - 249
         - 87
         - 39
         - 110
@@ -114518,7 +114551,6 @@ components:
         - 127
         - 93
         - 92
-        - 249
         - 193
         - 71
         - 27
@@ -114671,6 +114703,7 @@ components:
         - IMPORT_CLIENT
         - INTEGRATION_AUTYMATE
         - INTEGRATION_BRIVO
+        - INTEGRATION_QUICKBOOKS
         - INTERFACE_ACHIEVE_APP
         - INTERFACE_WIDGET_EDIT
         - INTERFACE_WIDGET_VIEW
@@ -114751,7 +114784,6 @@ components:
         - PROMOTION_MANAGE_BASE
         - PURCHASE_EDIT
         - PURCHASE_VIEW
-        - QUICKBOOKS
         - RECEIVE_ALERT
         - REPORT_ALL
         - REPORT_ATTENDANCE
@@ -114908,6 +114940,7 @@ components:
         - 'Allows to import clients from a CSV file.'
         - 'Set up and modify Autymate integration.'
         - 'Set up and modify Brivo integration.'
+        - 'Access to set up and change quickbooks integration.'
         - 'Enroll into and manage the WellnessLiving Achieve App. These settings are located under Setup > Achieve Client App.'
         - 'Modify the look and functionality business’s widgets. These settings are located within Setup > Widgets.'
         - 'View the look and functionality business’s widgets. These settings are located within Setup > Widgets.'
@@ -114988,7 +115021,6 @@ components:
         - 'Allows to edit only base information about purchase option.'
         - 'Access to edit client purchases (passes and memberships).'
         - 'Access to view client purchases (passes and memberships).'
-        - 'Access to set up and change quickbooks integration.'
         - 'Allow to see alerts.'
         - |-
           Access to view reports for all staff.
