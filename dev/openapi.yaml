@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260831094850
+  version: 1.1.20260831141652
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -82529,6 +82529,11 @@ paths:
                         has_service:
                           type: boolean
                           description: '`true` if the guest pass is service-type (not invite-type). Inverse of `can_invite`.'
+                        is_regional:
+                          type: boolean
+                          description: |-
+                            `true` if regional access is enabled for the guest pass, i.e. it may be redeemed at other
+                            businesses within the franchise region, not only the business that granted it.
                         i_cap_day:
                           type:
                             - integer
@@ -82636,6 +82641,7 @@ paths:
                         - can_send
                         - dl_reset
                         - has_service
+                        - is_regional
                         - i_cap_day
                         - i_limit
                         - i_period
@@ -82837,6 +82843,11 @@ paths:
                       has_service:
                         type: boolean
                         description: '`true` if the guest pass is service-type (not invite-type). Inverse of `can_invite`.'
+                      is_regional:
+                        type: boolean
+                        description: |-
+                          `true` if regional access is enabled for the guest pass, i.e. it may be redeemed at other
+                          businesses within the franchise region, not only the business that granted it.
                       i_cap_day:
                         type:
                           - integer
@@ -82944,6 +82955,7 @@ paths:
                       - can_send
                       - dl_reset
                       - has_service
+                      - is_regional
                       - i_cap_day
                       - i_limit
                       - i_period
@@ -100195,6 +100207,12 @@ paths:
                           description: |-
                             `true` if the guest may only enter when the inviting member is checked in.
                             `null` if no guest pass settings are configured for the promotion.
+                        is_visit_business_other:
+                          type: boolean
+                          description: |-
+                            `true` if the visit was redeemed at a sibling franchisee business rather than the business that
+                            issued the guest pass (regional redemption). `false` if no visit is associated or it was
+                            redeemed at the issuing business.
                         is_visit_future:
                           type: boolean
                           description: '`true` if associated visit in future, `false` otherwise.'
@@ -100236,6 +100254,13 @@ paths:
                         text_promotion_host:
                           type: string
                           description: 'Title of the host promotion.'
+                        text_location:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Title of the location the visit was redeemed at - may be a sibling franchisee's location when the
+                            guest pass has regional access. `null` if no visit is associated.
                         text_service_title:
                           type:
                             - string
@@ -100274,6 +100299,7 @@ paths:
                         - dtu_reject
                         - id_status
                         - is_checkin
+                        - is_visit_business_other
                         - is_visit_future
                         - k_login_promotion_guest
                         - k_login_promotion_host
@@ -100283,6 +100309,7 @@ paths:
                         - text_host_name
                         - text_promotion_guest
                         - text_promotion_host
+                        - text_location
                         - text_service_title
                         - text_timezone
                         - uid_host
