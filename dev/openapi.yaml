@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260831154011
+  version: 1.1.20260831160634
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -12860,7 +12860,7 @@ paths:
                         is_regional_access:
                           type: boolean
                           description: |-
-                            Whether the regional access setting can be configured for this promotion and business at all.
+                            Whether the regional access setting can be configured for this Guest Pass promotion and business at all.
                             `false` if the business does not take part in a franchise region, in which case `is_regional`
                             and `a_franchise_region` should be ignored.
                         is_regional_access_readonly:
@@ -13252,7 +13252,7 @@ paths:
                       is_regional_access:
                         type: boolean
                         description: |-
-                          Whether the regional access setting can be configured for this promotion and business at all.
+                          Whether the regional access setting can be configured for this Guest Pass promotion and business at all.
                           `false` if the business does not take part in a franchise region, in which case `is_regional`
                           and `a_franchise_region` should be ignored.
                       is_regional_access_readonly:
