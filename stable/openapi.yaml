@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260831041339
+  version: 1.1.20260831054847
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -48051,6 +48051,38 @@ paths:
         -
           $ref: '#/components/parameters/X-Error-Rules'
         -
+          name: a_event_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of event keys to filter the discount codes by.
+
+            A discount code is returned if it applies to any of the given events, to any of the memberships in
+            [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json), or to all purchase items.
+
+            If both [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json) and [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json) are empty,
+            discount codes are not filtered by applicability.
+        -
+          name: a_promotion_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of membership and passes keys to filter the discount codes by.
+
+            A discount code is returned if it applies to any of the given memberships, to any of the events in
+            [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json), or to all purchase items.
+
+            If both [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json) and [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json) are empty,
+            discount codes are not filtered by applicability.
+        -
           name: k_business
           in: query
           required: true
@@ -55123,6 +55155,14 @@ paths:
                           type: integer
                           format: int32
                           description: 'Number of unique clients having at least one not cancelled enrolled event.'
+                        i_enrollments_active:
+                          type: integer
+                          format: int32
+                          description: 'Total number of group enrollments with at least one not cancelled enrolled client in the group.'
+                        i_enrollments_total:
+                          type: integer
+                          format: int32
+                          description: 'Total number of group enrollments.'
                         i_enrolled_total:
                           type: integer
                           format: int32
@@ -55133,6 +55173,8 @@ paths:
                           description: 'Number of unique events having at least one not cancelled enrollment.'
                       required:
                         - i_clients_enrolled
+                        - i_enrollments_active
+                        - i_enrollments_total
                         - i_enrolled_total
                         - i_events_unique
                 required:
