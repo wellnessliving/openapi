@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260831090238
+  version: 1.1.20260831094850
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -62376,6 +62376,14 @@ paths:
                           type: integer
                           format: int32
                           description: 'Number of unique clients having at least one not cancelled enrolled event.'
+                        i_enrollments_active:
+                          type: integer
+                          format: int32
+                          description: 'Total number of group enrollments with at least one not cancelled enrolled client in the group.'
+                        i_enrollments_total:
+                          type: integer
+                          format: int32
+                          description: 'Total number of group enrollments.'
                         i_enrolled_total:
                           type: integer
                           format: int32
@@ -62386,6 +62394,8 @@ paths:
                           description: 'Number of unique events having at least one not cancelled enrollment.'
                       required:
                         - i_clients_enrolled
+                        - i_enrollments_active
+                        - i_enrollments_total
                         - i_enrolled_total
                         - i_events_unique
                 required:
