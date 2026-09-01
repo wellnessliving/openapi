@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260831223100
+  version: 1.1.20260901003147
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -27676,8 +27676,12 @@ paths:
                         - k_enrollment_book
                         - k_location
                         - text_title
+                  is_overlap:
+                    type: boolean
+                    description: 'Whether at least one overlap exists.'
                 required:
                   - a_visit_list
+                  - is_overlap
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -27781,6 +27785,117 @@ paths:
             type: string
           description: 'UID of a user.'
       x-instance-get-key: 'dtu_date,i_duration,is_appointment,k_business,k_class_period,k_location,k_resource,k_service,k_timezone,uid'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Profile/Attendance/AttendanceOverlapList.json:
+    post:
+      operationId: Wl.Profile.Attendance.AttendanceOverlapList.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_date_overlap:
+                    type: array
+                    description: |-
+                      Overlap result for every checked session. Key is `i` from [AttendanceOverlapListApi::$a_session_list](/Wl/Profile/Attendance/AttendanceOverlapList.json).
+                        Value has the following keys:
+                    items:
+                      type: object
+                      properties:
+                        a_visit_list:
+                          type: array
+                          description: |-
+                            List of visits that overlap with the checked session. Same structure as
+                            [AttendanceOverlapApi::$a_visit_list](/Wl/Profile/Attendance/AttendanceOverlap.json). Present only if the current user has full access to the
+                            target user's visits (the target user itself or a family relative).
+                            Empty for guest-level access, to avoid exposing another member's visit details.
+                          items:
+                            type: array
+                        is_overlap:
+                          type: boolean
+                          description: '`true` if the checked session overlaps with an already booked visit, `false` otherwise.'
+                      required:
+                        - a_visit_list
+                        - is_overlap
+                required:
+                  - a_date_overlap
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Checks a batch of candidate visits for booking overlaps.'
+      tags:
+        - Profile
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_session_list:
+                  type: array
+                  description: 'List of sessions to check for overlaps. Every element has the following structure:'
+                  items:
+                    type: object
+                    properties:
+                      dtu_date:
+                        type: string
+                        description: 'Date and time of the service.'
+                      i_duration:
+                        type: integer
+                        format: int32
+                        description: 'Duration of the service in minutes. Required if `k_resource` is not empty.'
+                      is_appointment:
+                        type: boolean
+                        description: |-
+                          Whether an appointment (asset) is booking. Needed in case when a client is allowed to select a date and
+                           time, then the available asset.
+                      k_location:
+                        type: string
+                        description: 'Location key. Primary key in RsLocationSql table.'
+                      k_class_period:
+                        type: string
+                        description: 'Class period key. Primary key in RsClassPeriodSql table.'
+                      k_resource:
+                        type: string
+                        description: 'Resource key. Primary key in RsResourceSql table.'
+                      k_service:
+                        type: string
+                        description: 'Service key. Primary key in RsServiceSql table.'
+                      k_timezone:
+                        type: string
+                        description: 'Timezone key. Primary key in AGeoTimezoneSql table.'
+                    required:
+                      - dtu_date
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                uid:
+                  type: string
+                  description: 'UID of a user to book for.'
+              required:
+                - a_session_list
+                - k_business
+                - uid
       x-rate-limit:
         -
           limit: 200000
