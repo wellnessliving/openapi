@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260901145106
+  version: 1.1.20260901153419
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25192,12 +25192,12 @@ paths:
                 type: object
                 properties:
                   a_finding:
-                    type: object
+                    type: array
                     description: |-
                       Grouped findings.
 
                       One element contains:
-                    additionalProperties:
+                    items:
                       type: object
                       properties:
                         dl_first_seen:
@@ -25219,10 +25219,10 @@ paths:
                         i_priority_multiplier:
                           type: integer
                           format: int32
-                          description: '{@link \Core\Watch\WatchUsageStat} priority multiplier. Present for the usage-statistics source.'
+                          description: 'WatchUsageStat priority multiplier. Present for the usage-statistics source.'
                         id_source:
                           $ref: '#/components/schemas/Core.AI.LogTriage.TriageSourceSid'
-                          description: 'Finding source from {@link \Core\AI\LogTriage\TriageSourceSid}.'
+                          description: 'Finding source from [TriageSourceSid](#/components/schemas/Core.AI.LogTriage.TriageSourceSid).'
                         s_object:
                           type: string
                           description: 'Usage-statistics object. Present for the usage-statistics source.'
@@ -109929,8 +109929,8 @@ components:
         Values:
         - 5 (`ASYNC_TASK`): Erroneous asynchronous tasks.
         - 4 (`BACKGROUND_TASK`): Erroneous background tasks.
-        - 1 (`ERROR_LOG`): PHP error log represented by {@link \Core\Debug\DebugPhpLog}.
-        - 2 (`SLOW_LOG`): Slow-operation log represented by {@link \Core\Debug\DebugSlowLog}.
+        - 1 (`ERROR_LOG`): PHP error log represented by [DebugPhpLog](#/components/schemas/Core.Log.CoreLog).
+        - 2 (`SLOW_LOG`): Slow-operation log represented by [DebugSlowLog](#/components/schemas/Core.Log.CoreLog).
         - 3 (`WATCH_USAGE_STAT`): Aggregated usage statistics.
       enum:
         - 5
