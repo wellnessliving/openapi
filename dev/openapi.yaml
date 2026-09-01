@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260901171529
+  version: 1.1.20260901224231
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -21159,6 +21159,9 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Returns the data required to render the site footer for the given business.'
+      description: |-
+        Loads the business's white-label status and derives whether the "Powered by WellnessLiving"
+        branding and the Terms and Conditions link should be shown in the footer.
       tags:
         - Business
       parameters:
