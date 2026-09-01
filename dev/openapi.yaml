@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260901113653
+  version: 1.1.20260901142452
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25192,12 +25192,12 @@ paths:
                 type: object
                 properties:
                   a_finding:
-                    type: array
+                    type: object
                     description: |-
                       Grouped findings.
 
                       One element contains:
-                    items:
+                    additionalProperties:
                       type: object
                       properties:
                         dl_first_seen:
@@ -25219,10 +25219,10 @@ paths:
                         i_priority_multiplier:
                           type: integer
                           format: int32
-                          description: 'WatchUsageStat priority multiplier. Present for the usage-statistics source.'
+                          description: '{@link \Core\Watch\WatchUsageStat} priority multiplier. Present for the usage-statistics source.'
                         id_source:
                           $ref: '#/components/schemas/Core.AI.LogTriage.TriageSourceSid'
-                          description: 'Finding source from [TriageSourceSid](#/components/schemas/Core.AI.LogTriage.TriageSourceSid).'
+                          description: 'Finding source from {@link \Core\AI\LogTriage\TriageSourceSid}.'
                         s_object:
                           type: string
                           description: 'Usage-statistics object. Present for the usage-statistics source.'
@@ -53571,6 +53571,60 @@ paths:
           schema:
             type: string
           description: 'User ID. Required.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/AiAgent/Alert/Alert.json:
+    post:
+      operationId: Wl.AiAgent.Alert.Alert.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Fires an in-app alert for the specified event.'
+      description: |-
+        Triggers the alert that appears in the business `Alert Center` for staff members with appropriate access.
+        Requires the business to have an active `AI Agent` subscription.
+      tags:
+        - 'AI Agent'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                cid_alert:
+                  type: string
+                  description: 'Business key.'
+                url_conversation:
+                  type: string
+                  description: 'Conversation link assigned by the `AI Agent`.'
+              required:
+                - cid_alert
+                - url_conversation
       x-rate-limit:
         -
           limit: 200000
@@ -109875,8 +109929,8 @@ components:
         Values:
         - 5 (`ASYNC_TASK`): Erroneous asynchronous tasks.
         - 4 (`BACKGROUND_TASK`): Erroneous background tasks.
-        - 1 (`ERROR_LOG`): PHP error log represented by [DebugPhpLog](#/components/schemas/Core.Log.CoreLog).
-        - 2 (`SLOW_LOG`): Slow-operation log represented by [DebugSlowLog](#/components/schemas/Core.Log.CoreLog).
+        - 1 (`ERROR_LOG`): PHP error log represented by {@link \Core\Debug\DebugPhpLog}.
+        - 2 (`SLOW_LOG`): Slow-operation log represented by {@link \Core\Debug\DebugSlowLog}.
         - 3 (`WATCH_USAGE_STAT`): Aggregated usage statistics.
       enum:
         - 5
