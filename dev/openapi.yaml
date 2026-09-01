@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260901161339
+  version: 1.1.20260901171529
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -51901,6 +51901,11 @@ paths:
                         text_title:
                           type: string
                           description: 'Name of the stage.'
+                        url_member_report:
+                          type: string
+                          description: |-
+                            URL of the report of clients who are in this stage.
+                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true` and the stage contains clients.
                       required:
                         - i_order
                         - id_lead_stage_shape
@@ -51953,7 +51958,7 @@ paths:
           schema:
             type: string
           description: 'Business key.'
-      x-instance-get-key: k_business
+      x-instance-get-key: 'k_business,is_statistic'
       x-rate-limit:
         -
           limit: 200000
