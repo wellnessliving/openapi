@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260902145202
+  version: 1.1.20260902162824
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -51987,6 +51987,11 @@ paths:
                         text_title:
                           type: string
                           description: 'Name of the stage.'
+                        url_automation_list:
+                          type: string
+                          description: |-
+                            URL of the list of automations which use this stage.
+                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true` and the stage is used in automations.
                         url_member_report:
                           type: string
                           description: |-
