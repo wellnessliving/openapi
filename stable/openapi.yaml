@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260902025809
+  version: 1.1.20260902032656
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -23934,9 +23934,13 @@ paths:
                             is_primary:
                               type: boolean
                               description: 'Whether the tag is the primary revenue category for the resource.'
+                            text_title:
+                              type: string
+                              description: 'The resource title.'
                           required:
                             - k_id
                             - is_primary
+                            - text_title
                         a_class:
                           type: object
                           description: 'Classes and events assigned to the tag. Each element has the next structure:'
@@ -23947,9 +23951,13 @@ paths:
                             is_primary:
                               type: boolean
                               description: 'Whether the tag is the primary revenue category for the class.'
+                            text_title:
+                              type: string
+                              description: 'The class title.'
                           required:
                             - k_id
                             - is_primary
+                            - text_title
                         a_coupon:
                           type: object
                           description: 'Gift cards assigned to the tag. Each element has the next structure:'
@@ -23960,9 +23968,13 @@ paths:
                             is_primary:
                               type: boolean
                               description: 'Whether the tag is the primary revenue category for the coupon.'
+                            text_title:
+                              type: string
+                              description: 'The coupon title.'
                           required:
                             - k_id
                             - is_primary
+                            - text_title
                         a_promotion:
                           type: object
                           description: 'Purchase options (passes and memberships) assigned to the tag. Each element has the next structure:'
@@ -23973,9 +23985,13 @@ paths:
                             is_primary:
                               type: boolean
                               description: 'Whether the tag is the primary revenue category for the promotion.'
+                            text_title:
+                              type: string
+                              description: 'The promotion title.'
                           required:
                             - k_id
                             - is_primary
+                            - text_title
                         a_service:
                           type: object
                           description: 'Appointment types assigned to the tag. Each element has the next structure:'
@@ -23986,9 +24002,13 @@ paths:
                             is_primary:
                               type: boolean
                               description: 'Whether the tag is the primary revenue category for the service.'
+                            text_title:
+                              type: string
+                              description: 'The service title.'
                           required:
                             - k_id
                             - is_primary
+                            - text_title
                         a_product:
                           type: object
                           description: 'Store products assigned to the tag. Each element has the next structure:'
@@ -23999,9 +24019,13 @@ paths:
                             is_primary:
                               type: boolean
                               description: 'Whether the tag is the primary revenue category for the product.'
+                            text_title:
+                              type: string
+                              description: 'The product title.'
                           required:
                             - k_id
                             - is_primary
+                            - text_title
                         i_sort:
                           type: integer
                           format: int32
