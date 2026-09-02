@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260902082731
+  version: 1.1.20260902132559
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -27836,14 +27836,72 @@ paths:
                       type: object
                       properties:
                         a_visit_list:
-                          type: array
+                          type: object
                           description: |-
                             List of visits that overlap with the checked session. Same structure as
                             [AttendanceOverlapApi::$a_visit_list](/Wl/Profile/Attendance/AttendanceOverlap.json). Present only if the current user has full access to the
-                            target user's visits (the target user itself or a family relative).
+                            target user's visits (the target user itself or a family relative). Each element has the following
+                            keys: List of overlapped booked visits. Each element has the following keys:
+
                             Empty for guest-level access, to avoid exposing another member's visit details.
-                          items:
-                            type: array
+                          properties:
+                            dtu_date:
+                              type: string
+                              description: 'Date and time of the visit.'
+                            i_duration:
+                              type: integer
+                              format: int32
+                              description: 'Duration of a service.'
+                            i_end:
+                              type: integer
+                              format: int32
+                              description: 'End datetime of the visit in unix format.'
+                            i_end_local:
+                              type: integer
+                              format: int32
+                              description: 'Local end datetime of the visit in unix format.'
+                            i_start:
+                              type: integer
+                              format: int32
+                              description: 'Start datetime of the visit in unix format.'
+                            i_start_local:
+                              type: integer
+                              format: int32
+                              description: 'Local start datetime of the visit in unix format.'
+                            k_appointment:
+                              type: string
+                              description: 'Appointment key.'
+                            k_business:
+                              type: string
+                              description: 'Business key.'
+                            k_class_period:
+                              type: string
+                              description: 'Class period key.'
+                            k_enrollment_book:
+                              type: string
+                              description: 'Enrollment book key.'
+                            k_location:
+                              type: string
+                              description: 'Location key.'
+                            text_time_end:
+                              type: string
+                              description: 'Local end time of the visit, formatted according to the business locale.'
+                            text_time_start:
+                              type: string
+                              description: 'Local start time of the visit, formatted according to the business locale.'
+                            text_title:
+                              type: string
+                              description: 'Title of a service'
+                          required:
+                            - dtu_date
+                            - i_end
+                            - i_start
+                            - k_appointment
+                            - k_business
+                            - k_class_period
+                            - k_enrollment_book
+                            - k_location
+                            - text_title
                         is_overlap:
                           type: boolean
                           description: '`true` if the checked session overlaps with an already booked visit, `false` otherwise.'
@@ -27864,7 +27922,8 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Checks a batch of candidate visits for booking overlaps.'
+      summary: 'Checks whether the specified user has any existing bookings that overlap with a given time range or service.'
+      description: 'Used before scheduling to detect conflicts and prompt staff or the client with a warning.'
       tags:
         - Profile
         - Visits
@@ -27898,19 +27957,19 @@ paths:
                            time, then the available asset.
                       k_location:
                         type: string
-                        description: 'Location key. Primary key in RsLocationSql table.'
+                        description: 'Location key.'
                       k_class_period:
                         type: string
-                        description: 'Class period key. Primary key in RsClassPeriodSql table.'
+                        description: 'Class period key.'
                       k_resource:
                         type: string
-                        description: 'Resource key. Primary key in RsResourceSql table.'
+                        description: 'Resource key.'
                       k_service:
                         type: string
-                        description: 'Service key. Primary key in RsServiceSql table.'
+                        description: 'Service key.'
                       k_timezone:
                         type: string
-                        description: 'Timezone key. Primary key in AGeoTimezoneSql table.'
+                        description: 'Timezone key.'
                     required:
                       - dtu_date
                 k_business:
