@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260903104516
+  version: 1.1.20260903122521
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -85994,7 +85994,7 @@ paths:
           description: |-
             List of services to filter a result.
 
-            Each element is a service key, a primary key in RsServiceSql.
+            Each element is a service key.
             Empty if the filtering is not necessary.
         -
           name: a_staff
@@ -86682,7 +86682,7 @@ paths:
           description: |-
             List of services to filter a result.
 
-            Each element is a service key, a primary key in RsServiceSql.
+            Each element is a service key.
             Empty if the filtering is not necessary.
         -
           name: a_staff
