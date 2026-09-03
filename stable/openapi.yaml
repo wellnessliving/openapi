@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260902152656
+  version: 1.1.20260903042739
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -91423,6 +91423,19 @@ paths:
 
             If multiple tabs are sent, appointment types, which are in at least in one of the tabs, will be in the result.
         -
+          name: a_service_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of services to filter a result.
+
+            Each element is a service key, a primary key in RsServiceSql.
+            Empty if the filtering is not necessary.
+        -
           name: a_staff
           in: query
           required: true
@@ -92097,6 +92110,19 @@ paths:
             The class tab key to use to filter services. If empty, this can be found on the standard book tab.
 
             If multiple tabs are sent, appointment types, which are in at least in one of the tabs, will be in the result.
+        -
+          name: a_service_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of services to filter a result.
+
+            Each element is a service key, a primary key in RsServiceSql.
+            Empty if the filtering is not necessary.
         -
           name: a_staff
           in: query
