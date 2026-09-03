@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260903122521
+  version: 1.1.20260903125204
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -27846,8 +27846,8 @@ paths:
                           description: |-
                             List of visits that overlap with the checked session. Same structure as
                             [AttendanceOverlapApi::$a_visit_list](/Wl/Profile/Attendance/AttendanceOverlap.json). Present only if the current user has full access to the
-                            target user's visits (the target user itself or a family relative). Each element has the following
-                            keys: List of overlapped booked visits. Each element has the following keys:
+                            target user's visits (the target user itself or a family relative).
+                            Each element has the following keys:
 
                             Empty for guest-level access, to avoid exposing another member's visit details.
                           properties:
