@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260903165302
+  version: 1.1.20260903170812
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -81801,6 +81801,14 @@ paths:
 
             Can be `null` in case when [PaymentMultipleApi::$a_appointment](/Wl/Profile/Attendance/Schedule/PaymentMultiple.json) passed.
         -
+          name: is_relationship
+          in: query
+          required: true
+          schema:
+            type: boolean
+            default: true
+          description: '`true` to all appointments are related to the same user, `false` if appointments can be related to different users.'
+        -
           name: is_simple
           in: query
           required: true
@@ -81811,6 +81819,14 @@ paths:
              * List of available/existing POs.
              * List of unpaid addons.
              When set to `false` loaded only general information about visits on passed day.
+        -
+          name: is_unpaid
+          in: query
+          required: true
+          schema:
+            type: boolean
+            default: true
+          description: '`true` to get only unpaid appointments, `false` to get all appointments.'
         -
           name: k_business
           in: query
