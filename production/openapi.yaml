@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260902091833
+  version: 1.1.20260903065703
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -19886,7 +19886,12 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/Wl.Classes.Tab.TabSid'
-          description: '"Book now" tab ID. One of [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.'
+          description: |-
+            Optional "Book now" tab ID filter. One of [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.
+
+            `0` means this filter is not set.
+            If both [ScheduleAvailableDateApi::$id_class_tab](/Wl/Schedule/ScheduleAvailableDate.json) and
+            [ScheduleAvailableDateApi::$k_class_tab](/Wl/Schedule/ScheduleAvailableDate.json) are not set, all tabs are used.
         -
           name: is_class
           in: query
@@ -19918,6 +19923,18 @@ paths:
           schema:
             type: string
           description: 'Business key.'
+        -
+          name: k_class_tab
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Optional book now tab key filter.
+
+            Empty string means this filter is not set.
+            If both [ScheduleAvailableDateApi::$k_class_tab](/Wl/Schedule/ScheduleAvailableDate.json) and
+            [ScheduleAvailableDateApi::$id_class_tab](/Wl/Schedule/ScheduleAvailableDate.json) are not set, all tabs are used.
         -
           name: k_timezone
           in: query
@@ -23832,6 +23849,240 @@ paths:
               required:
                 - s_command
       x-instance-get-key: 's_class,k_id,a_config'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Tag/Tag.json:
+    delete:
+      operationId: Wl.Tag.Tag.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Removes the tag.'
+      description: |-
+        Deletes the revenue category from the business. The deletion fails if the tag is currently
+        set as the primary revenue category for any linked asset, class, coupon, promotion, service,
+        or product (promotions that have already been removed are ignored). On success, notifies
+        listeners about the affected linked objects and invalidates the cached tag list of the
+        business.
+      tags:
+        - Tags
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key of the tags.'
+        -
+          name: k_tag
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The tag key.
+
+            Required for `delete()`. Optional for `get()`: if specified,
+            only this tag is returned; if not specified, all tags of the business are returned.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    get:
+      operationId: Wl.Tag.Tag.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_tag:
+                    type: array
+                    description: |-
+                      The revenue categories (tags) of the business.
+
+                      Keys refer to tag keys . Values have the next structure:
+                    items:
+                      type: object
+                      properties:
+                        a_asset:
+                          type: object
+                          description: 'Bookable assets assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The resource key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the resource.'
+                            text_title:
+                              type: string
+                              description: 'The resource title.'
+                          required:
+                            - k_id
+                            - is_primary
+                            - text_title
+                        a_class:
+                          type: object
+                          description: 'Classes and events assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The class key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the class.'
+                            text_title:
+                              type: string
+                              description: 'The class title.'
+                          required:
+                            - k_id
+                            - is_primary
+                            - text_title
+                        a_coupon:
+                          type: object
+                          description: 'Gift cards assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The coupon key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the coupon.'
+                            text_title:
+                              type: string
+                              description: 'The coupon title.'
+                          required:
+                            - k_id
+                            - is_primary
+                            - text_title
+                        a_promotion:
+                          type: object
+                          description: 'Purchase options (passes and memberships) assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The promotion key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the promotion.'
+                            text_title:
+                              type: string
+                              description: 'The promotion title.'
+                          required:
+                            - k_id
+                            - is_primary
+                            - text_title
+                        a_service:
+                          type: object
+                          description: 'Appointment types assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The service key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the service.'
+                            text_title:
+                              type: string
+                              description: 'The service title.'
+                          required:
+                            - k_id
+                            - is_primary
+                            - text_title
+                        a_product:
+                          type: object
+                          description: 'Store products assigned to the tag. Each element has the next structure:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'The product key.'
+                            is_primary:
+                              type: boolean
+                              description: 'Whether the tag is the primary revenue category for the product.'
+                            text_title:
+                              type: string
+                              description: 'The product title.'
+                          required:
+                            - k_id
+                            - is_primary
+                            - text_title
+                        i_sort:
+                          type: integer
+                          format: int32
+                          description: 'The sort order of the tag.'
+                        text_title:
+                          type: string
+                          description: 'The tag title.'
+                      required:
+                        - a_asset
+                        - a_class
+                        - a_coupon
+                        - a_promotion
+                        - a_service
+                        - a_product
+                        - i_sort
+                        - text_title
+                required:
+                  - a_tag
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns revenue categories (tags) of the business.'
+      description: |-
+        Returns tags along with the bookable assets, classes, coupons, promotions, services, and
+        products assigned to each one.
+      tags:
+        - Tags
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key of the tags.'
+        -
+          name: k_tag
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The tag key.
+
+            Required for `delete()`. Optional for `get()`: if specified,
+            only this tag is returned; if not specified, all tags of the business are returned.
       x-rate-limit:
         -
           limit: 200000
@@ -28943,6 +29194,38 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_event_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of event keys to filter the discount codes by.
+
+            A discount code is returned if it applies to any of the given events, to any of the memberships in
+            [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json), or to all purchase items.
+
+            If both [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json) and [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json) are empty,
+            discount codes are not filtered by applicability.
+        -
+          name: a_promotion_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of membership and passes keys to filter the discount codes by.
+
+            A discount code is returned if it applies to any of the given memberships, to any of the events in
+            [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json), or to all purchase items.
+
+            If both [DiscountCodeApi::$a_event_filter](/Wl/Discount/Code/DiscountCode.json) and [DiscountCodeApi::$a_promotion_filter](/Wl/Discount/Code/DiscountCode.json) are empty,
+            discount codes are not filtered by applicability.
         -
           name: k_business
           in: query
@@ -38223,8 +38506,12 @@ paths:
                         - k_enrollment_book
                         - k_location
                         - text_title
+                  is_overlap:
+                    type: boolean
+                    description: 'Whether at least one overlap exists.'
                 required:
                   - a_visit_list
+                  - is_overlap
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -38328,6 +38615,176 @@ paths:
             type: string
           description: 'UID of a user.'
       x-instance-get-key: 'dtu_date,i_duration,is_appointment,k_business,k_class_period,k_location,k_resource,k_service,k_timezone,uid'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Profile/Attendance/AttendanceOverlapList.json:
+    post:
+      operationId: Wl.Profile.Attendance.AttendanceOverlapList.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_date_overlap:
+                    type: array
+                    description: |-
+                      Overlap result for every checked session. Key is `i` from [AttendanceOverlapListApi::$a_session_list](/Wl/Profile/Attendance/AttendanceOverlapList.json).
+                        Value has the following keys:
+                    items:
+                      type: object
+                      properties:
+                        a_visit_list:
+                          type: object
+                          description: |-
+                            List of visits that overlap with the checked session. Same structure as
+                            [AttendanceOverlapApi::$a_visit_list](/Wl/Profile/Attendance/AttendanceOverlap.json). Present only if the current user has full access to the
+                            target user's visits (the target user itself or a family relative). Each element has the following
+                            keys: List of overlapped booked visits. Each element has the following keys:
+
+                            Empty for guest-level access, to avoid exposing another member's visit details.
+                          properties:
+                            dtu_date:
+                              type: string
+                              description: 'Date and time of the visit.'
+                            i_duration:
+                              type: integer
+                              format: int32
+                              description: 'Duration of a service.'
+                            i_end:
+                              type: integer
+                              format: int32
+                              description: 'End datetime of the visit in unix format.'
+                            i_end_local:
+                              type: integer
+                              format: int32
+                              description: 'Local end datetime of the visit in unix format.'
+                            i_start:
+                              type: integer
+                              format: int32
+                              description: 'Start datetime of the visit in unix format.'
+                            i_start_local:
+                              type: integer
+                              format: int32
+                              description: 'Local start datetime of the visit in unix format.'
+                            k_appointment:
+                              type: string
+                              description: 'Appointment key.'
+                            k_business:
+                              type: string
+                              description: 'Business key.'
+                            k_class_period:
+                              type: string
+                              description: 'Class period key.'
+                            k_enrollment_book:
+                              type: string
+                              description: 'Enrollment book key.'
+                            k_location:
+                              type: string
+                              description: 'Location key.'
+                            text_time_end:
+                              type: string
+                              description: 'Local end time of the visit, formatted according to the business locale.'
+                            text_time_start:
+                              type: string
+                              description: 'Local start time of the visit, formatted according to the business locale.'
+                            text_title:
+                              type: string
+                              description: 'Title of a service'
+                          required:
+                            - dtu_date
+                            - i_end
+                            - i_start
+                            - k_appointment
+                            - k_business
+                            - k_class_period
+                            - k_enrollment_book
+                            - k_location
+                            - text_title
+                        is_overlap:
+                          type: boolean
+                          description: '`true` if the checked session overlaps with an already booked visit, `false` otherwise.'
+                      required:
+                        - a_visit_list
+                        - is_overlap
+                required:
+                  - a_date_overlap
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Checks whether the specified user has any existing bookings that overlap with a given time range or service.'
+      description: 'Used before scheduling to detect conflicts and prompt staff or the client with a warning.'
+      tags:
+        - Profile
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_session_list:
+                  type: array
+                  description: 'List of sessions to check for overlaps. Every element has the following structure:'
+                  items:
+                    type: object
+                    properties:
+                      dtu_date:
+                        type: string
+                        description: 'Date and time of the service.'
+                      i_duration:
+                        type: integer
+                        format: int32
+                        description: 'Duration of the service in minutes. Required if `k_resource` is not empty.'
+                      is_appointment:
+                        type: boolean
+                        description: |-
+                          Whether an appointment (asset) is booking. Needed in case when a client is allowed to select a date and
+                           time, then the available asset.
+                      k_location:
+                        type: string
+                        description: 'Location key.'
+                      k_class_period:
+                        type: string
+                        description: 'Class period key.'
+                      k_resource:
+                        type: string
+                        description: 'Resource key.'
+                      k_service:
+                        type: string
+                        description: 'Service key.'
+                      k_timezone:
+                        type: string
+                        description: 'Timezone key.'
+                    required:
+                      - dtu_date
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                uid:
+                  type: string
+                  description: 'UID of a user to book for.'
+              required:
+                - a_session_list
+                - k_business
+                - uid
       x-rate-limit:
         -
           limit: 200000
@@ -45067,6 +45524,14 @@ paths:
                           type: integer
                           format: int32
                           description: 'Number of unique clients having at least one not cancelled enrolled event.'
+                        i_enrollments_active:
+                          type: integer
+                          format: int32
+                          description: 'Total number of group enrollments with at least one not cancelled enrolled client in the group.'
+                        i_enrollments_total:
+                          type: integer
+                          format: int32
+                          description: 'Total number of group enrollments.'
                         i_enrolled_total:
                           type: integer
                           format: int32
@@ -45077,6 +45542,8 @@ paths:
                           description: 'Number of unique events having at least one not cancelled enrollment.'
                       required:
                         - i_clients_enrolled
+                        - i_enrollments_active
+                        - i_enrollments_total
                         - i_enrolled_total
                         - i_events_unique
                 required:
@@ -59488,12 +59955,6 @@ paths:
         -
           limit: 200000
           period: 3600
-        -
-          limit: 10
-          period: 60
-        -
-          limit: 100
-          period: 3600
   /Wl/Service/ServiceList/List75.json:
     get:
       operationId: Wl.Service.ServiceList.List75.get
@@ -62762,7 +63223,7 @@ paths:
                       sid_image_icon:
                         type: string
                         description: |-
-                          Icon name.String representation of one of [ImageIconSid](#/components/schemas/Wl.Resource.Image.ImageIconSid) constants.
+                          Icon name. String representation of one of [ImageIconSid](#/components/schemas/Wl.Resource.Image.ImageIconSid) constants.
                           Is set only if `sid_image` equals to `image`.
                       sid_image_shape:
                         type: string
@@ -67060,7 +67521,7 @@ paths:
                             sid_image_icon:
                               type: string
                               description: |-
-                                Icon name.String representation of one of [ImageIconSid](#/components/schemas/Wl.Resource.Image.ImageIconSid) constants.
+                                Icon name. String representation of one of [ImageIconSid](#/components/schemas/Wl.Resource.Image.ImageIconSid) constants.
                                 Is set only if `sid_image` equals to `image`.
                             sid_image_shape:
                               type: string
@@ -100158,7 +100619,7 @@ paths:
                               sid_image_icon:
                                 type: string
                                 description: |-
-                                  Icon name.String representation of one of [ImageIconSid](#/components/schemas/Wl.Resource.Image.ImageIconSid) constants.
+                                  Icon name. String representation of one of [ImageIconSid](#/components/schemas/Wl.Resource.Image.ImageIconSid) constants.
                                   Is set only if `sid_image` equals to `image`.
                               sid_image_shape:
                                 type: string
@@ -108707,6 +109168,7 @@ components:
         - 215 (`IMPORT_CLIENT`): Allows to import clients from a CSV file.
         - 163 (`INTEGRATION_AUTYMATE`): Set up and modify Autymate integration.
         - 179 (`INTEGRATION_BRIVO`): Set up and modify Brivo integration.
+        - 249 (`INTEGRATION_QUICKBOOKS`): Access to set up and change quickbooks integration.
         - 87 (`INTERFACE_ACHIEVE_APP`): Enroll into and manage the WellnessLiving Achieve App. These settings are located under Setup > Achieve Client App.
         - 39 (`INTERFACE_WIDGET_EDIT`): Modify the look and functionality business’s widgets. These settings are located within Setup > Widgets.
         - 110 (`INTERFACE_WIDGET_VIEW`): View the look and functionality business’s widgets. These settings are located within Setup > Widgets.
@@ -108786,7 +109248,6 @@ components:
         - 127 (`PROMOTION_MANAGE_BASE`): Allows to edit only base information about purchase option.
         - 93 (`PURCHASE_EDIT`): Access to edit client purchases (passes and memberships).
         - 92 (`PURCHASE_VIEW`): Access to view client purchases (passes and memberships).
-        - 249 (`QUICKBOOKS`): Access to set up and change quickbooks integration.
         - 193 (`RECEIVE_ALERT`): Allow to see alerts.
         - 71 (`REPORT_ALL`): Access to view reports for all staff.
 
@@ -108942,6 +109403,7 @@ components:
         - 215
         - 163
         - 179
+        - 249
         - 87
         - 39
         - 110
@@ -109021,7 +109483,6 @@ components:
         - 127
         - 93
         - 92
-        - 249
         - 193
         - 71
         - 27
@@ -109174,6 +109635,7 @@ components:
         - IMPORT_CLIENT
         - INTEGRATION_AUTYMATE
         - INTEGRATION_BRIVO
+        - INTEGRATION_QUICKBOOKS
         - INTERFACE_ACHIEVE_APP
         - INTERFACE_WIDGET_EDIT
         - INTERFACE_WIDGET_VIEW
@@ -109253,7 +109715,6 @@ components:
         - PROMOTION_MANAGE_BASE
         - PURCHASE_EDIT
         - PURCHASE_VIEW
-        - QUICKBOOKS
         - RECEIVE_ALERT
         - REPORT_ALL
         - REPORT_ATTENDANCE
@@ -109410,6 +109871,7 @@ components:
         - 'Allows to import clients from a CSV file.'
         - 'Set up and modify Autymate integration.'
         - 'Set up and modify Brivo integration.'
+        - 'Access to set up and change quickbooks integration.'
         - 'Enroll into and manage the WellnessLiving Achieve App. These settings are located under Setup > Achieve Client App.'
         - 'Modify the look and functionality business’s widgets. These settings are located within Setup > Widgets.'
         - 'View the look and functionality business’s widgets. These settings are located within Setup > Widgets.'
@@ -109489,7 +109951,6 @@ components:
         - 'Allows to edit only base information about purchase option.'
         - 'Access to edit client purchases (passes and memberships).'
         - 'Access to view client purchases (passes and memberships).'
-        - 'Access to set up and change quickbooks integration.'
         - 'Allow to see alerts.'
         - |-
           Access to view reports for all staff.
