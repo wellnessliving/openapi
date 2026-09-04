@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260904144140
+  version: 1.1.20260904153327
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -52403,6 +52403,61 @@ paths:
                 - s_color_foreground
                 - s_icon
                 - text_title
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Lead/Stage/LeadStageUser.json:
+    post:
+      operationId: Wl.Lead.Stage.LeadStageUser.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Sets the lead stage of the client.'
+      description: 'If the client is already in this stage, nothing is changed.'
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the client whose stage is set.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_lead_stage:
+                  type: string
+                  description: 'Key of the lead stage to move the client into.'
+              required:
+                - k_lead_stage
       x-rate-limit:
         -
           limit: 200000
