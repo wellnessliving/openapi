@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260904074635
+  version: 1.1.20260904105948
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -18080,6 +18080,23 @@ paths:
                           description: |-
                             Reason why session can not be booked.
                             Not empty only if `is_bookable` is `false`.
+                        i_book_active:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of clients in the active list.
+
+                            For non-block events, this is the sum across all future sessions of the event (same aggregation as used
+                             for `is_full`). For block events, this is the count for the whole block.
+                        i_capacity:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Capacity of the active list.
+
+                            For non-block events, this is `i_session_future` multiplied by the capacity of
+                             a single session (same aggregation as used for `is_full`). For block events,
+                             this is the capacity of the whole block.
                         i_session_all:
                           type: integer
                           format: int32
@@ -18092,6 +18109,23 @@ paths:
                           type: integer
                           format: int32
                           description: 'Number of past sessions in the event.'
+                        i_wait:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of clients in the wait list.
+
+                            For non-block events, this is the sum across all future sessions of the event. For block events, this is
+                             the count for the whole block.
+                        i_wait_limit:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            Wait list limit of the event.
+
+                            `null` if wait list is not enabled for this event, or if it is enabled without a limit.
                         id_reason:
                           type: integer
                           format: int32
@@ -18185,9 +18219,19 @@ paths:
                         is_single_buy:
                           type: boolean
                           description: 'Whether class/event can be paid with single session.'
+                        is_user_booked:
+                          type: boolean
+                          description: |-
+                            Whether current user is booked or on the wait list.
+
+                            Unlike `is_booked`, this field is also `true` when the user is on the wait
+                             list, not only when actually booked into the active list.
                         is_virtual:
                           type: boolean
                           description: 'Whether event is virtual.'
+                        is_wait_list_enabled:
+                          type: boolean
+                          description: 'Whether wait list is enabled for this event.'
                         k_class:
                           type: string
                           description: 'Class key.'
@@ -18248,9 +18292,12 @@ paths:
                         - dl_start
                         - dtu_session
                         - html_reason
+                        - i_book_active
+                        - i_capacity
                         - i_session_all
                         - i_session_future
                         - i_session_past
+                        - i_wait
                         - id_reason
                         - is_age_restrict
                         - is_age_restrict_only
@@ -18267,7 +18314,9 @@ paths:
                         - is_promotion_only
                         - is_prorate
                         - is_single_buy
+                        - is_user_booked
                         - is_virtual
+                        - is_wait_list_enabled
                         - k_class
                         - k_class_period
                         - k_enrollment_block
@@ -53466,6 +53515,9 @@ paths:
                           uid_to:
                             type: string
                             description: 'Specifies the recipient of a transfer Purchase Option.'
+                      a_signature:
+                        type: array
+                        description: 'Signatures for an item that requires agreement to several distinct contracts at once.'
                       a_tax_custom:
                         type: object
                         description: 'Customer taxes (optional). Every element must contain the following keys:'
@@ -53500,7 +53552,7 @@ paths:
                         description: 'The custom price (optional).'
                       s_signature:
                         type: string
-                        description: 'The client signature, used for items that require a signed contract.'
+                        description: 'The client signature, used for an item that requires agreement to a single contract.'
                     required:
                       - i_quantity
                       - id_sale
@@ -105455,7 +105507,6 @@ components:
         - 72 (`LOGIN_PROFILE`): Report "Client Data".
         - 40 (`LOGIN_RANK`): Report about client's ranks.
         - 261 (`LOGIN_RISK`): List of clients that are at churn risk according to isaac prediction.
-        - 52 (`LOGIN_VISIT`): Report with client's attendance history.
         - 46 (`MAIL_BUSINESS_LIST`): Count of sent mail and sms per business.
         - 37 (`MAIL_CAMPAIGN_DETAIL`): Mail campaign details list report.
         - 36 (`MAIL_CAMPAIGN_LIST`): Mail campaign history list report.
@@ -105740,7 +105791,6 @@ components:
         - 72
         - 40
         - 261
-        - 52
         - 46
         - 37
         - 36
@@ -105992,7 +106042,6 @@ components:
         - LOGIN_PROFILE
         - LOGIN_RANK
         - LOGIN_RISK
-        - LOGIN_VISIT
         - MAIL_BUSINESS_LIST
         - MAIL_CAMPAIGN_DETAIL
         - MAIL_CAMPAIGN_LIST
@@ -106257,7 +106306,6 @@ components:
         - 'Report "Client Data".'
         - "Report about client's ranks."
         - 'List of clients that are at churn risk according to isaac prediction.'
-        - "Report with client's attendance history."
         - 'Count of sent mail and sms per business.'
         - 'Mail campaign details list report.'
         - 'Mail campaign history list report.'
