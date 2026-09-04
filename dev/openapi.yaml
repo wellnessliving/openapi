@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260904153327
+  version: 1.1.20260904184450
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -95173,6 +95173,38 @@ paths:
                       It is `m_total` minus `a_config.m_deferred` of every tuition item in
                       [CatalogCartApi::$a_item](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json).
                     default: '0.00'
+                  m_checkout_before_discount:
+                    type: string
+                    description: |-
+                      The subtotal amount that has to be charged right now for the cart, before discount.
+
+                      Equals [CatalogCartApi::$m_subtotal](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for everything that is paid for in full at once. See
+                      [CatalogCartApi::$m_checkout](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for how a tuition's deferred cost is excluded.
+                    default: '0.00'
+                  m_checkout_before_tax:
+                    type: string
+                    description: |-
+                      The amount that has to be charged right now for the cart, after discount but before tax.
+
+                      Equals [CatalogCartApi::$m_checkout_before_discount](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) minus
+                      [CatalogCartApi::$m_checkout_discount](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json).
+                    default: '0.00'
+                  m_checkout_discount:
+                    type: string
+                    description: |-
+                      The discount amount that applies to the part of the cart charged right now, excluding tax.
+
+                      Equals [CatalogCartApi::$m_discount_total](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for everything that is paid for in full at once. See
+                      [CatalogCartApi::$m_checkout](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for how a tuition's deferred cost is excluded.
+                    default: '0.00'
+                  m_checkout_tax:
+                    type: string
+                    description: |-
+                      The amount of tax that applies to the part of the cart charged right now.
+
+                      Equals [CatalogCartApi::$m_tax](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for everything that is paid for in full at once. See
+                      [CatalogCartApi::$m_checkout](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for how a tuition's deferred cost is excluded.
+                    default: '0.00'
                   m_discount:
                     type: string
                     description: 'The discount amount in dollars, excluding tax.'
@@ -95217,6 +95249,10 @@ paths:
                   - is_discount_code_mode_select
                   - is_receipt_note
                   - m_checkout
+                  - m_checkout_before_discount
+                  - m_checkout_before_tax
+                  - m_checkout_discount
+                  - m_checkout_tax
                   - m_discount
                   - m_discount_total
                   - m_subtotal
