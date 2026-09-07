@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260907164934
+  version: 1.1.20260907180227
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -52008,6 +52008,13 @@ paths:
                           description: |-
                             Number of automations used this stage.
                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
+                        i_member_group:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of client groups which convert their clients into this stage. Such a group depends on the stage: the stage
+                            may only be deleted with a replacement stage for the groups.
+                            Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
                         i_user:
                           type: integer
                           format: int32
@@ -52133,6 +52140,10 @@ paths:
         at least one stage of every type. If the stage has leads or clients assigned,
         [LeadStageElementApi::$k_lead_stage_replace](/Wl/Lead/Stage/LeadStageElement.json) must be given - they are moved to the replacement stage,
         which must be of the same type.
+
+        A system stage of a conversion type can also be used by the `Won` / `Lost` client groups of the business.
+        Such a stage requires a replacement stage too, even if it has no clients: the system ID of the stage moves
+        to the replacement one, and the groups convert their clients into it from now on.
       tags:
         - Leads
       parameters:
