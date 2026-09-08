@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260908154752
+  version: 1.1.20260908181504
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -61745,6 +61745,13 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_full_list
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Whether to return all tabs or only the tabs for which sessions are available.'
         -
           name: is_widget
           in: query
