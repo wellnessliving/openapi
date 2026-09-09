@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260909100004
+  version: 1.1.20260909105348
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -104448,6 +104448,8 @@ components:
         A list of currencies.
 
         Currency constant names must comply with the standard `ISO 4217` for correct integration with other services.
+
+        Last used ID: 20
 
         Values:
         - 11 (`AED`): United Arab Emirates dirham.
