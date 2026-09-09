@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260909130106
+  version: 1.1.20260909133430
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26798,6 +26798,11 @@ paths:
                           k_reward_prize:
                             type: string
                             description: 'Specify if you want to redeem a prize for payment.'
+                          a_signature:
+                            type: array
+                            description: |-
+                              Signatures for a purchase option that requires agreement to several distinct
+                                       contracts at once (for example, one per Tuition visitor). Keyed by string `{uid}-{id_purchase_item}-{k_id}`.
                           s_signature:
                             type: string
                             description: |-
@@ -32434,6 +32439,24 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_contract_list:
+                    type: object
+                    description: |-
+                      List of contracts required at once, if the purchase option requires agreement to several
+                       distinct contracts (for example, one per Tuition visitor). Keyed the same way as
+                       `a_signature` used to submit signatures for such a purchase option. Empty if the purchase
+                       option requires at most one contract - use [ContractApi::$html_contract](/Wl/Profile/Contract/Contract.json) instead in
+                       that case. Value has the following structure:
+                    properties:
+                      html_contract:
+                        type: string
+                        description: 'The text of this specific contract.'
+                      uid:
+                        type: string
+                        description: 'Key of the visitor this contract applies to. Primary key in PassportLoginSql.'
+                    required:
+                      - html_contract
+                      - uid
                   html_contract:
                     type: string
                     description: 'The text of the contract.'
@@ -32445,6 +32468,7 @@ paths:
                     type: string
                     description: 'Title of purchase option.'
                 required:
+                  - a_contract_list
                   - html_contract
                   - i_minor_age
                   - text_title
@@ -32464,13 +32488,35 @@ paths:
       description: |-
         Renders the contract text for the specified purchase option, applying any applicable
          discounts, and returns the content needed to display the contract acceptance modal to the
-         client.
+         client. If the purchase option requires agreement to several distinct contracts at once,
+         returns them through [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json) instead, each rendered the same
+         way as a single contract, using the discount already resolved for that specific contract -
+         [ContractApi::$f_manual_discount](/Wl/Profile/Contract/Contract.json), [ContractApi::$m_discount_flat](/Wl/Profile/Contract/Contract.json), and
+         [ContractApi::$s_discount_code](/Wl/Profile/Contract/Contract.json) are not supported in that case.
       tags:
         - Profile
         - Purchases
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_config
+          in: query
+          required: true
+          schema:
+            type: object
+            properties:
+              a_event_list:
+                type: array
+                description: 'The tuition class schedule selected for the participant.'
+              a_registration_fee_list:
+                type: array
+                description: 'Registration fees to charge together with the tuition, keyed by participant key.'
+          description: |-
+            Additional configuration for the item that might influence contracts.
+
+            When [ContractApi::$id_purchase_item](/Wl/Profile/Contract/Contract.json) is [RsPurchaseItemSid::TUITION](#/components/schemas/RsPurchaseItemSid).
+            Use next structure:
         -
           name: dt_start
           in: query
@@ -32486,7 +32532,11 @@ paths:
           schema:
             type: number
             format: float
-          description: 'The percentage discount for the item.'
+          description: |-
+            The percentage discount for the item.
+
+            Not supported when the purchase option requires several distinct contracts at once - see
+             [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json).
         -
           name: id_purchase_item
           in: query
@@ -32532,21 +32582,33 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Amount of a flat manual discount.'
+          description: |-
+            Amount of a flat manual discount.
+
+            Not supported when the purchase option requires several distinct contracts at once - see
+              [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json).
         -
           name: m_price_custom
           in: query
           required: true
           schema:
             type: string
-          description: 'The custom price of the item.'
+          description: |-
+            The custom price of the item.
+
+            Not supported when the purchase option requires several distinct contracts at once - see
+              [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json).
         -
           name: s_discount_code
           in: query
           required: true
           schema:
             type: string
-          description: 'The discount code used for the item.'
+          description: |-
+            The discount code used for the item.
+
+            Not supported when the purchase option requires several distinct contracts at once - see
+             [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json).
         -
           name: uid
           in: query
@@ -77640,6 +77702,9 @@ paths:
                             required:
                               - k_class
                               - uid
+                      a_signature:
+                        type: array
+                        description: 'Signatures for an item that requires agreement to several distinct contracts at once.'
                       id_purchase_item:
                         $ref: '#/components/schemas/RsPurchaseItemSid'
                         description: 'The ID of purchase item type. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.'
@@ -96098,38 +96163,6 @@ paths:
                       It is `m_total` minus `a_config.m_deferred` of every tuition item in
                       [CatalogCartApi::$a_item](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json).
                     default: '0.00'
-                  m_checkout_before_discount:
-                    type: string
-                    description: |-
-                      The subtotal amount that has to be charged right now for the cart, before discount.
-
-                      Equals [CatalogCartApi::$m_subtotal](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for everything that is paid for in full at once. See
-                      [CatalogCartApi::$m_checkout](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for how a tuition's deferred cost is excluded.
-                    default: '0.00'
-                  m_checkout_before_tax:
-                    type: string
-                    description: |-
-                      The amount that has to be charged right now for the cart, after discount but before tax.
-
-                      Equals [CatalogCartApi::$m_checkout_before_discount](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) minus
-                      [CatalogCartApi::$m_checkout_discount](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json).
-                    default: '0.00'
-                  m_checkout_discount:
-                    type: string
-                    description: |-
-                      The discount amount that applies to the part of the cart charged right now, excluding tax.
-
-                      Equals [CatalogCartApi::$m_discount_total](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for everything that is paid for in full at once. See
-                      [CatalogCartApi::$m_checkout](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for how a tuition's deferred cost is excluded.
-                    default: '0.00'
-                  m_checkout_tax:
-                    type: string
-                    description: |-
-                      The amount of tax that applies to the part of the cart charged right now.
-
-                      Equals [CatalogCartApi::$m_tax](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for everything that is paid for in full at once. See
-                      [CatalogCartApi::$m_checkout](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for how a tuition's deferred cost is excluded.
-                    default: '0.00'
                   m_discount:
                     type: string
                     description: 'The discount amount in dollars, excluding tax.'
@@ -96174,10 +96207,6 @@ paths:
                   - is_discount_code_mode_select
                   - is_receipt_note
                   - m_checkout
-                  - m_checkout_before_discount
-                  - m_checkout_before_tax
-                  - m_checkout_discount
-                  - m_checkout_tax
                   - m_discount
                   - m_discount_total
                   - m_subtotal
