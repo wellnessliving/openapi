@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260910104158
+  version: 1.1.20260910105324
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -49533,6 +49533,77 @@ paths:
             type: string
           description: 'Appointment key to get information for.'
       x-instance-get-key: k_appointment
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/View/ViewStore.json:
+    get:
+      operationId: Wl.Appointment.View.ViewStore.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_item:
+                    type: array
+                    description: 'List of amounts that must be paid. Each element contains keys:'
+                    items:
+                      type: object
+                      properties:
+                        m_price:
+                          type: string
+                          description: 'Item price.'
+                        text_title:
+                          type: string
+                          description: 'Item title.'
+                      required:
+                        - m_price
+                        - text_title
+                required:
+                  - a_item
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Loads information about amounts that must be paid for an appointment.'
+      description: |-
+        Checks that the caller may view the appointment - either the client who booked it, or a staff member
+         with the corresponding privilege - and that the appointment belongs to the specified business. Fills
+         `a_item` with the price of the service or resource (or its default promotion, if one applies),
+         a deposit item when only a deposit is charged, and a paid and an unpaid item for every add-on product
+         of the appointment.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_appointment
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Appointment key.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      x-instance-get-key: 'k_appointment,k_business'
       x-rate-limit:
         -
           limit: 200000
