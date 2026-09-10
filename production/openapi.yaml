@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260908054656
+  version: 1.1.20260910063845
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -9536,6 +9536,23 @@ paths:
                           description: |-
                             Reason why session can not be booked.
                             Not empty only if `is_bookable` is `false`.
+                        i_book_active:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of clients in the active list.
+
+                            For non-block events, this is the sum across all future sessions of the event (same aggregation as used
+                             for `is_full`). For block events, this is the count for the whole block.
+                        i_capacity:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Capacity of the active list.
+
+                            For non-block events, this is `i_session_future` multiplied by the capacity of
+                             a single session (same aggregation as used for `is_full`). For block events,
+                             this is the capacity of the whole block.
                         i_session_all:
                           type: integer
                           format: int32
@@ -9548,6 +9565,23 @@ paths:
                           type: integer
                           format: int32
                           description: 'Number of past sessions in the event.'
+                        i_wait:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of clients in the wait list.
+
+                            For non-block events, this is the sum across all future sessions of the event. For block events, this is
+                             the count for the whole block.
+                        i_wait_limit:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            Wait list limit of the event.
+
+                            `null` if wait list is not enabled for this event, or if it is enabled without a limit.
                         id_reason:
                           type: integer
                           format: int32
@@ -9641,9 +9675,19 @@ paths:
                         is_single_buy:
                           type: boolean
                           description: 'Whether class/event can be paid with single session.'
+                        is_user_booked:
+                          type: boolean
+                          description: |-
+                            Whether current user is booked or on the wait list.
+
+                            Unlike `is_booked`, this field is also `true` when the user is on the wait
+                             list, not only when actually booked into the active list.
                         is_virtual:
                           type: boolean
                           description: 'Whether event is virtual.'
+                        is_wait_list_enabled:
+                          type: boolean
+                          description: 'Whether wait list is enabled for this event.'
                         k_class:
                           type: string
                           description: 'Class key.'
@@ -9704,9 +9748,12 @@ paths:
                         - dl_start
                         - dtu_session
                         - html_reason
+                        - i_book_active
+                        - i_capacity
                         - i_session_all
                         - i_session_future
                         - i_session_past
+                        - i_wait
                         - id_reason
                         - is_age_restrict
                         - is_age_restrict_only
@@ -9723,7 +9770,9 @@ paths:
                         - is_promotion_only
                         - is_prorate
                         - is_single_buy
+                        - is_user_booked
                         - is_virtual
+                        - is_wait_list_enabled
                         - k_class
                         - k_class_period
                         - k_enrollment_block
@@ -36764,6 +36813,11 @@ paths:
                           k_reward_prize:
                             type: string
                             description: 'Specify if you want to redeem a prize for payment.'
+                          a_signature:
+                            type: array
+                            description: |-
+                              Signatures for a purchase option that requires agreement to several distinct
+                                       contracts at once (for example, one per Tuition visitor). Keyed by string `{uid}-{id_purchase_item}-{k_id}`.
                           s_signature:
                             type: string
                             description: |-
@@ -38487,12 +38541,18 @@ paths:
                         k_location:
                           type: string
                           description: 'Location key.'
+                        text_date:
+                          type: string
+                          description: 'Local date of the visit, formatted according to the business locale.'
                         text_time_end:
                           type: string
                           description: 'Local end time of the visit, formatted according to the business locale.'
                         text_time_start:
                           type: string
                           description: 'Local start time of the visit, formatted according to the business locale.'
+                        text_timezone:
+                          type: string
+                          description: 'Name of the timezone used to format `text_date`, `text_time_end` and `text_time_start`.'
                         text_title:
                           type: string
                           description: 'Title of a service'
@@ -38643,8 +38703,8 @@ paths:
                           description: |-
                             List of visits that overlap with the checked session. Same structure as
                             [AttendanceOverlapApi::$a_visit_list](/Wl/Profile/Attendance/AttendanceOverlap.json). Present only if the current user has full access to the
-                            target user's visits (the target user itself or a family relative). Each element has the following
-                            keys: List of overlapped booked visits. Each element has the following keys:
+                            target user's visits (the target user itself or a family relative).
+                            Each element has the following keys:
 
                             Empty for guest-level access, to avoid exposing another member's visit details.
                           properties:
@@ -42394,6 +42454,24 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_contract_list:
+                    type: object
+                    description: |-
+                      List of contracts required at once, if the purchase option requires agreement to several
+                       distinct contracts (for example, one per Tuition visitor). Keyed the same way as
+                       `a_signature` used to submit signatures for such a purchase option. Empty if the purchase
+                       option requires at most one contract - use [ContractApi::$html_contract](/Wl/Profile/Contract/Contract.json) instead in
+                       that case. Value has the following structure:
+                    properties:
+                      html_contract:
+                        type: string
+                        description: 'The text of this specific contract.'
+                      uid:
+                        type: string
+                        description: 'Key of the visitor this contract applies to. Primary key in PassportLoginSql.'
+                    required:
+                      - html_contract
+                      - uid
                   html_contract:
                     type: string
                     description: 'The text of the contract.'
@@ -42405,6 +42483,7 @@ paths:
                     type: string
                     description: 'Title of purchase option.'
                 required:
+                  - a_contract_list
                   - html_contract
                   - i_minor_age
                   - text_title
@@ -42424,13 +42503,35 @@ paths:
       description: |-
         Renders the contract text for the specified purchase option, applying any applicable
          discounts, and returns the content needed to display the contract acceptance modal to the
-         client.
+         client. If the purchase option requires agreement to several distinct contracts at once,
+         returns them through [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json) instead, each rendered the same
+         way as a single contract, using the discount already resolved for that specific contract -
+         [ContractApi::$f_manual_discount](/Wl/Profile/Contract/Contract.json), [ContractApi::$m_discount_flat](/Wl/Profile/Contract/Contract.json), and
+         [ContractApi::$s_discount_code](/Wl/Profile/Contract/Contract.json) are not supported in that case.
       tags:
         - Profile
         - Purchases
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_config
+          in: query
+          required: true
+          schema:
+            type: object
+            properties:
+              a_event_list:
+                type: array
+                description: 'The tuition class schedule selected for the participant.'
+              a_registration_fee_list:
+                type: array
+                description: 'Registration fees to charge together with the tuition, keyed by participant key.'
+          description: |-
+            Additional configuration for the item that might influence contracts.
+
+            When [ContractApi::$id_purchase_item](/Wl/Profile/Contract/Contract.json) is [RsPurchaseItemSid::TUITION](#/components/schemas/RsPurchaseItemSid).
+            Use next structure:
         -
           name: dt_start
           in: query
@@ -42446,7 +42547,11 @@ paths:
           schema:
             type: number
             format: float
-          description: 'The percentage discount for the item.'
+          description: |-
+            The percentage discount for the item.
+
+            Not supported when the purchase option requires several distinct contracts at once - see
+             [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json).
         -
           name: id_purchase_item
           in: query
@@ -42492,21 +42597,33 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Amount of a flat manual discount.'
+          description: |-
+            Amount of a flat manual discount.
+
+            Not supported when the purchase option requires several distinct contracts at once - see
+              [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json).
         -
           name: m_price_custom
           in: query
           required: true
           schema:
             type: string
-          description: 'The custom price of the item.'
+          description: |-
+            The custom price of the item.
+
+            Not supported when the purchase option requires several distinct contracts at once - see
+              [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json).
         -
           name: s_discount_code
           in: query
           required: true
           schema:
             type: string
-          description: 'The discount code used for the item.'
+          description: |-
+            The discount code used for the item.
+
+            Not supported when the purchase option requires several distinct contracts at once - see
+             [ContractApi::$a_contract_list](/Wl/Profile/Contract/Contract.json).
         -
           name: uid
           in: query
@@ -43631,6 +43748,9 @@ paths:
                           uid_to:
                             type: string
                             description: 'Specifies the recipient of a transfer Purchase Option.'
+                      a_signature:
+                        type: array
+                        description: 'Signatures for an item that requires agreement to several distinct contracts at once.'
                       a_tax_custom:
                         type: object
                         description: 'Customer taxes (optional). Every element must contain the following keys:'
@@ -43665,7 +43785,7 @@ paths:
                         description: 'The custom price (optional).'
                       s_signature:
                         type: string
-                        description: 'The client signature, used for items that require a signed contract.'
+                        description: 'The client signature, used for an item that requires agreement to a single contract.'
                     required:
                       - i_quantity
                       - id_sale
@@ -45527,7 +45647,11 @@ paths:
                         i_enrollments_active:
                           type: integer
                           format: int32
-                          description: 'Total number of group enrollments with at least one not cancelled enrolled client in the group.'
+                          description: |-
+                            Total number of group enrollments with at least one not cancelled enrolled client in the group and
+                                an active payment plan - `id_installment_status` equal to [InstallmentStatusSid::ACTIVE](#/components/schemas/Wl.Pay.Installment.InstallmentStatusSid) for
+                                installment-based tuition plans, or at least one `id_promotion_status` equal to
+                                [LoginPromotionStatusSid::ACTIVE](#/components/schemas/Wl.Login.Promotion.LoginPromotionStatusSid) among the group's memberships for membership-based tuitions.
                         i_enrollments_total:
                           type: integer
                           format: int32
@@ -79006,6 +79130,9 @@ paths:
                             required:
                               - k_class
                               - uid
+                      a_signature:
+                        type: array
+                        description: 'Signatures for an item that requires agreement to several distinct contracts at once.'
                       id_purchase_item:
                         $ref: '#/components/schemas/RsPurchaseItemSid'
                         description: 'The ID of purchase item type. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.'
@@ -91423,6 +91550,19 @@ paths:
 
             If multiple tabs are sent, appointment types, which are in at least in one of the tabs, will be in the result.
         -
+          name: a_service_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of services to filter a result.
+
+            Each element is a service key.
+            Empty if the filtering is not necessary.
+        -
           name: a_staff
           in: query
           required: true
@@ -92097,6 +92237,19 @@ paths:
             The class tab key to use to filter services. If empty, this can be found on the standard book tab.
 
             If multiple tabs are sent, appointment types, which are in at least in one of the tabs, will be in the result.
+        -
+          name: a_service_filter
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of services to filter a result.
+
+            Each element is a service key.
+            Empty if the filtering is not necessary.
         -
           name: a_staff
           in: query
@@ -105482,7 +105635,6 @@ components:
         - 72 (`LOGIN_PROFILE`): Report "Client Data".
         - 40 (`LOGIN_RANK`): Report about client's ranks.
         - 261 (`LOGIN_RISK`): List of clients that are at churn risk according to isaac prediction.
-        - 52 (`LOGIN_VISIT`): Report with client's attendance history.
         - 46 (`MAIL_BUSINESS_LIST`): Count of sent mail and sms per business.
         - 37 (`MAIL_CAMPAIGN_DETAIL`): Mail campaign details list report.
         - 36 (`MAIL_CAMPAIGN_LIST`): Mail campaign history list report.
@@ -105767,7 +105919,6 @@ components:
         - 72
         - 40
         - 261
-        - 52
         - 46
         - 37
         - 36
@@ -106019,7 +106170,6 @@ components:
         - LOGIN_PROFILE
         - LOGIN_RANK
         - LOGIN_RISK
-        - LOGIN_VISIT
         - MAIL_BUSINESS_LIST
         - MAIL_CAMPAIGN_DETAIL
         - MAIL_CAMPAIGN_LIST
@@ -106284,7 +106434,6 @@ components:
         - 'Report "Client Data".'
         - "Report about client's ranks."
         - 'List of clients that are at churn risk according to isaac prediction.'
-        - "Report with client's attendance history."
         - 'Count of sent mail and sms per business.'
         - 'Mail campaign details list report.'
         - 'Mail campaign history list report.'
