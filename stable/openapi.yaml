@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260910050554
+  version: 1.1.20260910055449
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -53947,12 +53947,6 @@ paths:
                                 required:
                                   - m_discount
                                   - text_discount
-                              a_tax:
-                                type: array
-                                description: |-
-                                  List of taxes to be applied to the registration fee.
-                                  Keys are tax keys. 
-                                  Values are tax amounts.
                               m_amount:
                                 type: string
                                 description: 'Registration fee amount for the tuition participant.'
