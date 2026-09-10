@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260909165046
+  version: 1.1.20260910035643
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -54461,6 +54461,59 @@ paths:
                       - id_activation
                       - id_duration
                       - id_duration_type
+                  a_guest_pass:
+                    type: object
+                    description: |-
+                      Information about promotion guest pass. Empty array if promotion does not have guest pass or
+                      guest pass is not enabled. Has follow structure:
+                    properties:
+                      i_limit:
+                        type:
+                          - integer
+                          - 'null'
+                        format: int32
+                        description: 'Number of times guest pass can be used per period. `null` for unlimited guest pass.'
+                      i_limit_daily:
+                        type:
+                          - integer
+                          - 'null'
+                        format: int32
+                        description: 'Number of times guest pass can be used per day. `null` for limited guest pass.'
+                      i_period:
+                        type:
+                          - integer
+                          - 'null'
+                        format: int32
+                        description: 'Number of periods after which guest pass limits are reset. `null` for unlimited guest pass.'
+                      id_period:
+                        type:
+                          - integer
+                          - 'null'
+                        format: int32
+                        description: 'Period type by which guest pass limits are reset. `null` for unlimited guest pass.'
+                      id_reset_type:
+                        $ref: '#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid'
+                        description: |-
+                          Type by which guest pass limits are reset. One of [GuestPassResetTypeSid](#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid) constants.
+                              `null` for unlimited guest pass.
+                      k_promotion_guest:
+                        type: string
+                        description: 'Guest pass promotion key.'
+                      text_limit:
+                        type: string
+                        description: 'Formatted guest pass limits.'
+                      text_title:
+                        type: string
+                        description: 'Guest pass promotion title.'
+                    required:
+                      - i_limit
+                      - i_limit_daily
+                      - i_period
+                      - id_period
+                      - id_reset_type
+                      - k_promotion_guest
+                      - text_limit
+                      - text_title
                   a_image:
                     type: object
                     deprecated: true
@@ -54872,6 +54925,7 @@ paths:
                 required:
                   - a_age_restriction
                   - a_data
+                  - a_guest_pass
                   - a_image
                   - a_image_list
                   - a_installment_template
@@ -114957,6 +115011,30 @@ components:
         - 'Specific date. Example, 2013-12-24.'
         - 'No ending date.'
         - 'Examples: 12 days, 2 months, 2 hours etc.'
+    Wl.Promotion.Guest.Pass.GuestPassResetTypeSid:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        Guest Pass reset type.
+
+        Determines how guest pass limits are reset.
+
+        Last used ID: 2.
+
+        Values:
+        - 1 (`BILLING`): Limits reset on promotion billing day.
+        - 2 (`RENEWAL`): Limits reset on promotion renewal day.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - BILLING
+        - RENEWAL
+      x-enum-descriptions:
+        - 'Limits reset on promotion billing day.'
+        - 'Limits reset on promotion renewal day.'
     RsTaxSid:
       type: integer
       format: int32
@@ -117416,28 +117494,6 @@ components:
         - 'Prearranged Payment & Deposit.'
         - 'Telephone Initiated Entry.'
         - 'Web Initiated Entry.'
-    Wl.Promotion.Guest.Pass.GuestPassResetTypeSid:
-      type: integer
-      format: int32
-      description: |-
-        Guest Pass reset type.
-
-        Determines how guest pass limits are reset.
-
-        Last used ID: 2.
-
-        Values:
-        - 1 (`BILLING`): Limits reset on promotion billing day.
-        - 2 (`RENEWAL`): Limits reset on promotion renewal day.
-      enum:
-        - 1
-        - 2
-      x-enum-varnames:
-        - BILLING
-        - RENEWAL
-      x-enum-descriptions:
-        - 'Limits reset on promotion billing day.'
-        - 'Limits reset on promotion renewal day.'
     Wl.Promotion.Convert.PromotionConvertSid:
       type: integer
       format: int32
