@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260910124736
+  version: 1.1.20260910141859
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -110567,6 +110567,7 @@ components:
         - 19 (`AI_AGENT`): Ai Agent web-chat.
         - 13 (`APPLICATION`): Application skin.
         - 7 (`APPOINTMENT`): Appointment booking wizard.
+        - 22 (`APPOINTMENT_FOREIGN`): Appointment booking wizard built by microservice widget team.
         - 21 (`CATALOG_FOREIGN`): Online store widget.
         - 8 (`ENROLLMENT`): Event enrollment wizard widget.
         - 17 (`FITBUILDER`): Fitbuilder widget.
@@ -110588,6 +110589,7 @@ components:
         - 19
         - 13
         - 7
+        - 22
         - 21
         - 8
         - 17
@@ -110606,6 +110608,7 @@ components:
         - AI_AGENT
         - APPLICATION
         - APPOINTMENT
+        - APPOINTMENT_FOREIGN
         - CATALOG_FOREIGN
         - ENROLLMENT
         - FITBUILDER
@@ -110624,6 +110627,7 @@ components:
         - 'Ai Agent web-chat.'
         - 'Application skin.'
         - 'Appointment booking wizard.'
+        - 'Appointment booking wizard built by microservice widget team.'
         - 'Online store widget.'
         - 'Event enrollment wizard widget.'
         - 'Fitbuilder widget.'
