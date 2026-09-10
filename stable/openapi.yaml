@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260910035643
+  version: 1.1.20260910050554
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68504,8 +68504,24 @@ paths:
                     description: 'List of purchase options that can be applied to pay for visit:'
                     properties:
                       a_logo:
-                        type: array
-                        description: 'Promotion logo, see result of RsPromotionImageLogo::data(). Empty array for not paid option.'
+                        type: object
+                        description: 'Promotion logo. Empty array for not paid option.'
+                        properties:
+                          i_height:
+                            type: integer
+                            format: int32
+                            description: 'Image height.'
+                          i_width:
+                            type: integer
+                            format: int32
+                            description: 'Image width.'
+                          url-thumbnail:
+                            type: string
+                            description: 'Thumbnail url.'
+                        required:
+                          - i_height
+                          - i_width
+                          - url-thumbnail
                       is_select:
                         type: boolean
                         description: 'Whether current element selected in the list.'
@@ -68535,6 +68551,11 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Returns data to change visit pay option.'
+      description: |-
+        Loads the visit and returns the list of purchase options available for it, marking the
+         option that is currently applied. Guest visits without a client have no purchase options.
+      tags:
+        - Visits
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -68608,6 +68629,12 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: "Saves user's promotion for certain attendance."
+      description: |-
+        Applies the selected promotion or session pass to the visit. Does nothing if the selected
+         option is already applied to the visit. Verifies that the caller has access to the visit
+         and that the selected promotion belongs to the visit's client before saving the change.
+      tags:
+        - Visits
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -89878,6 +89905,8 @@ paths:
         Returns each day in the requested month marked as available or unavailable for booking the given
          service at the given location. Availability is determined by the business schedule, holidays,
          and staff availability for the selected date range.
+      tags:
+        - Appointments
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -90185,6 +90214,8 @@ paths:
         Returns available time slots for the specified service, location, staff member, and date range.
          Each slot includes the start time, duration, available capacity, and staff information. Supports
          both frontend and backend modes, as well as asset bookings and back-to-back scheduling.
+      tags:
+        - Appointments
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
