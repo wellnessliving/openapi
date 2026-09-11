@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260911061444
+  version: 1.1.20260911122832
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -27694,7 +27694,7 @@ paths:
                             type: string
                             description: 'Specify if you want to redeem a prize for payment.'
                           a_signature:
-                            type: array
+                            type: object
                             description: |-
                               Signatures for a purchase option that requires agreement to several distinct
                                        contracts at once (for example, one per Tuition visitor). Keyed by string `{uid}-{id_purchase_item}-{k_id}`.
@@ -33681,7 +33681,7 @@ paths:
                         description: 'The text of this specific contract.'
                       uid:
                         type: string
-                        description: 'Key of the visitor this contract applies to. Primary key in PassportLoginSql.'
+                        description: 'Key of the visitor this contract applies to.'
                     required:
                       - html_contract
                       - uid
@@ -33735,11 +33735,29 @@ paths:
             type: object
             properties:
               a_event_list:
-                type: array
-                description: 'The tuition class schedule selected for the participant.'
+                type: object
+                description: 'The tuition class schedule selected for the participant. Each element has the next keys:'
+                properties:
+                  k_class:
+                    type: string
+                    description: 'Key of the event class.'
+                  uid:
+                    type: string
+                    description: 'Key of the tuition participant.'
+                required:
+                  - k_class
+                  - uid
               a_registration_fee_list:
-                type: array
-                description: 'Registration fees to charge together with the tuition, keyed by participant key.'
+                type: object
+                description: |-
+                  Registration fees to charge together with the tuition, keyed by participant key.
+                   Each value has the next keys:
+                properties:
+                  m_amount:
+                    type: string
+                    description: 'Registration fee amount for the tuition participant.'
+                required:
+                  - m_amount
           description: |-
             Additional configuration for the item that might influence contracts.
 
@@ -58542,6 +58560,12 @@ paths:
                                 required:
                                   - m_discount
                                   - text_discount
+                              a_tax:
+                                type: object
+                                description: |-
+                                  List of taxes to be applied to the registration fee.
+                                  Keys are tax keys. 
+                                  Values are tax amounts.
                               m_amount:
                                 type: string
                                 description: 'Registration fee amount for the tuition participant.'
@@ -83520,6 +83544,12 @@ paths:
                             required:
                               - k_class
                               - uid
+                      a_signature:
+                        type: object
+                        description: |-
+                          Signatures for an item that requires agreement to several distinct contracts at once.
+                          Keys are internal contract identifiers tied to this specific item and participant.
+                          Values are the signature of the matching contract.
                       id_purchase_item:
                         $ref: '#/components/schemas/RsPurchaseItemSid'
                         description: 'The ID of purchase item type. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.'
