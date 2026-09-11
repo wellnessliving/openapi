@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260910202358
+  version: 1.1.20260911061444
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -75218,11 +75218,6 @@ paths:
                     type: object
                     description: "Information about the user's. The information returned has the following structure:"
                     properties:
-                      a_relation:
-                        type: array
-                        description: |-
-                          Relation between the user and family members. Keys are UIDs of relatives, values -
-                          relation type from [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).
                       id_gender:
                         $ref: '#/components/schemas/Wl.Gender.GenderSid'
                         description: 'Gender type, One of [GenderSid](#/components/schemas/Wl.Gender.GenderSid) constants. Empty means that client is not selected gender type.'
@@ -75283,7 +75278,6 @@ paths:
                         type: string
                         description: "User's photo url."
                     required:
-                      - a_relation
                       - id_gender
                       - is_address_inherited
                       - is_inherited
@@ -100024,6 +100018,8 @@ paths:
          asset or service, then checks for scheduling conflicts (staff working hours, holidays,
          asset availability) and, for services with an age restriction, for client age conflicts.
          The result is written to [Conflict56Api::$a_conflict](/Wl/Appointment/Book/Conflict/Conflict56.json).
+      tags:
+        - Appointments
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
