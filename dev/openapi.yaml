@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260911122832
+  version: 1.1.20260911132505
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -27698,6 +27698,8 @@ paths:
                             description: |-
                               Signatures for a purchase option that requires agreement to several distinct
                                        contracts at once (for example, one per Tuition visitor). Keyed by string `{uid}-{id_purchase_item}-{k_id}`.
+                            additionalProperties:
+                              type: string
                           s_signature:
                             type: string
                             description: |-
@@ -58566,6 +58568,8 @@ paths:
                                   List of taxes to be applied to the registration fee.
                                   Keys are tax keys. 
                                   Values are tax amounts.
+                                additionalProperties:
+                                  type: string
                               m_amount:
                                 type: string
                                 description: 'Registration fee amount for the tuition participant.'
@@ -75242,6 +75246,14 @@ paths:
                     type: object
                     description: "Information about the user's. The information returned has the following structure:"
                     properties:
+                      a_relation:
+                        type: object
+                        description: |-
+                          Relation between the user and family members. Keys are UIDs of relatives, values -
+                          relation type from [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid).
+                        additionalProperties:
+                          type: integer
+                          format: int32
                       id_gender:
                         $ref: '#/components/schemas/Wl.Gender.GenderSid'
                         description: 'Gender type, One of [GenderSid](#/components/schemas/Wl.Gender.GenderSid) constants. Empty means that client is not selected gender type.'
@@ -75302,6 +75314,7 @@ paths:
                         type: string
                         description: "User's photo url."
                     required:
+                      - a_relation
                       - id_gender
                       - is_address_inherited
                       - is_inherited
@@ -83550,6 +83563,8 @@ paths:
                           Signatures for an item that requires agreement to several distinct contracts at once.
                           Keys are internal contract identifiers tied to this specific item and participant.
                           Values are the signature of the matching contract.
+                        additionalProperties:
+                          type: string
                       id_purchase_item:
                         $ref: '#/components/schemas/RsPurchaseItemSid'
                         description: 'The ID of purchase item type. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.'
@@ -103398,6 +103413,15 @@ paths:
                                   required:
                                     - m_discount
                                     - text_discount
+                                a_tax:
+                                  type: object
+                                  description: |-
+                                    List of taxes applied to the event price:
+                                         Keys are internal system tax keys. 
+                                         Values are amount of taxes applied to the event price.
+                                         If not specified or `null`, taxes will be calculated based on the class setup.
+                                  additionalProperties:
+                                    type: string
                                 k_class:
                                   type: string
                                   description: 'Key of the event class within the tuition which should be granted to the client.'
@@ -103439,6 +103463,15 @@ paths:
                                   required:
                                     - m_discount
                                     - text_discount
+                                a_tax:
+                                  type: object
+                                  description: |-
+                                    List of taxes applied to the registration fee:
+                                         Keys are internal system tax keys. 
+                                         Values are amount of taxes applied to the registration fee.
+                                         If not specified or `null`, taxes will be calculated based on the class setup.
+                                  additionalProperties:
+                                    type: string
                                 m_amount:
                                   type: string
                                   description: 'Registration fee amount for the tuition participant.'
@@ -103677,6 +103710,15 @@ paths:
                           required:
                             - m_discount
                             - text_discount
+                        a_tax:
+                          type: object
+                          description: |-
+                            List of taxes applied to the event price:
+                                 Keys are internal system tax keys. 
+                                 Values are amount of taxes applied to the event price.
+                                 If not specified or `null`, taxes will be calculated based on the class setup.
+                          additionalProperties:
+                            type: string
                         k_class:
                           type: string
                           description: 'Key of the event class within the tuition which should be granted to the client.'
@@ -103718,6 +103760,15 @@ paths:
                           required:
                             - m_discount
                             - text_discount
+                        a_tax:
+                          type: object
+                          description: |-
+                            List of taxes applied to the registration fee:
+                                 Keys are internal system tax keys. 
+                                 Values are amount of taxes applied to the registration fee.
+                                 If not specified or `null`, taxes will be calculated based on the class setup.
+                          additionalProperties:
+                            type: string
                         m_amount:
                           type: string
                           description: 'Registration fee amount for the tuition participant.'
