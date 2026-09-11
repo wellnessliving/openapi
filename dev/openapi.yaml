@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260911132505
+  version: 1.1.20260911141200
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -58910,12 +58910,14 @@ paths:
                 type: object
                 properties:
                   a_age_restriction:
-                    type: object
+                    type:
+                      - object
+                      - 'null'
                     description: |-
                       The age restriction configuration.
 
                       Age restrictions for an item apply when they're configured for a specific item and the API is requested from the backend
-                      or when age restriction are public.
+                      or when age restriction are public. `null` if age restrictions are not set for the item.
                     properties:
                       i_age_from:
                         type: integer
@@ -59066,6 +59068,9 @@ paths:
                       id_duration_type:
                         $ref: '#/components/schemas/Wl.Coupon.Edit.DurationTypeSid'
                         description: 'A way to specify a duration. One of [DurationTypeSid](#/components/schemas/Wl.Coupon.Edit.DurationTypeSid) constants.'
+                      is_price_breakdown:
+                        type: boolean
+                        description: 'Whether to display individual prices for each item in the package.'
                     required:
                       - a_service_access
                       - is_renew_public
@@ -59078,11 +59083,12 @@ paths:
                       - id_activation
                       - id_duration
                       - id_duration_type
+                      - is_price_breakdown
                   a_guest_pass:
                     type: object
                     description: |-
                       Information about promotion guest pass. Empty array if promotion does not have guest pass or
-                      guest pass is not enabled. Has follow structure:
+                      guest pass is not enabled.
                     properties:
                       i_limit:
                         type:
@@ -59115,7 +59121,7 @@ paths:
                               `null` for unlimited guest pass.
                       k_promotion_guest:
                         type: string
-                        description: 'Guest pass promotion key.'
+                        description: 'Guest pass promotion key. Primary key from RsPromotionSql table.'
                       text_limit:
                         type: string
                         description: 'Formatted guest pass limits.'
@@ -59164,7 +59170,8 @@ paths:
                     type: array
                     description: |-
                       List of images.
-                      Keys are index and value is below information:
+
+                      Keys are index and each element hase same structure as [ElementApi::$a_image](/Wl/Catalog/CatalogList/Element.json) field.
                     items:
                       type: object
                       properties:
@@ -59179,8 +59186,8 @@ paths:
                         is_empty:
                           type: boolean
                           description: |-
-                            `true` - item has no image (in this case ignore other keys of this array).
-                            `false` - item has an image.
+                            `true` - the item has no image (in this case, ignore the other keys of this array).
+                            `false` - the item has an image.
                         s_url:
                           type: string
                           description: 'The image URL.'
@@ -59234,20 +59241,164 @@ paths:
                       properties:
                         a_data:
                           type: object
-                          description: |-
-                            Contains additional data for the sale item.
-                            For Package, it contains also the following key:
-
-                            The same structure as [ElementApi::$a_data](/Wl/Catalog/CatalogList/Element.json) has.
+                          description: 'Contains additional data for the sale item. The same structure as [ElementApi::$a_data](/Wl/Catalog/CatalogList/Element.json) has.'
                           properties:
-                            is_price_breakdown:
+                            a_service_access:
+                              type: array
+                              description: |-
+                                Access to services for a purchase option.
+                                Keys are one of the [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constants, values are one of the [AFlagSid](#/components/schemas/AFlagSid)
+                                constants. Set only for relevant purchase option service category.
+                                [AFlagSid::ON](#/components/schemas/AFlagSid) access to some services.
+                                [AFlagSid::OFF](#/components/schemas/AFlagSid) no access to services. It can be set only for classes and events.
+                                [AFlagSid::ALL](#/components/schemas/AFlagSid) access to all services. It can be set only for classes and events.
+                                For purchase options with appointments and assets service category status is always [AFlagSid::ON](#/components/schemas/AFlagSid).
+                              items:
+                                type: integer
+                                format: int32
+                            is_renew_public:
                               type: boolean
                               description: |-
-                                Whether to display individual prices for each item in the package.
-                                `true` display individual prices for each item in the package,
-                                `false` display a single total price for the package.
+                                This applies only for promotions.
+                                `true` - clients can set promotion auto-renew.
+                                `false` - clients can't set promotion auto-renew.
+                            a_component:
+                              type: object
+                              description: 'This applies only for coupons. Coupon components information. Each element will contain the following keys:'
+                              properties:
+                                id_program:
+                                  $ref: '#/components/schemas/RsProgramSid'
+                                  description: "Program ID. One of [RsProgramSid](#/components/schemas/RsProgramSid) ID's. Only applies to promotions."
+                                id_purchase_item:
+                                  $ref: '#/components/schemas/RsPurchaseItemSid'
+                                  description: "Purchase item ID. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) ID's."
+                                id_sale:
+                                  $ref: '#/components/schemas/RsSaleSid'
+                                  description: "Sale ID. One of [RsSaleSid](#/components/schemas/RsSaleSid) ID's."
+                                k_id:
+                                  type: string
+                                  description: 'The identifier of the item.'
+                                text_title:
+                                  type: string
+                                  description: 'The title of the item.'
+                              required:
+                                - id_program
+                                - id_purchase_item
+                                - id_sale
+                                - k_id
+                                - text_title
+                            a_staff:
+                              type: object
+                              description: 'This applies to enrollment/event items. Staff list for class periods. Each element contains:'
+                              properties:
+                                k_staff:
+                                  type: string
+                                  description: '@deprecated Legacy staff key.  Deprecated, use `uid_staff`.'
+                                uid_staff:
+                                  type: string
+                                  description: 'Staff user key.'
+                                text_family:
+                                  type: string
+                                  description: 'Staff last name.'
+                                text_staff:
+                                  type: string
+                                  description: 'Staff display name.'
+                              required:
+                                - k_staff
+                                - uid_staff
+                                - text_family
+                                - text_staff
+                            dl_expire:
+                              type: string
+                              description: 'Date of expiration of coupon, local date in MySQL format.'
+                            dl_now:
+                              type: string
+                              description: 'Current date, local date in MySQL format.'
+                            dl_start:
+                              type: string
+                              description: |-
+                                Date to activate the coupon on, local date in MySQL format.
+                                  When `id_activation`=FIXED, this field contains a custom date to activate the coupon on, local date in MySQL format.
+                            i_duration:
+                              type: integer
+                              format: int32
+                              description: 'Number of periods the coupon is active. Type of a period is specified by `id_duration`.'
+                            id_activation:
+                              $ref: '#/components/schemas/Wl.Coupon.Edit.ActivationSid'
+                              description: 'Type of a coupon activation date specification. One of [ActivationSid](#/components/schemas/Wl.Coupon.Edit.ActivationSid) constants.'
+                            id_duration:
+                              $ref: '#/components/schemas/ADurationSid'
+                              description: 'Duration of a period. A constant from [ADurationSid](#/components/schemas/ADurationSid).'
+                            id_duration_type:
+                              $ref: '#/components/schemas/Wl.Coupon.Edit.DurationTypeSid'
+                              description: 'A way to specify a duration. One of [DurationTypeSid](#/components/schemas/Wl.Coupon.Edit.DurationTypeSid) constants.'
+                            is_price_breakdown:
+                              type: boolean
+                              description: 'Whether to display individual prices for each item in the package.'
                           required:
+                            - a_service_access
+                            - is_renew_public
+                            - a_component
+                            - a_staff
+                            - dl_expire
+                            - dl_now
+                            - dl_start
+                            - i_duration
+                            - id_activation
+                            - id_duration
+                            - id_duration_type
                             - is_price_breakdown
+                        a_guest_pass:
+                          type: object
+                          description: 'Information about promotion guest pass. The same structure as [ElementApi::$a_guest_pass](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            i_limit:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of times guest pass can be used per period. `null` for unlimited guest pass.'
+                            i_limit_daily:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of times guest pass can be used per day. `null` for limited guest pass.'
+                            i_period:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of periods after which guest pass limits are reset. `null` for unlimited guest pass.'
+                            id_period:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Period type by which guest pass limits are reset. `null` for unlimited guest pass.'
+                            id_reset_type:
+                              $ref: '#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid'
+                              description: |-
+                                Type by which guest pass limits are reset. One of [GuestPassResetTypeSid](#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid) constants.
+                                    `null` for unlimited guest pass.
+                            k_promotion_guest:
+                              type: string
+                              description: 'Guest pass promotion key. Primary key from RsPromotionSql table.'
+                            text_limit:
+                              type: string
+                              description: 'Formatted guest pass limits.'
+                            text_title:
+                              type: string
+                              description: 'Guest pass promotion title.'
+                          required:
+                            - i_limit
+                            - i_limit_daily
+                            - i_period
+                            - id_period
+                            - id_reset_type
+                            - k_promotion_guest
+                            - text_limit
+                            - text_title
                         a_image:
                           type: object
                           description: 'Contains information about one image connected to a sale item.'
@@ -59318,40 +59469,10 @@ paths:
                             - is_empty
                             - s_url
                         a_tax:
-                          type: object
-                          description: 'Contains information about taxes.'
-                          properties:
-                            f_tax:
-                              type: number
-                              format: float
-                              description: 'The calculated tax amount applied by this rule.'
-                            f_tax_discount:
-                              type: string
-                              description: 'The tax amount after applying all discounts.'
-                            f_tax_discount_login:
-                              type: string
-                              description: 'The tax amount after applying the client type discount only.'
-                            f_value:
-                              type: number
-                              format: float
-                              description: 'The tax rate. Its meaning depends on `id_tax`.'
-                            id_tax:
-                              $ref: '#/components/schemas/RsTaxSid'
-                              description: 'The tax type. One of [RsTaxSid](#/components/schemas/RsTaxSid) constants.'
-                            k_tax:
-                              type: string
-                              description: 'The tax key.'
-                            s_tax:
-                              type: string
-                              description: 'The tax name.'
-                          required:
-                            - f_tax
-                            - f_tax_discount
-                            - f_tax_discount_login
-                            - f_value
-                            - id_tax
-                            - k_tax
-                            - s_tax
+                          type: array
+                          description: 'Tax amounts keyed by tax key. Keys are primary keys in the RsTaxSql table.'
+                          items:
+                            type: string
                         id_purchase_option_view:
                           $ref: '#/components/schemas/Wl.Catalog.PurchaseOptionViewSid'
                           description: 'The Purchase Option view type. One of the [PurchaseOptionViewSid](#/components/schemas/Wl.Catalog.PurchaseOptionViewSid) constants.'
@@ -59375,6 +59496,7 @@ paths:
                           description: 'The title of the sale item.'
                       required:
                         - a_data
+                        - a_guest_pass
                         - a_image
                         - a_tax
                         - id_purchase_option_view
@@ -59388,41 +59510,9 @@ paths:
                     type: array
                     description: |-
                       A list of the item's taxes.
-                      Keys refer tax keys, and values refer to the amount of tax.
+                      Keys are tax keys, and values are tax amounts.
                     items:
-                      type: object
-                      properties:
-                        f_tax:
-                          type: number
-                          format: float
-                          description: 'The calculated tax amount applied by this rule.'
-                        f_tax_discount:
-                          type: string
-                          description: 'The tax amount after applying all discounts.'
-                        f_tax_discount_login:
-                          type: string
-                          description: 'The tax amount after applying the client type discount only.'
-                        f_value:
-                          type: number
-                          format: float
-                          description: 'The tax rate. Its meaning depends on `id_tax`.'
-                        id_tax:
-                          $ref: '#/components/schemas/RsTaxSid'
-                          description: 'The tax type. One of [RsTaxSid](#/components/schemas/RsTaxSid) constants.'
-                        k_tax:
-                          type: string
-                          description: 'The tax key.'
-                        s_tax:
-                          type: string
-                          description: 'The tax name.'
-                      required:
-                        - f_tax
-                        - f_tax_discount
-                        - f_tax_discount_login
-                        - f_value
-                        - id_tax
-                        - k_tax
-                        - s_tax
+                      type: string
                   f_price:
                     type:
                       - string
@@ -59540,7 +59630,6 @@ paths:
                     x-deprecated: 'Use `html_special`.'
                     description: 'Special instructions.'
                 required:
-                  - a_age_restriction
                   - a_data
                   - a_guest_pass
                   - a_image
@@ -59597,8 +59686,7 @@ paths:
                 type: string
                 description: 'The fixed amount of the discount.'
               f_percent:
-                type: number
-                format: float
+                type: string
                 description: 'The percentage amount of the discount.'
               i_limit:
                 type: integer
@@ -59634,7 +59722,7 @@ paths:
                   description: 'The primary key of item.'
                 k_shop_product_option:
                   type: string
-                  description: 'The product option or `0` for any other cases.'
+                  description: 'The product option key or `0` for any other cases.'
               required:
                 - id_sale
                 - k_id
@@ -125276,20 +125364,6 @@ components:
       x-enum-descriptions:
         - 'Limits reset on promotion billing day.'
         - 'Limits reset on promotion renewal day.'
-    RsTaxSid:
-      type: integer
-      format: int32
-      description: |-
-        Types of taxes.
-
-        Values:
-        - 2 (`PERCENT`): Tax is accounted based on percents.
-      enum:
-        - 2
-      x-enum-varnames:
-        - PERCENT
-      x-enum-descriptions:
-        - 'Tax is accounted based on percents.'
     Wl.Catalog.PurchaseOptionViewSid:
       type: integer
       format: int32
@@ -128842,6 +128916,20 @@ components:
         - 'Purchase option available for all clients.'
         - 'Purchase option introductory offer, available for new clients only.'
         - 'Purchase option available for clients with special login type or member group.'
+    RsTaxSid:
+      type: integer
+      format: int32
+      description: |-
+        Types of taxes.
+
+        Values:
+        - 2 (`PERCENT`): Tax is accounted based on percents.
+      enum:
+        - 2
+      x-enum-varnames:
+        - PERCENT
+      x-enum-descriptions:
+        - 'Tax is accounted based on percents.'
     Wl.Lead.Conversion.LeadConversionTypeSid:
       type:
         - integer
