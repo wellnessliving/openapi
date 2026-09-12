@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260912080149
+  version: 1.1.20260912111849
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -57139,11 +57139,8 @@ paths:
                         format: int32
                         description: 'Number of periods after which guest pass limits are reset. `null` for unlimited guest pass.'
                       id_period:
-                        type:
-                          - integer
-                          - 'null'
-                        format: int32
-                        description: 'Period type by which guest pass limits are reset. `null` for unlimited guest pass.'
+                        $ref: '#/components/schemas/ADurationSid'
+                        description: 'Period type by which guest pass limits are reset. One of the [ADurationSid](#/components/schemas/ADurationSid) constants. `null` for unlimited guest pass.'
                       id_reset_type:
                         $ref: '#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid'
                         description: |-
@@ -57151,7 +57148,7 @@ paths:
                               `null` for unlimited guest pass.
                       k_promotion_guest:
                         type: string
-                        description: 'Guest pass promotion key. Primary key from RsPromotionSql table.'
+                        description: 'Guest pass promotion key.'
                       text_limit:
                         type: string
                         description: 'Formatted guest pass limits.'
@@ -57401,11 +57398,8 @@ paths:
                               format: int32
                               description: 'Number of periods after which guest pass limits are reset. `null` for unlimited guest pass.'
                             id_period:
-                              type:
-                                - integer
-                                - 'null'
-                              format: int32
-                              description: 'Period type by which guest pass limits are reset. `null` for unlimited guest pass.'
+                              $ref: '#/components/schemas/ADurationSid'
+                              description: 'Period type by which guest pass limits are reset. One of the [ADurationSid](#/components/schemas/ADurationSid) constants. `null` for unlimited guest pass.'
                             id_reset_type:
                               $ref: '#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid'
                               description: |-
@@ -57413,7 +57407,7 @@ paths:
                                     `null` for unlimited guest pass.
                             k_promotion_guest:
                               type: string
-                              description: 'Guest pass promotion key. Primary key from RsPromotionSql table.'
+                              description: 'Guest pass promotion key.'
                             text_limit:
                               type: string
                               description: 'Formatted guest pass limits.'
@@ -57500,7 +57494,7 @@ paths:
                             - s_url
                         a_tax:
                           type: array
-                          description: 'Tax amounts keyed by tax key. Keys are primary keys in the RsTaxSql table.'
+                          description: 'Tax amounts keyed by tax key. The same structure as [ElementApi::$a_tax](/Wl/Catalog/CatalogList/Element.json) has.'
                           items:
                             type: string
                         id_purchase_option_view:
