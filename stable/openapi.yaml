@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260914061429
+  version: 1.1.20260914072541
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -71226,6 +71226,10 @@ paths:
                         id_gender:
                           $ref: '#/components/schemas/AGenderSid'
                           description: "The ID of the user's gender. One of the [AGenderSid](#/components/schemas/AGenderSid) constants."
+                        id_language:
+                          type: integer
+                          format: int32
+                          description: 'The ID of the language that is effective for the user.'
                         is_customer_new:
                           type: boolean
                           description: |-
@@ -71280,6 +71284,7 @@ paths:
                         - dt_add
                         - dt_birth
                         - id_gender
+                        - id_language
                         - is_customer_new
                         - is_traveller
                         - k_business
@@ -71322,6 +71327,9 @@ paths:
                       The ID of the user's gender. One of the [AGenderSid](#/components/schemas/AGenderSid) constants.
 
                       This will be `null` if the gender isn't set yet.
+                  id_language:
+                    $ref: '#/components/schemas/Core.Locale.Language.LocaleLanguageSid'
+                    description: 'The ID of the language that is currently effective for the user.'
                   is_calendar_google:
                     type: boolean
                     description: 'This will be `true` if the user has Google Calendar linked to their account; otherwise, `false`.'
@@ -71416,6 +71424,7 @@ paths:
                   - dt_add
                   - dt_birth
                   - id_gender
+                  - id_language
                   - is_calendar_google
                   - is_calendar_microsoft
                   - is_customer_new
