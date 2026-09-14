@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260914072541
+  version: 1.1.20260914100133
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -57200,7 +57200,7 @@ paths:
                     description: |-
                       List of images.
 
-                      Keys are index and each element hase same structure as [ElementApi::$a_image](/Wl/Catalog/CatalogList/Element.json) field.
+                      Keys are index and each element has the same structure as [ElementApi::$a_image](/Wl/Catalog/CatalogList/Element.json) field.
                     items:
                       type: object
                       properties:
@@ -71227,9 +71227,10 @@ paths:
                           $ref: '#/components/schemas/AGenderSid'
                           description: "The ID of the user's gender. One of the [AGenderSid](#/components/schemas/AGenderSid) constants."
                         id_language:
-                          type: integer
-                          format: int32
-                          description: 'The ID of the language that is effective for the user.'
+                          $ref: '#/components/schemas/Core.Locale.Language.LocaleLanguageSid'
+                          description: |-
+                            The ID of the language that is effective for the user.
+                              One of the [LocaleLanguageSid](#/components/schemas/Core.Locale.Language.LocaleLanguageSid) constants.
                         is_customer_new:
                           type: boolean
                           description: |-
