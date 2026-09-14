@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260914052245
+  version: 1.1.20260914061429
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -17898,6 +17898,9 @@ paths:
                   id_currency:
                     $ref: '#/components/schemas/Core.Locale.CurrencySid'
                     description: "The currency ID of the given business (or the system currency ID if the business didn't pass)."
+                  id_language:
+                    $ref: '#/components/schemas/Core.Locale.Language.LocaleLanguageSid'
+                    description: 'Default language of the business.'
                   id_locale:
                     $ref: '#/components/schemas/Core.Locale.LocaleSid'
                     description: 'The Locale ID, used to search geo items.'
@@ -18038,6 +18041,7 @@ paths:
                   - id_category
                   - id_claim_status
                   - id_currency
+                  - id_language
                   - id_locale
                   - id_region
                   - is_apply_surcharge
@@ -54894,12 +54898,10 @@ paths:
                             type: string
                             description: 'Specify if you want to redeem a prize for payment.'
                           a_signature:
-                            type: object
+                            type: array
                             description: |-
                               Signatures for a purchase option that requires agreement to several distinct
                                        contracts at once (for example, one per Tuition visitor). Keyed by string `{uid}-{id_purchase_item}-{k_id}`.
-                            additionalProperties:
-                              type: string
                           s_signature:
                             type: string
                             description: |-
@@ -120476,6 +120478,52 @@ components:
         - |-
           Business claiming process started, the contact information was verified, the trial has started, but company
           information wasn’t yet updated.
+    Core.Locale.Language.LocaleLanguageSid:
+      type: integer
+      format: int32
+      description: |-
+        A list of all languages.
+
+        5,7 are not used, may be used for other languages.
+
+        Last used id: 9.
+
+        Values:
+        - 6 (`DE`): German.
+        - 2 (`EN`): English.
+        - 9 (`ES`): Spanish.
+        - 4 (`FR`): French.
+        - 5 (`PT`): Portuguese.
+        - 1 (`RU`): Russian.
+        - 8 (`TR`): Turkish.
+        - 3 (`UK`): Ukrainian.
+      enum:
+        - 6
+        - 2
+        - 9
+        - 4
+        - 5
+        - 1
+        - 8
+        - 3
+      x-enum-varnames:
+        - DE
+        - EN
+        - ES
+        - FR
+        - PT
+        - RU
+        - TR
+        - UK
+      x-enum-descriptions:
+        - German.
+        - English.
+        - Spanish.
+        - French.
+        - Portuguese.
+        - Russian.
+        - Turkish.
+        - Ukrainian.
     RsRankTypeSid:
       type:
         - integer
@@ -121274,52 +121322,6 @@ components:
           Token is valid but score is risky.
 
           Used by {@link \Core\Google\Captcha\CaptchaVersionSid::V3} only.
-    Core.Locale.Language.LocaleLanguageSid:
-      type: integer
-      format: int32
-      description: |-
-        A list of all languages.
-
-        5,7 are not used, may be used for other languages.
-
-        Last used id: 9.
-
-        Values:
-        - 6 (`DE`): German.
-        - 2 (`EN`): English.
-        - 9 (`ES`): Spanish.
-        - 4 (`FR`): French.
-        - 5 (`PT`): Portuguese.
-        - 1 (`RU`): Russian.
-        - 8 (`TR`): Turkish.
-        - 3 (`UK`): Ukrainian.
-      enum:
-        - 6
-        - 2
-        - 9
-        - 4
-        - 5
-        - 1
-        - 8
-        - 3
-      x-enum-varnames:
-        - DE
-        - EN
-        - ES
-        - FR
-        - PT
-        - RU
-        - TR
-        - UK
-      x-enum-descriptions:
-        - German.
-        - English.
-        - Spanish.
-        - French.
-        - Portuguese.
-        - Russian.
-        - Turkish.
-        - Ukrainian.
     RsActivationSid:
       type: integer
       format: int32
@@ -123541,6 +123543,8 @@ components:
         - 1272 (`Wl\Collector\Report\DebtReportController`): Controller for [DebtReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
         - 1298 (`Wl\Collector\Report\TransactionCollectorReportController`): Controller for [TransactionCollectorReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
         - 1291 (`Wl\Collector\Report\TransactionReportController`): Controller for [TransactionReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
+        - 2355 (`Wl\Purchase\Membership\MembershipReportController`): External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 1669 (`Wl\Purchase\Tip\PurchaseTipReportController`): Controller for "Tips Earned Details".
         - 1052 (`Wl\Appointment\Report\BookingFlowReportController`): "Appointment Booking Flow report" view controller. Table representation.
         - 754 (`Wl\Member\Report\MemberAllReportController`): "All clients" report controller. Table representation.
@@ -123654,6 +123658,7 @@ components:
         - 1272
         - 1298
         - 1291
+        - 2355
         - 1669
         - 1052
         - 754
@@ -123763,6 +123768,7 @@ components:
         - Wl\Collector\Report\DebtReportController
         - Wl\Collector\Report\TransactionCollectorReportController
         - Wl\Collector\Report\TransactionReportController
+        - Wl\Purchase\Membership\MembershipReportController
         - Wl\Purchase\Tip\PurchaseTipReportController
         - Wl\Appointment\Report\BookingFlowReportController
         - Wl\Member\Report\MemberAllReportController
@@ -123879,6 +123885,9 @@ components:
         - 'Controller for {@link \Wl\Collector\Report\DebtReport} report.'
         - 'Controller for {@link \Wl\Collector\Report\TransactionCollectorReport} report.'
         - 'Controller for {@link \Wl\Collector\Report\TransactionReport} report.'
+        - |-
+          External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 'Controller for "Tips Earned Details".'
         - '"Appointment Booking Flow report" view controller. Table representation.'
         - '"All clients" report controller. Table representation.'
