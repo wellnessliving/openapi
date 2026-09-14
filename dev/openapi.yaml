@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260912122943
+  version: 1.1.20260914110305
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -15096,6 +15096,9 @@ paths:
                   id_currency:
                     $ref: '#/components/schemas/Core.Locale.CurrencySid'
                     description: "The currency ID of the given business (or the system currency ID if the business didn't pass)."
+                  id_language:
+                    $ref: '#/components/schemas/Core.Locale.Language.LocaleLanguageSid'
+                    description: 'Default language of the business.'
                   id_locale:
                     $ref: '#/components/schemas/Core.Locale.LocaleSid'
                     description: 'The Locale ID, used to search geo items.'
@@ -15236,6 +15239,7 @@ paths:
                   - id_category
                   - id_claim_status
                   - id_currency
+                  - id_language
                   - id_locale
                   - id_region
                   - is_apply_surcharge
@@ -28442,12 +28446,10 @@ paths:
                             type: string
                             description: 'Specify if you want to redeem a prize for payment.'
                           a_signature:
-                            type: object
+                            type: array
                             description: |-
                               Signatures for a purchase option that requires agreement to several distinct
                                        contracts at once (for example, one per Tuition visitor). Keyed by string `{uid}-{id_purchase_item}-{k_id}`.
-                            additionalProperties:
-                              type: string
                           s_signature:
                             type: string
                             description: |-
@@ -75795,6 +75797,10 @@ paths:
                         id_gender:
                           $ref: '#/components/schemas/AGenderSid'
                           description: "The ID of the user's gender. One of the [AGenderSid](#/components/schemas/AGenderSid) constants."
+                        id_language:
+                          type: integer
+                          format: int32
+                          description: 'The ID of the language that is effective for the user.'
                         is_customer_new:
                           type: boolean
                           description: |-
@@ -75849,6 +75855,7 @@ paths:
                         - dt_add
                         - dt_birth
                         - id_gender
+                        - id_language
                         - is_customer_new
                         - is_traveller
                         - k_business
@@ -75891,6 +75898,9 @@ paths:
                       The ID of the user's gender. One of the [AGenderSid](#/components/schemas/AGenderSid) constants.
 
                       This will be `null` if the gender isn't set yet.
+                  id_language:
+                    $ref: '#/components/schemas/Core.Locale.Language.LocaleLanguageSid'
+                    description: 'The ID of the language that is currently effective for the user.'
                   is_calendar_google:
                     type: boolean
                     description: 'This will be `true` if the user has Google Calendar linked to their account; otherwise, `false`.'
@@ -75985,6 +75995,7 @@ paths:
                   - dt_add
                   - dt_birth
                   - id_gender
+                  - id_language
                   - is_calendar_google
                   - is_calendar_microsoft
                   - is_customer_new
@@ -120006,6 +120017,8 @@ components:
         - 1290 (`Wl\Collector\Report\TransactionReport`): Report with list of all debt payments.
         - 1297 (`Wl\Collector\Report\TransactionCollectorReport`): Report with list of payments that were performed via collections service.
         - 1791 (`Wl\Lead\Report\LeadManagementReport`): "Lead Management Report".
+        - 2352 (`Wl\Purchase\Membership\MembershipReport`): External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 1670 (`Wl\Purchase\Tip\PurchaseTipReport`): Report to show details of the earned tips by staff members who takes tips.
         - 1713 (`Wl\Purchase\Reconcile\ReconcileReport`): External reconciliation report for franchisee.
           Is developed as microservice. This class only provides access validation and URL generation.
@@ -120145,6 +120158,7 @@ components:
         - 1290
         - 1297
         - 1791
+        - 2352
         - 1670
         - 1713
         - 1556
@@ -120232,6 +120246,7 @@ components:
         - Wl\Collector\Report\TransactionReport
         - Wl\Collector\Report\TransactionCollectorReport
         - Wl\Lead\Report\LeadManagementReport
+        - Wl\Purchase\Membership\MembershipReport
         - Wl\Purchase\Tip\PurchaseTipReport
         - Wl\Purchase\Reconcile\ReconcileReport
         - Wl\Visit\Report\VisitBuySummaryReport
@@ -120323,6 +120338,9 @@ components:
         - 'Report with list of all debt payments.'
         - 'Report with list of payments that were performed via collections service.'
         - '"Lead Management Report".'
+        - |-
+          External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 'Report to show details of the earned tips by staff members who takes tips.'
         - |-
           External reconciliation report for franchisee.
@@ -121024,6 +121042,52 @@ components:
         - |-
           Business claiming process started, the contact information was verified, the trial has started, but company
           information wasn’t yet updated.
+    Core.Locale.Language.LocaleLanguageSid:
+      type: integer
+      format: int32
+      description: |-
+        A list of all languages.
+
+        5,7 are not used, may be used for other languages.
+
+        Last used id: 9.
+
+        Values:
+        - 6 (`DE`): German.
+        - 2 (`EN`): English.
+        - 9 (`ES`): Spanish.
+        - 4 (`FR`): French.
+        - 5 (`PT`): Portuguese.
+        - 1 (`RU`): Russian.
+        - 8 (`TR`): Turkish.
+        - 3 (`UK`): Ukrainian.
+      enum:
+        - 6
+        - 2
+        - 9
+        - 4
+        - 5
+        - 1
+        - 8
+        - 3
+      x-enum-varnames:
+        - DE
+        - EN
+        - ES
+        - FR
+        - PT
+        - RU
+        - TR
+        - UK
+      x-enum-descriptions:
+        - German.
+        - English.
+        - Spanish.
+        - French.
+        - Portuguese.
+        - Russian.
+        - Turkish.
+        - Ukrainian.
     RsRankTypeSid:
       type:
         - integer
@@ -122285,52 +122349,6 @@ components:
         - 'Anonymous user (Walk-In).'
         - Business.
         - 'System user.'
-    Core.Locale.Language.LocaleLanguageSid:
-      type: integer
-      format: int32
-      description: |-
-        A list of all languages.
-
-        5,7 are not used, may be used for other languages.
-
-        Last used id: 9.
-
-        Values:
-        - 6 (`DE`): German.
-        - 2 (`EN`): English.
-        - 9 (`ES`): Spanish.
-        - 4 (`FR`): French.
-        - 5 (`PT`): Portuguese.
-        - 1 (`RU`): Russian.
-        - 8 (`TR`): Turkish.
-        - 3 (`UK`): Ukrainian.
-      enum:
-        - 6
-        - 2
-        - 9
-        - 4
-        - 5
-        - 1
-        - 8
-        - 3
-      x-enum-varnames:
-        - DE
-        - EN
-        - ES
-        - FR
-        - PT
-        - RU
-        - TR
-        - UK
-      x-enum-descriptions:
-        - German.
-        - English.
-        - Spanish.
-        - French.
-        - Portuguese.
-        - Russian.
-        - Turkish.
-        - Ukrainian.
     Core.AI.LogTriage.TriageSourceSid:
       type: integer
       format: int32
@@ -124629,25 +124647,51 @@ components:
         List of sources from where the user registers.
 
         Values:
+        - 4 (`BOOKING`): Source when a user registers while booking a service.
+
+          <b>Don't use to edit existing user profile.</b>
         - 1 (`BOOKING_AND_PURCHASE`): Source when a user registers during purchase or booking.
 
           <b>
            Don't use to edit existing user profile.
            Used only to register new clients during booking or purchase.
           </b>
+        - 6 (`GUEST`): Source when a guest (an unregistered visitor) books a service or makes a purchase.
+
+          Independent of [RegisterSourceSid::BOOKING](#/components/schemas/Wl.Profile.RegisterSourceSid)/[RegisterSourceSid::PURCHASE](#/components/schemas/Wl.Profile.RegisterSourceSid) - a guest may be
+           asked for a field even when a registered client is not, and vice versa.
+        - 5 (`PURCHASE`): Source when a user registers while making a purchase.
+
+          <b>Don't use to edit existing user profile.</b>
+        - 7 (`RELATIONSHIP`): Source when a client adds a family member (a relative profile) - directly, or as part of booking or purchase.
         - 2 (`SELF`): Source when a user registers on self-registration web app, self-registration web app URL, etc.
 
           <b>Don't use to edit existing user profile.</b>
+        - 8 (`STAFF`): Source when staff add or edit a client profile.
         - 3 (`UNSET_VALUE`): This is a service value, which means to not choose any specific source.
       enum:
+        - 4
         - 1
+        - 6
+        - 5
+        - 7
         - 2
+        - 8
         - 3
       x-enum-varnames:
+        - BOOKING
         - BOOKING_AND_PURCHASE
+        - GUEST
+        - PURCHASE
+        - RELATIONSHIP
         - SELF
+        - STAFF
         - UNSET_VALUE
       x-enum-descriptions:
+        - |-
+          Source when a user registers while booking a service.
+
+          <b>Don't use to edit existing user profile.</b>
         - |-
           Source when a user registers during purchase or booking.
 
@@ -124656,9 +124700,20 @@ components:
            Used only to register new clients during booking or purchase.
           </b>
         - |-
+          Source when a guest (an unregistered visitor) books a service or makes a purchase.
+
+          Independent of {@link \Wl\Profile\RegisterSourceSid::BOOKING}/{@link \Wl\Profile\RegisterSourceSid::PURCHASE} - a guest may be
+           asked for a field even when a registered client is not, and vice versa.
+        - |-
+          Source when a user registers while making a purchase.
+
+          <b>Don't use to edit existing user profile.</b>
+        - 'Source when a client adds a family member (a relative profile) - directly, or as part of booking or purchase.'
+        - |-
           Source when a user registers on self-registration web app, self-registration web app URL, etc.
 
           <b>Don't use to edit existing user profile.</b>
+        - 'Source when staff add or edit a client profile.'
         - 'This is a service value, which means to not choose any specific source.'
     Wl.Quiz.Response.SourceSid:
       type: integer
@@ -124850,6 +124905,8 @@ components:
         - 1298 (`Wl\Collector\Report\TransactionCollectorReportController`): Controller for [TransactionCollectorReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
         - 1291 (`Wl\Collector\Report\TransactionReportController`): Controller for [TransactionReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
         - 1792 (`Wl\Lead\Report\LeadManagementReportController`): Controller for "Lead Management Report".
+        - 2355 (`Wl\Purchase\Membership\MembershipReportController`): External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 1669 (`Wl\Purchase\Tip\PurchaseTipReportController`): Controller for "Tips Earned Details".
         - 1741 (`Wl\Visit\Report\VisitLifetimeReportController`): Controls list for "Lifetime Value & Visit Milestones" report.
         - 1555 (`Wl\Visit\Report\VisitBuySummaryReportController`): Controls list report for attendance.
@@ -124965,6 +125022,7 @@ components:
         - 1298
         - 1291
         - 1792
+        - 2355
         - 1669
         - 1741
         - 1555
@@ -125074,6 +125132,7 @@ components:
         - Wl\Collector\Report\TransactionCollectorReportController
         - Wl\Collector\Report\TransactionReportController
         - Wl\Lead\Report\LeadManagementReportController
+        - Wl\Purchase\Membership\MembershipReportController
         - Wl\Purchase\Tip\PurchaseTipReportController
         - Wl\Visit\Report\VisitLifetimeReportController
         - Wl\Visit\Report\VisitBuySummaryReportController
@@ -125187,6 +125246,9 @@ components:
         - 'Controller for {@link \Wl\Collector\Report\TransactionCollectorReport} report.'
         - 'Controller for {@link \Wl\Collector\Report\TransactionReport} report.'
         - 'Controller for "Lead Management Report".'
+        - |-
+          External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 'Controller for "Tips Earned Details".'
         - 'Controls list for "Lifetime Value & Visit Milestones" report.'
         - 'Controls list report for attendance.'
