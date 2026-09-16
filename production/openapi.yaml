@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260911051759
+  version: 1.1.20260916083500
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -102892,6 +102892,8 @@ components:
         - 1297 (`Wl\Collector\Report\TransactionCollectorReport`): Report with list of payments that were performed via collections service.
         - 1358 (`Wl\Login\Account\LoginAccountReport`): "Balance Due Report".
           List of clients with their accounts state.
+        - 2352 (`Wl\Purchase\Membership\MembershipReport`): External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 1670 (`Wl\Purchase\Tip\PurchaseTipReport`): Report to show details of the earned tips by staff members who takes tips.
         - 1713 (`Wl\Purchase\Reconcile\ReconcileReport`): External reconciliation report for franchisee.
           Is developed as microservice. This class only provides access validation and URL generation.
@@ -103021,6 +103023,7 @@ components:
         - 1290
         - 1297
         - 1358
+        - 2352
         - 1670
         - 1713
         - 1050
@@ -103107,6 +103110,7 @@ components:
         - Wl\Collector\Report\TransactionReport
         - Wl\Collector\Report\TransactionCollectorReport
         - Wl\Login\Account\LoginAccountReport
+        - Wl\Purchase\Membership\MembershipReport
         - Wl\Purchase\Tip\PurchaseTipReport
         - Wl\Purchase\Reconcile\ReconcileReport
         - Wl\Appointment\Report\BookingFlowReport
@@ -103203,6 +103207,9 @@ components:
         - |-
           "Balance Due Report".
           List of clients with their accounts state.
+        - |-
+          External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 'Report to show details of the earned tips by staff members who takes tips.'
         - |-
           External reconciliation report for franchisee.
@@ -113440,6 +113447,8 @@ components:
         - 1298 (`Wl\Collector\Report\TransactionCollectorReportController`): Controller for [TransactionCollectorReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
         - 1291 (`Wl\Collector\Report\TransactionReportController`): Controller for [TransactionReport](#/components/schemas/Thoth.ReportCore.Generator.ReportGeneratorReportAbstract) report.
         - 1359 (`Wl\Login\Account\LoginAccountReportController`): Controller for "Balance Due Report".
+        - 2355 (`Wl\Purchase\Membership\MembershipReportController`): External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 1669 (`Wl\Purchase\Tip\PurchaseTipReportController`): Controller for "Tips Earned Details".
         - 1052 (`Wl\Appointment\Report\BookingFlowReportController`): "Appointment Booking Flow report" view controller. Table representation.
         - 754 (`Wl\Member\Report\MemberAllReportController`): "All clients" report controller. Table representation.
@@ -113552,6 +113561,7 @@ components:
         - 1298
         - 1291
         - 1359
+        - 2355
         - 1669
         - 1052
         - 754
@@ -113660,6 +113670,7 @@ components:
         - Wl\Collector\Report\TransactionCollectorReportController
         - Wl\Collector\Report\TransactionReportController
         - Wl\Login\Account\LoginAccountReportController
+        - Wl\Purchase\Membership\MembershipReportController
         - Wl\Purchase\Tip\PurchaseTipReportController
         - Wl\Appointment\Report\BookingFlowReportController
         - Wl\Member\Report\MemberAllReportController
@@ -113775,6 +113786,9 @@ components:
         - 'Controller for {@link \Wl\Collector\Report\TransactionCollectorReport} report.'
         - 'Controller for {@link \Wl\Collector\Report\TransactionReport} report.'
         - 'Controller for "Balance Due Report".'
+        - |-
+          External membership report.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 'Controller for "Tips Earned Details".'
         - '"Appointment Booking Flow report" view controller. Table representation.'
         - '"All clients" report controller. Table representation.'
