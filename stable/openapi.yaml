@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260915084637
+  version: 1.1.20260916025957
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -7172,6 +7172,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -7389,6 +7394,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -7622,6 +7632,11 @@ paths:
                               description: '` true ` if custom markup image is to be deleted `false` otherwise.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_id:
                               type: string
                               description: |-
@@ -7757,6 +7772,11 @@ paths:
                                 - 13
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -7865,6 +7885,11 @@ paths:
                                 - 1
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -8059,6 +8084,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -8175,6 +8205,11 @@ paths:
                                 - 12
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -8291,6 +8326,11 @@ paths:
                                 - 18
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_id_image_left:
                               type: string
                               description: 'Left response image key.'
@@ -8429,6 +8469,11 @@ paths:
                                 - 11
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -8635,6 +8680,11 @@ paths:
                                 - 4
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -9242,6 +9292,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -9459,6 +9514,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -9692,6 +9752,11 @@ paths:
                             description: '` true ` if custom markup image is to be deleted `false` otherwise.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_id:
                             type: string
                             description: |-
@@ -9827,6 +9892,11 @@ paths:
                               - 13
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -9935,6 +10005,11 @@ paths:
                               - 1
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -10129,6 +10204,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -10245,6 +10325,11 @@ paths:
                               - 12
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -10361,6 +10446,11 @@ paths:
                               - 18
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_id_image_left:
                             type: string
                             description: 'Left response image key.'
@@ -10499,6 +10589,11 @@ paths:
                               - 11
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -10705,6 +10800,11 @@ paths:
                               - 4
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -11381,6 +11481,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -11598,6 +11703,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -11831,6 +11941,11 @@ paths:
                               description: '` true ` if custom markup image is to be deleted `false` otherwise.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_id:
                               type: string
                               description: |-
@@ -11966,6 +12081,11 @@ paths:
                                 - 13
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -12074,6 +12194,11 @@ paths:
                                 - 1
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -12268,6 +12393,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -12384,6 +12514,11 @@ paths:
                                 - 12
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -12500,6 +12635,11 @@ paths:
                                 - 18
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_id_image_left:
                               type: string
                               description: 'Left response image key.'
@@ -12638,6 +12778,11 @@ paths:
                                 - 11
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -12844,6 +12989,11 @@ paths:
                                 - 4
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -13453,6 +13603,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -13670,6 +13825,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -13903,6 +14063,11 @@ paths:
                             description: '` true ` if custom markup image is to be deleted `false` otherwise.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_id:
                             type: string
                             description: |-
@@ -14038,6 +14203,11 @@ paths:
                               - 13
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -14146,6 +14316,11 @@ paths:
                               - 1
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -14340,6 +14515,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -14456,6 +14636,11 @@ paths:
                               - 12
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -14572,6 +14757,11 @@ paths:
                               - 18
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_id_image_left:
                             type: string
                             description: 'Left response image key.'
@@ -14710,6 +14900,11 @@ paths:
                               - 11
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -14916,6 +15111,11 @@ paths:
                               - 4
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -34892,6 +35092,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -35109,6 +35314,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -35342,6 +35552,11 @@ paths:
                               description: '` true ` if custom markup image is to be deleted `false` otherwise.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_id:
                               type: string
                               description: |-
@@ -35477,6 +35692,11 @@ paths:
                                 - 13
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -35585,6 +35805,11 @@ paths:
                                 - 1
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -35779,6 +36004,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -35895,6 +36125,11 @@ paths:
                                 - 12
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -36011,6 +36246,11 @@ paths:
                                 - 18
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_id_image_left:
                               type: string
                               description: 'Left response image key.'
@@ -36149,6 +36389,11 @@ paths:
                                 - 11
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -36355,6 +36600,11 @@ paths:
                                 - 4
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -36740,6 +36990,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -36957,6 +37212,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -37190,6 +37450,11 @@ paths:
                             description: '` true ` if custom markup image is to be deleted `false` otherwise.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_id:
                             type: string
                             description: |-
@@ -37325,6 +37590,11 @@ paths:
                               - 13
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -37433,6 +37703,11 @@ paths:
                               - 1
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -37627,6 +37902,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -37743,6 +38023,11 @@ paths:
                               - 12
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -37859,6 +38144,11 @@ paths:
                               - 18
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_id_image_left:
                             type: string
                             description: 'Left response image key.'
@@ -37997,6 +38287,11 @@ paths:
                               - 11
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -38203,6 +38498,11 @@ paths:
                               - 4
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -38670,6 +38970,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -38887,6 +39192,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -39120,6 +39430,11 @@ paths:
                               description: '` true ` if custom markup image is to be deleted `false` otherwise.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_id:
                               type: string
                               description: |-
@@ -39255,6 +39570,11 @@ paths:
                                 - 13
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -39363,6 +39683,11 @@ paths:
                                 - 1
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -39557,6 +39882,11 @@ paths:
                               description: 'Answer can have multiple options selected.'
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -39673,6 +40003,11 @@ paths:
                                 - 12
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -39789,6 +40124,11 @@ paths:
                                 - 18
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_id_image_left:
                               type: string
                               description: 'Left response image key.'
@@ -39927,6 +40267,11 @@ paths:
                                 - 11
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -40133,6 +40478,11 @@ paths:
                                 - 4
                             is_require:
                               type: boolean
+                              description: |-
+                                Whether element is required or not.
+
+                                `true` if element is required.
+                                `false` if element is not required.
                             k_quiz_element:
                               type:
                                 - string
@@ -40316,6 +40666,7 @@ paths:
           required: true
           schema:
             type: boolean
+          description: '`true` if API is being used from backend, `false` otherwise.'
         -
           name: is_simple
           in: query
@@ -40410,6 +40761,7 @@ paths:
           required: true
           schema:
             type: boolean
+          description: '`true` if API is being used from backend, `false` otherwise.'
         -
           name: is_simple
           in: query
@@ -40528,6 +40880,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -40745,6 +41102,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -40978,6 +41340,11 @@ paths:
                             description: '` true ` if custom markup image is to be deleted `false` otherwise.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_id:
                             type: string
                             description: |-
@@ -41113,6 +41480,11 @@ paths:
                               - 13
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -41221,6 +41593,11 @@ paths:
                               - 1
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -41415,6 +41792,11 @@ paths:
                             description: 'Answer can have multiple options selected.'
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -41531,6 +41913,11 @@ paths:
                               - 12
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -41647,6 +42034,11 @@ paths:
                               - 18
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_id_image_left:
                             type: string
                             description: 'Left response image key.'
@@ -41785,6 +42177,11 @@ paths:
                               - 11
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -41991,6 +42388,11 @@ paths:
                               - 4
                           is_require:
                             type: boolean
+                            description: |-
+                              Whether element is required or not.
+
+                              `true` if element is required.
+                              `false` if element is not required.
                           k_quiz_element:
                             type:
                               - string
@@ -74711,6 +75113,9 @@ paths:
                   text_title:
                     type: string
                     description: 'Task title.'
+                  tl_due:
+                    type: string
+                    description: 'Due time.'
                   uid:
                     type:
                       - string
@@ -74727,6 +75132,7 @@ paths:
                   - a_uid_staff
                   - dl_due
                   - text_title
+                  - tl_due
                   - xml_description
         '400':
           $ref: '#/components/responses/400'
@@ -74887,6 +75293,9 @@ paths:
                 text_title:
                   type: string
                   description: 'Task title.'
+                tl_due:
+                  type: string
+                  description: 'Due time.'
                 uid:
                   type:
                     - string
@@ -74903,6 +75312,7 @@ paths:
                 - a_uid_staff
                 - dl_due
                 - text_title
+                - tl_due
                 - xml_description
       x-rate-limit:
         -
@@ -77805,6 +78215,10 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
+      summary: 'Loads customization data of the customization form that corresponds to specified report / report page.'
+      description: |-
+        Populates [CustomizationFormApi::$a_customization_form](/Wl/Report/Customization/CustomizationForm.json) with the customization data of the requested
+        report or report page, optionally converted to the reports listed in [CustomizationFormApi::$s_report](/Wl/Report/Customization/CustomizationForm.json).
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -77893,6 +78307,10 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
+      summary: 'Saves given data of a customization form into database.'
+      description: |-
+        Stores the customization data supplied in [CustomizationFormApi::$a_customization_form](/Wl/Report/Customization/CustomizationForm.json) for the
+        requested report or report page and resets the related report configuration cache.
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
