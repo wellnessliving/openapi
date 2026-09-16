@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260916104135
+  version: 1.1.20260916110238
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -44426,6 +44426,25 @@ paths:
                         - text_note
                         - text_user_create
                         - uid_create
+                  a_payment_periods:
+                    type: array
+                    description: 'List of all payment periods for the give pricing option. Just dates in local timezone.'
+                    items:
+                      type: object
+                      properties:
+                        dt_end:
+                          type: string
+                          description: 'End date of the period in local timezone.'
+                        dl_payment:
+                          type: string
+                          description: 'Date, when this period should be paid.'
+                        dt_start:
+                          type: string
+                          description: 'Start date of the period in local timezone.'
+                      required:
+                        - dt_end
+                        - dl_payment
+                        - dt_start
                   a_payment_schedule:
                     type: array
                     description: 'List of all upcoming payments for the give pricing option. Just dates in local timezone.'
@@ -44459,6 +44478,9 @@ paths:
                       The date when the email notification was sent.
 
                       `null` if it shouldn't be updated.
+                  id_hold:
+                    $ref: '#/components/schemas/Wl.Promotion.Pay.PromotionPayHoldSid'
+                    description: 'Type of the hold from [PromotionPayHoldSid](#/components/schemas/Wl.Promotion.Pay.PromotionPayHoldSid).'
                   is_mail:
                     type: boolean
                     description: |-
@@ -44512,7 +44534,9 @@ paths:
 
                       `null` if it shouldn't be updated.
                 required:
+                  - a_payment_periods
                   - a_payment_schedule
+                  - id_hold
                   - is_mail
                   - is_push
                   - is_sms
@@ -124690,6 +124714,68 @@ components:
             <li>{@link \RsProgramSid::VISIT_MEMBERSHIP}</li>
             <li>{@link \RsProgramSid::VISIT_PASS}</li>
           </ul>
+    Wl.Promotion.Pay.PromotionPayHoldSid:
+      type: integer
+      format: int32
+      description: |-
+        Contains a list of schemes of processing of on-hold periods.
+
+        Scheme is stored in MembershipSql.`id_hold`.
+
+        Last used ID: 4
+
+        Values:
+        - 2 (`MINDBODY`): Mindbody scheme.
+
+          Payment amounts for all payment periods are the same.
+
+          Periods containing on-hold days are extended. Payment dates of future periods are moved forward.
+        - 1 (`WL`): WellnessLiving scheme (default).
+
+          Payments happen on the same date.
+
+          Price of periods containing on-hold dates is prorated.
+
+          Payments fall on an on-hold date are skipped. Skipped payment amount is added to the next payment.
+        - 3 (`WL_STICK`): WellnessLiving scheme in which payments that fall on a suspended day, are not skipped.
+          Instead, they are moved to the first active day.
+        - 4 (`WL_STRICT_SCHEDULE`): Scheme in which payments continue on schedule with standard amount regardless of pauses.
+
+          Periods containing hold days remain the same length except for the last period before renewal.
+          Hold days are added to the last period before renewal.
+      enum:
+        - 2
+        - 1
+        - 3
+        - 4
+      x-enum-varnames:
+        - MINDBODY
+        - WL
+        - WL_STICK
+        - WL_STRICT_SCHEDULE
+      x-enum-descriptions:
+        - |-
+          Mindbody scheme.
+
+          Payment amounts for all payment periods are the same.
+
+          Periods containing on-hold days are extended. Payment dates of future periods are moved forward.
+        - |-
+          WellnessLiving scheme (default).
+
+          Payments happen on the same date.
+
+          Price of periods containing on-hold dates is prorated.
+
+          Payments fall on an on-hold date are skipped. Skipped payment amount is added to the next payment.
+        - |-
+          WellnessLiving scheme in which payments that fall on a suspended day, are not skipped.
+          Instead, they are moved to the first active day.
+        - |-
+          Scheme in which payments continue on schedule with standard amount regardless of pauses.
+
+          Periods containing hold days remain the same length except for the last period before renewal.
+          Hold days are added to the last period before renewal.
     Wl.Visit.Note.Sid.NoteSid:
       type: integer
       format: int32
