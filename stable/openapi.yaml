@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260916045434
+  version: 1.1.20260916092231
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -55303,7 +55303,11 @@ paths:
                             type: array
                             description: |-
                               Signatures for a purchase option that requires agreement to several distinct
-                                       contracts at once (for example, one per Tuition visitor). Keyed by string `{uid}-{id_purchase_item}-{k_id}`.
+                                       contracts at once (for example, one per Tuition visitor).
+                                       Keys are contract keys in `{uid}-{id_purchase_item}-{k_id}` format.
+                                       Values are signatures of the client in base64 format.
+                            items:
+                              type: string
                           s_signature:
                             type: string
                             description: |-
@@ -56889,6 +56893,15 @@ paths:
             schema:
               type: object
               properties:
+                a_answer:
+                  type: array
+                  description: |-
+                    The list of answers for questions.
+
+                    * Key is a question hash from QuestionApi::$a_question.
+                    * Value is the answer text for that question.
+                  items:
+                    type: string
                 a_item:
                   type: array
                   description: |-
@@ -57317,6 +57330,7 @@ paths:
                   type: string
                   description: 'The custom receipt note.'
               required:
+                - a_answer
                 - a_item
                 - a_pay_form
                 - a_quiz_response
@@ -104739,6 +104753,56 @@ paths:
           schema:
             type: string
           description: 'The service key used for retrieving questions.'
+      x-instance-get-key: k_service
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Appointment.Book.Question.Question.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves answers for an existing appointment.'
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_answer:
+                  type: array
+                  description: |-
+                    The list of answers for questions
+
+                    * Key is a question hash from [QuestionApi::$a_question](/Wl/Appointment/Book/Question/Question.json).
+                    * Value is the answer text for that question.
+                  items:
+                    type: string
+                k_appointment:
+                  type: string
+                  description: 'Appointment key to save answers for.'
+              required:
+                - a_answer
+                - k_appointment
       x-instance-get-key: k_service
       x-rate-limit:
         -
