@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260916110238
+  version: 1.1.20260916111321
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -56922,7 +56922,7 @@ paths:
                   description: |-
                     The list of answers for questions.
 
-                    * Key is a question hash from QuestionApi::$a_question.
+                    * Key is a question hash from [QuestionApi::$a_question](/Wl/Appointment/Book/Question/Question.json).
                     * Value is the answer text for that question.
                   items:
                     type: string
