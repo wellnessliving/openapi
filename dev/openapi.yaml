@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260916072405
+  version: 1.1.20260916094427
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -60551,6 +60551,7 @@ paths:
                           properties:
                             a_image:
                               type: object
+                              description: 'Information about the image.'
                               properties:
                                 i_height:
                                   type: integer
@@ -106016,6 +106017,7 @@ paths:
                       properties:
                         a_image:
                           type: object
+                          description: 'Information about the image.'
                           properties:
                             i_height:
                               type: integer
@@ -106144,6 +106146,7 @@ paths:
                 properties:
                   a_category:
                     type: object
+                    description: 'List of reward categories.'
                     properties:
                       id_reward_action_category:
                         $ref: '#/components/schemas/RsRewardActionCategorySid'
