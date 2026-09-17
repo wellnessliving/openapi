@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260917042243
+  version: 1.1.20260917065820
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -44480,7 +44480,7 @@ paths:
                       `null` if it shouldn't be updated.
                   id_hold:
                     $ref: '#/components/schemas/Wl.Promotion.Pay.PromotionPayHoldSid'
-                    description: 'Type of the hold from [PromotionPayHoldSid](#/components/schemas/Wl.Promotion.Pay.PromotionPayHoldSid).'
+                    description: 'Type of the hold.'
                   is_mail:
                     type: boolean
                     description: |-
