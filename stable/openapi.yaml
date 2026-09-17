@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260916111321
+  version: 1.1.20260917020547
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -15683,9 +15683,7 @@ paths:
                       - uid_edit
                   a_quiz_register:
                     type: array
-                    description: |-
-                      List of quiz keys, needed for registration.
-                      Each element is a primary key in the `wl_quiz` table.
+                    description: 'List of quiz keys, needed for registration.'
                     items:
                       type: string
                 required:
@@ -25818,10 +25816,10 @@ paths:
                           description: 'Determines whether the alert was read by the user.'
                         k_alert:
                           type: string
-                          description: 'Alert key. Primary key in  table.'
+                          description: 'Alert key.  table.'
                         k_business:
                           type: string
-                          description: 'Business key. Primary key in  table.'
+                          description: 'Business key.  table.'
                         s_icon_class:
                           type: string
                           description: 'Icon class. See [AlertAbstract::CSS_CLASS](#/components/schemas/Wl.Alert.AlertAbstract).'
@@ -25835,12 +25833,15 @@ paths:
                           type:
                             - string
                             - 'null'
-                          description: 'User key associated with this alert. Primary key in .`null` if user is walk-in.'
+                          description: |-
+                            User key associated with this alert.
+                               .
+                               `null` if user is walk-in.
                         url_detail:
                           type: string
                           description: |-
-                            A link to detail page related to the alert. Can be empty if the user had
-                               no access to this page at the time the alert was created.
+                            A link to detail page related to the alert.
+                               Can be empty if the user had no access to this page at the time the alert was created.
                         url_logo:
                           type: string
                           description: "Url to user's logo."
@@ -33418,7 +33419,6 @@ paths:
                     description: |-
                       Full list of ranks owned by the client.
                       The key of the array is a category rank key.
-                      Primary key in the  table.
                     items:
                       type: object
                       properties:
@@ -33427,10 +33427,10 @@ paths:
                           description: 'Date, when rank has been added.'
                         k_rank:
                           type: string
-                          description: 'Rank key. Primary key in the  table.'
+                          description: 'Rank key.'
                         k_rank_category:
                           type: string
-                          description: 'Category rank key. Primary key in the  table.'
+                          description: 'Category rank key.'
                         s_rank:
                           type: string
                           description: 'Rank name.'
@@ -33439,7 +33439,7 @@ paths:
                           description: 'Rank category name.'
                         uid:
                           type: string
-                          description: "User's key. Primary key in  table."
+                          description: "User's key."
                         z_addon:
                           type: string
                           description: 'Compressed and serialised list of addons, that client has.'
@@ -45595,7 +45595,7 @@ paths:
                     type: string
                     description: |-
                       User's active purchase options data.
-                      For more details see .
+
 
                       Serialized with JSON.
                 required:
@@ -50234,17 +50234,17 @@ paths:
                 properties:
                   a_user_list:
                     type: array
-                    description: 'List of users with information about their ranks in the business. Each element:'
+                    description: 'List of users with information about their ranks in the business.'
                     items:
                       type: object
                       properties:
                         a_rank_category:
                           type: object
-                          description: 'List of rank categories with rank details for the user. Each element:'
+                          description: 'List of rank categories with rank details for the user.'
                           properties:
                             a_available:
                               type: object
-                              description: 'List of ranks available for the category. Each element:'
+                              description: 'List of ranks available for the category.'
                               properties:
                                 html_condition:
                                   type: string
@@ -50260,7 +50260,7 @@ paths:
                                   description: 'Time and class belt conditions in JSON format.'
                                 k_rank:
                                   type: string
-                                  description: 'Rank key. Primary key from  table.'
+                                  description: 'Rank key.'
                                 text_rank:
                                   type: string
                                   description: 'Rank title.'
@@ -50274,13 +50274,14 @@ paths:
                             a_current:
                               type: object
                               description: |-
-                                Data of the user's current rank in the category, merged with promotion condition data. Contains
-                                  only `html_condition` (the belt condition of the first available rank) when the user does not
-                                  have a current rank yet. When the user has a current rank, also contains:
+                                Data of the user's current rank in the category, merged with promotion condition data.
+                                Contains only `html_condition` (the belt condition of the first available rank) when the user does not
+                                have a current rank yet.
+                                When the user has a current rank, also contains additional information.
                               properties:
                                 a_logo:
                                   type: object
-                                  description: 'Rank logo thumbnail data:'
+                                  description: 'Rank logo thumbnail data.'
                                   properties:
                                     i_height:
                                       type: integer
@@ -50303,10 +50304,10 @@ paths:
                                     - url
                                 k_login_rank:
                                   type: string
-                                  description: 'Login rank key. Primary key from  table.'
+                                  description: 'Login rank key.'
                                 k_rank:
                                   type: string
-                                  description: 'Rank key. Primary key from  table.'
+                                  description: 'Rank key.'
                                 text_attendance_at_rank:
                                   type: string
                                   description: 'Class attendance in the current rank.'
@@ -50328,7 +50329,7 @@ paths:
                                 - text_time_at_rank
                             k_rank_category:
                               type: string
-                              description: 'Rank category key. Primary key from  table.'
+                              description: 'Rank category key.'
                             text_rank_category:
                               type: string
                               description: 'Rank category title.'
@@ -50339,17 +50340,17 @@ paths:
                             - text_rank_category
                         a_user_info:
                           type: object
-                          description: 'User info:'
+                          description: 'User information.'
                           properties:
                             html_info:
                               type: string
-                              description: 'Result of  function.'
+                              description: 'HTML information about user.'
                             text_name:
                               type: string
                               description: 'Full user name.'
                             uid:
                               type: string
-                              description: 'User key. Primary key in the  table.'
+                              description: 'User key.'
                           required:
                             - html_info
                             - text_name
@@ -50407,9 +50408,7 @@ paths:
           required: true
           schema:
             type: string
-          description: |-
-            UIDs of users encoded by Javascript analogue of the 
-            method.
+          description: 'Encoded list of UIDs.'
         -
           name: s_user_rank_category
           in: query
@@ -50417,10 +50416,8 @@ paths:
           schema:
             type: string
           description: |-
-            Users with rank categories encoded by Javascript analogue of the
-             method. This logic was selected, because there is
-            a possibility to promote belts of too many users. In this case
-            URI is too long.
+            Encoded users with rank categories.
+
 
             `null` if not initialized.
         -
@@ -50481,8 +50478,8 @@ paths:
                 s_user_rank_save:
                   type: string
                   description: |-
-                    Users with rank categories and ranks that need to be saved encoded by Javascript analogue of the
-                     method.
+                    Users with rank categories and ranks that need to be saved.
+
 
                     `null` if not initialized.
               required:
@@ -61697,7 +61694,7 @@ paths:
                       - text_staff
                   a_wait:
                     type: array
-                    description: 'List of visits in wait list. Each element has next structure:'
+                    description: 'List of visits in wait list.'
                     items:
                       type: object
                       properties:
@@ -61707,7 +61704,7 @@ paths:
                           properties:
                             k_shop_product_options:
                               type: string
-                              description: 'Key of the shop product option. Primary key from  table.'
+                              description: 'Key of the shop product option.'
                             text_title:
                               type: string
                               description: 'Title of the product.'
@@ -61768,7 +61765,7 @@ paths:
                               description: 'User phone. Empty string if the user has no phone or current user has not access to this information.'
                             uid:
                               type: string
-                              description: 'User key. Primary key in the  table.'
+                              description: 'User key.'
                             url_logo:
                               type: string
                               description: 'Link to user logo.'
@@ -61804,7 +61801,7 @@ paths:
                           description: 'Whether is awaiting for user confirmation.'
                         k_visit:
                           type: string
-                          description: 'Visit key. Primary key in the  table.'
+                          description: 'Visit key.  table.'
                       required:
                         - a_addon
                         - a_answer
@@ -63890,7 +63887,7 @@ paths:
                 properties:
                   a_pay_rate:
                     type: object
-                    description: 'Staff pay rates info. See .'
+                    description: 'Staff pay rates info.'
                     properties:
                       a_data:
                         type: object
@@ -63915,11 +63912,13 @@ paths:
                       k_location:
                         type: string
                         description: |-
-                          Location key. Primary key from . This is a location where pay rate can be used for a staff load. If empty then pay rate can be used in any location. Used only for pay
+                          Location key. 
+                          This is a location where pay rate can be used for a staff load.
+                          If empty then pay rate can be used in any location. Used only for pay
                           rates with `id_staff_pay` [RsStaffPaySid::HOUR](#/components/schemas/RsStaffPaySid) and `is_report`.
                       k_staff_pay:
                         type: string
-                        description: 'Pay rate identifier, primary key in'
+                        description: 'Pay rate key.'
                       s_title:
                         type: string
                         description: 'Name of the rate.'
@@ -63932,8 +63931,8 @@ paths:
                   a_work:
                     type: object
                     description: |-
-                      Staff work information. See `rs_staff_load_check_work_trx()`. Empty array if the staff
-                       member is currently clocked out. Structure:
+                      Staff work information.
+                      Empty array if the staff member is currently clocked out.
                     properties:
                       dt_start:
                         type: string
@@ -64031,8 +64030,8 @@ paths:
                   a_work:
                     type: object
                     description: |-
-                      Staff work information. See `rs_staff_load_check_work_trx()`. Empty array if the staff
-                       member is currently clocked out. Structure:
+                      Staff work information.
+                      Empty array if the staff member is currently clocked out.
                     properties:
                       dt_start:
                         type: string
@@ -65340,16 +65339,19 @@ paths:
                         k_location:
                           type: string
                           description: |-
-                            Location key. Primary key from . This is a location where pay rate can be used for a staff staff load. If empty then pay rate can be used in any location. Used only for pay
+                            Location key.
+
+                            This is a location where pay rate can be used for a staff staff load.
+                            If empty then pay rate can be used in any location. Used only for pay
                             rates with `id_staff_pay`=[RsStaffPaySid::HOUR](#/components/schemas/RsStaffPaySid) and `is_report`=1.
                         k_staff:
                           type: string
                           description: |-
-                            Staff key, primary key in .
-                            deprecated Returned only for applications from legacy allow-list. Use `uid_staff`.
+                            Staff key. 
+                            <b>Deprecated</b> Returned only for applications from legacy allow-list. Use `uid_staff`.
                         k_staff_pay:
                           type: string
-                          description: 'Pay rate identifier, primary key in .'
+                          description: 'Pay rate key.'
                         text_staff:
                           type: string
                           description: 'Name of staff member.'
@@ -65358,7 +65360,7 @@ paths:
                           description: 'Pay rate title.'
                         uid_staff:
                           type: string
-                          description: 'Staff user ID. Primary key in .'
+                          description: 'Staff user key.'
                       required:
                         - id_staff_pay
                         - is_commission_default
@@ -69649,7 +69651,7 @@ paths:
                                   - array
                                   - 'null'
                                 description: |-
-                                  Services that affect this hours. Primary keys in  table.
+                                  Services that affect this hours. 
                                   `null` if affects all services.
                                 items:
                                   type: string
@@ -69666,7 +69668,7 @@ paths:
                                 description: 'Start time. In seconds.'
                               k_location:
                                 type: string
-                                description: 'Primary key of location in  table.'
+                                description: 'Location key.'
                               text_note:
                                 type: string
                                 description: 'Note to available/unavailable time.'
@@ -69707,7 +69709,7 @@ paths:
                                 description: 'Start time. In seconds.'
                               k_location:
                                 type: string
-                                description: 'Primary key of location in  table.'
+                                description: 'Location key.'
                               text_note:
                                 type: string
                                 description: 'Note to available/unavailable time.'
@@ -71980,7 +71982,7 @@ paths:
                         description: 'Whether phones of a user are inherited from a relative `true` - inherited, `false` - otherwise.'
                       k_city:
                         type: string
-                        description: 'City key. Primary key in the  table.'
+                        description: 'City key.'
                       text_address:
                         type: string
                         description: "User's address."
@@ -71996,8 +71998,10 @@ paths:
                       text_business_uid_key:
                         type: string
                         description: |-
-                          Compound key delimited wit a colon. First part is business key. Primary key in  table. Second part - uid of a user.
-                          Primary key in  table.
+                          Compound key delimited wit a colon.
+                          First part is business key.
+
+                          Second part - uid of a user.
                       text_home_phone:
                         type: string
                         description: "User's home phone."
@@ -74396,7 +74400,7 @@ paths:
                           description: 'Whether resource type is active.'
                         k_resource_type:
                           type: string
-                          description: 'Resource type key, primary key in the  table.'
+                          description: 'Resource type key.'
                         text_title:
                           type: string
                           description: 'Resource type title.'
@@ -74618,9 +74622,7 @@ paths:
         Validates that the specified resource and visit belong to the same business and that the
          resource is available for the visit's session, then checks that the current user has
          attendance privileges for the class location. When the visit belongs to a block event, the
-         new asset is applied to all sessions of that event for the same visitor. The change runs
-         inside a transaction that updates or inserts the corresponding `rs_resource_busy` records,
-         and fails when the target asset is already occupied for the affected time slot.
+         new asset is applied to all sessions of that event for the same visitor.
       tags:
         - Resources
       parameters:
@@ -78100,7 +78102,7 @@ paths:
                   type: string
                   description: |-
                     Books/visits that are already synchronized in client's calendar.
-                    Serialized list of pairs [[visit key () => visit hash], ...].
+                    Serialized list of pairs [[visit key  => visit hash], ...].
               required:
                 - s_visit_synced
       x-rate-limit:
@@ -83185,7 +83187,10 @@ paths:
                             <p>Special Notes:</p>
                             <ul>
                               <li>Zero means that all elements of this type are available.</li>
-                              <li>For `id_purchase_item`=[RsPurchaseItemSid::CLASS_PERIOD](#/components/schemas/RsPurchaseItemSid) we store .`k_class` in the `k_id` field.</li>
+                              <li>
+                                For `id_purchase_item`=[RsPurchaseItemSid::CLASS_PERIOD](#/components/schemas/RsPurchaseItemSid) it's class key.
+                                
+                              </li>
                             </ul>
                         text_title:
                           type: string
@@ -93901,13 +93906,13 @@ paths:
                       properties:
                         k_staff:
                           type: string
-                          description: '@deprecated Staff key. Primary key of  table.'
+                          description: '<b>Deprecated.</b> Staff key.'
                         k_staff_pay:
                           type: string
-                          description: 'Staff pay key. Primary key of  table.'
+                          description: 'Staff pay key.'
                         uid_staff:
                           type: string
-                          description: 'User key of staff. Primary key of  table.'
+                          description: 'User key of staff.'
                       required:
                         - k_staff
                         - k_staff_pay
@@ -93936,7 +93941,7 @@ paths:
                               description: 'Title of the commission.'
                             k_staff_pay:
                               type: string
-                              description: 'Staff pay key. Primary key of  table.'
+                              description: 'Staff pay key.  table.'
                           required:
                             - f_rate
                             - id_commission_type
@@ -93945,13 +93950,15 @@ paths:
                             - k_staff_pay
                         k_staff:
                           type: string
-                          description: "@deprecated Staff key. Primary key of  table. It's use `uid` instead of this field."
+                          description: |-
+                            [Deprecated]Staff key.
+                                table. It's use `uid` instead of this field.
                         html_name:
                           type: string
                           description: 'Name of staff.'
                         uid:
                           type: string
-                          description: 'User key. Primary key of  table.'
+                          description: 'User key.  table.'
                       required:
                         - a_commission
                         - k_staff
@@ -94270,9 +94277,7 @@ paths:
                 properties:
                   a_image:
                     type: array
-                    description: |-
-                      Contains a list of images for the current product. Each element has the structure
-                       described in .
+                    description: 'Contains a list of images for the current product.'
                     items:
                       type: object
                       properties:
@@ -103798,11 +103803,7 @@ paths:
                 properties:
                   a_conflict:
                     type: array
-                    description: |-
-                      List of appointment booking conflicts.
-
-                      Based on the result of , with
-                       additional entries for client age restriction conflicts. Each element:
+                    description: 'List of appointment booking conflicts.'
                     items:
                       type: object
                       properties:
@@ -103940,11 +103941,11 @@ paths:
                   description: 'Asset index in layout.'
                 k_resource:
                   type: string
-                  description: 'Asset primary key in  table.'
+                  description: 'Asset key.'
               required:
                 - k_resource
           description: |-
-            List of assets. Every element has next keys:
+            List of assets.
 
 
             May be specified for service booking only.
@@ -104060,11 +104061,7 @@ paths:
                 properties:
                   a_conflict:
                     type: array
-                    description: |-
-                      List of appointment booking conflicts.
-
-                      Based on the result of , with
-                       additional entries for client age restriction conflicts. Each element:
+                    description: 'List of appointment booking conflicts.'
                     items:
                       type: object
                       properties:
@@ -104202,11 +104199,11 @@ paths:
                   description: 'Asset index in layout.'
                 k_resource:
                   type: string
-                  description: 'Asset primary key in  table.'
+                  description: 'Asset key.'
               required:
                 - k_resource
           description: |-
-            List of assets. Every element has next keys:
+            List of assets.
 
 
             May be specified for service booking only.
@@ -104853,7 +104850,7 @@ paths:
                         description: 'Shop category order.'
                       k_shop_category:
                         type: string
-                        description: 'ID in  table.'
+                        description: 'Shop category key.'
                       text_description:
                         type: string
                         description: 'Category description.'
@@ -106562,7 +106559,9 @@ paths:
                       description: 'Modify all future sessions. Used in [RsClassModifyStepSid::PERIOD](#/components/schemas/RsClassModifyStepSid).'
                     a_period:
                       type: array
-                      description: 'Selected session keys (). Used in [RsClassModifyStepSid::ITEM](#/components/schemas/RsClassModifyStepSid).'
+                      description: |-
+                        Selected session keys. .
+                        Used in [RsClassModifyStepSid::ITEM](#/components/schemas/RsClassModifyStepSid).
                       items:
                         type: string
                     a_edit:
@@ -107703,9 +107702,7 @@ paths:
                 properties:
                   a_staff_period:
                     type: array
-                    description: |-
-                      Staff period key.
-                      Primary key from .
+                    description: 'Staff period key.'
                     items:
                       type: string
                 required:
@@ -107755,7 +107752,7 @@ paths:
                 a_service:
                   type: array
                   description: |-
-                    Services list, each element is a primary key in .
+                    Services list key.
 
                     Empty list means all services.
                     `null` means not set.
@@ -109190,7 +109187,7 @@ paths:
                                 - array
                                 - 'null'
                               description: |-
-                                Services affected by the period. Primary keys in  table.
+                                Services affected by the period. 
                                  `null` if the period affects all services.
                               items:
                                 type: string
@@ -109207,7 +109204,7 @@ paths:
                               description: 'Start time, in seconds.'
                             k_location:
                               type: string
-                              description: 'Primary key of location in  table.'
+                              description: 'Location key.'
                             text_note:
                               type: string
                               description: 'Note about available or unavailable time.'
@@ -109230,7 +109227,7 @@ paths:
                                 - array
                                 - 'null'
                               description: |-
-                                Services affected by the period. Primary keys in  table.
+                                Services affected by the period. 
                                  `null` if the period affects all services.
                               items:
                                 type: string
@@ -109247,7 +109244,7 @@ paths:
                               description: 'Start time, in seconds.'
                             k_location:
                               type: string
-                              description: 'Primary key of location in  table.'
+                              description: 'Location key.'
                             text_note:
                               type: string
                               description: 'Note about available or unavailable time.'
@@ -109305,9 +109302,7 @@ paths:
           required: true
           schema:
             type: string
-          description: |-
-            ID of business for which working hours are required.
-            Primary key in the `rs_business` table.
+          description: 'Key of business for which working hours are required.'
       x-instance-get-key: 'dt_date,k_business'
       x-rate-limit:
         -
@@ -109623,7 +109618,9 @@ paths:
                         description: 'Local date and time the note was last edited. Empty string if the note was never edited.'
                       k_visit_note:
                         type: string
-                        description: 'Visit note key, primary key in . `0` if the note does not exist yet.'
+                        description: |-
+                          Visit note key. 
+                          `0` if the note does not exist yet.
                       k_visit_previous:
                         type: string
                         description: 'Key of the visit that has a previous note. `0` if a previous note does not exist.'
@@ -109849,9 +109846,7 @@ paths:
                 properties:
                   a_resource_period:
                     type: array
-                    description: |-
-                      Resource period key.
-                      Primary key from the `rs_resource_period` table.
+                    description: 'Resource period keys.'
                     items:
                       type: string
                 required:
@@ -109946,7 +109941,7 @@ paths:
                   description: 'Location key.'
                 k_resource:
                   type: string
-                  description: 'Resource key. Primary key in the `rs_resource` table.'
+                  description: 'Resource key.'
                 text_note:
                   type: string
                   description: 'Note to working interval.'
@@ -110586,9 +110581,8 @@ paths:
       summary: 'Generates secret key to verify legitimacy of the request.'
       description: |-
         Verifies that the current session belongs to the requested user, then builds a protected
-         link through  that can be opened to sign the user in
-         without further authorization. The generated link expires after
-          seconds.
+        link that can be opened to sign the user in without further authorization.
+        The generated link expires after `900` seconds.
       tags:
         - Authentication
       parameters:
@@ -111735,7 +111729,7 @@ paths:
                         description: 'The text of the last SMS from the client.'
                       uid:
                         type: string
-                        description: 'UID of the client. Primary key in  table.'
+                        description: 'UID of the client.  table.'
                       url_profile_logo:
                         type: string
                         description: 'The link to logo the client.'
@@ -111829,7 +111823,7 @@ paths:
                         description: '`true` if staff member sent SMS, `false` - if the client sent the SMS.'
                       k_sms_history:
                         type: string
-                        description: 'The key of SMS history. Primary key in  table.'
+                        description: 'The key of SMS history.  table.'
                       text_date:
                         type: string
                         description: 'The day when SMS messages were sent.'
@@ -113736,7 +113730,10 @@ paths:
                 properties:
                   a_filter:
                     type: object
-                    description: 'List of schedule filters. Keys - filters IDs; primary key in the `rs_schedule_config` table. Values - sub arrays with next keys:'
+                    description: |-
+                      List of schedule filters.
+                      Keys - filters IDs; 
+                      Values - sub arrays with next keys:
                     properties:
                       a_config:
                         type: object
@@ -113744,32 +113741,32 @@ paths:
                         properties:
                           a_class:
                             type: array
-                            description: 'Classes. Primary keys in  table.'
+                            description: Classes.
                             items:
                               type: string
                           a_event:
                             type: array
-                            description: 'Events. Primary keys in  table.'
+                            description: Events.
                             items:
                               type: string
                           a_location:
                             type: array
-                            description: 'Locations. Primary keys in  table.'
+                            description: Locations.
                             items:
                               type: string
                           a_resource:
                             type: array
-                            description: 'Assets. Primary keys in  table.'
+                            description: Assets.
                             items:
                               type: string
                           a_service:
                             type: array
-                            description: 'Appointment services. Primary keys in  table.'
+                            description: 'Appointment services.'
                             items:
                               type: string
                           a_staff:
                             type: array
-                            description: 'Staff members. Primary keys in  table.'
+                            description: 'Staff members.'
                             items:
                               type: string
                           a_type:
@@ -114089,7 +114086,9 @@ paths:
                 properties:
                   a_service:
                     type: object
-                    description: 'List of appointment services. Keys - service IDs; primary key in the `rs_service` table. Values - service title.'
+                    description: |-
+                      List of appointment services.
+                      Keys - service keys. Values - service title.
                     additionalProperties:
                       type: string
                 required:
@@ -114150,7 +114149,7 @@ paths:
                     deprecated: true
                     x-deprecated: 'Use [ScheduleListStaffApi::$a_uid_staff](/Wl/Schedule/ScheduleList/StaffApp/Staff/ScheduleListStaff.json) instead.'
                     description: |-
-                      IDs of staff members which must be represented of business schedule. Primary keys in the `rs_staff` table.
+                      IDs of staff members which must be represented of business schedule.
 
                       Returned only for applications in the `APPS_USE_OLD_K_STAFF` allow-list.
                     items:
@@ -114539,37 +114538,39 @@ paths:
                   properties:
                     a_class:
                       type: array
-                      description: 'List of classes which must be selected in filter. Primary keys in  table.'
+                      description: 'List of classes which must be selected in filter.'
                       items:
                         type: string
                     a_event:
                       type: array
-                      description: 'List of events which must be selected in filter. Primary keys in  table.'
+                      description: 'List of events which must be selected in filter.'
                       items:
                         type: string
                     a_location:
                       type: array
-                      description: 'List of locations which must be selected in filter. Primary keys in  table.'
+                      description: 'List of locations which must be selected in filter.'
                       items:
                         type: string
                     a_resource:
                       type: array
-                      description: 'List of assets which must be selected in filter. Primary keys in  table.'
+                      description: 'List of assets which must be selected in filter.'
                       items:
                         type: string
                     a_service:
                       type: array
-                      description: 'List of appointment services which must be selected in filter. Primary keys in  table.'
+                      description: 'List of appointment services which must be selected in filter.'
                       items:
                         type: string
                     a_staff:
                       type: array
-                      description: 'List of staff members which must be selected in filter. Primary keys in  table.'
+                      description: 'List of staff members which must be selected in filter.'
                       items:
                         type: string
                     a_type:
                       type: array
-                      description: 'List of service types which must be selected in filter. Constants of [RsServiceSid](#/components/schemas/RsServiceSid) class.'
+                      description: |-
+                        List of service types which must be selected in filter.
+                        Constants of [RsServiceSid](#/components/schemas/RsServiceSid) class.
                       items:
                         type: integer
                         format: int32
