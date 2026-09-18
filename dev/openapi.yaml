@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260918133559
+  version: 1.1.20260918141054
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -95431,6 +95431,9 @@ paths:
                     items:
                       type: object
                       properties:
+                        has_answer:
+                          type: boolean
+                          description: '`true` if the current appointment already has a non-empty answer for this question, `false` otherwise.'
                         i_size:
                           type: integer
                           format: int32
@@ -95445,6 +95448,7 @@ paths:
                           type: string
                           description: 'Question text.'
                       required:
+                        - has_answer
                         - i_size
                         - is_multiple
                         - s_key
@@ -95479,7 +95483,14 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Appointment key to save answers for.'
+          description: |-
+            Appointment key used to load or save question answers.
+
+            Optional for question loading.
+            When provided, access is validated and `has_answer` is calculated from stored appointment answers.
+
+            Required for answer saving.
+            Identifies the appointment where answers are saved after access validation.
         -
           name: k_service
           in: query
@@ -95521,7 +95532,14 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Appointment key to save answers for.'
+          description: |-
+            Appointment key used to load or save question answers.
+
+            Optional for question loading.
+            When provided, access is validated and `has_answer` is calculated from stored appointment answers.
+
+            Required for answer saving.
+            Identifies the appointment where answers are saved after access validation.
       requestBody:
         required: true
         content:
