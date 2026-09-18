@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260918100556
+  version: 1.1.20260918112337
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -31845,6 +31845,14 @@ paths:
                 is_flag:
                   type: boolean
                   description: 'Whether to flag the user.'
+                is_icon:
+                  type:
+                    - boolean
+                    - 'null'
+                  description: |-
+                    Whether note icon should be shown on appointment in Schedule.
+
+                    `null` means default value (`true`) on note adding and not changing on note editing.
                 is_purchase:
                   type: boolean
                   description: 'Whether flagged user can make purchases. Does not matter if [AlertEditApi::$is_flag](/Wl/Profile/Alert/AlertEdit.json) is `false`.'
