@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260918124311
+  version: 1.1.20260918133559
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -95474,6 +95474,13 @@ paths:
         -
           $ref: '#/components/parameters/X-Error-Rules'
         -
+          name: k_appointment
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Appointment key to save answers for.'
+        -
           name: k_service
           in: query
           required: true
@@ -95508,6 +95515,13 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_appointment
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Appointment key to save answers for.'
       requestBody:
         required: true
         content:
@@ -95524,12 +95538,8 @@ paths:
                     * Value is the answer text for that question.
                   items:
                     type: string
-                k_appointment:
-                  type: string
-                  description: 'Appointment key to save answers for.'
               required:
                 - a_answer
-                - k_appointment
       x-instance-get-key: k_service
       x-rate-limit:
         -
