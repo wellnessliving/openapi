@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260917184611
+  version: 1.1.20260918084958
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -82450,6 +82450,62 @@ paths:
             type: string
           description: 'The key of the user to show information for.'
       x-instance-get-key: 'uid,k_business'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Business/Custom/Terms/CustomTerms.json:
+    post:
+      operationId: Wl.Business.Custom.Terms.CustomTerms.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves [CustomTermsApi::$a_term_option](/Wl/Business/Custom/Terms/CustomTerms.json) as the custom terms of [CustomTermsApi::$k_business](/Wl/Business/Custom/Terms/CustomTerms.json).'
+      description: |-
+        Validates every posted term slot and its selected option, then delegates the write itself to
+        CustomTermsSettings::saveTerms() - a slot whose new value equals the business's resolved default
+        (the business-type default, or the system default if there is none) is reset instead of written, see
+        CustomTermsSettings::saveTerms(). A term slot missing from [CustomTermsApi::$a_term_option](/Wl/Business/Custom/Terms/CustomTerms.json)
+        is left untouched; the client is expected to submit the current value of every slot on every save, not
+        only the slots that changed.
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_term_option:
+                  type: array
+                  description: |-
+                    Current value of every term slot to save.
+
+                    Each value is one of [CustomTermOptionAbstractSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermOptionAbstractSid) child class constants
+                      keyed by [CustomTermSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) constants.
+                  items:
+                    type: integer
+                    format: int32
+                k_business:
+                  type: string
+                  description: 'Business key.'
+              required:
+                - a_term_option
+                - k_business
       x-rate-limit:
         -
           limit: 200000
