@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260922104442
+  version: 1.1.20260922121637
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -34356,6 +34356,11 @@ paths:
                         type: object
                         description: 'The list of clients that will be billed. Each element has the following structure:'
                         properties:
+                          id_card_system:
+                            $ref: '#/components/schemas/ACardSystemSid'
+                            description: |-
+                              The card system ([ACardSystemSid](#/components/schemas/ACardSystemSid)) of the client's default payment method when it is a card,
+                              `null` for a stored bank account or when `text_pay_method` is `Account`.
                           id_pay_method:
                             $ref: '#/components/schemas/RsPayMethodSid'
                             description: |-
@@ -34370,6 +34375,13 @@ paths:
                               `true` if the client has no default payment method on file, has no email on file while a receipt is
                               to be sent, or is not eligible for at least one of the selected introductory items; `false`
                               otherwise.
+                          s_number:
+                            type:
+                              - string
+                              - 'null'
+                            description: |-
+                              The masked card or account number of the client's default payment method, or `null` when
+                              `text_pay_method` is `Account`.
                           text_mail:
                             type: string
                             description: 'The client email address. Empty string if the client has no email.'
@@ -34380,7 +34392,7 @@ paths:
                             type: string
                             description: |-
                               The payment method label for this client. `Account` when billing to the client account; otherwise the
-                              default stored card label (for example, `Visa ****1234`), the default ACH account label when no card
+                              default stored card label (for example, `Visa-1234`), the default ACH account label when no card
                               is on file, or an account fallback when neither is on file.
                           text_phone:
                             type: string
@@ -34389,8 +34401,10 @@ paths:
                             type: string
                             description: 'The client user key.'
                         required:
+                          - id_card_system
                           - id_pay_method
                           - is_warning
+                          - s_number
                           - text_mail
                           - text_name
                           - text_pay_method
