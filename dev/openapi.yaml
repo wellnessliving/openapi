@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260922154602
+  version: 1.1.20260922162351
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -16621,210 +16621,143 @@ paths:
                           items:
                             type: string
                         a_logo:
-                          oneOf:
-                            -
-                              type: object
-                              properties:
-                                i_height:
-                                  type: integer
-                                  format: int32
-                                  description: 'Thumbnail height in pixels.'
-                                i_width:
-                                  type: integer
-                                  format: int32
-                                  description: 'Thumbnail width in pixels.'
-                                is_old:
-                                  type: boolean
-                                  description: '`false` for the new wide-rectangle format; `true` for the legacy square format.'
-                                s_url:
-                                  type: string
-                                  description: 'Thumbnail URL.'
-                              required:
-                                - i_height
-                                - i_width
-                                - is_old
-                                - s_url
-                            -
-                              type: object
-                              properties:
-                                i_height_src:
-                                  type: integer
-                                  format: int32
-                                  description: 'Original image height in pixels.'
-                                i_rotate:
-                                  type: integer
-                                  format: int32
-                                  description: 'Rotation angle applied relative to the original.'
-                                i_width_src:
-                                  type: integer
-                                  format: int32
-                                  description: 'Original image width in pixels.'
-                                id_type_src:
-                                  $ref: '#/components/schemas/Core.Drive.DriveTypeSid'
-                                  description: |-
-                                    Image type identifier.
-                                    One of [DriveTypeSid](#/components/schemas/Core.Drive.DriveTypeSid) constants.
-                                is-resize:
-                                  type: boolean
-                                  description: '`true` if the image was resized; `false` if `url-thumbnail` equals `url-view`.'
-                                url-thumbnail:
-                                  type: string
-                                  description: 'URL of the resized thumbnail image.'
-                                url-view:
-                                  type: string
-                                  description: 'URL of the original image in file storage.'
-                              required:
-                                - i_height_src
-                                - i_rotate
-                                - i_width_src
-                                - id_type_src
-                                - is-resize
-                                - url-thumbnail
-                                - url-view
-                            -
-                              type: object
-                              properties:
-                                is_empty:
-                                  type: boolean
-                                  description: '`true` if a placeholder is shown instead of an actual logo.'
-                                is_own:
-                                  type:
-                                    - boolean
-                                    - 'null'
-                                  description: |-
-                                    `true` if the logo belongs to this class, `false` if inherited from the location,
-                                    `null` if the image is empty.
-                                k_business:
-                                  type: string
-                                  description: 'Business key.'
-                                k_class:
-                                  type: string
-                                  description: 'Class key.'
-                              required:
-                                - is_empty
-                                - is_own
-                                - k_business
-                                - k_class
+                          type: object
                           description: 'Data about logo of the event.'
+                          properties:
+                            i_height:
+                              type: integer
+                              format: int32
+                              description: 'Thumbnail height in pixels.'
+                            i_width:
+                              type: integer
+                              format: int32
+                              description: 'Thumbnail width in pixels.'
+                            is_old:
+                              type: boolean
+                              description: '`false` for the new wide-rectangle format; `true` for the legacy square format.'
+                            s_url:
+                              type: string
+                              description: 'Thumbnail URL.'
+                          required:
+                            - i_height
+                            - i_width
+                            - is_old
+                            - s_url
                         a_schedule:
-                          type: array
+                          type: object
                           description: 'List of scheduled sessions of the event.'
-                          items:
-                            type: object
-                            properties:
-                              a_day:
-                                type: array
-                                description: 'List of weekday numbers when event occur.'
-                                items:
+                          properties:
+                            a_day:
+                              type: array
+                              description: 'List of weekday numbers when event occur.'
+                              items:
+                                type: integer
+                                format: int32
+                            a_repeat:
+                              type: object
+                              description: 'Information about event repeating.'
+                              properties:
+                                i_repeat:
                                   type: integer
                                   format: int32
-                              a_repeat:
-                                type: object
-                                description: 'Information about event repeating.'
-                                properties:
-                                  i_repeat:
-                                    type: integer
-                                    format: int32
-                                    description: 'Count of the periods which are specified in `id_repeat`.'
-                                  id_repeat:
-                                    $ref: '#/components/schemas/ADurationSid'
-                                    description: 'Measuring unit of `i_repeat` (week, month, year) from [ADurationSid](#/components/schemas/ADurationSid).'
-                                required:
-                                  - i_repeat
-                                  - id_repeat
-                              a_staff_member:
-                                type: object
-                                description: 'List of staff members providing event session.'
-                                properties:
-                                  k_staff_member:
-                                    type: string
-                                    description: 'Staff member key.'
-                                  text_business_role:
-                                    type: string
-                                    description: 'Staff member role title.'
-                                  text_mail:
-                                    type: string
-                                    description: 'Staff member email address.'
-                                  text_name_first:
-                                    type: string
-                                    description: 'Staff member first name.'
-                                  text_name_full:
-                                    type: string
-                                    description: 'Staff member full name.'
-                                  text_name_last:
-                                    type: string
-                                    description: 'Staff member last name.'
-                                  uid:
-                                    type: string
-                                    description: 'Staff member uid.'
-                                required:
-                                  - k_staff_member
-                                  - text_business_role
-                                  - text_mail
-                                  - text_name_first
-                                  - text_name_full
-                                  - text_name_last
-                                  - uid
-                              dl_end:
-                                type: string
-                                description: 'End date of the schedule in `MySql` format.'
-                              dl_start:
-                                type: string
-                                description: 'Start date of the schedule in `MySql` format.'
-                              is_day:
-                                type: boolean
-                                description: 'Whether this is a single day schedule (start and end dates of the schedule are the same).'
-                              k_class_period:
-                                type: string
-                                description: 'Class period key.'
-                              k_location:
-                                type: string
-                                description: 'Location key.'
-                              k_resource_location:
-                                type: string
-                                description: |-
-                                  Resource key, which has category [ResourceCategoryEnum::LOCATION](#/components/schemas/Wl.Resource.ResourceCategoryEnum).
-                                  Only one such resource can be selected for a schedule.
+                                  description: 'Count of the periods which are specified in `id_repeat`.'
+                                id_repeat:
+                                  $ref: '#/components/schemas/ADurationSid'
+                                  description: 'Measuring unit of `i_repeat` (week, month, year) from [ADurationSid](#/components/schemas/ADurationSid).'
+                              required:
+                                - i_repeat
+                                - id_repeat
+                            a_staff_member:
+                              type: object
+                              description: 'List of staff members providing event session.'
+                              properties:
+                                k_staff_member:
+                                  type: string
+                                  description: 'Staff member key.'
+                                text_business_role:
+                                  type: string
+                                  description: 'Staff member role title.'
+                                text_mail:
+                                  type: string
+                                  description: 'Staff member email address.'
+                                text_name_first:
+                                  type: string
+                                  description: 'Staff member first name.'
+                                text_name_full:
+                                  type: string
+                                  description: 'Staff member full name.'
+                                text_name_last:
+                                  type: string
+                                  description: 'Staff member last name.'
+                                uid:
+                                  type: string
+                                  description: 'Staff member uid.'
+                              required:
+                                - k_staff_member
+                                - text_business_role
+                                - text_mail
+                                - text_name_first
+                                - text_name_full
+                                - text_name_last
+                                - uid
+                            dl_end:
+                              type: string
+                              description: 'End date of the schedule in `MySql` format.'
+                            dl_start:
+                              type: string
+                              description: 'Start date of the schedule in `MySql` format.'
+                            is_day:
+                              type: boolean
+                              description: 'Whether this is a single day schedule (start and end dates of the schedule are the same).'
+                            k_class_period:
+                              type: string
+                              description: 'Class period key.'
+                            k_location:
+                              type: string
+                              description: 'Location key.'
+                            k_resource_location:
+                              type: string
+                              description: |-
+                                Resource key, which has category [ResourceCategoryEnum::LOCATION](#/components/schemas/Wl.Resource.ResourceCategoryEnum).
+                                Only one such resource can be selected for a schedule.
 
-                                  Empty string, if no off-site location is used.
-                                  `null` if field is not loaded.
-                              text_location:
-                                type: string
-                                description: 'Location title.'
-                              text_room:
-                                type: string
-                                description: 'Room where the session takes place.'
-                              text_time:
-                                type: string
-                                description: 'Start and end time of the scheduled sessions in human readable format.'
-                            required:
-                              - a_day
-                              - a_repeat
-                              - a_staff_member
-                              - dl_end
-                              - dl_start
-                              - is_day
-                              - k_class_period
-                              - k_location
-                              - k_resource_location
-                              - text_location
-                              - text_room
-                              - text_time
+                                Empty string, if no off-site location is used.
+                                `null` if field is not loaded.
+                            text_location:
+                              type: string
+                              description: 'Location title.'
+                            text_room:
+                              type: string
+                              description: 'Room where the session takes place.'
+                            text_time:
+                              type: string
+                              description: 'Start and end time of the scheduled sessions in human readable format.'
+                          required:
+                            - a_day
+                            - a_repeat
+                            - a_staff_member
+                            - dl_end
+                            - dl_start
+                            - is_day
+                            - k_class_period
+                            - k_location
+                            - k_resource_location
+                            - text_location
+                            - text_room
+                            - text_time
                         a_search_tag:
-                          type: array
+                          type: object
                           description: 'List of search tags connected to this event.'
-                          items:
-                            type: object
-                            properties:
-                              k_search_tag:
-                                type: string
-                                description: 'Search tag key.'
-                              text_title:
-                                type: string
-                                description: 'Name of the tag.'
-                            required:
-                              - k_search_tag
-                              - text_title
+                          properties:
+                            k_search_tag:
+                              type: string
+                              description: 'Search tag key.'
+                            text_title:
+                              type: string
+                              description: 'Name of the tag.'
+                          required:
+                            - k_search_tag
+                            - text_title
                         can_book:
                           type: boolean
                           description: |-
@@ -16909,8 +16842,7 @@ paths:
 
                             `null` if wait list is not enabled for this event, or if it is enabled without a limit.
                         id_reason:
-                          type: integer
-                          format: int32
+                          $ref: '#/components/schemas/Wl.Event.DenyReasonSid'
                           description: 'ID of deny reason.'
                         is_age_restrict:
                           type: boolean
@@ -17234,7 +17166,7 @@ paths:
               - array
               - 'null'
             items:
-              type: string
+              $ref: '#/components/schemas/Core.Sid.YesNoSid'
           description: |-
             List of IDs to include/exclude virtual events.
             If the only ID is [YesNoSid::YES](#/components/schemas/Core.Sid.YesNoSid), only virtual events are included.
@@ -92971,6 +92903,13 @@ paths:
                                <li>[EnrollmentFieldListApi](/Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json) to get and validate fields for a given program.</li>
                                <li>[PaymentApi](/Wl/Catalog/Payment/Payment.json) for a program purchase.</li>
                              </ul>
+                        i_ticket_left:
+                          type: integer
+                          format: int32
+                          description: |-
+                            The number of tickets that can still be sold for the event instance.
+                            Never negative, even when the capacity was lowered below the number of tickets already sold.
+                            Returned for ticket items only, that is when `is_ticket` is `true`.
                         id_restriction:
                           $ref: '#/components/schemas/Wl.Shop.Product.PurchaseRestrictionSid'
                           description: 'The restriction ID. One of the [PurchaseRestrictionSid](#/components/schemas/Wl.Shop.Product.PurchaseRestrictionSid) constants.'
@@ -92980,11 +92919,20 @@ paths:
                         is_online_sell:
                           type: boolean
                           description: 'Determines whether the sale item can be purchased by the client.'
+                        is_sold_out:
+                          type: boolean
+                          description: |-
+                            `true` if all tickets of the event instance are sold and no more can be sold, `false` otherwise.
+                            A sold out instance is still returned, so that staff can see it.
+                            Returned for ticket items only, that is when `is_ticket` is `true`.
                         is_ticket:
                           type: boolean
                           description: |-
-                            `true` if the sale item is a ticketed event, `false` otherwise.
+                            `true` if the sale item is one instance of a ticketed event, `false` otherwise.
                             Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
+                            A ticket item is never accompanied by an ordinary event item for the same instance, and the start
+                            and the end of the instance are returned in `a_data` so that two shows of one event can be told
+                            apart. Staff who may not sell from the store receive no ticket items at all.
                         is_visit:
                           type: boolean
                           description: |-
@@ -94065,13 +94013,13 @@ paths:
                               description: "Whether it's required. `true` quiz is required, `false` otherwise."
                             k_quiz:
                               type: string
-                              description: 'Quiz key,'
+                              description: 'Quiz key.'
                             k_quiz_login:
                               type: string
-                              description: 'Quiz login key,'
+                              description: 'Quiz login key.'
                             k_quiz_response:
                               type: string
-                              description: 'Quiz response key,'
+                              description: 'Quiz response key.'
                             text_title:
                               type: string
                               description: 'Quiz title.'
@@ -94140,9 +94088,11 @@ paths:
                           type: object
                           description: |-
                             Information about staff members who conduct this session.
-                            For applications in the `APPS_USE_OLD_K_STAFF` allow-list, keys are .
-                            For other applications, keys are .
-                            Values are array with data:
+                            For applications in the `APPS_USE_OLD_K_STAFF` allow-list, keys are staff keys.
+
+                            For other applications, keys are staff user keys.
+
+                            Every value is an array with the following data:
                           properties:
                             text_staff:
                               type: string
@@ -94170,7 +94120,7 @@ paths:
                             type: string
                         a_virtual_location:
                           type: array
-                          description: 'List of virtual locations. Each value is .'
+                          description: 'List of virtual locations.'
                           items:
                             type: string
                         dt_date:
@@ -94543,8 +94493,9 @@ paths:
                         a_staff_info:
                           type: object
                           description: |-
-                            Information about staff members who conduct this session. The keys are .
-                            Values are array with data:
+                            Information about staff members who conduct this session. The keys are staff keys.
+
+                            Every value is an array with the following data.
                           properties:
                             text_staff:
                               type: string
@@ -94566,7 +94517,7 @@ paths:
                             type: string
                         a_virtual_location:
                           type: array
-                          description: 'List of virtual locations. Each value is .'
+                          description: 'List of virtual locations.'
                           items:
                             type: string
                         dt_date:
@@ -108846,7 +108797,7 @@ paths:
                     items:
                       type: string
                   a_event_available:
-                    type: array
+                    type: object
                     description: |-
                       Event availability map.
 
@@ -108855,16 +108806,16 @@ paths:
 
                       Key is the event class key. 
                       Value is `true` if the event is available for booking, `false` if it is unavailable.
-                    items:
+                    additionalProperties:
                       type: boolean
                   a_event_ticket:
-                    type: array
+                    type: object
                     description: |-
                       Ticketed event map.
 
                       Key is the event class key. 
                       Value is `true` if the event is a ticketed event, `false` otherwise.
-                    items:
+                    additionalProperties:
                       type: boolean
                   is_virtual_service:
                     type: boolean
@@ -121250,32 +121201,131 @@ components:
 
           Represents the amount due right now for a tuition purchase (the part not deferred to the
           installment plan).
-    Core.Drive.DriveTypeSid:
+    Wl.Event.DenyReasonSid:
       type: integer
       format: int32
       description: |-
-        List of image types.
+        Reasons why the client can't book this event.
+
+        Note: Avoid adding any constants to this SID. Add them to the base class [DenyReasonSid](#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid)
+        instead. Because if you add them here, and new constants are later added to the base class, we could have ID conflicts.
+        And usually, whatever issue there could be with an event, there could be with a class as well, since they share the
+        same underlying functionality.
 
         Values:
-        - 4 (`BMP`): Bmp image.
-        - 1 (`GIF`): Gif image.
-        - 2 (`JPEG`): Jpeg image.
-        - 3 (`PNG`): Png image.
+        - 1 (`ACCESS_DENIED`): User is trying to book on behalf of another client, but does not have permission to do so.
+        - 2 (`ACCESS_LIMITED`): Manual restriction to book business, location or a certain class.
+          Right now is not available in UI.
+        - 3 (`ACCOUNT_LIMIT`): The business can not take one more client because of business subscription limitations.
+          Right now there is no such subscriptions, but it can appear in the future.
+        - 4 (`AGE_RESTRICTION`): Class is not available for certain age.
+        - 5 (`AGREE_NX`): Liability Release needs to be agreed.
+        - 22 (`BALANCE_NEGATIVE`): Client has unpaid fees.
+        - 7 (`BOOK_EARLY`): It's too early to book a class.
+        - 8 (`BOOK_LATE`): It's too late to book a class.
+        - 25 (`BOOK_OVERLAP`): User's visit overlaps with another visit.
+        - 9 (`BOOK_RESTRICT`): User's pricing options do not allow booking another visit within a certain period because of pricing option limitations.
+        - 6 (`BOOKED_ALREADY`): Client is already booked for this session.
+        - 10 (`BUSINESS_INACTIVE`): Business is inactive.
+        - 11 (`CLASS_CANCELED`): Class is canceled.
+        - 26 (`CLASS_FINISHED`): Class is finished.
+        - 14 (`CLASS_FULL`): Class is full.
+        - 15 (`CLASS_NOT_AVAILABLE_ANYMORE`): Class does not exist anymore.
+        - 12 (`CLIENT_FLAGGED`): Client is flagged at location.
+        - 13 (`CREDIT_CARD_REQUIRE`): Credit card is required for booking services.
+        - 16 (`HOLIDAY`): Business is closed.
+        - 17 (`LOGIN_REQUIRED`): Login is required.
+        - 18 (`NOT_BOOKABLE`): Online booking is disabled for the class.
+        - 24 (`NOT_BOOKABLE_BY_TYPE`): Online booking is disabled for this type of client.
+        - 19 (`USER_INFO_MISSING`): Required personal details missing.
+        - 20 (`VISIT_BEFORE`): Visit to another class is required first.
+        - 21 (`WAIT_LIST_LIMIT_MAX`): The wait list is full.
+        - 23 (`WAIVER_NX`): Client has unsigned waiver.
       enum:
-        - 4
         - 1
         - 2
         - 3
+        - 4
+        - 5
+        - 22
+        - 7
+        - 8
+        - 25
+        - 9
+        - 6
+        - 10
+        - 11
+        - 26
+        - 14
+        - 15
+        - 12
+        - 13
+        - 16
+        - 17
+        - 18
+        - 24
+        - 19
+        - 20
+        - 21
+        - 23
       x-enum-varnames:
-        - BMP
-        - GIF
-        - JPEG
-        - PNG
+        - ACCESS_DENIED
+        - ACCESS_LIMITED
+        - ACCOUNT_LIMIT
+        - AGE_RESTRICTION
+        - AGREE_NX
+        - BALANCE_NEGATIVE
+        - BOOK_EARLY
+        - BOOK_LATE
+        - BOOK_OVERLAP
+        - BOOK_RESTRICT
+        - BOOKED_ALREADY
+        - BUSINESS_INACTIVE
+        - CLASS_CANCELED
+        - CLASS_FINISHED
+        - CLASS_FULL
+        - CLASS_NOT_AVAILABLE_ANYMORE
+        - CLIENT_FLAGGED
+        - CREDIT_CARD_REQUIRE
+        - HOLIDAY
+        - LOGIN_REQUIRED
+        - NOT_BOOKABLE
+        - NOT_BOOKABLE_BY_TYPE
+        - USER_INFO_MISSING
+        - VISIT_BEFORE
+        - WAIT_LIST_LIMIT_MAX
+        - WAIVER_NX
       x-enum-descriptions:
-        - 'Bmp image.'
-        - 'Gif image.'
-        - 'Jpeg image.'
-        - 'Png image.'
+        - 'User is trying to book on behalf of another client, but does not have permission to do so.'
+        - |-
+          Manual restriction to book business, location or a certain class.
+          Right now is not available in UI.
+        - |-
+          The business can not take one more client because of business subscription limitations.
+          Right now there is no such subscriptions, but it can appear in the future.
+        - 'Class is not available for certain age.'
+        - 'Liability Release needs to be agreed.'
+        - 'Client has unpaid fees.'
+        - "It's too early to book a class."
+        - "It's too late to book a class."
+        - "User's visit overlaps with another visit."
+        - "User's pricing options do not allow booking another visit within a certain period because of pricing option limitations."
+        - 'Client is already booked for this session.'
+        - 'Business is inactive.'
+        - 'Class is canceled.'
+        - 'Class is finished.'
+        - 'Class is full.'
+        - 'Class does not exist anymore.'
+        - 'Client is flagged at location.'
+        - 'Credit card is required for booking services.'
+        - 'Business is closed.'
+        - 'Login is required.'
+        - 'Online booking is disabled for the class.'
+        - 'Online booking is disabled for this type of client.'
+        - 'Required personal details missing.'
+        - 'Visit to another class is required first.'
+        - 'The wait list is full.'
+        - 'Client has unsigned waiver.'
     RsScheduleTimeSid:
       type: integer
       format: int32
@@ -123087,6 +123137,32 @@ components:
         - 'PHP error log represented by {@link \Core\Debug\DebugPhpLog}.'
         - 'Slow-operation log represented by {@link \Core\Debug\DebugSlowLog}.'
         - 'Aggregated usage statistics.'
+    Core.Drive.DriveTypeSid:
+      type: integer
+      format: int32
+      description: |-
+        List of image types.
+
+        Values:
+        - 4 (`BMP`): Bmp image.
+        - 1 (`GIF`): Gif image.
+        - 2 (`JPEG`): Jpeg image.
+        - 3 (`PNG`): Png image.
+      enum:
+        - 4
+        - 1
+        - 2
+        - 3
+      x-enum-varnames:
+        - BMP
+        - GIF
+        - JPEG
+        - PNG
+      x-enum-descriptions:
+        - 'Bmp image.'
+        - 'Gif image.'
+        - 'Jpeg image.'
+        - 'Png image.'
     Core.Google.Captcha.CaptchaResponseSid:
       type: integer
       format: int32
