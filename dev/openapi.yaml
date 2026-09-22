@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260922123617
+  version: 1.1.20260922144445
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -56445,6 +56445,11 @@ paths:
                           - k_login_type
                           - m_discount
                           - text_title
+                      a_tax_by_name:
+                        type: array
+                        description: 'The same total as `m_total_tax` below, split by `k_tax` instead of collapsed into one aggregate.'
+                        items:
+                          type: string
                       i_pay_account:
                         type: integer
                         format: int32
@@ -56486,6 +56491,7 @@ paths:
                         description: 'The taxes of the selected items for all the clients. Zero when `is_tax` is `false`.'
                     required:
                       - a_discount_list
+                      - a_tax_by_name
                       - i_pay_account
                       - i_pay_card
                       - m_pay_account
