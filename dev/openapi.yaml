@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260921133539
+  version: 1.1.20260922051530
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -92,6 +92,9 @@ tags:
   -
     name: Currency
     description: 'Currency information endpoints.'
+  -
+    name: 'Custom Terms'
+    description: 'Custom Terms endpoints.'
   -
     name: CyberSource
     description: 'CyberSource payment gateway integration endpoints.'
@@ -82481,13 +82484,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Saves [CustomTermsApi::$a_term_option](/Wl/Business/Custom/Terms/CustomTerms.json) as the custom terms of [CustomTermsApi::$k_business](/Wl/Business/Custom/Terms/CustomTerms.json).'
-      description: |-
-        Validates every posted term slot and its selected option, then delegates the write itself to
-        CustomTermsSettings::saveTerms() - a slot whose new value equals the business's resolved default
-        (the business-type default, or the system default if there is none) is reset instead of written, see
-        CustomTermsSettings::saveTerms(). A term slot missing from [CustomTermsApi::$a_term_option](/Wl/Business/Custom/Terms/CustomTerms.json)
-        is left untouched; the client is expected to submit the current value of every slot on every save, not
-        only the slots that changed.
+      tags:
+        - 'Custom Terms'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -82500,14 +82498,20 @@ paths:
               properties:
                 a_term_option:
                   type: array
-                  description: |-
-                    Current value of every term slot to save.
-
-                    Each value is one of [CustomTermOptionAbstractSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermOptionAbstractSid) child class constants
-                      keyed by [CustomTermSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) constants.
+                  description: 'Current value of every term slot to save. Has the following structure:'
                   items:
-                    type: integer
-                    format: int32
+                    type: object
+                    properties:
+                      id_term:
+                        $ref: '#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid'
+                        description: 'Term ID. One of [CustomTermSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) constants.'
+                      id_term_option:
+                        type: integer
+                        format: int32
+                        description: 'Selected custom term. Depends on `id_term`.'
+                    required:
+                      - id_term
+                      - id_term_option
                 k_business:
                   type: string
                   description: 'Business key.'
@@ -95529,6 +95533,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Saves answers for an existing appointment.'
+      description: "Matches submitted answers to the service's questions by hash key, and saves them to the specified appointment."
       tags:
         - Appointments
       parameters:
@@ -129477,6 +129482,38 @@ components:
         - 'Add client to attendance list and charge his account.'
         - 'Add client to attendance list and pay now.'
         - 'Add client to attendance list without payment.'
+    Wl.Business.Custom.Terms.CustomTermSid:
+      type: integer
+      format: int32
+      description: |-
+        Term slots available on the Custom Terms settings page.
+
+        Last used ID: 5.
+
+        Values:
+        - 2 (`APPOINTMENT`): Appointment.
+        - 5 (`BUSINESS`): Business.
+        - 3 (`CLASS_TERM`): Class.
+        - 4 (`CLIENT`): Client.
+        - 1 (`STAFF`): Staff.
+      enum:
+        - 2
+        - 5
+        - 3
+        - 4
+        - 1
+      x-enum-varnames:
+        - APPOINTMENT
+        - BUSINESS
+        - CLASS_TERM
+        - CLIENT
+        - STAFF
+      x-enum-descriptions:
+        - Appointment.
+        - Business.
+        - Class.
+        - Client.
+        - Staff.
     Wl.Business.Account.Subscription.Collections.CollectionsSubscriptionSid:
       type: integer
       format: int32
