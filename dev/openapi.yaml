@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260922074558
+  version: 1.1.20260922114910
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -83073,6 +83073,14 @@ paths:
                           Values:
                           - 1 (`FREE`): None
                           - 2 (`PROFESSIONAL`): Professional
+                      -
+                        $ref: '#/components/schemas/Wl.Business.Account.Subscription.BridgeAthletic.BridgeAthleticSubscriptionSid'
+                        description: |-
+                          List of possible plans for [BridgeAthleticSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
+
+                          Values:
+                          - 2 (`FREE`): Free
+                          - 1 (`NONE`): None
                     description: |-
                       Currently active plan ID for requested subscription.
 
@@ -126742,7 +126750,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 249.
+        Last Used ID: 251.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -126828,6 +126836,8 @@ components:
         - 7 (`HOLIDAY`): Add holidays.
         - 215 (`IMPORT_CLIENT`): Allows to import clients from a CSV file.
         - 163 (`INTEGRATION_AUTYMATE`): Set up and modify Autymate integration.
+        - 251 (`INTEGRATION_BRIDGE_ATHLETIC_ACCESS`): Access to view Bridge Athletic integration.
+        - 250 (`INTEGRATION_BRIDGE_ATHLETIC_MANAGE`): Access to set up and change Bridge Athletic integration.
         - 179 (`INTEGRATION_BRIVO`): Set up and modify Brivo integration.
         - 249 (`INTEGRATION_QUICKBOOKS`): Access to set up and change quickbooks integration.
         - 87 (`INTERFACE_ACHIEVE_APP`): Enroll into and manage the WellnessLiving Achieve App. These settings are located under Setup > Achieve Client App.
@@ -127064,6 +127074,8 @@ components:
         - 7
         - 215
         - 163
+        - 251
+        - 250
         - 179
         - 249
         - 87
@@ -127297,6 +127309,8 @@ components:
         - HOLIDAY
         - IMPORT_CLIENT
         - INTEGRATION_AUTYMATE
+        - INTEGRATION_BRIDGE_ATHLETIC_ACCESS
+        - INTEGRATION_BRIDGE_ATHLETIC_MANAGE
         - INTEGRATION_BRIVO
         - INTEGRATION_QUICKBOOKS
         - INTERFACE_ACHIEVE_APP
@@ -127534,6 +127548,8 @@ components:
         - 'Add holidays.'
         - 'Allows to import clients from a CSV file.'
         - 'Set up and modify Autymate integration.'
+        - 'Access to view Bridge Athletic integration.'
+        - 'Access to set up and change Bridge Athletic integration.'
         - 'Set up and modify Brivo integration.'
         - 'Access to set up and change quickbooks integration.'
         - 'Enroll into and manage the WellnessLiving Achieve App. These settings are located under Setup > Achieve Client App.'
@@ -130113,6 +130129,24 @@ components:
       x-enum-descriptions:
         - None
         - Professional
+    Wl.Business.Account.Subscription.BridgeAthletic.BridgeAthleticSubscriptionSid:
+      type: integer
+      format: int32
+      description: |-
+        List of possible plans for [BridgeAthleticSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
+
+        Values:
+        - 2 (`FREE`): Free
+        - 1 (`NONE`): None
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - FREE
+        - NONE
+      x-enum-descriptions:
+        - Free
+        - None
     Wl.Business.Account.Subscription.SubscriptionAbstract:
       type: integer
       format: int32
@@ -130150,6 +130184,7 @@ components:
         - 864 (`Wl\Business\Account\Subscription\Zoom\ZoomSubscription`): Zoom subscription.
         - 884 (`Wl\Business\Account\Subscription\Fitzone\FitzoneSubscription`): Wl\Business\Account\Subscription\Fitzone\FitzoneSubscription
         - 885 (`Wl\Business\Account\Subscription\Review\ReviewSubscription`): Wl\Business\Account\Subscription\Review\ReviewSubscription
+        - 2366 (`Wl\Business\Account\Subscription\BridgeAthletic\BridgeAthleticSubscription`): Wl\Business\Account\Subscription\BridgeAthletic\BridgeAthleticSubscription
       enum:
         - 1250
         - 858
@@ -130178,6 +130213,7 @@ components:
         - 864
         - 884
         - 885
+        - 2366
       x-enum-varnames:
         - Wl\Business\Account\Subscription\Collections\CollectionsSubscription
         - Wl\Business\Account\Subscription\Achieve\AchieveSubscription
@@ -130206,6 +130242,7 @@ components:
         - Wl\Business\Account\Subscription\Zoom\ZoomSubscription
         - Wl\Business\Account\Subscription\Fitzone\FitzoneSubscription
         - Wl\Business\Account\Subscription\Review\ReviewSubscription
+        - Wl\Business\Account\Subscription\BridgeAthletic\BridgeAthleticSubscription
       x-enum-descriptions:
         - 'Class for "Collections" subscription.'
         - Wl\Business\Account\Subscription\Achieve\AchieveSubscription
@@ -130239,6 +130276,7 @@ components:
         - 'Zoom subscription.'
         - Wl\Business\Account\Subscription\Fitzone\FitzoneSubscription
         - Wl\Business\Account\Subscription\Review\ReviewSubscription
+        - Wl\Business\Account\Subscription\BridgeAthletic\BridgeAthleticSubscription
     Wl.Book.Process.ProcessCheckSid:
       type: integer
       format: int32
