@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260921104349
+  version: 1.1.20260922073143
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -104823,6 +104823,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Saves answers for an existing appointment.'
+      description: "Matches submitted answers to the service's questions by hash key, and saves them to the specified appointment."
       tags:
         - Appointments
       parameters:
