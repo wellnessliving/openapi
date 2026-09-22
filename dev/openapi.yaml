@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260922071135
+  version: 1.1.20260922074558
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -17001,6 +17001,9 @@ paths:
                         is_single_buy:
                           type: boolean
                           description: 'Whether class/event can be paid with single session.'
+                        is_ticket:
+                          type: boolean
+                          description: '`true` if the event is a ticketed event, `false` otherwise.'
                         is_user_booked:
                           type: boolean
                           description: |-
@@ -17096,6 +17099,7 @@ paths:
                         - is_promotion_only
                         - is_prorate
                         - is_single_buy
+                        - is_ticket
                         - is_user_booked
                         - is_virtual
                         - is_wait_list_enabled
@@ -46271,6 +46275,11 @@ paths:
                       is_price_breakdown:
                         type: boolean
                         description: 'Whether to display individual prices for each item in the package.'
+                      is_ticket:
+                        type: boolean
+                        description: |-
+                          This applies to enrollment/event items.
+                          `true` if the item is a ticketed event, `false` otherwise.
                     required:
                       - a_service_access
                       - is_renew_public
@@ -46284,6 +46293,7 @@ paths:
                       - id_duration
                       - id_duration_type
                       - is_price_breakdown
+                      - is_ticket
                   a_guest_pass:
                     type: object
                     description: |-
@@ -46532,6 +46542,11 @@ paths:
                             is_price_breakdown:
                               type: boolean
                               description: 'Whether to display individual prices for each item in the package.'
+                            is_ticket:
+                              type: boolean
+                              description: |-
+                                This applies to enrollment/event items.
+                                `true` if the item is a ticketed event, `false` otherwise.
                           required:
                             - a_service_access
                             - is_renew_public
@@ -46545,6 +46560,7 @@ paths:
                             - id_duration
                             - id_duration_type
                             - is_price_breakdown
+                            - is_ticket
                         a_guest_pass:
                           type: object
                           description: 'Information about promotion guest pass. The same structure as [ElementApi::$a_guest_pass](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -47103,6 +47119,11 @@ paths:
                         is_introductory:
                           type: boolean
                           description: '`true` if the item is an introductory offer, `false` otherwise.'
+                        is_ticket:
+                          type: boolean
+                          description: |-
+                            `true` if the item is a ticketed event, `false` otherwise.
+                            Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
                         k_id:
                           type: string
                           description: 'The item key.'
@@ -47127,6 +47148,7 @@ paths:
                         - id_sale
                         - is_direct
                         - is_introductory
+                        - is_ticket
                         - k_id
                         - k_shop_category
                         - s_key
@@ -47168,6 +47190,11 @@ paths:
                       is_introductory:
                         type: boolean
                         description: '`true` if the item is an introductory offer, `false` otherwise.'
+                      is_ticket:
+                        type: boolean
+                        description: |-
+                          `true` if the item is a ticketed event, `false` otherwise.
+                          Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
                       k_id:
                         type: string
                         description: 'The item key.'
@@ -47192,6 +47219,7 @@ paths:
                       - id_sale
                       - is_direct
                       - is_introductory
+                      - is_ticket
                       - k_id
                       - k_shop_category
                       - s_key
@@ -92924,6 +92952,11 @@ paths:
                         is_online_sell:
                           type: boolean
                           description: 'Determines whether the sale item can be purchased by the client.'
+                        is_ticket:
+                          type: boolean
+                          description: |-
+                            `true` if the sale item is a ticketed event, `false` otherwise.
+                            Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
                         is_visit:
                           type: boolean
                           description: |-
@@ -92947,6 +92980,7 @@ paths:
                         - id_restriction
                         - id_sale
                         - is_online_sell
+                        - is_ticket
                         - is_visit
                         - k_id
                         - text_title
@@ -93053,6 +93087,12 @@ paths:
                       - id_tax
                       - k_tax
                       - s_tax
+                  is_ticket:
+                    type: boolean
+                    description: |-
+                      `true` if the sale item is a ticketed event, `false` otherwise.
+
+                      Always `false` for sale items other than [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid).
                   m_prorate:
                     type: string
                     description: 'The prorated amount.'
@@ -93067,6 +93107,7 @@ paths:
                     description: 'The calculated amount of the sale item, including taxes.'
                 required:
                   - a_tax_data
+                  - is_ticket
                   - m_prorate
                   - m_subtotal
                   - m_tax
@@ -94182,6 +94223,11 @@ paths:
                           description: |-
                             For appointments: `true` if appointment is recurring; `false` otherwise.
                             For classes always `null`.
+                        is_ticket:
+                          type: boolean
+                          description: |-
+                            `true` if the session belongs to a ticketed event, `false` otherwise.
+                            Always `false` for classes, appointments, assets and events that are not ticketed.
                         k_appointment:
                           type: string
                           description: |-
@@ -94272,6 +94318,7 @@ paths:
                         - is_class_view
                         - is_pay
                         - is_repeat
+                        - is_ticket
                         - k_appointment
                         - dt_confirm
                         - k_class
@@ -94557,6 +94604,11 @@ paths:
                           description: |-
                             For appointments: `true` if appointment is recurring; `false` otherwise.
                             For classes always `null`.
+                        is_ticket:
+                          type: boolean
+                          description: |-
+                            `true` if the session belongs to a ticketed event, `false` otherwise.
+                            Always `false` for classes, appointments, assets and events that are not ticketed.
                         k_appointment:
                           type: string
                           description: |-
@@ -94627,6 +94679,7 @@ paths:
                         - is_arrive
                         - is_pay
                         - is_repeat
+                        - is_ticket
                         - k_appointment
                         - dt_confirm
                         - k_class
@@ -108017,6 +108070,9 @@ paths:
                         is_policy_custom:
                           type: boolean
                           description: '`true` [ElementApi::$a_business_policy](/Wl/Event/Book/EventView/Element.json) contains the custom policies from the event; `false` otherwise.'
+                        is_ticket:
+                          type: boolean
+                          description: '`true` if the event is a ticketed event; `false` otherwise.'
                         is_virtual:
                           type: boolean
                           description: '`true` if event is virtual; `false` otherwise.'
@@ -108068,6 +108124,7 @@ paths:
                         - is_makeup
                         - is_past
                         - is_policy_custom
+                        - is_ticket
                         - is_virtual
                         - k_book_class_period
                         - m_price
@@ -108470,6 +108527,9 @@ paths:
                   is_single_session_buy:
                     type: boolean
                     description: 'Determines whether this event allows paying for a single session.'
+                  is_ticket:
+                    type: boolean
+                    description: '`true` if this event is a ticketed event, `false` otherwise.'
                   is_virtual:
                     type: boolean
                     description: '`true` if event is virtual; `false` otherwise.'
@@ -108555,6 +108615,7 @@ paths:
                   - is_promotion_only
                   - is_prorate
                   - is_single_session_buy
+                  - is_ticket
                   - is_virtual
                   - k_book_class_period
                   - m_price
@@ -108768,6 +108829,15 @@ paths:
                       Value is `true` if the event is available for booking, `false` if it is unavailable.
                     items:
                       type: boolean
+                  a_event_ticket:
+                    type: array
+                    description: |-
+                      Ticketed event map.
+
+                      Key is the event class key. 
+                      Value is `true` if the event is a ticketed event, `false` otherwise.
+                    items:
+                      type: boolean
                   is_virtual_service:
                     type: boolean
                     description: |-
@@ -108778,6 +108848,7 @@ paths:
                 required:
                   - a_event
                   - a_event_available
+                  - a_event_ticket
                   - is_virtual_service
         '400':
           $ref: '#/components/responses/400'
