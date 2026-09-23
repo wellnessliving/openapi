@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260923063440
+  version: 1.1.20260923081541
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -125928,7 +125928,7 @@ components:
       description: |-
         Contains a list of schemes of processing of on-hold periods.
 
-        Scheme is stored in MembershipSql.`id_hold`.
+
 
         Last used ID: 4
 
