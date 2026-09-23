@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260923093256
+  version: 1.1.20260923101823
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -73718,11 +73718,18 @@ paths:
                           type: integer
                           format: int32
                           description: 'Sequence number of the stage in the list.'
-                        i_automation:
+                        i_automation_active:
                           type: integer
                           format: int32
                           description: |-
-                            Number of automations used this stage.
+                            Number of active automations which use this stage.
+                            Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
+                        i_automation_inactive:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of inactive automations which use this stage. Such an automation still refers the stage, so it
+                            still makes a replacement stage mandatory when the stage is deleted.
                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
                         i_member_group:
                           type: integer
@@ -73768,8 +73775,9 @@ paths:
                         url_automation_list:
                           type: string
                           description: |-
-                            URL of the list of automations which use this stage.
-                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true` and the stage is used in automations.
+                            URL of the list of the active automations which use this stage.
+                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true` and the stage is used by at least
+                             one active automation.
                         url_member_report:
                           type: string
                           description: |-
