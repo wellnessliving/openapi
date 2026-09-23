@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260922162351
+  version: 1.1.20260923121600
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26721,8 +26721,6 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Returns a fixed connection value and, when requested, selected findings.'
-      tags:
-        - System
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -35186,9 +35184,32 @@ paths:
                           description: |-
                             The ID of a system field. One of the [RsFieldGeneralSid](#/components/schemas/RsFieldGeneralSid) constants.
                             This value is only defined if `id_field_type`=[RsFieldTypeSid::GENERAL](#/components/schemas/RsFieldTypeSid).
+                        id_level_booking:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a client books a service. One of FieldLevelEnum members.'
+                        id_level_guest:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a guest books or buys. One of FieldLevelEnum members.'
+                        id_level_purchase:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a client makes a purchase. One of FieldLevelEnum members.'
+                        id_level_relationship:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a client adds a relationship. One of FieldLevelEnum members.'
+                        id_level_signup:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a client signs up. One of FieldLevelEnum members.'
                         is_require:
                           type: boolean
-                          description: 'Indicates whether the value of this field is required. This will be `1` if required or `0` if the field is optional.'
+                          description: |-
+                            Indicates whether the value of this field is required. This will be `1` if required or `0` if the field is optional.
+                              **Deprecated. Use `id_level_booking`, `id_level_guest`, `id_level_purchase`, `id_level_relationship` or
+                                  `id_level_signup` instead.**
                         id_field_type:
                           $ref: '#/components/schemas/RsFieldTypeSid'
                           description: 'The type of field. One of the [RsFieldTypeSid](#/components/schemas/RsFieldTypeSid) constants.'
@@ -35202,6 +35223,11 @@ paths:
                           type: string
                           description: 'The value of the field. This value is defined by individual fields.'
                       required:
+                        - id_level_booking
+                        - id_level_guest
+                        - id_level_purchase
+                        - id_level_relationship
+                        - id_level_signup
                         - is_require
                         - id_field_type
                         - k_field
@@ -35953,9 +35979,32 @@ paths:
                           description: |-
                             The ID of a system field. One of the [RsFieldGeneralSid](#/components/schemas/RsFieldGeneralSid) constants.
                             This value is only defined if `id_field_type`=[RsFieldTypeSid::GENERAL](#/components/schemas/RsFieldTypeSid).
+                        id_level_booking:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a client books a service. One of FieldLevelEnum members.'
+                        id_level_guest:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a guest books or buys. One of FieldLevelEnum members.'
+                        id_level_purchase:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a client makes a purchase. One of FieldLevelEnum members.'
+                        id_level_relationship:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a client adds a relationship. One of FieldLevelEnum members.'
+                        id_level_signup:
+                          type: integer
+                          format: int32
+                          description: 'Requirement for a case when a client signs up. One of FieldLevelEnum members.'
                         is_require:
                           type: boolean
-                          description: 'Indicates whether the value of this field is required. This will be `1` if required or `0` if the field is optional.'
+                          description: |-
+                            Indicates whether the value of this field is required. This will be `1` if required or `0` if the field is optional.
+                              **Deprecated. Use `id_level_booking`, `id_level_guest`, `id_level_purchase`, `id_level_relationship` or
+                                  `id_level_signup` instead.**
                         id_field_type:
                           $ref: '#/components/schemas/RsFieldTypeSid'
                           description: 'The type of field. One of the [RsFieldTypeSid](#/components/schemas/RsFieldTypeSid) constants.'
@@ -35969,6 +36018,11 @@ paths:
                           type: string
                           description: 'The value of the field. This value is defined by individual fields.'
                       required:
+                        - id_level_booking
+                        - id_level_guest
+                        - id_level_purchase
+                        - id_level_relationship
+                        - id_level_signup
                         - is_require
                         - id_field_type
                         - k_field
@@ -123219,7 +123273,7 @@ components:
       description: |-
         Contains a list of schemes of processing of on-hold periods.
 
-        Scheme is stored in MembershipSql.`id_hold`.
+
 
         Last used ID: 4
 
