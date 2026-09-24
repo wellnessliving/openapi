@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260923121600
+  version: 1.1.20260924130528
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -35185,25 +35185,20 @@ paths:
                             The ID of a system field. One of the [RsFieldGeneralSid](#/components/schemas/RsFieldGeneralSid) constants.
                             This value is only defined if `id_field_type`=[RsFieldTypeSid::GENERAL](#/components/schemas/RsFieldTypeSid).
                         id_level_booking:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a client books a service. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a client books a service. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         id_level_guest:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a guest books or buys. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a guest books or buys. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         id_level_purchase:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a client makes a purchase. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a client makes a purchase. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         id_level_relationship:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a client adds a relationship. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a client adds a relationship. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         id_level_signup:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a client signs up. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a client signs up. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         is_require:
                           type: boolean
                           description: |-
@@ -35980,25 +35975,20 @@ paths:
                             The ID of a system field. One of the [RsFieldGeneralSid](#/components/schemas/RsFieldGeneralSid) constants.
                             This value is only defined if `id_field_type`=[RsFieldTypeSid::GENERAL](#/components/schemas/RsFieldTypeSid).
                         id_level_booking:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a client books a service. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a client books a service. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         id_level_guest:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a guest books or buys. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a guest books or buys. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         id_level_purchase:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a client makes a purchase. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a client makes a purchase. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         id_level_relationship:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a client adds a relationship. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a client adds a relationship. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         id_level_signup:
-                          type: integer
-                          format: int32
-                          description: 'Requirement for a case when a client signs up. One of FieldLevelEnum members.'
+                          $ref: '#/components/schemas/Wl.Field.FieldLevelEnum'
+                          description: 'Requirement for a case when a client signs up. One of [FieldLevelEnum](#/components/schemas/Wl.Field.FieldLevelEnum) members.'
                         is_require:
                           type: boolean
                           description: |-
@@ -41088,11 +41078,18 @@ paths:
                           type: integer
                           format: int32
                           description: 'Sequence number of the stage in the list.'
-                        i_automation:
+                        i_automation_active:
                           type: integer
                           format: int32
                           description: |-
-                            Number of automations used this stage.
+                            Number of active automations which use this stage.
+                            Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
+                        i_automation_inactive:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of inactive automations which use this stage. Such an automation still refers the stage, so it
+                            still makes a replacement stage mandatory when the stage is deleted.
                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
                         i_member_group:
                           type: integer
@@ -41138,8 +41135,9 @@ paths:
                         url_automation_list:
                           type: string
                           description: |-
-                            URL of the list of automations which use this stage.
-                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true` and the stage is used in automations.
+                            URL of the list of the active automations which use this stage.
+                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true` and the stage is used by at least
+                             one active automation.
                         url_member_report:
                           type: string
                           description: |-
@@ -123724,6 +123722,30 @@ components:
 
           See {@link \Wl\Login\Type\SystemSid} for details.
         - 'Record contains type of client.'
+    Wl.Field.FieldLevelEnum:
+      type: integer
+      format: int32
+      description: |-
+        Level at which a client profile field is asked at a given collection entry point.
+
+        Last used ID: 3.
+
+        Values:
+        - 1 (`DONT_ASK`): The field is not asked at this entry point.
+        - 2 (`OPTIONAL`): The field is asked, but a value is not required.
+        - 3 (`REQUIRED`): The field is asked, and a value is required.
+      enum:
+        - 1
+        - 2
+        - 3
+      x-enum-varnames:
+        - DONT_ASK
+        - OPTIONAL
+        - REQUIRED
+      x-enum-descriptions:
+        - 'The field is not asked at this entry point.'
+        - 'The field is asked, but a value is not required.'
+        - 'The field is asked, and a value is required.'
     Wl.Profile.RegisterSourceSid:
       type:
         - integer
