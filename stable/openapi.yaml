@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260925074216
+  version: 1.1.20260925092616
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -56870,8 +56870,9 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Returns the booking wizard steps, adjusting the path when the service is already booked for a family member.'
       description: |-
-        Delegates to the parent implementation and then, when family-relation booking is enabled and the service is
-        already booked for the selected relative, trims the wizard path down to only the relation and detail steps.
+        Delegates to the parent implementation and then, when family-relation or guest booking is enabled and the
+        service is already booked for the selected client, trims the wizard path down to only the relation and detail
+        steps.
       tags:
         - Booking
       parameters:
