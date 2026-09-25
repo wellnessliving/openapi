@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260924225902
+  version: 1.1.20260925131908
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -35319,6 +35319,15 @@ paths:
         -
           $ref: '#/components/parameters/X-Error-Rules'
         -
+          name: id_family_relation
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/RsFamilyRelationSid'
+          description: |-
+            Family role for a new user. One of [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid) constants.
+            Not `null` only for a case of relative registration.
+        -
           name: id_register_source
           in: query
           required: false
@@ -36108,6 +36117,15 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_family_relation
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/RsFamilyRelationSid'
+          description: |-
+            Family role for a new user. One of [RsFamilyRelationSid](#/components/schemas/RsFamilyRelationSid) constants.
+            Not `null` only for a case of relative registration.
         -
           name: id_register_source
           in: query
@@ -44282,8 +44300,9 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Returns the booking wizard steps, adjusting the path when the service is already booked for a family member.'
       description: |-
-        Delegates to the parent implementation and then, when family-relation booking is enabled and the service is
-        already booked for the selected relative, trims the wizard path down to only the relation and detail steps.
+        Delegates to the parent implementation and then, when family-relation or guest booking is enabled and the
+        service is already booked for the selected client, trims the wizard path down to only the relation and detail
+        steps.
       tags:
         - Booking
       parameters:
@@ -71661,6 +71680,232 @@ paths:
                 - id_event_version
                 - k_business
                 - s_event_id
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Event/Editor/Setup.json:
+    get:
+      operationId: Wl.Event.Editor.Setup.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_class_tab:
+                    type: array
+                    description: 'Book Now Tabs the event may be shown in. Every element is an array:'
+                    items:
+                      type: object
+                      properties:
+                        is_selected:
+                          type: boolean
+                          description: '`true` if the event is shown in this tab, `false` otherwise.'
+                        s_key:
+                          type: string
+                          description: |-
+                            Key of the tab: the ID of the tab object and the key of the tab joined with a hyphen. The key of a system
+                            tab is `0`.
+                        text_title:
+                          type: string
+                          description: 'Title of the tab.'
+                      required:
+                        - is_selected
+                        - s_key
+                        - text_title
+                  a_config:
+                    type: array
+                    description: |-
+                      Business policies the form starts with.
+
+                      Policies of the event for a saved event, policies of the business for a new one, so that the fields of the
+                      Business policies section are filled in either case.
+                  a_reminder_info:
+                    type: array
+                    description: 'Send rules of the client reminder.'
+                  a_search_tag:
+                    type: array
+                    description: 'Quick search tags of the category of the business. Every element is an array:'
+                    items:
+                      type: object
+                      properties:
+                        k_search_tag:
+                          type: string
+                          description: 'Key of the tag.'
+                        text_title:
+                          type: string
+                          description: 'Title of the tag.'
+                      required:
+                        - k_search_tag
+                        - text_title
+                  a_shop_category:
+                    type: array
+                    description: 'Store categories of the business. Every element is an array:'
+                    items:
+                      type: object
+                      properties:
+                        k_shop_category:
+                          type: string
+                          description: 'Key of the category.'
+                        text_title:
+                          type: string
+                          description: 'Title of the category.'
+                      required:
+                        - k_shop_category
+                        - text_title
+                  a_url:
+                    type: array
+                    description: 'Addresses of the pages the form links to:'
+                    items:
+                      type: object
+                      properties:
+                        url_category_manage:
+                          type: string
+                          description: 'List of store categories.'
+                        url_notification_client:
+                          type: string
+                          description: 'Client notifications.'
+                        url_notification_confirmation:
+                          type: string
+                          description: 'Client confirmation notification of an event.'
+                        url_notification_reminder:
+                          type: string
+                          description: 'Client reminder notification of an event.'
+                        url_notification_staff:
+                          type: string
+                          description: 'Staff notifications.'
+                        url_policy_manage:
+                          type: string
+                          description: 'Default business policies.'
+                        url_product_manage:
+                          type: string
+                          description: 'List of products.'
+                        url_resource_manage:
+                          type: string
+                          description: 'List of Book-a-Spot assets.'
+                        url_ticket_card:
+                          type: string
+                          description: 'Store settings that require a card at sign-up.'
+                        url_ticket_waiver:
+                          type: string
+                          description: 'Online waiver settings.'
+                      required:
+                        - url_category_manage
+                        - url_notification_client
+                        - url_notification_confirmation
+                        - url_notification_reminder
+                        - url_notification_staff
+                        - url_policy_manage
+                        - url_product_manage
+                        - url_resource_manage
+                        - url_ticket_card
+                        - url_ticket_waiver
+                  html_policy:
+                    type: string
+                    description: |-
+                      Markup of the Business policies block of the form.
+
+                      The block is a form of the legacy page, which is built by RsBusinessConfigFormView from the policy
+                      rules of the business. There is no template of this form on the client, so the block is rendered here and the
+                      client only moves the markup into the section it belongs to.
+                  html_prerequisite:
+                    type: string
+                    description: |-
+                      Markup of the Prerequisites block of the form.
+
+                      The block is a picker of services built by ComponentView from the services of the business. There is no
+                      template of this picker on the client, so the block is rendered here and the client only moves the markup into
+                      the section it belongs to.
+                  html_promotion:
+                    type: string
+                    description: |-
+                      Markup of the Purchase Options block of the form.
+
+                      The block is a picker of Purchase Options built by ComponentView, followed by the list of the picked
+                      ones built by ListView. There is no template of either of them on the client, so the block is rendered
+                      here and the client only moves the markup into the section it belongs to.
+                  html_quick_buy:
+                    type: string
+                    description: |-
+                      Markup of the Quick Buy block of the form.
+
+                      The block is a picker of products built by ComponentView from the products of the business. There is no
+                      template of this picker on the client, so the block is rendered here and the client only moves the markup into
+                      the section it belongs to.
+                  html_tax:
+                    type: string
+                    description: |-
+                      Markup of the Taxes block of the form.
+
+                      The block is a select built by RsTaxSelectView from the taxes of the business. There is no template of
+                      this select on the client, so the block is rendered here and the client only moves the markup into the section
+                      it belongs to.
+                  is_admin:
+                    type: boolean
+                    description: '`true` if the Administration section may be shown, `false` otherwise.'
+                  text_currency:
+                    type: string
+                    description: 'Currency sign of the business.'
+                required:
+                  - a_class_tab
+                  - a_config
+                  - a_reminder_info
+                  - a_search_tag
+                  - a_shop_category
+                  - a_url
+                  - html_policy
+                  - html_prerequisite
+                  - html_promotion
+                  - html_quick_buy
+                  - html_tax
+                  - is_admin
+                  - text_currency
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns everything the event setup form needs besides the event itself.'
+      description: |-
+        The form is rendered by the client, so this endpoint answers with data: the lists the Book Now Tab, the quick
+        search tag and the store category pickers are filled from, the business policies the Business policies section
+        starts with, the send rules of the client reminder, the currency sign, whether the Administration section may
+        be shown, the addresses of the pages the form links to and the markup of the blocks that have no template on
+        the client.
+      tags:
+        - Events
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_class
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Event key.
+
+            `0` while a new event is created, so the key of the model of the client has a value. The key is only checked
+            when it points at an event.
+      x-instance-get-key: 'k_business,k_class'
       x-rate-limit:
         -
           limit: 200000
@@ -123746,6 +123991,84 @@ components:
         - 'The field is not asked at this entry point.'
         - 'The field is asked, but a value is not required.'
         - 'The field is asked, and a value is required.'
+    RsFamilyRelationSid:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        Relation type between two relatives.
+
+        Last used ID: 16.
+
+        Values:
+        - 12 (`CARE_PARTICIPANT`): Care participant.
+        - 9 (`CARE_RECEIVER`): Care recipient.
+        - 8 (`CAREGIVER`): Care provider.
+        - 16 (`CASE_LOAD`): Case load.
+        - 15 (`CASE_MANAGER`): Case Manager.
+        - 5 (`CHILD`): Child of the parent.
+        - 10 (`DEPENDENT`): Dependent.
+        - 2 (`FRIEND`): Friend.
+        - 7 (`GUARDIAN`): Guardian.
+        - 6 (`OTHER`): Not specified custom relationship.
+        - 3 (`PARENT`): Parent of the child.
+        - 4 (`SIBLING`): Sibling. A brother or sister.
+        - 1 (`SPOUSE`): Spouse. A husband or wife.
+        - 14 (`STUDENT`): Student.
+        - 13 (`TEACHER`): Teacher.
+        - 11 (`THERAPIST`): Therapist.
+      enum:
+        - 12
+        - 9
+        - 8
+        - 16
+        - 15
+        - 5
+        - 10
+        - 2
+        - 7
+        - 6
+        - 3
+        - 4
+        - 1
+        - 14
+        - 13
+        - 11
+      x-enum-varnames:
+        - CARE_PARTICIPANT
+        - CARE_RECEIVER
+        - CAREGIVER
+        - CASE_LOAD
+        - CASE_MANAGER
+        - CHILD
+        - DEPENDENT
+        - FRIEND
+        - GUARDIAN
+        - OTHER
+        - PARENT
+        - SIBLING
+        - SPOUSE
+        - STUDENT
+        - TEACHER
+        - THERAPIST
+      x-enum-descriptions:
+        - 'Care participant.'
+        - 'Care recipient.'
+        - 'Care provider.'
+        - 'Case load.'
+        - 'Case Manager.'
+        - 'Child of the parent.'
+        - Dependent.
+        - Friend.
+        - Guardian.
+        - 'Not specified custom relationship.'
+        - 'Parent of the child.'
+        - 'Sibling. A brother or sister.'
+        - 'Spouse. A husband or wife.'
+        - Student.
+        - Teacher.
+        - Therapist.
     Wl.Profile.RegisterSourceSid:
       type:
         - integer
@@ -123823,82 +124146,6 @@ components:
           <b>Don't use to edit existing user profile.</b>
         - 'Source when staff add or edit a client profile.'
         - 'This is a service value, which means to not choose any specific source.'
-    RsFamilyRelationSid:
-      type: integer
-      format: int32
-      description: |-
-        Relation type between two relatives.
-
-        Last used ID: 16.
-
-        Values:
-        - 12 (`CARE_PARTICIPANT`): Care participant.
-        - 9 (`CARE_RECEIVER`): Care recipient.
-        - 8 (`CAREGIVER`): Care provider.
-        - 16 (`CASE_LOAD`): Case load.
-        - 15 (`CASE_MANAGER`): Case Manager.
-        - 5 (`CHILD`): Child of the parent.
-        - 10 (`DEPENDENT`): Dependent.
-        - 2 (`FRIEND`): Friend.
-        - 7 (`GUARDIAN`): Guardian.
-        - 6 (`OTHER`): Not specified custom relationship.
-        - 3 (`PARENT`): Parent of the child.
-        - 4 (`SIBLING`): Sibling. A brother or sister.
-        - 1 (`SPOUSE`): Spouse. A husband or wife.
-        - 14 (`STUDENT`): Student.
-        - 13 (`TEACHER`): Teacher.
-        - 11 (`THERAPIST`): Therapist.
-      enum:
-        - 12
-        - 9
-        - 8
-        - 16
-        - 15
-        - 5
-        - 10
-        - 2
-        - 7
-        - 6
-        - 3
-        - 4
-        - 1
-        - 14
-        - 13
-        - 11
-      x-enum-varnames:
-        - CARE_PARTICIPANT
-        - CARE_RECEIVER
-        - CAREGIVER
-        - CASE_LOAD
-        - CASE_MANAGER
-        - CHILD
-        - DEPENDENT
-        - FRIEND
-        - GUARDIAN
-        - OTHER
-        - PARENT
-        - SIBLING
-        - SPOUSE
-        - STUDENT
-        - TEACHER
-        - THERAPIST
-      x-enum-descriptions:
-        - 'Care participant.'
-        - 'Care recipient.'
-        - 'Care provider.'
-        - 'Case load.'
-        - 'Case Manager.'
-        - 'Child of the parent.'
-        - Dependent.
-        - Friend.
-        - Guardian.
-        - 'Not specified custom relationship.'
-        - 'Parent of the child.'
-        - 'Sibling. A brother or sister.'
-        - 'Spouse. A husband or wife.'
-        - Student.
-        - Teacher.
-        - Therapist.
     RsActivationSid:
       type: integer
       format: int32
