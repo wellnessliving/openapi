@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260925133808
+  version: 1.1.20260926114457
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -164,6 +164,9 @@ tags:
   -
     name: Locations
     description: 'Business location and facility endpoints.'
+  -
+    name: 'Log Triage'
+    description: 'Log-triage finding endpoints.'
   -
     name: Login
     description: 'Client login, attendance, and membership endpoints.'
@@ -26656,10 +26659,10 @@ paths:
                       properties:
                         dl_first_seen:
                           type: string
-                          description: 'Local date of the first usage-statistics record.'
+                          description: 'Date of the first usage-statistics record.'
                         dl_last_seen:
                           type: string
-                          description: 'Local date of the last usage-statistics record.'
+                          description: 'Date of the last usage-statistics record.'
                         dtu_first_seen:
                           type: string
                           description: 'UTC date/time of the first matching log or async-task record. Empty for background tasks.'
@@ -26674,9 +26677,9 @@ paths:
                           type: integer
                           format: int32
                           description: 'Usage-statistics priority multiplier. Present for the usage-statistics source.'
-                        id_source:
-                          $ref: '#/components/schemas/Core.AI.LogTriage.TriageSourceSid'
-                          description: 'Finding source from [TriageSourceSid](#/components/schemas/Core.AI.LogTriage.TriageSourceSid).'
+                        cid_source:
+                          $ref: '#/components/schemas/Core.AI.LogTriage.TriageProblemAbstract'
+                          description: 'CID of a [TriageProblemAbstract](#/components/schemas/Core.AI.LogTriage.TriageProblemAbstract) subclass.'
                         s_object:
                           type: string
                           description: 'Usage-statistics object. Present for the usage-statistics source.'
@@ -26696,18 +26699,13 @@ paths:
                         - dtu_last_seen
                         - i_occurrence_count
                         - i_priority_multiplier
-                        - id_source
+                        - cid_source
                         - s_object
                         - s_period
                         - s_priority
                         - text_message
-                  i_result:
-                    type: integer
-                    format: int32
-                    description: 'Connection check value.'
                 required:
                   - a_finding
-                  - i_result
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -26720,36 +26718,21 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Returns a fixed connection value and, when requested, selected findings.'
+      summary: 'Collects findings for the requested calendar date.'
+      description: 'Searches every registered problem source using the requested date and optional text filter.'
+      tags:
+        - 'Log Triage'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
         -
-          name: a_id_source
-          in: query
-          required: true
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Core.AI.LogTriage.TriageSourceSid'
-          description: 'IDs of finding sources from [TriageSourceSid](#/components/schemas/Core.AI.LogTriage.TriageSourceSid).'
-        -
-          name: is_finding
-          in: query
-          required: true
-          schema:
-            type: boolean
-          description: '`true` returns findings; otherwise `false` performs only the connection check.'
-        -
-          name: s_date_mask
+          name: dl_date
           in: query
           required: true
           schema:
             type: string
-          description: |-
-            Date/time mask accepted by LogSearchQuery.
-
-            Empty string selects the current UTC date.
+            format: date
+          description: 'Calendar date to collect findings for. Empty string selects the current UTC date.'
         -
           name: text_search
           in: query
@@ -71716,16 +71699,66 @@ paths:
                         - is_selected
                         - s_key
                         - text_title
-                  a_config:
-                    type: array
-                    description: |-
-                      Business policies the form starts with.
-
-                      Policies of the event for a saved event, policies of the business for a new one, so that the fields of the
-                      Business policies section are filled in either case.
                   a_reminder_info:
-                    type: array
-                    description: 'Send rules of the client reminder.'
+                    type: object
+                    description: 'Send rules of the client reminder. Keys are:'
+                    properties:
+                      a_config:
+                        type: object
+                        description: 'Times the reminder is sent at, the earliest one first. Every element is an array:'
+                        properties:
+                          i_before:
+                            type: integer
+                            format: int32
+                            description: 'Number of the units of time the reminder is sent before the session.'
+                          id_duration_delay:
+                            $ref: '#/components/schemas/ADurationSid'
+                            description: 'Unit of time the reminder is sent before the session. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
+                          text_time:
+                            type: string
+                            description: 'Title of the unit of time.'
+                        required:
+                          - i_before
+                          - id_duration_delay
+                          - text_time
+                      i_login_type:
+                        type: integer
+                        format: int32
+                        description: 'Number of the client types the reminder is sent to.'
+                      i_login_type_all:
+                        type: integer
+                        format: int32
+                        description: 'Number of the client types of the business.'
+                      i_member_group:
+                        type: integer
+                        format: int32
+                        description: 'Number of the client groups the reminder is sent to.'
+                      i_member_group_all:
+                        type: integer
+                        format: int32
+                        description: 'Number of the client groups of the business.'
+                      is_login_type:
+                        type: boolean
+                        description: '`true` if the reminder is sent to certain client types only, `false` otherwise.'
+                      is_login_type_all:
+                        type: boolean
+                        description: '`true` if every client type of the business is selected, `false` otherwise.'
+                      is_member_group:
+                        type: boolean
+                        description: '`true` if the reminder is sent to certain client groups only, `false` otherwise.'
+                      is_member_group_all:
+                        type: boolean
+                        description: '`true` if every client group of the business is selected, `false` otherwise.'
+                    required:
+                      - a_config
+                      - i_login_type
+                      - i_login_type_all
+                      - i_member_group
+                      - i_member_group_all
+                      - is_login_type
+                      - is_login_type_all
+                      - is_member_group
+                      - is_member_group_all
                   a_search_tag:
                     type: array
                     description: 'Quick search tags of the category of the business. Every element is an array:'
@@ -71808,41 +71841,37 @@ paths:
                     description: |-
                       Markup of the Business policies block of the form.
 
-                      The block is a form of the legacy page, which is built by RsBusinessConfigFormView from the policy
-                      rules of the business. There is no template of this form on the client, so the block is rendered here and the
-                      client only moves the markup into the section it belongs to.
+                      The block is the form of the policy rules of the business. There is no template of this form on the client, so
+                      the block is rendered here and the client only moves the markup into the section it belongs to.
                   html_prerequisite:
                     type: string
                     description: |-
                       Markup of the Prerequisites block of the form.
 
-                      The block is a picker of services built by ComponentView from the services of the business. There is no
-                      template of this picker on the client, so the block is rendered here and the client only moves the markup into
-                      the section it belongs to.
+                      The block is a picker of the services of the business. There is no template of this picker on the client, so
+                      the block is rendered here and the client only moves the markup into the section it belongs to.
                   html_promotion:
                     type: string
                     description: |-
                       Markup of the Purchase Options block of the form.
 
-                      The block is a picker of Purchase Options built by ComponentView, followed by the list of the picked
-                      ones built by ListView. There is no template of either of them on the client, so the block is rendered
-                      here and the client only moves the markup into the section it belongs to.
+                      The block is a picker of the Purchase Options of the business, followed by the list of the picked ones. There
+                      is no template of either of them on the client, so the block is rendered here and the client only moves the
+                      markup into the section it belongs to.
                   html_quick_buy:
                     type: string
                     description: |-
                       Markup of the Quick Buy block of the form.
 
-                      The block is a picker of products built by ComponentView from the products of the business. There is no
-                      template of this picker on the client, so the block is rendered here and the client only moves the markup into
-                      the section it belongs to.
+                      The block is a picker of the products of the business. There is no template of this picker on the client, so
+                      the block is rendered here and the client only moves the markup into the section it belongs to.
                   html_tax:
                     type: string
                     description: |-
                       Markup of the Taxes block of the form.
 
-                      The block is a select built by RsTaxSelectView from the taxes of the business. There is no template of
-                      this select on the client, so the block is rendered here and the client only moves the markup into the section
-                      it belongs to.
+                      The block is a selector of the taxes of the business. There is no template of this select on the client, so the
+                      block is rendered here and the client only moves the markup into the section it belongs to.
                   is_admin:
                     type: boolean
                     description: '`true` if the Administration section may be shown, `false` otherwise.'
@@ -71851,7 +71880,6 @@ paths:
                     description: 'Currency sign of the business.'
                 required:
                   - a_class_tab
-                  - a_config
                   - a_reminder_info
                   - a_search_tag
                   - a_shop_category
@@ -123404,36 +123432,41 @@ components:
         - 'Payment gateway for Nuvei.'
         - 'Payment gateway for Paychoice.'
         - 'Payment gateway for `stripe.com`.'
-    Core.AI.LogTriage.TriageSourceSid:
+    Core.AI.LogTriage.TriageProblemAbstract:
       type: integer
       format: int32
       description: |-
-        Sources from which log triage findings can be collected.
+        Base class for log-triage problem searchers.
 
         Values:
-        - 5 (`ASYNC_TASK`): Erroneous asynchronous tasks.
-        - 4 (`BACKGROUND_TASK`): Erroneous background tasks.
-        - 1 (`ERROR_LOG`): PHP error log represented by [DebugPhpLog](#/components/schemas/Core.Log.CoreLog).
-        - 2 (`SLOW_LOG`): Slow-operation log represented by [DebugSlowLog](#/components/schemas/Core.Log.CoreLog).
-        - 3 (`WATCH_USAGE_STAT`): Aggregated usage statistics.
+        - 2357 (`Core\Watch\WatchUsageProblem`): Collects the prioritized watch-usage summary used by log triage.
+
+          The configuration intentionally follows the canonical watch-usage summary configuration.
+        - 2370 (`Core\AI\LogTriage\LogErrorProblem`): Problem searcher for [DebugPhpLog](#/components/schemas/Core.Log.CoreLog) error-log records.
+        - 2371 (`Core\AI\LogTriage\LogSlowProblem`): Problem searcher for [DebugSlowLog](#/components/schemas/Core.Log.CoreLog) slow-operation records.
+        - 2359 (`Core\AI\LogTriage\TaskAsyncProblem`): Collects erroneous asynchronous tasks retained in the asynchronous error table.
+        - 2358 (`Core\AI\LogTriage\TaskBackgroundProblem`): Collects erroneous background tasks currently retained in the task queue.
       enum:
-        - 5
-        - 4
-        - 1
-        - 2
-        - 3
+        - 2357
+        - 2370
+        - 2371
+        - 2359
+        - 2358
       x-enum-varnames:
-        - ASYNC_TASK
-        - BACKGROUND_TASK
-        - ERROR_LOG
-        - SLOW_LOG
-        - WATCH_USAGE_STAT
+        - Core\Watch\WatchUsageProblem
+        - Core\AI\LogTriage\LogErrorProblem
+        - Core\AI\LogTriage\LogSlowProblem
+        - Core\AI\LogTriage\TaskAsyncProblem
+        - Core\AI\LogTriage\TaskBackgroundProblem
       x-enum-descriptions:
-        - 'Erroneous asynchronous tasks.'
-        - 'Erroneous background tasks.'
-        - 'PHP error log represented by {@link \Core\Debug\DebugPhpLog}.'
-        - 'Slow-operation log represented by {@link \Core\Debug\DebugSlowLog}.'
-        - 'Aggregated usage statistics.'
+        - |-
+          Collects the prioritized watch-usage summary used by log triage.
+
+          The configuration intentionally follows the canonical watch-usage summary configuration.
+        - 'Problem searcher for {@link \Core\Debug\DebugPhpLog} error-log records.'
+        - 'Problem searcher for {@link \Core\Debug\DebugSlowLog} slow-operation records.'
+        - 'Collects erroneous asynchronous tasks retained in the asynchronous error table.'
+        - 'Collects erroneous background tasks currently retained in the task queue.'
     Core.Drive.DriveTypeSid:
       type: integer
       format: int32
