@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260928112220
+  version: 1.1.20260928125400
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -19369,6 +19369,14 @@ paths:
                                   - text_name_full
                                   - text_name_last
                                   - uid
+                              a_virtual_location:
+                                type: array
+                                description: |-
+                                  List of location keys where the virtual service can be booked from other locations.
+
+                                  Empty array if the setting is off or no locations are selected.
+                                items:
+                                  type: string
                               dl_end:
                                 type: string
                                 description: 'End date of the schedule in `MySql` format.'
@@ -19405,6 +19413,7 @@ paths:
                               - a_day
                               - a_repeat
                               - a_staff_member
+                              - a_virtual_location
                               - dl_end
                               - dl_start
                               - is_day
@@ -59169,6 +59178,962 @@ paths:
         -
           limit: 200000
           period: 3600
+    post:
+      operationId: Wl.Catalog.CatalogList.Element.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_age_restriction:
+                    type:
+                      - object
+                      - 'null'
+                    description: |-
+                      The age restriction configuration.
+
+                      Age restrictions for an item apply when they're configured for a specific item and the API is requested from the backend
+                      or when age restriction are public. `null` if age restrictions are not set for the item.
+                    properties:
+                      i_age_from:
+                        type: integer
+                        format: int32
+                        description: 'Minimum age for service (years part).'
+                      i_age_from_month:
+                        type: integer
+                        format: int32
+                        description: 'Minimum age for service (months part).'
+                      i_age_from_year:
+                        type: integer
+                        format: int32
+                        description: 'Minimum age for service (years part).'
+                      i_age_to:
+                        type: integer
+                        format: int32
+                        description: 'Maximum age for service (years part).'
+                      i_age_to_month:
+                        type: integer
+                        format: int32
+                        description: 'Maximum age for service (months part).'
+                      i_age_to_year:
+                        type: integer
+                        format: int32
+                        description: 'Maximum age for service (years part).'
+                      is_age_public:
+                        type: boolean
+                        description: |-
+                          Is service public even if user does not meet age requirements or not?
+
+                          `true` - to show service to everyone.
+                          `false` - to show service only to users who meet age requirements.
+                      is_month_enabled:
+                        type: boolean
+                        description: |-
+                          Whether months are enabled for age restrictions.
+
+                          `true` - age restrictions can include number of months.
+                          `false` - age restrictions can include only years.
+                    required:
+                      - i_age_from
+                      - i_age_from_month
+                      - i_age_from_year
+                      - i_age_to
+                      - i_age_to_month
+                      - i_age_to_year
+                      - is_age_public
+                      - is_month_enabled
+                  a_data:
+                    type: object
+                    description: |-
+                      Additional information specific for the item.
+
+                      The structure may be different depending on the item category.
+
+
+                      Consider the following examples:
+                      * For a product, this contains inventory information.
+                      * For a gift card, this contains possible amounts.
+                      * For a session pass/membership/package, this contains information about start and stop dates.
+                    properties:
+                      a_service_access:
+                        type: array
+                        description: |-
+                          Access to services for a purchase option.
+                          Keys are one of the [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constants, values are one of the [AFlagSid](#/components/schemas/AFlagSid)
+                          constants. Set only for relevant purchase option service category.
+                          [AFlagSid::ON](#/components/schemas/AFlagSid) access to some services.
+                          [AFlagSid::OFF](#/components/schemas/AFlagSid) no access to services. It can be set only for classes and events.
+                          [AFlagSid::ALL](#/components/schemas/AFlagSid) access to all services. It can be set only for classes and events.
+                          For purchase options with appointments and assets service category status is always [AFlagSid::ON](#/components/schemas/AFlagSid).
+                        items:
+                          type: integer
+                          format: int32
+                      is_renew_public:
+                        type: boolean
+                        description: |-
+                          This applies only for promotions.
+                          `true` - clients can set promotion auto-renew.
+                          `false` - clients can't set promotion auto-renew.
+                      a_component:
+                        type: object
+                        description: 'This applies only for coupons. Coupon components information. Each element will contain the following keys:'
+                        properties:
+                          id_program:
+                            $ref: '#/components/schemas/RsProgramSid'
+                            description: "Program ID. One of [RsProgramSid](#/components/schemas/RsProgramSid) ID's. Only applies to promotions."
+                          id_purchase_item:
+                            $ref: '#/components/schemas/RsPurchaseItemSid'
+                            description: "Purchase item ID. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) ID's."
+                          id_sale:
+                            $ref: '#/components/schemas/RsSaleSid'
+                            description: "Sale ID. One of [RsSaleSid](#/components/schemas/RsSaleSid) ID's."
+                          k_id:
+                            type: string
+                            description: 'The identifier of the item.'
+                          text_title:
+                            type: string
+                            description: 'The title of the item.'
+                        required:
+                          - id_program
+                          - id_purchase_item
+                          - id_sale
+                          - k_id
+                          - text_title
+                      a_staff:
+                        type: object
+                        description: 'This applies to enrollment/event items. Staff list for class periods. Each element contains:'
+                        properties:
+                          k_staff:
+                            type: string
+                            description: '@deprecated Legacy staff key.  Deprecated, use `uid_staff`.'
+                          uid_staff:
+                            type: string
+                            description: 'Staff user key.'
+                          text_family:
+                            type: string
+                            description: 'Staff last name.'
+                          text_staff:
+                            type: string
+                            description: 'Staff display name.'
+                        required:
+                          - k_staff
+                          - uid_staff
+                          - text_family
+                          - text_staff
+                      dl_expire:
+                        type: string
+                        description: 'Date of expiration of coupon, local date in MySQL format.'
+                      dl_now:
+                        type: string
+                        description: 'Current date, local date in MySQL format.'
+                      dl_start:
+                        type: string
+                        description: |-
+                          Date to activate the coupon on, local date in MySQL format.
+                            When `id_activation`=FIXED, this field contains a custom date to activate the coupon on, local date in MySQL format.
+                      i_duration:
+                        type: integer
+                        format: int32
+                        description: 'Number of periods the coupon is active. Type of a period is specified by `id_duration`.'
+                      id_activation:
+                        $ref: '#/components/schemas/Wl.Coupon.Edit.ActivationSid'
+                        description: 'Type of a coupon activation date specification. One of [ActivationSid](#/components/schemas/Wl.Coupon.Edit.ActivationSid) constants.'
+                      id_duration:
+                        $ref: '#/components/schemas/ADurationSid'
+                        description: 'Duration of a period. A constant from [ADurationSid](#/components/schemas/ADurationSid).'
+                      id_duration_type:
+                        $ref: '#/components/schemas/Wl.Coupon.Edit.DurationTypeSid'
+                        description: 'A way to specify a duration. One of [DurationTypeSid](#/components/schemas/Wl.Coupon.Edit.DurationTypeSid) constants.'
+                      is_price_breakdown:
+                        type: boolean
+                        description: 'Whether to display individual prices for each item in the package.'
+                    required:
+                      - a_service_access
+                      - is_renew_public
+                      - a_component
+                      - a_staff
+                      - dl_expire
+                      - dl_now
+                      - dl_start
+                      - i_duration
+                      - id_activation
+                      - id_duration
+                      - id_duration_type
+                      - is_price_breakdown
+                  a_guest_pass:
+                    type: object
+                    description: |-
+                      Information about promotion guest pass. Empty array if promotion does not have guest pass or
+                      guest pass is not enabled.
+                    properties:
+                      i_limit:
+                        type:
+                          - integer
+                          - 'null'
+                        format: int32
+                        description: 'Number of times guest pass can be used per period. `null` for unlimited guest pass.'
+                      i_limit_daily:
+                        type:
+                          - integer
+                          - 'null'
+                        format: int32
+                        description: 'Number of times guest pass can be used per day. `null` for limited guest pass.'
+                      i_period:
+                        type:
+                          - integer
+                          - 'null'
+                        format: int32
+                        description: 'Number of periods after which guest pass limits are reset. `null` for unlimited guest pass.'
+                      id_period:
+                        $ref: '#/components/schemas/ADurationSid'
+                        description: 'Period type by which guest pass limits are reset. One of the [ADurationSid](#/components/schemas/ADurationSid) constants. `null` for unlimited guest pass.'
+                      id_reset_type:
+                        $ref: '#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid'
+                        description: |-
+                          Type by which guest pass limits are reset. One of [GuestPassResetTypeSid](#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid) constants.
+                              `null` for unlimited guest pass.
+                      k_promotion_guest:
+                        type: string
+                        description: 'Guest pass promotion key.'
+                      text_limit:
+                        type: string
+                        description: 'Formatted guest pass limits.'
+                      text_title:
+                        type: string
+                        description: 'Guest pass promotion title.'
+                    required:
+                      - i_limit
+                      - i_limit_daily
+                      - i_period
+                      - id_period
+                      - id_reset_type
+                      - k_promotion_guest
+                      - text_limit
+                      - text_title
+                  a_image:
+                    type: object
+                    deprecated: true
+                    x-deprecated: |-
+                      This property is deprecated as it does not support multiple images.
+                       Use [ElementApi::$a_image_list](/Wl/Catalog/CatalogList/Element.json) instead.
+                    description: 'Image information:'
+                    properties:
+                      i_height:
+                        type: integer
+                        format: int32
+                        description: 'The height in pixels.'
+                      i_width:
+                        type: integer
+                        format: int32
+                        description: 'The width in pixels.'
+                      is_empty:
+                        type: boolean
+                        description: |-
+                          `true` - the item has no image (in this case, ignore the other keys of this array).
+                          `false` - the item has an image.
+                      s_url:
+                        type: string
+                        description: 'The image URL.'
+                    required:
+                      - i_height
+                      - i_width
+                      - is_empty
+                      - s_url
+                  a_image_list:
+                    type: array
+                    description: |-
+                      List of images.
+
+                      Keys are index and each element has the same structure as [ElementApi::$a_image](/Wl/Catalog/CatalogList/Element.json) field.
+                    items:
+                      type: object
+                      properties:
+                        i_height:
+                          type: integer
+                          format: int32
+                          description: 'The height in pixels.'
+                        i_width:
+                          type: integer
+                          format: int32
+                          description: 'The width in pixels.'
+                        is_empty:
+                          type: boolean
+                          description: |-
+                            `true` - the item has no image (in this case, ignore the other keys of this array).
+                            `false` - the item has an image.
+                        s_url:
+                          type: string
+                          description: 'The image URL.'
+                      required:
+                        - i_height
+                        - i_width
+                        - is_empty
+                        - s_url
+                  a_installment_template:
+                    type: array
+                    description: 'A list of installment plans. Each element has the following next keys:'
+                    items:
+                      type: object
+                      properties:
+                        i_count:
+                          type: integer
+                          format: int32
+                          description: 'The number of payments.'
+                        id_duration:
+                          $ref: '#/components/schemas/ADurationSid'
+                          description: 'The duration of a single period. One of the [ADurationSid](#/components/schemas/ADurationSid) constants.'
+                        i_period:
+                          type: integer
+                          format: int32
+                          description: 'The number of periods specified by `id_period` between individual payments.'
+                        k_currency:
+                          type: string
+                          description: 'The payment currency Key.'
+                        k_pay_installment_template:
+                          type: string
+                          description: 'The key of the installment plan template.'
+                        m_amount:
+                          type: string
+                          description: 'The amount of the installment plan.'
+                        s_duration:
+                          type: string
+                          description: 'The title of the installment plan.'
+                      required:
+                        - i_count
+                        - id_duration
+                        - i_period
+                        - k_currency
+                        - k_pay_installment_template
+                        - m_amount
+                        - s_duration
+                  a_item:
+                    type: array
+                    description: 'The list of information pertaining to the specified item.'
+                    items:
+                      type: object
+                      properties:
+                        a_data:
+                          type: object
+                          description: 'Contains additional data for the sale item. The same structure as [ElementApi::$a_data](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            a_service_access:
+                              type: array
+                              description: |-
+                                Access to services for a purchase option.
+                                Keys are one of the [ServiceSid](#/components/schemas/Wl.Service.ServiceSid) constants, values are one of the [AFlagSid](#/components/schemas/AFlagSid)
+                                constants. Set only for relevant purchase option service category.
+                                [AFlagSid::ON](#/components/schemas/AFlagSid) access to some services.
+                                [AFlagSid::OFF](#/components/schemas/AFlagSid) no access to services. It can be set only for classes and events.
+                                [AFlagSid::ALL](#/components/schemas/AFlagSid) access to all services. It can be set only for classes and events.
+                                For purchase options with appointments and assets service category status is always [AFlagSid::ON](#/components/schemas/AFlagSid).
+                              items:
+                                type: integer
+                                format: int32
+                            is_renew_public:
+                              type: boolean
+                              description: |-
+                                This applies only for promotions.
+                                `true` - clients can set promotion auto-renew.
+                                `false` - clients can't set promotion auto-renew.
+                            a_component:
+                              type: object
+                              description: 'This applies only for coupons. Coupon components information. Each element will contain the following keys:'
+                              properties:
+                                id_program:
+                                  $ref: '#/components/schemas/RsProgramSid'
+                                  description: "Program ID. One of [RsProgramSid](#/components/schemas/RsProgramSid) ID's. Only applies to promotions."
+                                id_purchase_item:
+                                  $ref: '#/components/schemas/RsPurchaseItemSid'
+                                  description: "Purchase item ID. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) ID's."
+                                id_sale:
+                                  $ref: '#/components/schemas/RsSaleSid'
+                                  description: "Sale ID. One of [RsSaleSid](#/components/schemas/RsSaleSid) ID's."
+                                k_id:
+                                  type: string
+                                  description: 'The identifier of the item.'
+                                text_title:
+                                  type: string
+                                  description: 'The title of the item.'
+                              required:
+                                - id_program
+                                - id_purchase_item
+                                - id_sale
+                                - k_id
+                                - text_title
+                            a_staff:
+                              type: object
+                              description: 'This applies to enrollment/event items. Staff list for class periods. Each element contains:'
+                              properties:
+                                k_staff:
+                                  type: string
+                                  description: '@deprecated Legacy staff key.  Deprecated, use `uid_staff`.'
+                                uid_staff:
+                                  type: string
+                                  description: 'Staff user key.'
+                                text_family:
+                                  type: string
+                                  description: 'Staff last name.'
+                                text_staff:
+                                  type: string
+                                  description: 'Staff display name.'
+                              required:
+                                - k_staff
+                                - uid_staff
+                                - text_family
+                                - text_staff
+                            dl_expire:
+                              type: string
+                              description: 'Date of expiration of coupon, local date in MySQL format.'
+                            dl_now:
+                              type: string
+                              description: 'Current date, local date in MySQL format.'
+                            dl_start:
+                              type: string
+                              description: |-
+                                Date to activate the coupon on, local date in MySQL format.
+                                  When `id_activation`=FIXED, this field contains a custom date to activate the coupon on, local date in MySQL format.
+                            i_duration:
+                              type: integer
+                              format: int32
+                              description: 'Number of periods the coupon is active. Type of a period is specified by `id_duration`.'
+                            id_activation:
+                              $ref: '#/components/schemas/Wl.Coupon.Edit.ActivationSid'
+                              description: 'Type of a coupon activation date specification. One of [ActivationSid](#/components/schemas/Wl.Coupon.Edit.ActivationSid) constants.'
+                            id_duration:
+                              $ref: '#/components/schemas/ADurationSid'
+                              description: 'Duration of a period. A constant from [ADurationSid](#/components/schemas/ADurationSid).'
+                            id_duration_type:
+                              $ref: '#/components/schemas/Wl.Coupon.Edit.DurationTypeSid'
+                              description: 'A way to specify a duration. One of [DurationTypeSid](#/components/schemas/Wl.Coupon.Edit.DurationTypeSid) constants.'
+                            is_price_breakdown:
+                              type: boolean
+                              description: 'Whether to display individual prices for each item in the package.'
+                          required:
+                            - a_service_access
+                            - is_renew_public
+                            - a_component
+                            - a_staff
+                            - dl_expire
+                            - dl_now
+                            - dl_start
+                            - i_duration
+                            - id_activation
+                            - id_duration
+                            - id_duration_type
+                            - is_price_breakdown
+                        a_guest_pass:
+                          type: object
+                          description: 'Information about promotion guest pass. The same structure as [ElementApi::$a_guest_pass](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            i_limit:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of times guest pass can be used per period. `null` for unlimited guest pass.'
+                            i_limit_daily:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of times guest pass can be used per day. `null` for limited guest pass.'
+                            i_period:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of periods after which guest pass limits are reset. `null` for unlimited guest pass.'
+                            id_period:
+                              $ref: '#/components/schemas/ADurationSid'
+                              description: 'Period type by which guest pass limits are reset. One of the [ADurationSid](#/components/schemas/ADurationSid) constants. `null` for unlimited guest pass.'
+                            id_reset_type:
+                              $ref: '#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid'
+                              description: |-
+                                Type by which guest pass limits are reset. One of [GuestPassResetTypeSid](#/components/schemas/Wl.Promotion.Guest.Pass.GuestPassResetTypeSid) constants.
+                                    `null` for unlimited guest pass.
+                            k_promotion_guest:
+                              type: string
+                              description: 'Guest pass promotion key.'
+                            text_limit:
+                              type: string
+                              description: 'Formatted guest pass limits.'
+                            text_title:
+                              type: string
+                              description: 'Guest pass promotion title.'
+                          required:
+                            - i_limit
+                            - i_limit_daily
+                            - i_period
+                            - id_period
+                            - id_reset_type
+                            - k_promotion_guest
+                            - text_limit
+                            - text_title
+                        a_image:
+                          type: object
+                          description: 'Contains information about one image connected to a sale item.'
+                          properties:
+                            a_image:
+                              type: object
+                              description: 'Information about the image.'
+                              properties:
+                                i_height:
+                                  type: integer
+                                  format: int32
+                                  description: 'Height of the variant image.'
+                                i_height_src:
+                                  type: integer
+                                  format: int32
+                                  description: 'Height of the original image.'
+                                i_rotate:
+                                  type: integer
+                                  format: int32
+                                  description: Rotate.
+                                i_width:
+                                  type: integer
+                                  format: int32
+                                  description: 'Width of the variant image.'
+                                i_width_src:
+                                  type: integer
+                                  format: int32
+                                  description: 'Width of the original image.'
+                                id_type_src:
+                                  $ref: '#/components/schemas/Core.Drive.DriveTypeSid'
+                                  description: 'Type ID of the image. Constant from [DriveTypeSid](#/components/schemas/Core.Drive.DriveTypeSid).'
+                                is-resize:
+                                  type: boolean
+                                  description: '`true` if the variant differs from the original, `false` - otherwise.'
+                                url-thumbnail:
+                                  type: string
+                                  description: 'URL to download variant (thumbnail) file.'
+                                url-view:
+                                  type: string
+                                  description: 'URL to download original file.'
+                              required:
+                                - i_height
+                                - i_height_src
+                                - i_rotate
+                                - i_width
+                                - i_width_src
+                                - id_type_src
+                                - is-resize
+                                - url-thumbnail
+                                - url-view
+                            i_height:
+                              type: integer
+                              format: int32
+                              description: 'Height of the variant image.'
+                            i_width:
+                              type: integer
+                              format: int32
+                              description: 'Width of the variant image.'
+                            is_empty:
+                              type: boolean
+                              description: '`true` if the image file does not exist, `false` - otherwise.'
+                            s_url:
+                              type: string
+                              description: 'Link to the variant file.'
+                          required:
+                            - a_image
+                            - i_height
+                            - i_width
+                            - is_empty
+                            - s_url
+                        a_tax:
+                          type: array
+                          description: 'Tax amounts keyed by tax key. The same structure as [ElementApi::$a_tax](/Wl/Catalog/CatalogList/Element.json) has.'
+                          items:
+                            type: string
+                        id_purchase_option_view:
+                          $ref: '#/components/schemas/Wl.Catalog.PurchaseOptionViewSid'
+                          description: 'The Purchase Option view type. One of the [PurchaseOptionViewSid](#/components/schemas/Wl.Catalog.PurchaseOptionViewSid) constants.'
+                        m_discount_code:
+                          type: string
+                          description: 'The discount code amount.'
+                        m_discount_login:
+                          type: string
+                          description: 'The discount amount for the client type.'
+                        s_comment:
+                          type: string
+                          description: "Additional information about the sale item. For example, information about 'introductory offer'."
+                        s_price:
+                          type: string
+                          description: 'The price of the sale item in a human-readable format.'
+                        s_sale:
+                          type: string
+                          description: 'The category title of the sale item.'
+                        s_title:
+                          type: string
+                          description: 'The title of the sale item.'
+                      required:
+                        - a_data
+                        - a_guest_pass
+                        - a_image
+                        - a_tax
+                        - id_purchase_option_view
+                        - m_discount_code
+                        - m_discount_login
+                        - s_comment
+                        - s_price
+                        - s_sale
+                        - s_title
+                  a_tax:
+                    type: array
+                    description: |-
+                      A list of the item's taxes.
+                      Keys are tax keys, and values are tax amounts.
+                    items:
+                      type: string
+                  f_price:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'The price of the sale item.'
+                  f_price_include:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'The price of the sale item, including tax.'
+                  f_price_retail_product:
+                    type: string
+                    description: "The retail price of the product. This will be empty if this isn't a product."
+                  f_price_total_enrollment:
+                    type: string
+                    description: "Full price of event. This will be empty if this isn't an event."
+                  f_tax:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'The tax amount.'
+                  html_description:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'The sale item description.'
+                  html_special:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'Special instructions for the sale item.'
+                  id_purchase_item:
+                    $ref: '#/components/schemas/RsPurchaseItemSid'
+                    description: |-
+                      The purchase item category ID.
+                      One of the [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.
+                  id_purchase_option_view:
+                    $ref: '#/components/schemas/Wl.Catalog.PurchaseOptionViewSid'
+                    description: 'The ID of the item view category. One of the [PurchaseOptionViewSid](#/components/schemas/Wl.Catalog.PurchaseOptionViewSid) constants.'
+                  id_sale:
+                    $ref: '#/components/schemas/RsSaleSid'
+                    description: |-
+                      The ID of item category.
+                      One of the [RsSaleSid](#/components/schemas/RsSaleSid) constants.
+                  is_contract:
+                    type: boolean
+                    description: 'If `true`, the item requires a contract. Otherwise, this will be `false`.'
+                  k_id:
+                    type: string
+                    description: 'The item key.'
+                  k_shop_product_option:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The product option key.
+
+                      This will be `null` if not set yet.
+                  m_discount_code:
+                    type: string
+                    description: 'The discount amount for a discount code.'
+                  m_discount_login:
+                    type: string
+                    description: "The discount amount for a user's type."
+                  m_price:
+                    type: string
+                    description: 'The price on the price tag.'
+                  m_price_include:
+                    type: string
+                    description: 'The price, including taxes.'
+                  m_tax:
+                    type: string
+                    description: 'The tax amount.'
+                  s_comment:
+                    type: string
+                    description: |-
+                      Additional comment(s).
+                      For example, information about 'introductory offer'.
+                  s_price:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'The price of the sale item in a human-readable format.'
+                  s_sale:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'The category title of the sale item.'
+                  s_title:
+                    type:
+                      - string
+                      - 'null'
+                    description: 'The sale item title.'
+                  text_price:
+                    type: string
+                    description: 'The price on the price tag, with the currency sign.'
+                  text_sale:
+                    type: string
+                    description: 'The title of the item category.'
+                  text_title:
+                    type: string
+                    description: 'The item title.'
+                  xml_description:
+                    type:
+                      - string
+                      - 'null'
+                    deprecated: true
+                    x-deprecated: 'Use `html_description`.'
+                    description: 'A detailed description.'
+                  xml_special:
+                    type:
+                      - string
+                      - 'null'
+                    deprecated: true
+                    x-deprecated: 'Use `html_special`.'
+                    description: 'Special instructions.'
+                required:
+                  - a_data
+                  - a_guest_pass
+                  - a_image
+                  - a_image_list
+                  - a_installment_template
+                  - a_item
+                  - a_tax
+                  - f_price_retail_product
+                  - f_price_total_enrollment
+                  - id_purchase_item
+                  - id_purchase_option_view
+                  - id_sale
+                  - is_contract
+                  - k_id
+                  - m_discount_code
+                  - m_discount_login
+                  - m_price
+                  - m_price_include
+                  - m_tax
+                  - s_comment
+                  - text_price
+                  - text_sale
+                  - text_title
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Displays information about a certain item in the store.'
+      description: |-
+        Works exactly as `get()` method.
+        This method is added so that batched item identifiers can be sent in the request body
+        rather than as URL query parameters, avoiding URL length limits.
+      tags:
+        - Catalog
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_discount_code
+          in: query
+          required: true
+          schema:
+            type: object
+            properties:
+              f_amount:
+                type: string
+                description: 'The fixed amount of the discount.'
+              f_percent:
+                type: string
+                description: 'The percentage amount of the discount.'
+              i_limit:
+                type: integer
+                format: int32
+                description: Limitation.
+              k_discount_code:
+                type: string
+                description: 'The discount code key.'
+              s_discount_code:
+                type: string
+                description: 'The discount code value.'
+            required:
+              - f_amount
+              - f_percent
+              - i_limit
+              - k_discount_code
+              - s_discount_code
+          description: 'Information about the discount code:'
+        -
+          name: a_sale_id_group
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id_sale:
+                  $ref: '#/components/schemas/RsSaleSid'
+                  description: 'The item category ID. One of the [RsSaleSid](#/components/schemas/RsSaleSid) constants.'
+                k_id:
+                  type: string
+                  description: 'The primary key of item.'
+                k_shop_product_option:
+                  type: string
+                  description: 'The product option key or `0` for any other cases.'
+              required:
+                - id_sale
+                - k_id
+                - k_shop_product_option
+          description: |-
+            The list of items grouped by sale categories on the store page.
+            Keys refer to sale IDs from [RsSaleSid](#/components/schemas/RsSaleSid), and values refer to data to identify an item:
+        -
+          name: dl_client_prorate
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            format: date
+          description: |-
+            The client prorate date.
+
+            This will be `null` in cases where the client prorate date hasn't passed.
+        -
+          name: i_image_height
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            The image height in pixels. Specify this value if you need the image to be returned in a specific size.
+            The returned image will have default thumbnail size if this value isn't specified.
+        -
+          name: i_image_width
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            The image width in pixels. Specify this value if you need the image to be returned in a specific size.
+            The returned image will have default thumbnail size if this value isn't specified.
+        -
+          name: i_promotion_image_height
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            The promotion image height in pixels. Specify this value if you need the image to be returned in a specific size.
+            The returned image will have default thumbnail size if this value isn't specified.
+        -
+          name: i_promotion_image_width
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            The promotion image width in pixels. Specify this value if you need the image to be returned in a specific size.
+            The returned image will have default thumbnail size if this value isn't specified.
+        -
+          name: id_sale
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsSaleSid'
+          description: |-
+            The ID of item category.
+            One of the [RsSaleSid](#/components/schemas/RsSaleSid) constants.
+        -
+          name: is_backend
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Determines whether the API is called in the backend mode.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key.'
+        -
+          name: k_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The item key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The location key.'
+        -
+          name: k_shop_product_option
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            The product option key.
+
+            This will be `null` if not set yet.
+        -
+          name: uid_customer
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The UID of a customer (user) for whom the purchase is made. This is used in the backend to calculate discounts.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                text_item_post:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    A list of goods to get information for.
+                    Same as [ElementApi::$text_item](/Wl/Catalog/CatalogList/Element.json), but for POST requests. Note that this must be serialized via JSON.
+
+                    This will be `null` to get information for only one item.
+      x-instance-get-key: 'id_sale,k_id,k_shop_product_option,k_location,dl_client_prorate,k_business,is_backend,uid_customer'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Catalog/CatalogList/List.json:
     get:
       operationId: Wl.Catalog.CatalogList.List.get
@@ -61587,6 +62552,18 @@ paths:
                   id_appointment_pay:
                     $ref: '#/components/schemas/RsAppointmentPaySid'
                     description: 'Status of appointment payment. One of [RsAppointmentPaySid](#/components/schemas/RsAppointmentPaySid) constants.'
+                  id_virtual_provider:
+                    $ref: '#/components/schemas/Wl.Virtual.VirtualProviderSid'
+                    description: |-
+                      Virtual provider ID.
+
+                      `null` for non-virtual services.
+                  is_virtual:
+                    type: boolean
+                    description: |-
+                      Whether the service is virtual.
+
+                      `null` for non-virtual services.
                   k_location:
                     type: string
                     description: 'Location key.'
@@ -61649,6 +62626,7 @@ paths:
                   - i_color_background
                   - i_color_border
                   - id_appointment_pay
+                  - is_virtual
                   - k_location
                   - k_staff
                   - text_title
@@ -62286,6 +63264,49 @@ paths:
           schema:
             type: string
           description: 'Cancelling reason.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_notification:
+                  type: object
+                  description: |-
+                    Information for sending an appointment cancellation notification.
+
+                    All keys are optional. A key that is not provided keeps the template's value.
+                  properties:
+                    is_attach:
+                      type: boolean
+                      description: '`true` to attach calendar file, `false` to not attach calendar file.'
+                    is_campaign:
+                      type: boolean
+                      description: 'Whether mail should track as a part of campaign. `true` if yes, `false` if no.'
+                    text_business_name:
+                      type: string
+                      description: 'Business name.'
+                    text_business_reply:
+                      type: string
+                      description: 'Reply email address.'
+                    text_campaign:
+                      type: string
+                      description: 'Campaign name.'
+                    text_content_mail:
+                      type: string
+                      description: 'Email content.'
+                    text_push:
+                      type: string
+                      description: 'Push notification content.'
+                    text_sms:
+                      type: string
+                      description: 'SMS content.'
+                    text_subject:
+                      type: string
+                      description: 'Email subject.'
+              required:
+                - a_notification
       x-instance-get-key: k_appointment
       x-rate-limit:
         -
@@ -127024,6 +128045,28 @@ components:
         - 'Appointment is free and does not require payment.'
         - 'The full price was paid.'
         - 'Nothing was paid.'
+    Wl.Virtual.VirtualProviderSid:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        List of possible value of virtual integrations.
+
+        Last used ID: 2.
+
+        Values:
+        - 2 (`NON_INTEGRATED`): Virtual integration non implemented.
+        - 1 (`ZOOM`): Virtual Zoom service integration.
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - NON_INTEGRATED
+        - ZOOM
+      x-enum-descriptions:
+        - 'Virtual integration non implemented.'
+        - 'Virtual Zoom service integration.'
     Wl.Service.BookableSid:
       type: integer
       format: int32
@@ -128176,28 +129219,6 @@ components:
         - 'Visit to another class is required first.'
         - 'The wait list is full.'
         - 'Client has unsigned waiver.'
-    Wl.Virtual.VirtualProviderSid:
-      type:
-        - integer
-        - 'null'
-      format: int32
-      description: |-
-        List of possible value of virtual integrations.
-
-        Last used ID: 2.
-
-        Values:
-        - 2 (`NON_INTEGRATED`): Virtual integration non implemented.
-        - 1 (`ZOOM`): Virtual Zoom service integration.
-      enum:
-        - 2
-        - 1
-      x-enum-varnames:
-        - NON_INTEGRATED
-        - ZOOM
-      x-enum-descriptions:
-        - 'Virtual integration non implemented.'
-        - 'Virtual Zoom service integration.'
     Wl.Schedule.Design.IntervalSid:
       type: integer
       format: int32
