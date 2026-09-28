@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260928091620
+  version: 1.1.20260928112220
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -61558,6 +61558,20 @@ paths:
                     type: string
                     format: date-time
                     description: 'Date/time of appointment in location timezone.'
+                  i_color_background:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Background color of the appointment on the schedule (RGB).
+
+                      Uses the service color, or the asset color for a booking with no service.
+                  i_color_border:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Border color of the appointment on the schedule (RGB).
+
+                      Uses the service color, or the asset color for a booking with no service.
                   i_duration:
                     type:
                       - integer
@@ -61632,6 +61646,8 @@ paths:
                   - a_resource
                   - a_shop_product_option
                   - dt_date_local
+                  - i_color_background
+                  - i_color_border
                   - id_appointment_pay
                   - k_location
                   - k_staff
