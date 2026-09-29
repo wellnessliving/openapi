@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260929131745
+  version: 1.1.20260929150439
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26686,7 +26686,7 @@ paths:
                           type: integer
                           format: int32
                           description: 'Usage-statistics priority multiplier. Present for the usage-statistics source.'
-                        cid_source:
+                        cid_problem:
                           $ref: '#/components/schemas/Core.AI.LogTriage.TriageProblemAbstract'
                           description: 'CID of a [TriageProblemAbstract](#/components/schemas/Core.AI.LogTriage.TriageProblemAbstract) subclass.'
                         s_object:
@@ -26708,7 +26708,7 @@ paths:
                         - dtu_last_seen
                         - i_occurrence_count
                         - i_priority_multiplier
-                        - cid_source
+                        - cid_problem
                         - s_object
                         - s_period
                         - s_priority
