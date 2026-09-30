@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260929150439
+  version: 1.1.20260930011726
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -27244,8 +27244,8 @@ paths:
           $ref: '#/components/responses/500'
       summary: "Revokes one of the signed-in user's passkey credentials."
       description: |-
-        Marks the credential as revoked rather than deleting the row.  Only a credential owned by the signed-in user can be
-        revoked - specifying another user's credential key has no effect.
+        Marks the credential as revoked rather than deleting the row.  A credential owned by another user can not be
+        revoked.
       tags:
         - Authentication
       parameters:
@@ -27261,6 +27261,15 @@ paths:
             Key of the credential to revoke.
 
             Only used to revoke a credential.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the user whose passkey credentials to manage. `'0'` or empty string to use the
+            currently signed-in user.
       x-rate-limit:
         -
           limit: 200000
@@ -27326,13 +27335,22 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: "Lists the signed-in user's registered passkey credentials."
+      summary: "Lists the user's registered passkey credentials."
       description: 'Includes revoked credentials.'
       tags:
         - Authentication
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the user whose passkey credentials to manage. `'0'` or empty string to use the
+            currently signed-in user.
       x-rate-limit:
         -
           limit: 200000
