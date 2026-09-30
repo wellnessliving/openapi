@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260930123310
+  version: 1.1.20260930131620
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -60523,7 +60523,9 @@ paths:
                       - 'null'
                     description: 'Purchased drop-in which provides this appointment.'
                   k_staff:
-                    type: string
+                    type:
+                      - string
+                      - 'null'
                     description: |-
                       Staff member who conducts this appointment.
 
@@ -60553,7 +60555,6 @@ paths:
                   - id_appointment_pay
                   - is_virtual
                   - k_location
-                  - k_staff
                   - text_title
                   - uid_appointment
         '400':
