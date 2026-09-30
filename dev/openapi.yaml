@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260930131620
+  version: 1.1.20260930185700
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -43003,6 +43003,12 @@ paths:
                       s_color_submenu_press:
                         type: string
                         description: 'Press color of submenu in front end menu.'
+                      s_fb_capi_access_token:
+                        type: string
+                        description: 'Meta Conversion API Access Token. Empty string if CAPI not used or application that made request does not have access to it.'
+                      s_fb_capi_test_event_code:
+                        type: string
+                        description: 'Meta Conversion API Test Event Code. Optional, used for QA in Meta Events Manager. Empty string if not used or application that made request does not have access to it.'
                       s_fb_pixel_id:
                         type: string
                         description: 'Facebook Pixel ID. Used for Facebook analytics tracking. Empty string if tracking is disabled.'
@@ -43037,6 +43043,8 @@ paths:
                       - s_color_submenu_element
                       - s_color_submenu_hover
                       - s_color_submenu_press
+                      - s_fb_capi_access_token
+                      - s_fb_capi_test_event_code
                       - s_fb_pixel_id
                       - s_ga_tracking_id
                       - s_gtm_container_id
