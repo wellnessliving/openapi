@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20260930020613
+  version: 1.1.20260930103155
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -52914,6 +52914,277 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Classes/Editor/Setup.json:
+    get:
+      operationId: Wl.Classes.Editor.Setup.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_class_tab:
+                    type: array
+                    description: 'Book Now Tabs the class may be shown in. Every element is an array:'
+                    items:
+                      type: object
+                      properties:
+                        is_selected:
+                          type: boolean
+                          description: '`true` if the class is shown in this tab, `false` otherwise.'
+                        s_key:
+                          type: string
+                          description: |-
+                            Key of the tab: the ID of the tab object and the key of the tab joined with a hyphen. The key of a system
+                            tab is `0`.
+                        text_title:
+                          type: string
+                          description: 'Title of the tab.'
+                      required:
+                        - is_selected
+                        - s_key
+                        - text_title
+                  a_reminder_info:
+                    type: object
+                    description: 'Send rules of the client reminder. Keys are:'
+                    properties:
+                      a_config:
+                        type: object
+                        description: 'Times the reminder is sent at, the earliest one first. Every element is an array:'
+                        properties:
+                          i_before:
+                            type: integer
+                            format: int32
+                            description: 'Number of the units of time the reminder is sent before the session.'
+                          id_duration_delay:
+                            $ref: '#/components/schemas/ADurationSid'
+                            description: 'Unit of time the reminder is sent before the session. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
+                          text_time:
+                            type: string
+                            description: 'Title of the unit of time.'
+                        required:
+                          - i_before
+                          - id_duration_delay
+                          - text_time
+                      i_login_type:
+                        type: integer
+                        format: int32
+                        description: 'Number of the client types the reminder is sent to.'
+                      i_login_type_all:
+                        type: integer
+                        format: int32
+                        description: 'Number of the client types of the business.'
+                      i_member_group:
+                        type: integer
+                        format: int32
+                        description: 'Number of the client groups the reminder is sent to.'
+                      i_member_group_all:
+                        type: integer
+                        format: int32
+                        description: 'Number of the client groups of the business.'
+                      is_login_type:
+                        type: boolean
+                        description: '`true` if the reminder is sent to certain client types only, `false` otherwise.'
+                      is_login_type_all:
+                        type: boolean
+                        description: '`true` if every client type of the business is selected, `false` otherwise.'
+                      is_member_group:
+                        type: boolean
+                        description: '`true` if the reminder is sent to certain client groups only, `false` otherwise.'
+                      is_member_group_all:
+                        type: boolean
+                        description: '`true` if every client group of the business is selected, `false` otherwise.'
+                    required:
+                      - a_config
+                      - i_login_type
+                      - i_login_type_all
+                      - i_member_group
+                      - i_member_group_all
+                      - is_login_type
+                      - is_login_type_all
+                      - is_member_group
+                      - is_member_group_all
+                  a_search_tag:
+                    type: array
+                    description: 'Quick search tags of the category of the business. Every element is an array:'
+                    items:
+                      type: object
+                      properties:
+                        k_search_tag:
+                          type: string
+                          description: 'Key of the tag.'
+                        text_title:
+                          type: string
+                          description: 'Title of the tag.'
+                      required:
+                        - k_search_tag
+                        - text_title
+                  a_shop_category:
+                    type: array
+                    description: 'Store categories of the business. Every element is an array:'
+                    items:
+                      type: object
+                      properties:
+                        k_shop_category:
+                          type: string
+                          description: 'Key of the category.'
+                        text_title:
+                          type: string
+                          description: 'Title of the category.'
+                      required:
+                        - k_shop_category
+                        - text_title
+                  a_url:
+                    type: array
+                    description: 'Addresses of the pages the form links to:'
+                    items:
+                      type: object
+                      properties:
+                        url_category_manage:
+                          type: string
+                          description: 'List of store categories.'
+                        url_notification_client:
+                          type: string
+                          description: 'Client notifications.'
+                        url_notification_confirmation:
+                          type: string
+                          description: 'Client confirmation notification of a class.'
+                        url_notification_reminder:
+                          type: string
+                          description: 'Client reminder notification of a class.'
+                        url_notification_staff:
+                          type: string
+                          description: 'Staff notifications.'
+                        url_policy_manage:
+                          type: string
+                          description: 'Default business policies.'
+                        url_product_manage:
+                          type: string
+                          description: 'List of products.'
+                        url_resource_manage:
+                          type: string
+                          description: 'List of Book-a-Spot assets.'
+                        url_ticket_card:
+                          type: string
+                          description: 'Store settings that require a card at sign-up.'
+                        url_ticket_waiver:
+                          type: string
+                          description: 'Online waiver settings.'
+                      required:
+                        - url_category_manage
+                        - url_notification_client
+                        - url_notification_confirmation
+                        - url_notification_reminder
+                        - url_notification_staff
+                        - url_policy_manage
+                        - url_product_manage
+                        - url_resource_manage
+                        - url_ticket_card
+                        - url_ticket_waiver
+                  html_policy:
+                    type: string
+                    description: |-
+                      Markup of the Business policies block of the form.
+
+                      The block is the form of the policy rules of the business. There is no template of this form on the client, so
+                      the block is rendered here and the client only moves the markup into the section it belongs to.
+                  html_prerequisite:
+                    type: string
+                    description: |-
+                      Markup of the Prerequisites block of the form.
+
+                      The block is a picker of the services of the business. There is no template of this picker on the client, so
+                      the block is rendered here and the client only moves the markup into the section it belongs to.
+                  html_promotion:
+                    type: string
+                    description: |-
+                      Markup of the Purchase Options block of the form.
+
+                      The block is a picker of the Purchase Options of the business, followed by the list of the picked ones. There
+                      is no template of either of them on the client, so the block is rendered here and the client only moves the
+                      markup into the section it belongs to.
+                  html_quick_buy:
+                    type: string
+                    description: |-
+                      Markup of the Quick Buy block of the form.
+
+                      The block is a picker of the products of the business. There is no template of this picker on the client, so
+                      the block is rendered here and the client only moves the markup into the section it belongs to.
+                  html_tax:
+                    type: string
+                    description: |-
+                      Markup of the Taxes block of the form.
+
+                      The block is a selector of the taxes of the business. There is no template of this select on the client, so the
+                      block is rendered here and the client only moves the markup into the section it belongs to.
+                  is_admin:
+                    type: boolean
+                    description: '`true` if the Administration section may be shown, `false` otherwise.'
+                  text_currency:
+                    type: string
+                    description: 'Currency sign of the business.'
+                required:
+                  - a_class_tab
+                  - a_reminder_info
+                  - a_search_tag
+                  - a_shop_category
+                  - a_url
+                  - html_policy
+                  - html_prerequisite
+                  - html_promotion
+                  - html_quick_buy
+                  - html_tax
+                  - is_admin
+                  - text_currency
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns everything the class setup form needs besides the class itself.'
+      description: |-
+        The form is rendered by the client, so this endpoint answers with data: the lists the Book Now Tab, the quick
+        search tag and the store category pickers are filled from, the business policies the Business policies section
+        starts with, the send rules of the client reminder, the currency sign, whether the Administration section may
+        be shown, the addresses of the pages the form links to and the markup of the blocks that have no template on
+        the client.
+      tags:
+        - Events
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_class
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Class key.
+
+            `0` while a new class is created, so the key of the model of the client has a value. The key is only checked
+            when it points at a class.
+      x-instance-get-key: 'k_business,k_class'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Coupon/CouponList/List.json:
     get:
       operationId: Wl.Coupon.CouponList.List.get
@@ -58205,6 +58476,320 @@ paths:
           schema:
             type: string
           description: 'The user key of the client to remove from the batch.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Billing/Code/BillingCode.json:
+    delete:
+      operationId: Wl.Billing.Code.BillingCode.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Removes a custom billing code from the central list of the business.'
+      description: |-
+        The code is not deleted - it stays on every receipt and invoice it has already been used on, and it keeps its
+        value occupied. Adding the same value again brings this very code back, see `put()`.
+        Removing a code that is removed already does nothing.
+      tags:
+        - Billing
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the custom billing code.'
+      x-instance-get-key: 'k_business,k_code'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    get:
+      operationId: Wl.Billing.Code.BillingCode.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_remove:
+                    type: boolean
+                    description: |-
+                      Whether the code is removed from the central list of the business.
+
+                      `true` for a code that is not offered for selection anymore, `false` otherwise.
+                  text_code:
+                    type: string
+                    description: 'Code value, as it is printed on receipts and invoices.'
+                  text_description:
+                    type: string
+                    description: 'Description of the code.'
+                required:
+                  - is_remove
+                  - text_code
+                  - text_description
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns a single custom billing code of the business.'
+      description: |-
+        A removed code is returned as well, with [BillingCodeApi::$is_remove](/Wl/Billing/Code/BillingCode.json) set - it is still shown on the
+        receipts it has been applied to.
+      tags:
+        - Billing
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the custom billing code.'
+      x-instance-get-key: 'k_business,k_code'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Billing.Code.BillingCode.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Edits the value and the description of a custom billing code of the business.'
+      description: |-
+        The new value applies going forward only - every receipt and invoice that has already been generated with the
+        old value keeps it.
+      tags:
+        - Billing
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the custom billing code.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                text_code:
+                  type: string
+                  description: 'Code value, as it is printed on receipts and invoices.'
+                text_description:
+                  type: string
+                  description: 'Description of the code.'
+              required:
+                - text_code
+                - text_description
+      x-instance-get-key: 'k_business,k_code'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    put:
+      operationId: Wl.Billing.Code.BillingCode.put
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  k_code:
+                    type: string
+                    description: 'Key of the custom billing code.'
+                required:
+                  - k_code
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Adds a custom billing code to the central list of the business.'
+      description: |-
+        If the business has removed a code with this value before, that code is brought back with the new description
+        instead of a second code with the same value being created, and [BillingCodeApi::$k_code](/Wl/Billing/Code/BillingCode.json) returns the key
+        of that very code.
+      tags:
+        - Billing
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                text_code:
+                  type: string
+                  description: 'Code value, as it is printed on receipts and invoices.'
+                text_description:
+                  type: string
+                  description: 'Description of the code.'
+              required:
+                - text_code
+                - text_description
+      x-instance-get-key: 'k_business,k_code'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Billing/Code/BillingCodeList.json:
+    get:
+      operationId: Wl.Billing.Code.BillingCodeList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_code:
+                    type: array
+                    description: |-
+                      Billing codes of the business.
+
+                      Contains the custom codes of the business for now. The system codes of the ICD-10-CM reference library are to
+                      be returned here too, and a row is then to tell the two types apart.
+
+                      Removed codes are not returned - they are not offered for selection anymore, they only stay on the receipts
+                      and invoices they have already been applied to.
+
+                      The list is not sorted - sorting and filtering of the list is a matter of the page that shows it.
+                    items:
+                      type: object
+                      properties:
+                        k_code:
+                          type: string
+                          description: 'Key of the code.'
+                        text_code:
+                          type: string
+                          description: 'Code value, as it is printed on receipts and invoices.'
+                        text_description:
+                          type: string
+                          description: 'Description of the code the business typed in.'
+                      required:
+                        - k_code
+                        - text_code
+                        - text_description
+                required:
+                  - a_code
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets the billing code list of the business.'
+      description: |-
+        The list contains the custom codes of the business for now, and is meant to become the single place a client
+        asks for codes, with the diagnostic codes of the read-only ICD-10-CM reference library to be returned
+        from here as well.
+      tags:
+        - Billing
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      x-instance-get-key: k_business
       x-rate-limit:
         -
           limit: 200000
@@ -73083,277 +73668,6 @@ paths:
                 - id_event_version
                 - k_business
                 - s_event_id
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
-  /Wl/Event/Editor/Setup.json:
-    get:
-      operationId: Wl.Event.Editor.Setup.get
-      responses:
-        '200':
-          description: 'Successful response.'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  a_class_tab:
-                    type: array
-                    description: 'Book Now Tabs the event may be shown in. Every element is an array:'
-                    items:
-                      type: object
-                      properties:
-                        is_selected:
-                          type: boolean
-                          description: '`true` if the event is shown in this tab, `false` otherwise.'
-                        s_key:
-                          type: string
-                          description: |-
-                            Key of the tab: the ID of the tab object and the key of the tab joined with a hyphen. The key of a system
-                            tab is `0`.
-                        text_title:
-                          type: string
-                          description: 'Title of the tab.'
-                      required:
-                        - is_selected
-                        - s_key
-                        - text_title
-                  a_reminder_info:
-                    type: object
-                    description: 'Send rules of the client reminder. Keys are:'
-                    properties:
-                      a_config:
-                        type: object
-                        description: 'Times the reminder is sent at, the earliest one first. Every element is an array:'
-                        properties:
-                          i_before:
-                            type: integer
-                            format: int32
-                            description: 'Number of the units of time the reminder is sent before the session.'
-                          id_duration_delay:
-                            $ref: '#/components/schemas/ADurationSid'
-                            description: 'Unit of time the reminder is sent before the session. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
-                          text_time:
-                            type: string
-                            description: 'Title of the unit of time.'
-                        required:
-                          - i_before
-                          - id_duration_delay
-                          - text_time
-                      i_login_type:
-                        type: integer
-                        format: int32
-                        description: 'Number of the client types the reminder is sent to.'
-                      i_login_type_all:
-                        type: integer
-                        format: int32
-                        description: 'Number of the client types of the business.'
-                      i_member_group:
-                        type: integer
-                        format: int32
-                        description: 'Number of the client groups the reminder is sent to.'
-                      i_member_group_all:
-                        type: integer
-                        format: int32
-                        description: 'Number of the client groups of the business.'
-                      is_login_type:
-                        type: boolean
-                        description: '`true` if the reminder is sent to certain client types only, `false` otherwise.'
-                      is_login_type_all:
-                        type: boolean
-                        description: '`true` if every client type of the business is selected, `false` otherwise.'
-                      is_member_group:
-                        type: boolean
-                        description: '`true` if the reminder is sent to certain client groups only, `false` otherwise.'
-                      is_member_group_all:
-                        type: boolean
-                        description: '`true` if every client group of the business is selected, `false` otherwise.'
-                    required:
-                      - a_config
-                      - i_login_type
-                      - i_login_type_all
-                      - i_member_group
-                      - i_member_group_all
-                      - is_login_type
-                      - is_login_type_all
-                      - is_member_group
-                      - is_member_group_all
-                  a_search_tag:
-                    type: array
-                    description: 'Quick search tags of the category of the business. Every element is an array:'
-                    items:
-                      type: object
-                      properties:
-                        k_search_tag:
-                          type: string
-                          description: 'Key of the tag.'
-                        text_title:
-                          type: string
-                          description: 'Title of the tag.'
-                      required:
-                        - k_search_tag
-                        - text_title
-                  a_shop_category:
-                    type: array
-                    description: 'Store categories of the business. Every element is an array:'
-                    items:
-                      type: object
-                      properties:
-                        k_shop_category:
-                          type: string
-                          description: 'Key of the category.'
-                        text_title:
-                          type: string
-                          description: 'Title of the category.'
-                      required:
-                        - k_shop_category
-                        - text_title
-                  a_url:
-                    type: array
-                    description: 'Addresses of the pages the form links to:'
-                    items:
-                      type: object
-                      properties:
-                        url_category_manage:
-                          type: string
-                          description: 'List of store categories.'
-                        url_notification_client:
-                          type: string
-                          description: 'Client notifications.'
-                        url_notification_confirmation:
-                          type: string
-                          description: 'Client confirmation notification of an event.'
-                        url_notification_reminder:
-                          type: string
-                          description: 'Client reminder notification of an event.'
-                        url_notification_staff:
-                          type: string
-                          description: 'Staff notifications.'
-                        url_policy_manage:
-                          type: string
-                          description: 'Default business policies.'
-                        url_product_manage:
-                          type: string
-                          description: 'List of products.'
-                        url_resource_manage:
-                          type: string
-                          description: 'List of Book-a-Spot assets.'
-                        url_ticket_card:
-                          type: string
-                          description: 'Store settings that require a card at sign-up.'
-                        url_ticket_waiver:
-                          type: string
-                          description: 'Online waiver settings.'
-                      required:
-                        - url_category_manage
-                        - url_notification_client
-                        - url_notification_confirmation
-                        - url_notification_reminder
-                        - url_notification_staff
-                        - url_policy_manage
-                        - url_product_manage
-                        - url_resource_manage
-                        - url_ticket_card
-                        - url_ticket_waiver
-                  html_policy:
-                    type: string
-                    description: |-
-                      Markup of the Business policies block of the form.
-
-                      The block is the form of the policy rules of the business. There is no template of this form on the client, so
-                      the block is rendered here and the client only moves the markup into the section it belongs to.
-                  html_prerequisite:
-                    type: string
-                    description: |-
-                      Markup of the Prerequisites block of the form.
-
-                      The block is a picker of the services of the business. There is no template of this picker on the client, so
-                      the block is rendered here and the client only moves the markup into the section it belongs to.
-                  html_promotion:
-                    type: string
-                    description: |-
-                      Markup of the Purchase Options block of the form.
-
-                      The block is a picker of the Purchase Options of the business, followed by the list of the picked ones. There
-                      is no template of either of them on the client, so the block is rendered here and the client only moves the
-                      markup into the section it belongs to.
-                  html_quick_buy:
-                    type: string
-                    description: |-
-                      Markup of the Quick Buy block of the form.
-
-                      The block is a picker of the products of the business. There is no template of this picker on the client, so
-                      the block is rendered here and the client only moves the markup into the section it belongs to.
-                  html_tax:
-                    type: string
-                    description: |-
-                      Markup of the Taxes block of the form.
-
-                      The block is a selector of the taxes of the business. There is no template of this select on the client, so the
-                      block is rendered here and the client only moves the markup into the section it belongs to.
-                  is_admin:
-                    type: boolean
-                    description: '`true` if the Administration section may be shown, `false` otherwise.'
-                  text_currency:
-                    type: string
-                    description: 'Currency sign of the business.'
-                required:
-                  - a_class_tab
-                  - a_reminder_info
-                  - a_search_tag
-                  - a_shop_category
-                  - a_url
-                  - html_policy
-                  - html_prerequisite
-                  - html_promotion
-                  - html_quick_buy
-                  - html_tax
-                  - is_admin
-                  - text_currency
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Returns everything the event setup form needs besides the event itself.'
-      description: |-
-        The form is rendered by the client, so this endpoint answers with data: the lists the Book Now Tab, the quick
-        search tag and the store category pickers are filled from, the business policies the Business policies section
-        starts with, the send rules of the client reminder, the currency sign, whether the Administration section may
-        be shown, the addresses of the pages the form links to and the markup of the blocks that have no template on
-        the client.
-      tags:
-        - Events
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-        -
-          name: k_business
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Business key.'
-        -
-          name: k_class
-          in: query
-          required: true
-          schema:
-            type: string
-          description: |-
-            Event key.
-
-            `0` while a new event is created, so the key of the model of the client has a value. The key is only checked
-            when it points at an event.
-      x-instance-get-key: 'k_business,k_class'
       x-rate-limit:
         -
           limit: 200000
