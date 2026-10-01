@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261001115942
+  version: 1.1.20261001140335
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -84869,9 +84869,11 @@ paths:
                         description: |-
                           List of possible plans for [AiAgentSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
 
-                          Last used ID: 5.
+                          Last used ID: 9.
 
                           Values:
+                          - 8 (`CHAT_AGENT_BUNDLE`): Chat Agent (Bundle)
+                          - 9 (`CHAT_AGENT_BUNDLE_TRIAL`): Chat Agent (Bundle) Trial
                           - 5 (`DENTAL_PHONE_AGENT`): Dental Phone Agent
                           - 1 (`FREE`): None
                           - 2 (`PROFESSIONAL`): Professional
@@ -85064,9 +85066,15 @@ paths:
                         description: |-
                           List of possible plans for [WebsiteSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
 
+                          Last used ID: 8.
+
                           Values:
                           - 2 (`BASIC`): Basic
                           - 6 (`BASIC_LARGE`): Basic
+                          - 9 (`BUNDLE_ADDON`): Presence (Bundle add-on)
+                          - 10 (`BUNDLE_ADDON_TRIAL`): Presence (Bundle add-on) Trial
+                          - 8 (`BUNDLE_FULL`): Presence (Bundle)
+                          - 11 (`BUNDLE_FULL_TRIAL`): Presence (Bundle) Trial
                           - 4 (`ENTERPRISE`): Enterprise
                           - 1 (`FREE`): None
                           - 3 (`PREMIUM`): Premium
@@ -131913,9 +131921,11 @@ components:
       description: |-
         List of possible plans for [AiAgentSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
 
-        Last used ID: 5.
+        Last used ID: 9.
 
         Values:
+        - 8 (`CHAT_AGENT_BUNDLE`): Chat Agent (Bundle)
+        - 9 (`CHAT_AGENT_BUNDLE_TRIAL`): Chat Agent (Bundle) Trial
         - 5 (`DENTAL_PHONE_AGENT`): Dental Phone Agent
         - 1 (`FREE`): None
         - 2 (`PROFESSIONAL`): Professional
@@ -131923,6 +131933,8 @@ components:
         - 3 (`STANDARD`): Assistant
         - 7 (`STANDARD_TRIAL`): Standard subscription, which will be automatically converted to [AiAgentSubscriptionSid::STANDARD](#/components/schemas/Wl.Business.Account.Subscription.AiAgent.AiAgentSubscriptionSid) after the 5th lead.
       enum:
+        - 8
+        - 9
         - 5
         - 1
         - 2
@@ -131930,6 +131942,8 @@ components:
         - 3
         - 7
       x-enum-varnames:
+        - CHAT_AGENT_BUNDLE
+        - CHAT_AGENT_BUNDLE_TRIAL
         - DENTAL_PHONE_AGENT
         - FREE
         - PROFESSIONAL
@@ -131937,6 +131951,8 @@ components:
         - STANDARD
         - STANDARD_TRIAL
       x-enum-descriptions:
+        - 'Chat Agent (Bundle)'
+        - 'Chat Agent (Bundle) Trial'
         - 'Dental Phone Agent'
         - None
         - Professional
@@ -132287,9 +132303,15 @@ components:
       description: |-
         List of possible plans for [WebsiteSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
 
+        Last used ID: 8.
+
         Values:
         - 2 (`BASIC`): Basic
         - 6 (`BASIC_LARGE`): Basic
+        - 9 (`BUNDLE_ADDON`): Presence (Bundle add-on)
+        - 10 (`BUNDLE_ADDON_TRIAL`): Presence (Bundle add-on) Trial
+        - 8 (`BUNDLE_FULL`): Presence (Bundle)
+        - 11 (`BUNDLE_FULL_TRIAL`): Presence (Bundle) Trial
         - 4 (`ENTERPRISE`): Enterprise
         - 1 (`FREE`): None
         - 3 (`PREMIUM`): Premium
@@ -132298,6 +132320,10 @@ components:
       enum:
         - 2
         - 6
+        - 9
+        - 10
+        - 8
+        - 11
         - 4
         - 1
         - 3
@@ -132306,6 +132332,10 @@ components:
       x-enum-varnames:
         - BASIC
         - BASIC_LARGE
+        - BUNDLE_ADDON
+        - BUNDLE_ADDON_TRIAL
+        - BUNDLE_FULL
+        - BUNDLE_FULL_TRIAL
         - ENTERPRISE
         - FREE
         - PREMIUM
@@ -132314,6 +132344,10 @@ components:
       x-enum-descriptions:
         - Basic
         - Basic
+        - 'Presence (Bundle add-on)'
+        - 'Presence (Bundle add-on) Trial'
+        - 'Presence (Bundle)'
+        - 'Presence (Bundle) Trial'
         - Enterprise
         - None
         - Premium
