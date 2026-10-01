@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261001051830
+  version: 1.1.20261001093151
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -58172,6 +58172,9 @@ paths:
                                   Discount applied to the event price.
                                   Staff-only: ignored when sent by a client.
                                 properties:
+                                  is_recurrent:
+                                    type: boolean
+                                    description: 'Whether the discount should also apply to the recurring membership payments.'
                                   m_discount:
                                     type: string
                                     description: 'Discount amount.'
@@ -58179,6 +58182,7 @@ paths:
                                     type: string
                                     description: 'Discount title.'
                                 required:
+                                  - is_recurrent
                                   - m_discount
                                   - text_discount
                               a_tax:
