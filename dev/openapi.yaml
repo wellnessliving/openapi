@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261001140335
+  version: 1.1.20261002104206
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -86,6 +86,9 @@ tags:
   -
     name: Collector
     description: 'Debt collection and payment management endpoints.'
+  -
+    name: 'Component Timing'
+    description: 'Client-side component load timing endpoints.'
   -
     name: Coupons
     description: 'Coupon list endpoints.'
@@ -2306,6 +2309,119 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Core/Timing/ComponentTiming.json:
+    post:
+      operationId: Core.Timing.ComponentTiming.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Logs component load timing entries reported by browser.'
+      description: |-
+        Ignores requests from bots and monitoring user agents. Accepts up to `MAX_ENTRY`
+         entries per request, discarding any extra entries. Each entry is written to [ComponentTimingLog](#/components/schemas/Core.Log.CoreLog)
+         and reported to Cloud Watch as up to three `ComponentTime` data points (one per phase that has a value),
+         tagged with `Component` and `Phase` dimensions. Phases of a request entry are 'network', 'request' and
+         'server'. Phases of a view entry are 'render', 'startup' and 'view'. A view entry is logged as one record
+         together with its requests, and the requests are also reported to Cloud Watch with their own phases.
+      tags:
+        - 'Component Timing'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_timing_list:
+                  type: object
+                  description: |-
+                    List of timing entries. Each entry has next keys:
+
+                    JSON-encoded array may arrive as a `string`.
+                  properties:
+                    a_request:
+                      type: array
+                      description: |-
+                        Only for view entries. Timings of the requests made while the view was loading. Each item has the keys
+                        `i_duration_network`, `i_duration_server`, `i_duration_total`, `is_success`, `s_correlation` and `s_url`
+                        described below. Absent for request entries.
+                      items:
+                        type: array
+                    i_duration_network:
+                      type: integer
+                      format: int32
+                      description: |-
+                        Approximate network duration in milliseconds (`i_duration_total` minus `i_duration_server`).
+                        `null` if `i_duration_server` is unavailable.
+                    i_duration_render:
+                      type: integer
+                      format: int32
+                      description: |-
+                        Only for view entries. Browser-side duration in milliseconds: from the moment view data is ready
+                        until the rendered content is painted. Absent for request entries.
+                    i_duration_server:
+                      type: integer
+                      format: int32
+                      description: |-
+                        Server-side processing duration in milliseconds, taken from the `X-Response-Time` response
+                        header. `null` if the header was not present, for example on a network failure.
+                    i_duration_startup:
+                      type: integer
+                      format: int32
+                      description: |-
+                        Only for view entries. Duration of the view startup in milliseconds, mostly waiting for models.
+                        Absent for request entries.
+                    i_duration_total:
+                      type: integer
+                      format: int32
+                      description: 'Total client-perceived duration in milliseconds: of the request, or of the whole view load.'
+                    is_success:
+                      type: boolean
+                      description: '`true` if the request succeeded, `false` otherwise.'
+                    s_component:
+                      type: string
+                      description: 'Component name, as set by the caller in `WlSdk_ModelAbstract::s_timing_component`.'
+                    s_correlation:
+                      type:
+                        - string
+                        - 'null'
+                      description: 'Correlation ID of the timed request, taken from the `X-Correlation-Id` response header.'
+                    s_url:
+                      type: string
+                      description: 'URL of the timed request.'
+                  required:
+                    - a_request
+                    - i_duration_network
+                    - i_duration_render
+                    - i_duration_server
+                    - i_duration_startup
+                    - i_duration_total
+                    - is_success
+                    - s_component
+                    - s_correlation
+                    - s_url
+              required:
+                - a_timing_list
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+      security: []
   /Social/Microsoft/Login.json:
     delete:
       operationId: Social.Microsoft.Login.delete
@@ -9185,6 +9301,7 @@ paths:
 
 
                     Purchase that is created when a staff adds payment for an appointment at POS [RsPurchaseItemSid::APPOINTMENT](#/components/schemas/RsPurchaseItemSid).
+                  - 29 (`TICKET`): Ticket purchase item.
                   - 26 (`TUITION`): Tuition purchase item.
                     Used when client purchases tuition for an event list.
                   - 27 (`TUITION_FEE`): Tuition fee purchase item.
@@ -13494,6 +13611,7 @@ paths:
 
 
                     Purchase that is created when a staff adds payment for an appointment at POS [RsPurchaseItemSid::APPOINTMENT](#/components/schemas/RsPurchaseItemSid).
+                  - 29 (`TICKET`): Ticket purchase item.
                   - 26 (`TUITION`): Tuition purchase item.
                     Used when client purchases tuition for an event list.
                   - 27 (`TUITION_FEE`): Tuition fee purchase item.
@@ -123145,6 +123263,7 @@ components:
 
 
           Purchase that is created when a staff adds payment for an appointment at POS [RsPurchaseItemSid::APPOINTMENT](#/components/schemas/RsPurchaseItemSid).
+        - 29 (`TICKET`): Ticket purchase item.
         - 26 (`TUITION`): Tuition purchase item.
           Used when client purchases tuition for an event list.
         - 27 (`TUITION_FEE`): Tuition fee purchase item.
@@ -123178,6 +123297,7 @@ components:
         - 15
         - 20
         - 6
+        - 29
         - 26
         - 27
         - 28
@@ -123206,6 +123326,7 @@ components:
         - RESOURCE
         - RESOURCE_DEPOSIT
         - SERVICE
+        - TICKET
         - TUITION
         - TUITION_FEE
         - TUITION_PRORATE
@@ -123270,6 +123391,7 @@ components:
 
 
           Purchase that is created when a staff adds payment for an appointment at POS {@link \RsPurchaseItemSid::APPOINTMENT}.
+        - 'Ticket purchase item.'
         - |-
           Tuition purchase item.
           Used when client purchases tuition for an event list.
@@ -125433,6 +125555,7 @@ components:
         - 2 (`PROMOTION_SERVICE`): Promotions with program category [RsProgramCategorySid::SERVICE](#/components/schemas/RsProgramCategorySid) and [RsProgramCategorySid::INSURANCE](#/components/schemas/RsProgramCategorySid).
         - 13 (`PROMOTION_VIDEO`): Promotions with program category [RsProgramCategorySid::VIDEO](#/components/schemas/RsProgramCategorySid).
         - 10 (`QUICK_BUY`): Products: water, t-shirts, etc. That is available for quick buy.
+        - 16 (`TICKET`): Ticket for a ticketed event.
         - 14 (`TUITION`): Tuition.
         - 15 (`TUITION_FEE`): Tuition fees.
       enum:
@@ -125449,6 +125572,7 @@ components:
         - 2
         - 13
         - 10
+        - 16
         - 14
         - 15
       x-enum-varnames:
@@ -125465,6 +125589,7 @@ components:
         - PROMOTION_SERVICE
         - PROMOTION_VIDEO
         - QUICK_BUY
+        - TICKET
         - TUITION
         - TUITION_FEE
       x-enum-descriptions:
@@ -125481,6 +125606,7 @@ components:
         - 'Promotions with program category {@link \RsProgramCategorySid::SERVICE} and {@link \RsProgramCategorySid::INSURANCE}.'
         - 'Promotions with program category {@link \RsProgramCategorySid::VIDEO}.'
         - 'Products: water, t-shirts, etc. That is available for quick buy.'
+        - 'Ticket for a ticketed event.'
         - Tuition.
         - 'Tuition fees.'
     Wl.Visit.Note.Sid.NoteSid:
