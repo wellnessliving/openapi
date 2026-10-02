@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261002112130
+  version: 1.1.20261002120859
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -2355,13 +2355,41 @@ paths:
                     JSON-encoded array may arrive as a `string`.
                   properties:
                     a_request:
-                      type: array
+                      type: object
                       description: |-
-                        Only for view entries. Timings of the requests made while the view was loading. Each item has the keys
-                        `i_duration_network`, `i_duration_server`, `i_duration_total`, `is_success`, `s_correlation` and `s_url`
-                        described below. Absent for request entries.
-                      items:
-                        type: array
+                        Only for view entries. Timings of the requests made while the view was loading. Absent for request
+                        entries. Each item has next keys:
+                      properties:
+                        i_duration_network:
+                          type: integer
+                          format: int32
+                          description: 'Approximate network duration in milliseconds. `null` if `i_duration_server` is unavailable.'
+                        i_duration_server:
+                          type: integer
+                          format: int32
+                          description: 'Server-side processing duration in milliseconds. `null` if the header was not present.'
+                        i_duration_total:
+                          type: integer
+                          format: int32
+                          description: 'Total client-perceived duration of the request in milliseconds.'
+                        is_success:
+                          type: boolean
+                          description: '`true` if the request succeeded, `false` otherwise.'
+                        s_correlation:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Correlation ID of the timed request, taken from the `X-Correlation-Id` response header.'
+                        s_url:
+                          type: string
+                          description: 'URL of the timed request.'
+                      required:
+                        - i_duration_network
+                        - i_duration_server
+                        - i_duration_total
+                        - is_success
+                        - s_correlation
+                        - s_url
                     i_duration_network:
                       type: integer
                       format: int32
@@ -53100,9 +53128,9 @@ paths:
         -
           limit: 200000
           period: 3600
-  /Wl/Classes/Editor/Setup.json:
+  /Wl/Classes/Editor/ClassEditor.json:
     get:
-      operationId: Wl.Classes.Editor.Setup.get
+      operationId: Wl.Classes.Editor.ClassEditor.get
       responses:
         '200':
           description: 'Successful response.'
@@ -53113,14 +53141,20 @@ paths:
                 properties:
                   a_class_tab:
                     type: array
+                    description: |-
+                      Keys of the Book Now Tabs the class is shown in.
+
+                      Every element is a `text_key` of [ClassEditorApi::$a_class_tab_list](/Wl/Classes/Editor/ClassEditor.json). Empty for a class that is shown
+                      in no tab.
+                    items:
+                      type: string
+                  a_class_tab_list:
+                    type: array
                     description: 'Book Now Tabs the class may be shown in. Every element is an array:'
                     items:
                       type: object
                       properties:
-                        is_selected:
-                          type: boolean
-                          description: '`true` if the class is shown in this tab, `false` otherwise.'
-                        s_key:
+                        text_key:
                           type: string
                           description: |-
                             Key of the tab: the ID of the tab object and the key of the tab joined with a hyphen. The key of a system
@@ -53129,9 +53163,35 @@ paths:
                           type: string
                           description: 'Title of the tab.'
                       required:
-                        - is_selected
-                        - s_key
+                        - text_key
                         - text_title
+                  a_login_type:
+                    type: array
+                    description: |-
+                      Keys of the client types that may book the class.
+
+                      Only taken into account while [ClassEditorApi::$is_bookable](/Wl/Classes/Editor/ClassEditor.json) is
+                      [BookableSid::CUSTOM](#/components/schemas/Wl.Service.BookableSid). Empty for a class every client type may book.
+                    items:
+                      type: string
+                  a_login_type_staff:
+                    type: array
+                    description: |-
+                      Keys of the client types staff may book into the class.
+
+                      Only taken into account while [ClassEditorApi::$is_bookable_staff](/Wl/Classes/Editor/ClassEditor.json) is `false`. Empty for a class staff
+                      may book every client type into.
+                    items:
+                      type: string
+                  a_member_group:
+                    type: array
+                    description: |-
+                      Keys of the client groups that may book the class.
+
+                      Only taken into account while [ClassEditorApi::$is_bookable](/Wl/Classes/Editor/ClassEditor.json) is
+                      [BookableSid::CUSTOM](#/components/schemas/Wl.Service.BookableSid). Empty for a class every client group may book.
+                    items:
+                      type: string
                   a_reminder_info:
                     type: object
                     description: 'Send rules of the client reminder. Keys are:'
@@ -53192,7 +53252,39 @@ paths:
                       - is_login_type_all
                       - is_member_group
                       - is_member_group_all
+                  a_resource_type:
+                    type: array
+                    description: 'Book-a-Spot asset categories the class requires. Every element is an array:'
+                    items:
+                      type: object
+                      properties:
+                        id_resource_control:
+                          $ref: '#/components/schemas/Wl.Resource.ResourceClientControlSid'
+                          description: |-
+                            Whether a client picks the asset of this category while booking. One of
+                            [ResourceClientControlSid](#/components/schemas/Wl.Resource.ResourceClientControlSid) constants.
+                        id_resource_use:
+                          $ref: '#/components/schemas/Wl.Resource.ResourceUseSid'
+                          description: |-
+                            Whether one asset of this category is taken by the whole class or one by every client. One of
+                            [ResourceUseSid](#/components/schemas/Wl.Resource.ResourceUseSid) constants.
+                        k_resource_type:
+                          type: string
+                          description: 'Key of the category.'
+                      required:
+                        - id_resource_control
+                        - id_resource_use
+                        - k_resource_type
                   a_search_tag:
+                    type: array
+                    description: |-
+                      Keys of the quick search tags of the class.
+
+                      Every element is a `k_search_tag` of [ClassEditorApi::$a_search_tag_list](/Wl/Classes/Editor/ClassEditor.json). Empty for a class with no
+                      tags.
+                    items:
+                      type: string
+                  a_search_tag_list:
                     type: array
                     description: 'Quick search tags of the category of the business. Every element is an array:'
                     items:
@@ -53209,6 +53301,15 @@ paths:
                         - text_title
                   a_shop_category:
                     type: array
+                    description: |-
+                      Keys of the store categories the event is listed under.
+
+                      Every element is a `k_shop_category` of [ClassEditorApi::$a_shop_category_list](/Wl/Classes/Editor/ClassEditor.json). Empty for an event
+                      that is listed under no category.
+                    items:
+                      type: string
+                  a_shop_category_list:
+                    type: array
                     description: 'Store categories of the business. Every element is an array:'
                     items:
                       type: object
@@ -53221,6 +53322,41 @@ paths:
                           description: 'Title of the category.'
                       required:
                         - k_shop_category
+                        - text_title
+                  a_tag:
+                    type: array
+                    description: |-
+                      Keys of the revenue categories the drop-in revenue of the class is tracked under.
+
+                      Empty for a class with no revenue category.
+                    items:
+                      type: string
+                  a_ticket_option:
+                    type: array
+                    description: |-
+                      Ticket types of a ticketed event, in the order they are offered. Every element is an array: 
+
+                      Empty for an event that is not ticketed, and for a ticketed event that has no types yet. The client offers an
+                      empty row in either case.
+                    items:
+                      type: object
+                      properties:
+                        f_price:
+                          type: string
+                          description: 'Price of one ticket of this type.'
+                        is_sold:
+                          type: boolean
+                          description: '`true` if at least one ticket of this type has been sold, `false` otherwise.'
+                        k_ticket_option:
+                          type: string
+                          description: 'Key of the type.'
+                        text_title:
+                          type: string
+                          description: 'Title of the type, for example `General admission`.'
+                      required:
+                        - f_price
+                        - is_sold
+                        - k_ticket_option
                         - text_title
                   a_url:
                     type: array
@@ -53269,6 +53405,66 @@ paths:
                         - url_resource_manage
                         - url_ticket_card
                         - url_ticket_waiver
+                  dl_early:
+                    type: string
+                    format: date
+                    description: |-
+                      Last day of the early bird discount in MySQL format.
+
+                      Empty string if the event has no early bird discount.
+
+                      Copy of RsClassEarlySql.`dt_early`.
+                  f_deposit:
+                    type: string
+                    description: |-
+                      Deposit a client leaves while booking the event.
+
+                      A percent of the price of the event while [ClassEditorApi::$is_deposit_percent](/Wl/Classes/Editor/ClassEditor.json) is `true`, an amount of
+                      money otherwise. `0.00` unless [ClassEditorApi::$id_pay_require](/Wl/Classes/Editor/ClassEditor.json) is
+                      [RequirePaySid::DEPOSIT](#/components/schemas/Wl.Classes.RequirePaySid). The field keeps the name the legacy form posts, which carries
+                      both an amount of money and a percent.
+
+                      Copy of RsClassSql.`f_deposit`.
+                    default: '0.00'
+                  f_early:
+                    type: string
+                    description: |-
+                      Early bird discount of the event.
+
+                      `0.00` if the event has no early bird discount. The field keeps the name the legacy form posts.
+
+                      Copy of RsClassEarlySql.`f_early`.
+                    default: '0.00'
+                  f_price:
+                    type: string
+                    description: |-
+                      Price of one session of the event.
+
+                      Only taken into account while [ClassEditorApi::$not_single_buy](/Wl/Classes/Editor/ClassEditor.json) is `0`. The field keeps the name the
+                      legacy form posts.
+
+                      Copy of RsClassSql.`f_price`.
+                    default: '0.00'
+                  f_price_total:
+                    type: string
+                    description: |-
+                      Price of the whole event.
+
+                      Only taken into account while [ClassEditorApi::$not_single_buy](/Wl/Classes/Editor/ClassEditor.json) is `1`. The field keeps the name the
+                      legacy form posts.
+
+                      Copy of RsClassSql.`f_price_total`.
+                    default: '0.00'
+                  hide_application:
+                    type: boolean
+                    description: '`true` if the event is hidden in the White Label Achieve Client App, `false` if it is shown there.'
+                  hide_price:
+                    type: boolean
+                    description: |-
+                      `true` if the price of a single session is hidden from a client who has an applicable Purchase Option,
+                      `false` if it is shown to them.
+
+                      Copy of RsClassSql.`hide_price`.
                   html_policy:
                     type: string
                     description: |-
@@ -53305,25 +53501,471 @@ paths:
 
                       The block is a selector of the taxes of the business. There is no template of this select on the client, so the
                       block is rendered here and the client only moves the markup into the section it belongs to.
+                  i_age_from_month:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Months above the whole years of the minimum age of a client of the class.
+
+                      `null` if the class has no minimum age.
+
+                      Copy of RsClassSql.`i_age_from_month`.
+                  i_age_from_year:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Whole years of the minimum age of a client of the class.
+
+                      `null` if the class has no minimum age.
+
+                      Copy of RsClassSql.`i_age_from`.
+                  i_age_to_month:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Months above the whole years of the maximum age of a client of the class.
+
+                      `null` if the class has no maximum age.
+
+                      Copy of RsClassSql.`i_age_to_month`.
+                  i_age_to_year:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Whole years of the maximum age of a client of the class.
+
+                      `null` if the class has no maximum age.
+
+                      Copy of RsClassSql.`i_age_to`.
+                  i_capacity:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of clients that may enroll into each instance of the event.
+
+                      Copy of RsClassSql.`i_capacity`.
+                    default: 10
+                  i_capacity_ticket:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of tickets that may be sold for each instance of a ticketed event.
+
+                      The same number as [ClassEditorApi::$i_capacity](/Wl/Classes/Editor/ClassEditor.json), in a field of its own because a ticketed event asks
+                      for it in a field the legacy form posts under this name.
+                    default: 10
+                  i_description_limit:
+                    type: integer
+                    format: int32
+                    description: 'Maximum length of `s_description`.'
+                  i_makeup_cap:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Maximum number of make-up sessions a client may take.
+
+                      `0` stands for as many as the number of the sessions the client missed.
+
+                      Copy of RsClassSql.`i_makeup_cap`.
+                  i_order_limit:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of tickets that may be bought in one order of a ticketed event.
+
+                      Copy of TicketSettingsSql.`i_order_limit`.
+                    default: 1
+                  i_terms_limit:
+                    type: integer
+                    format: int32
+                    description: 'Maximum length of `xml_terms`.'
+                    default: 512
+                  id_age_restrict:
+                    $ref: '#/components/schemas/Wl.Service.AgeRestrictionStatusSid'
+                    description: |-
+                      Kind of the age restriction of the class.
+
+                      Only taken into account while [ClassEditorApi::$is_age_restrict](/Wl/Classes/Editor/ClassEditor.json) is `true`.
+
+                      Copy of RsClassSql.`id_age_restrict`.
+                  id_event_type:
+                    $ref: '#/components/schemas/Wl.Classes.Edit.EventTypeEnum'
+                    description: 'Type of the event.'
+                  id_note:
+                    $ref: '#/components/schemas/Wl.Visit.Note.Sid.NoteSid'
+                    description: |-
+                      Kind of note staff may take for a client visit.
+
+                      Copy of RsClassSql.`id_note`.
+                  id_pay_require:
+                    $ref: '#/components/schemas/Wl.Classes.RequirePaySid'
+                    description: |-
+                      Way a client pays for the event.
+
+                      Copy of RsClassSql.`id_pay_require`.
+                  id_virtual_provider:
+                    $ref: '#/components/schemas/Wl.Virtual.VirtualProviderSid'
+                    description: |-
+                      Virtual meeting provider of the event. `null` for an in-person event.
+
+                      Copy of RsClassSql.`id_virtual_provider`.
+                  is_account_require:
+                    type: boolean
+                    description: |-
+                      `true` if a buyer of a ticket must have an account, `false` if a name and an email address are enough.
+
+                      Ignored for an event that is not ticketed.
                   is_admin:
                     type: boolean
                     description: '`true` if the Administration section may be shown, `false` otherwise.'
+                  is_age_public:
+                    type: boolean
+                    description: |-
+                      `true` if the class is shown to a client who does not meet its age requirement, `false` if it is hidden from
+                      them.
+
+                      Copy of RsClassSql.`is_age_public`.
+                  is_age_restrict:
+                    type: boolean
+                    description: |-
+                      `true` if the class has an age restriction, `false` otherwise.
+
+                      The legacy form keeps no flag of its own for this switch, so it is worked out from the age bounds, the same
+                      as in the legacy form.
+                  is_birthday_require:
+                    type: boolean
+                    description: |-
+                      `true` if the birth date is a required field of the client profile of the business, `false` otherwise.
+
+                      An age restriction can only be kept to when the birth date is known, so the form asks staff to make the field
+                      required while the restriction is switched on for a business that does not require it yet.
+                  is_bookable:
+                    type: integer
+                    format: int32
+                    description: 'Who may book the class online.'
+                    default: 1
+                  is_bookable_staff:
+                    type: boolean
+                    description: |-
+                      `true` if staff may book any client type into the class, `false` if only the client types of
+                      [ClassEditorApi::$a_login_type_staff](/Wl/Classes/Editor/ClassEditor.json).
+
+                      Copy of RsClassSql.`is_bookable_staff`.
+                    default: true
+                  is_client_notification:
+                    type: boolean
+                    description: |-
+                      `true` if the clients of the class receive the default client notifications, `false` otherwise.
+
+                      Copy of RsClassSql.`is_client_notification`.
+                    default: true
+                  is_config_business:
+                    type: boolean
+                    description: '`true` if the class has policies of its own, `false` if it follows the policies of the business.'
+                  is_custom_confirmation:
+                    type: boolean
+                    description: |-
+                      `true` if the clients of the class receive a confirmation notification of its own, `false` if they receive the
+                      default one.
+                  is_custom_confirmation_mail:
+                    type: boolean
+                    description: |-
+                      `true` if the confirmation notification of the class is sent by email, `false` otherwise.
+
+                      Ignored while [ClassEditorApi::$is_custom_confirmation](/Wl/Classes/Editor/ClassEditor.json) is `false`.
+                  is_custom_confirmation_push:
+                    type: boolean
+                    description: |-
+                      `true` if the confirmation notification of the class is sent as a push message, `false` otherwise.
+
+                      Ignored while [ClassEditorApi::$is_custom_confirmation](/Wl/Classes/Editor/ClassEditor.json) is `false`.
+                  is_custom_confirmation_sms:
+                    type: boolean
+                    description: |-
+                      `true` if the confirmation notification of the class is sent by SMS, `false` otherwise.
+
+                      Ignored while [ClassEditorApi::$is_custom_confirmation](/Wl/Classes/Editor/ClassEditor.json) is `false`.
+                  is_custom_reminder:
+                    type: boolean
+                    description: |-
+                      `true` if the clients of the class receive a reminder notification of its own, `false` if they receive the
+                      default one.
+                  is_custom_reminder_mail:
+                    type: boolean
+                    description: |-
+                      `true` if the reminder notification of the class is sent by email, `false` otherwise.
+
+                      Ignored while [ClassEditorApi::$is_custom_reminder](/Wl/Classes/Editor/ClassEditor.json) is `false`.
+                  is_custom_reminder_push:
+                    type: boolean
+                    description: |-
+                      `true` if the reminder notification of the class is sent as a push message, `false` otherwise.
+
+                      Ignored while [ClassEditorApi::$is_custom_reminder](/Wl/Classes/Editor/ClassEditor.json) is `false`.
+                  is_custom_reminder_sms:
+                    type: boolean
+                    description: |-
+                      `true` if the reminder notification of the class is sent by SMS, `false` otherwise.
+
+                      Ignored while [ClassEditorApi::$is_custom_reminder](/Wl/Classes/Editor/ClassEditor.json) is `false`.
+                  is_deposit_percent:
+                    type: boolean
+                    description: |-
+                      `true` if [ClassEditorApi::$f_deposit](/Wl/Classes/Editor/ClassEditor.json) is a percent of the price of the event, `false` if it is an
+                      amount of money.
+
+                      Copy of RsClassSql.`is_deposit_percent`.
+                  is_door_pay:
+                    type: boolean
+                    description: |-
+                      `true` if a buyer may reserve a ticket and pay for it at the door, `false` if a ticket is paid for at once.
+
+                      Ignored for an event that is not ticketed.
+                  is_early:
+                    type: boolean
+                    description: '`true` if the event has an early bird discount, `false` otherwise.'
+                  is_event_type_lock:
+                    type: boolean
+                    description: |-
+                      `true` if the event may no longer be turned into a ticketed one, or back from it, `false` otherwise.
+
+                      A client who booked or bought locks the move to and from a ticketed event. The lock stays once a purchase has
+                      been made, even after it is refunded or voided, so the flag reports whether the event ever had an enrollment
+                      rather than whether it has one now. Block and non-block stay interchangeable either way.
+                  is_fitlive:
+                    type: boolean
+                    description: '`true` if the business may use the FitLIVE virtual provider, `false` otherwise.'
+                  is_gym_pass:
+                    type: boolean
+                    description: |-
+                      `true` if the event is offered on Wellhub, `false` otherwise.
+
+                      Ignored while [ClassEditorApi::$is_gym_pass_support](/Wl/Classes/Editor/ClassEditor.json) is `false`.
+                  is_gym_pass_support:
+                    type: boolean
+                    description: |-
+                      `true` if the business may offer the event on Wellhub, `false` otherwise.
+
+                      The Wellhub block of the Online visibility section is only shown while this is `true`.
+                  is_online_private:
+                    type: boolean
+                    description: |-
+                      `true` if the class is hidden from a client who may not book it, `false` if it is shown to them.
+
+                      Copy of RsClassSql.`is_online_private`.
+                  is_prerequisite:
+                    type: boolean
+                    description: '`true` if a client must attend other services before booking this one, `false` otherwise.'
+                  is_quick_buy:
+                    type: boolean
+                    description: '`true` if staff may sell products from the attendance list of the class, `false` otherwise.'
+                  is_replace:
+                    type: boolean
+                    description: '`true` if the number of the make-up sessions of the event is limited, `false` otherwise.'
+                  is_resource_type:
+                    type: boolean
+                    description: '`true` if the class requires Book-a-Spot assets, `false` otherwise.'
+                  is_staff_notification:
+                    type: boolean
+                    description: |-
+                      `true` if staff receive the default staff notifications of the class, `false` otherwise.
+
+                      Copy of RsClassSql.`is_staff_notification`.
+                    default: true
+                  is_staff_session:
+                    type: boolean
+                    description: |-
+                      `true` if staff may book individual sessions of a block event, `false` otherwise.
+
+                      Ignored for a non-block or a ticketed event.
+                  is_tax_enable:
+                    type: boolean
+                    description: '`true` if taxes are applied to the sales of the class, `false` otherwise.'
+                  is_terms:
+                    type: boolean
+                    description: |-
+                      `true` if a buyer of a ticket must agree to terms and conditions, `false` otherwise.
+
+                      Ignored for an event that is not ticketed.
+                  is_ticket_card_require:
+                    type: boolean
+                    description: |-
+                      `true` if a new client of the business must add a card at sign-up, `false` otherwise.
+
+                      One of the sign-up rules the form lists for a buyer of a ticket who has no account yet. A setting of the
+                      business, not of the event.
+                  is_ticket_waiver_require:
+                    type: boolean
+                    description: |-
+                      `true` if a new client of the business must sign a waiver, `false` otherwise.
+
+                      One of the sign-up rules the form lists for a buyer of a ticket who has no account yet. A setting of the
+                      business, not of the event.
+                  k_tag_primary:
+                    type: string
+                    description: |-
+                      Key of the revenue category the drop-in revenue of the class is tracked under first of all.
+
+                      Empty string for a class with no revenue category. Always one of [ClassEditorApi::$a_tag](/Wl/Classes/Editor/ClassEditor.json).
+                  m_revenue_gym_pass:
+                    type: string
+                    description: |-
+                      Revenue the business earns per client per session of an event offered on Wellhub.
+
+                      Ignored while [ClassEditorApi::$is_gym_pass](/Wl/Classes/Editor/ClassEditor.json) is `false`.
+
+                      Copy of RsClassSql.`m_revenue_gym_pass`.
+                    default: '0.00'
+                  not_single_buy:
+                    type: integer
+                    format: int32
+                    description: |-
+                      How a client pays for the event: `0` for a single session, `1` for the whole event, `2` for a Purchase Option
+                      only.
+
+                      The field keeps the name the legacy form posts, which stores the opposite of the first choice. Defaults to the
+                      whole event, the same as the legacy form offers for a new event.
+                    default: 1
+                  s_color_background:
+                    type: string
+                    description: |-
+                      Color of the event on the schedule in hex format, with a leading `#`.
+
+                      Copy of RsClassSql.`s_color_background`.
+                  s_description:
+                    type: string
+                    description: |-
+                      Description of the event.
+
+                      Copy of RsClassCmsSql.`s_description` in the current language.
+                  s_special:
+                    type: string
+                    description: |-
+                      Special instructions of the event.
+
+                      Copy of RsClassCmsSql.`xml_special`.
+                  s_title:
+                    type: string
+                    description: |-
+                      Title of the event.
+
+                      Copy of RsClassCmsSql.`s_title` in the current language.
+                  show_special_instructions:
+                    type: boolean
+                    description: |-
+                      `true` if the special instructions may be shown publicly, `false` if only to a client who booked the event.
+
+                      Copy of RsClassSql.`show_special_instructions`.
+                    default: true
                   text_currency:
                     type: string
                     description: 'Currency sign of the business.'
+                  text_early:
+                    type: string
+                    description: |-
+                      Last day of the early bird discount as the calendar of the form shows it.
+
+                      Empty string if the event has no early bird discount. [ClassEditorApi::$dl_early](/Wl/Classes/Editor/ClassEditor.json) carries the same day
+                      in the format the form posts.
+                  xml_terms:
+                    type: string
+                    description: |-
+                      Terms and conditions a buyer of a ticket must agree to.
+
+                      Empty string for an event that is not ticketed, and for a ticketed event with no terms.
+
+                      Copy of TicketSettingsCmsSql.`xml_terms`.
                 required:
                   - a_class_tab
+                  - a_class_tab_list
+                  - a_login_type
+                  - a_login_type_staff
+                  - a_member_group
                   - a_reminder_info
+                  - a_resource_type
                   - a_search_tag
+                  - a_search_tag_list
                   - a_shop_category
+                  - a_shop_category_list
+                  - a_tag
+                  - a_ticket_option
                   - a_url
+                  - dl_early
+                  - f_deposit
+                  - f_early
+                  - f_price
+                  - f_price_total
+                  - hide_application
+                  - hide_price
                   - html_policy
                   - html_prerequisite
                   - html_promotion
                   - html_quick_buy
                   - html_tax
+                  - i_capacity
+                  - i_capacity_ticket
+                  - i_description_limit
+                  - i_makeup_cap
+                  - i_order_limit
+                  - i_terms_limit
+                  - id_age_restrict
+                  - id_event_type
+                  - id_note
+                  - id_pay_require
+                  - is_account_require
                   - is_admin
+                  - is_age_public
+                  - is_age_restrict
+                  - is_birthday_require
+                  - is_bookable
+                  - is_bookable_staff
+                  - is_client_notification
+                  - is_config_business
+                  - is_custom_confirmation
+                  - is_custom_confirmation_mail
+                  - is_custom_confirmation_push
+                  - is_custom_confirmation_sms
+                  - is_custom_reminder
+                  - is_custom_reminder_mail
+                  - is_custom_reminder_push
+                  - is_custom_reminder_sms
+                  - is_deposit_percent
+                  - is_door_pay
+                  - is_early
+                  - is_event_type_lock
+                  - is_fitlive
+                  - is_gym_pass
+                  - is_gym_pass_support
+                  - is_online_private
+                  - is_prerequisite
+                  - is_quick_buy
+                  - is_replace
+                  - is_resource_type
+                  - is_staff_notification
+                  - is_staff_session
+                  - is_tax_enable
+                  - is_terms
+                  - is_ticket_card_require
+                  - is_ticket_waiver_require
+                  - k_tag_primary
+                  - m_revenue_gym_pass
+                  - not_single_buy
+                  - s_color_background
+                  - s_description
+                  - s_special
+                  - s_title
+                  - show_special_instructions
                   - text_currency
+                  - text_early
+                  - xml_terms
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -53336,13 +53978,12 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Returns everything the class setup form needs besides the class itself.'
+      summary: 'Returns everything the class setup form needs.'
       description: |-
-        The form is rendered by the client, so this endpoint answers with data: the lists the Book Now Tab, the quick
-        search tag and the store category pickers are filled from, the business policies the Business policies section
-        starts with, the send rules of the client reminder, the currency sign, whether the Administration section may
-        be shown, the addresses of the pages the form links to and the markup of the blocks that have no template on
-        the client.
+        The form is rendered by the client, so this endpoint answers with data: the fields of the class section by
+        section, the lists the Book Now Tab, the quick search tag and the store category pickers are filled from, the
+        send rules of the client reminder, the currency sign, whether the Administration section may be shown, the
+        addresses of the pages the form links to and the markup of the blocks that have no template on the client.
       tags:
         - Events
       parameters:
@@ -130205,6 +130846,116 @@ components:
         - 'All users can book.'
         - 'Only special client groups can book.'
         - 'Nobody can book.'
+    Wl.Resource.ResourceClientControlSid:
+      type: integer
+      format: int32
+      description: |-
+        A list of resource selection type.
+
+        Values:
+        - 2 (`OFF`): Means that client cannot select resource during booking process.
+        - 1 (`ON`): Means that client can select resource during booking process.
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - 'OFF'
+        - 'ON'
+      x-enum-descriptions:
+        - 'Means that client cannot select resource during booking process.'
+        - 'Means that client can select resource during booking process.'
+    Wl.Resource.ResourceUseSid:
+      type: integer
+      format: int32
+      description: |-
+        A list of resource usage types.
+
+        Values:
+        - 1 (`INDIVIDUAL`): Means that resource used in individual usage.
+        - 2 (`SHARE`): Resource is reserved for the entire class.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - INDIVIDUAL
+        - SHARE
+      x-enum-descriptions:
+        - 'Means that resource used in individual usage.'
+        - 'Resource is reserved for the entire class.'
+    Wl.Service.AgeRestrictionStatusSid:
+      type: integer
+      format: int32
+      description: |-
+        Age restriction statuses.
+
+        Values:
+        - 2 (`AGE_BETWEEN`): Client age must be between limits.
+        - 1 (`AVAILABLE`): Client is available to book service.
+        - 3 (`MAX_AGE`): Client age must be less then max age.
+        - 4 (`MIN_AGE`): Client age must be great then min age.
+      enum:
+        - 2
+        - 1
+        - 3
+        - 4
+      x-enum-varnames:
+        - AGE_BETWEEN
+        - AVAILABLE
+        - MAX_AGE
+        - MIN_AGE
+      x-enum-descriptions:
+        - 'Client age must be between limits.'
+        - 'Client is available to book service.'
+        - 'Client age must be less then max age.'
+        - 'Client age must be great then min age.'
+      default: 2
+    Wl.Classes.Edit.EventTypeEnum:
+      type: integer
+      format: int32
+      description: |-
+        Type of the event, which defines how clients book it and how they pay for it.
+
+        Values:
+        - 2 (`BLOCK`): Clients book the event once and attend every session in the schedule.
+        - 1 (`NON_BLOCK`): Clients pick which sessions to book and can pay per session.
+        - 3 (`TICKETED`): Tickets are sold for a set number of seats and are paid up front. Anyone can buy a ticket,
+          no account is needed, and every ticket is a QR code that staff scan at the door.
+      enum:
+        - 2
+        - 1
+        - 3
+      x-enum-varnames:
+        - BLOCK
+        - NON_BLOCK
+        - TICKETED
+      x-enum-descriptions:
+        - 'Clients book the event once and attend every session in the schedule.'
+        - 'Clients pick which sessions to book and can pay per session.'
+        - |-
+          Tickets are sold for a set number of seats and are paid up front. Anyone can buy a ticket,
+          no account is needed, and every ticket is a QR code that staff scan at the door.
+    Wl.Virtual.VirtualProviderSid:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        List of possible value of virtual integrations.
+
+        Last used ID: 2.
+
+        Values:
+        - 2 (`NON_INTEGRATED`): Virtual integration non implemented.
+        - 1 (`ZOOM`): Virtual Zoom service integration.
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - NON_INTEGRATED
+        - ZOOM
+      x-enum-descriptions:
+        - 'Virtual integration non implemented.'
+        - 'Virtual Zoom service integration.'
     Wl.Coupon.TypeSid:
       type: integer
       format: int32
@@ -130616,28 +131367,6 @@ components:
         - 'Visit to another class is required first.'
         - 'The wait list is full.'
         - 'Client has unsigned waiver.'
-    Wl.Virtual.VirtualProviderSid:
-      type:
-        - integer
-        - 'null'
-      format: int32
-      description: |-
-        List of possible value of virtual integrations.
-
-        Last used ID: 2.
-
-        Values:
-        - 2 (`NON_INTEGRATED`): Virtual integration non implemented.
-        - 1 (`ZOOM`): Virtual Zoom service integration.
-      enum:
-        - 2
-        - 1
-      x-enum-varnames:
-        - NON_INTEGRATED
-        - ZOOM
-      x-enum-descriptions:
-        - 'Virtual integration non implemented.'
-        - 'Virtual Zoom service integration.'
     RsAppointmentPaySid:
       type: integer
       format: int32
