@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261002104206
+  version: 1.1.20261002112130
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -16888,6 +16888,13 @@ paths:
                           required:
                             - k_search_tag
                             - text_title
+                        a_tickets:
+                          type: array
+                          description: |-
+                            List of ticket options available for booking the event. Empty if the event is not a ticketed
+                            event.
+                          items:
+                            type: array
                         can_book:
                           type: boolean
                           description: |-
@@ -17131,6 +17138,7 @@ paths:
                         - a_logo
                         - a_schedule
                         - a_search_tag
+                        - a_tickets
                         - can_book
                         - can_cancel
                         - dl_early
@@ -46776,6 +46784,13 @@ paths:
                         description: |-
                           This applies to enrollment/event items.
                           `true` if the item is a ticketed event, `false` otherwise.
+                      a_tickets:
+                        type: array
+                        description: |-
+                          List of ticket options available for booking the event. Empty if the item is not a
+                          ticketed event. .
+                        items:
+                          type: array
                     required:
                       - a_service_access
                       - is_renew_public
@@ -46790,6 +46805,7 @@ paths:
                       - id_duration_type
                       - is_price_breakdown
                       - is_ticket
+                      - a_tickets
                   a_guest_pass:
                     type: object
                     description: |-
@@ -47043,6 +47059,13 @@ paths:
                               description: |-
                                 This applies to enrollment/event items.
                                 `true` if the item is a ticketed event, `false` otherwise.
+                            a_tickets:
+                              type: array
+                              description: |-
+                                List of ticket options available for booking the event. Empty if the item is not a
+                                ticketed event. .
+                              items:
+                                type: array
                           required:
                             - a_service_access
                             - is_renew_public
@@ -47057,6 +47080,7 @@ paths:
                             - id_duration_type
                             - is_price_breakdown
                             - is_ticket
+                            - a_tickets
                         a_guest_pass:
                           type: object
                           description: 'Information about promotion guest pass. The same structure as [ElementApi::$a_guest_pass](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -47747,6 +47771,13 @@ paths:
                         description: |-
                           This applies to enrollment/event items.
                           `true` if the item is a ticketed event, `false` otherwise.
+                      a_tickets:
+                        type: array
+                        description: |-
+                          List of ticket options available for booking the event. Empty if the item is not a
+                          ticketed event. .
+                        items:
+                          type: array
                     required:
                       - a_service_access
                       - is_renew_public
@@ -47761,6 +47792,7 @@ paths:
                       - id_duration_type
                       - is_price_breakdown
                       - is_ticket
+                      - a_tickets
                   a_guest_pass:
                     type: object
                     description: |-
@@ -48014,6 +48046,13 @@ paths:
                               description: |-
                                 This applies to enrollment/event items.
                                 `true` if the item is a ticketed event, `false` otherwise.
+                            a_tickets:
+                              type: array
+                              description: |-
+                                List of ticket options available for booking the event. Empty if the item is not a
+                                ticketed event. .
+                              items:
+                                type: array
                           required:
                             - a_service_access
                             - is_renew_public
@@ -48028,6 +48067,7 @@ paths:
                             - id_duration_type
                             - is_price_breakdown
                             - is_ticket
+                            - a_tickets
                         a_guest_pass:
                           type: object
                           description: 'Information about promotion guest pass. The same structure as [ElementApi::$a_guest_pass](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -48565,6 +48605,13 @@ paths:
                           description: 'Shop category keys the item belongs to.'
                           items:
                             type: string
+                        a_tickets:
+                          type: array
+                          description: |-
+                            List of ticket options available for booking the event. Empty if the item is not a
+                            ticketed event. .
+                          items:
+                            type: array
                         dtu_create:
                           type: string
                           description: 'UTC creation date of the item in MySQL format.'
@@ -48606,6 +48653,7 @@ paths:
                       required:
                         - a_location
                         - a_shop_category
+                        - a_tickets
                         - dtu_create
                         - f_price
                         - hide_application
@@ -48636,6 +48684,13 @@ paths:
                         description: 'Shop category keys the item belongs to.'
                         items:
                           type: string
+                      a_tickets:
+                        type: array
+                        description: |-
+                          List of ticket options available for booking the event. Empty if the item is not a
+                          ticketed event. .
+                        items:
+                          type: array
                       dtu_create:
                         type: string
                         description: 'UTC creation date of the item in MySQL format.'
@@ -48677,6 +48732,7 @@ paths:
                     required:
                       - a_location
                       - a_shop_category
+                      - a_tickets
                       - dtu_create
                       - f_price
                       - hide_application
@@ -95261,6 +95317,15 @@ paths:
                       - id_tax
                       - k_tax
                       - s_tax
+                  a_tickets:
+                    type: array
+                    description: |-
+                      List of ticket options available for booking the event. Empty if the sale item is not a
+                      ticketed event.
+
+                      Always empty for sale items other than [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid).
+                    items:
+                      type: array
                   is_ticket:
                     type: boolean
                     description: |-
@@ -95281,6 +95346,7 @@ paths:
                     description: 'The calculated amount of the sale item, including taxes.'
                 required:
                   - a_tax_data
+                  - a_tickets
                   - is_ticket
                   - m_prorate
                   - m_subtotal
@@ -110187,6 +110253,13 @@ paths:
                             - i_width
                             - uid
                             - url_logo
+                        a_tickets:
+                          type: array
+                          description: |-
+                            List of ticket options available for booking the event. Empty if the event is not a
+                            ticketed event. .
+                          items:
+                            type: array
                         dt_book_date:
                           type: string
                           description: 'Date/time of first event session.'
@@ -110283,6 +110356,7 @@ paths:
                         - a_schedule
                         - a_shop_category
                         - a_staff_logo
+                        - a_tickets
                         - dt_book_date
                         - dt_early
                         - dt_end
@@ -110520,6 +110594,13 @@ paths:
                       - i_width
                       - uid
                       - url_logo
+                  a_tickets:
+                    type: array
+                    description: |-
+                      List of ticket options available for booking the event. Empty if the event is not a ticketed
+                      event.
+                    items:
+                      type: array
                   a_timezone_info:
                     type: array
                     description: |-
@@ -110770,6 +110851,7 @@ paths:
                   - a_schedule
                   - a_shop_category
                   - a_staff_logo
+                  - a_tickets
                   - a_timezone_info
                   - a_visits_required
                   - dt_end
@@ -111015,6 +111097,18 @@ paths:
                       Value is `true` if the event is a ticketed event, `false` otherwise.
                     additionalProperties:
                       type: boolean
+                  a_event_ticket_option:
+                    type: object
+                    description: |-
+                      Ticket option map.
+
+                      Key is the event class key. 
+                      Value is the list of ticket options available for booking the event. Empty if the event is not
+                      a ticketed event.
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: array
                   is_virtual_service:
                     type: boolean
                     description: |-
@@ -111026,6 +111120,7 @@ paths:
                   - a_event
                   - a_event_available
                   - a_event_ticket
+                  - a_event_ticket_option
                   - is_virtual_service
         '400':
           $ref: '#/components/responses/400'
