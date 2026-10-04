@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261002140818
+  version: 1.1.20261004090534
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26846,12 +26846,18 @@ paths:
                         s_object:
                           type: string
                           description: 'Usage-statistics object. Present for the usage-statistics source.'
-                        s_period:
-                          type: string
-                          description: 'Usage-statistics aggregation period. Present for the usage-statistics source.'
-                        s_priority:
-                          type: string
-                          description: 'Usage-statistics priority. Present for the usage-statistics source.'
+                        eid_period:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Usage-statistics aggregation period. One of [TriageWatchUsagePeriodEnum](#/components/schemas/Core.AI.LogTriage.TriageWatchUsagePeriodEnum)
+                              cases. Present for the usage-statistics source.
+                        eid_priority:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Usage-statistics priority. One of [TriageUrgencyEnum](#/components/schemas/Core.AI.LogTriage.TriageUrgencyEnum) cases. Present for
+                              the usage-statistics source.
                         text_message:
                           type: string
                           description: 'Log message or task description. Present for log and task sources.'
@@ -26864,8 +26870,8 @@ paths:
                         - i_priority_multiplier
                         - cid_problem
                         - s_object
-                        - s_period
-                        - s_priority
+                        - eid_period
+                        - eid_priority
                         - text_message
                 required:
                   - a_finding
