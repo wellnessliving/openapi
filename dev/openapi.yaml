@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261005132913
+  version: 1.1.20261005134253
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -59717,22 +59717,28 @@ paths:
                       and invoices they have already been applied to.
 
                       The list is not sorted - sorting and filtering of the list is a matter of the page that shows it.
-
-                      <dl>
-                        <dt>array `a_service`</dt>
-                        <dd>List of services the code is applied to by default. 
-
-                        <dt>string `k_code`</dt>
-                        <dd>Key of the code. </dd>
-
-                        <dt>string `text_code`</dt>
-                        <dd>Code value, as it is printed on receipts and invoices.</dd>
-
-                        <dt>string `text_description`</dt>
-                        <dd>Description of the code the business typed in.</dd>
-                      </dl>
                     items:
-                      type: array
+                      type: object
+                      properties:
+                        a_service:
+                          type: array
+                          description: 'List of services the code is applied to by default.'
+                          items:
+                            type: string
+                        k_code:
+                          type: string
+                          description: 'Key of the code.'
+                        text_code:
+                          type: string
+                          description: 'Code value, as it is printed on receipts and invoices.'
+                        text_description:
+                          type: string
+                          description: 'Description of the code the business typed in.'
+                      required:
+                        - a_service
+                        - k_code
+                        - text_code
+                        - text_description
                 required:
                   - a_code
         '400':
@@ -107843,6 +107849,12 @@ paths:
                         is_age_restricted:
                           type: boolean
                           description: "Determines whether this service can't be booked due to age restrictions."
+                        is_book_for_guest:
+                          type: boolean
+                          description: |-
+                            Whether clients can book this asset on behalf of a guest.
+                            If the asset has a service-specific booking policy, that value is used.
+                            Otherwise, the business-level booking policy applies.
                         k_class_tab:
                           type: string
                           description: 'Quick book tab key.'
@@ -107871,6 +107883,7 @@ paths:
                         - id_deny_reason
                         - id_service_require
                         - is_age_restricted
+                        - is_book_for_guest
                         - k_class_tab
                         - k_resource
                         - k_resource_category
