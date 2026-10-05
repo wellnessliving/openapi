@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261004090534
+  version: 1.1.20261005073801
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26845,18 +26845,20 @@ paths:
                           description: 'CID of a [TriageProblemAbstract](#/components/schemas/Core.AI.LogTriage.TriageProblemAbstract) subclass.'
                         s_object:
                           type: string
-                          description: 'Usage-statistics object. Present for the usage-statistics source.'
+                          description: |-
+                            Usage-statistics object: a slash-delimited category and resource identifier, for example
+                              `'memcache/get/10.0.0.5'` or `'sql/select core_business'`. Present for the usage-statistics source.
                         eid_period:
                           type: integer
                           format: int32
                           description: |-
                             Usage-statistics aggregation period. One of [TriageWatchUsagePeriodEnum](#/components/schemas/Core.AI.LogTriage.TriageWatchUsagePeriodEnum)
                               cases. Present for the usage-statistics source.
-                        eid_priority:
+                        eid_urgency:
                           type: integer
                           format: int32
                           description: |-
-                            Usage-statistics priority. One of [TriageUrgencyEnum](#/components/schemas/Core.AI.LogTriage.TriageUrgencyEnum) cases. Present for
+                            Usage-statistics urgency. One of [TriageUrgencyEnum](#/components/schemas/Core.AI.LogTriage.TriageUrgencyEnum) cases. Present for
                               the usage-statistics source.
                         text_message:
                           type: string
@@ -26871,7 +26873,7 @@ paths:
                         - cid_problem
                         - s_object
                         - eid_period
-                        - eid_priority
+                        - eid_urgency
                         - text_message
                 required:
                   - a_finding
@@ -128361,7 +128363,7 @@ components:
       description: |-
         Manages identifiers of user activity.
 
-        Last ID: 56.
+        Last ID: 63.
 
         Values:
         - 27 (`APPOINTMENT_BOOK`): Client books an appointment.
@@ -128398,6 +128400,13 @@ components:
         - 10 (`FRIEND_ADD`): Client added a friend.
         - 32 (`GYM_VISIT`): Client made a gym visit.
         - 14 (`INVITE_SEND`): Client sent an invite.
+        - 57 (`LEAD_STAGE_AUTOMATION`): Lead stage was changed by an automation step.
+        - 58 (`LEAD_STAGE_AUTOMATION_EXIT`): Lead stage was changed when a client met an automation exit criterion.
+        - 59 (`LEAD_STAGE_AUTOMATION_FINISH`): Lead stage was changed when a client completed an automation.
+        - 60 (`LEAD_STAGE_CREATED`): Lead stage was set when the lead was created.
+        - 61 (`LEAD_STAGE_DELETE`): Lead stage was changed because the previous stage was deleted.
+        - 62 (`LEAD_STAGE_MANUAL`): Lead stage was changed manually by a staff member.
+        - 63 (`LEAD_STAGE_MEMBER_GROUP`): Lead stage was changed when the client joined a client group.
         - 39 (`LOCATION_SHARE_FACEBOOK`): The user shared location item into Facebook
         - 40 (`LOCATION_SHARE_TWITTER`): The user shared location item into Twitter
         - 22 (`PAY`): The user spend money.
@@ -128454,6 +128463,13 @@ components:
         - 10
         - 32
         - 14
+        - 57
+        - 58
+        - 59
+        - 60
+        - 61
+        - 62
+        - 63
         - 39
         - 40
         - 22
@@ -128510,6 +128526,13 @@ components:
         - FRIEND_ADD
         - GYM_VISIT
         - INVITE_SEND
+        - LEAD_STAGE_AUTOMATION
+        - LEAD_STAGE_AUTOMATION_EXIT
+        - LEAD_STAGE_AUTOMATION_FINISH
+        - LEAD_STAGE_CREATED
+        - LEAD_STAGE_DELETE
+        - LEAD_STAGE_MANUAL
+        - LEAD_STAGE_MEMBER_GROUP
         - LOCATION_SHARE_FACEBOOK
         - LOCATION_SHARE_TWITTER
         - PAY
@@ -128566,6 +128589,13 @@ components:
         - 'Client added a friend.'
         - 'Client made a gym visit.'
         - 'Client sent an invite.'
+        - 'Lead stage was changed by an automation step.'
+        - 'Lead stage was changed when a client met an automation exit criterion.'
+        - 'Lead stage was changed when a client completed an automation.'
+        - 'Lead stage was set when the lead was created.'
+        - 'Lead stage was changed because the previous stage was deleted.'
+        - 'Lead stage was changed manually by a staff member.'
+        - 'Lead stage was changed when the client joined a client group.'
         - 'The user shared location item into Facebook'
         - 'The user shared location item into Twitter'
         - 'The user spend money.'
