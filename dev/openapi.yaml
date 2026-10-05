@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261005073801
+  version: 1.1.20261005084808
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -83786,6 +83786,31 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_book_background:
+                    type:
+                      - array
+                      - 'null'
+                    description: |-
+                      A list of sessions that are being booked asynchronously in the background.
+
+                      When a multi-session block event booking is processed, the first session is booked synchronously
+                      and the remaining sessions are queued for background processing.
+
+                      `null` if there are no background sessions (single session booking or all sessions were booked synchronously).
+
+                      Each element is an array with the following keys:
+                    items:
+                      type: object
+                      properties:
+                        dt_date:
+                          type: string
+                          description: 'The date and time of the session in UTC.'
+                        k_class_period:
+                          type: string
+                          description: 'The class period key. Primary key in RsClassPeriodSql table.'
+                      required:
+                        - dt_date
+                        - k_class_period
                   id_visit:
                     $ref: '#/components/schemas/Wl.Visit.VisitSid'
                     description: |-
