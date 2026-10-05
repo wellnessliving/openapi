@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261005094649
+  version: 1.1.20261005132913
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -115,7 +115,7 @@ tags:
     description: 'Email sending endpoints.'
   -
     name: Events
-    description: 'Event session booking and cancellation endpoints.'
+    description: 'Event listing and management endpoints.'
   -
     name: 'Facebook Login'
     description: 'Facebook social authentication endpoints.'
@@ -299,6 +299,9 @@ tags:
   -
     name: Taxes
     description: 'Tax configuration endpoints.'
+  -
+    name: Tickets
+    description: 'Ticket endpoints.'
   -
     name: Tuition
     description: 'Tuition related endpoints.'
@@ -830,6 +833,35 @@ paths:
                             - i_overdue
                             - id_task_status
                             - k_task
+                        -
+                          type: object
+                          title: 'Parameters for `2382`'
+                          properties:
+                            dtu_attend:
+                              type:
+                                - string
+                                - 'null'
+                              description: 'Time when the ticket has been checked in, in UTC and MySQL format.'
+                            i_attend:
+                              type: integer
+                              format: int32
+                              description: 'Number of the tickets checked in for the session, including this one.'
+                            i_sold:
+                              type: integer
+                              format: int32
+                              description: 'Number of the tickets sold for the session.'
+                            id_visit:
+                              $ref: '#/components/schemas/Wl.Visit.VisitSid'
+                              description: 'Status of the visit of the ticket after the check-in. One of [VisitSid](#/components/schemas/Wl.Visit.VisitSid).'
+                            k_ticket_item:
+                              type: string
+                              description: 'Key of the ticket that has been checked in.'
+                          required:
+                            - dtu_attend
+                            - i_attend
+                            - i_sold
+                            - id_visit
+                            - k_ticket_item
                         -
                           type: object
                           title: 'Parameters for `1583`'
@@ -1828,6 +1860,23 @@ paths:
                       required:
                         - k_business
                         - uid_receiver
+                    -
+                      type: object
+                      title: 'Parameters for `2382`'
+                      properties:
+                        dtu_start:
+                          type: string
+                          description: 'Start of the session, in UTC and MySQL format.'
+                        k_business:
+                          type: string
+                          description: 'Business key.'
+                        k_class_period:
+                          type: string
+                          description: 'Key of the class period the session belongs to.'
+                      required:
+                        - dtu_start
+                        - k_business
+                        - k_class_period
                     -
                       type: object
                       title: 'Parameters for `1583`'
@@ -16638,6 +16687,154 @@ paths:
             type: string
           description: 'The business key.'
       x-instance-get-key: 'dl_work,k_business'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Ticket/TicketScan.json:
+    post:
+      operationId: Wl.Ticket.TicketScan.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dtu_attend:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: |-
+                      Time when the ticket has been checked in, in UTC and MySQL format.
+
+                      `null` if the ticket was not checked in.
+                  dtu_cancel:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: |-
+                      Time when the visit of the ticket has been cancelled, in UTC and MySQL format.
+
+                      `null` if the ticket was not cancelled.
+                  dtu_session_end:
+                    type: string
+                    format: date-time
+                    description: 'End of the session the ticket is for, in UTC and MySQL format.'
+                  dtu_session_start:
+                    type: string
+                    format: date-time
+                    description: |-
+                      Start of the session the ticket is for, in UTC and MySQL format.
+
+                      Equals [TicketScanApi::$dtu_start](/Wl/Ticket/TicketScan.json) when the ticket is for the session the client has sent.
+                  i_attend:
+                    type: integer
+                    format: int32
+                    description: 'Number of the tickets already checked in for the session, including this one.'
+                  i_sold:
+                    type: integer
+                    format: int32
+                    description: 'Number of the tickets sold for the session: not cancelled ones.'
+                  k_class_period_ticket:
+                    type: string
+                    description: |-
+                      Key of the class period the session of the ticket belongs to.
+
+                      Differs from [TicketScanApi::$k_class_period](/Wl/Ticket/TicketScan.json) only when the ticket is for another session.
+                  k_ticket_item:
+                    type: string
+                    description: 'Key of the ticket.'
+                  k_visit:
+                    type: string
+                    description: 'Key of the visit booked with the ticket.'
+                  text_ticket_code:
+                    type: string
+                    description: |-
+                      Short code of the ticket in the format for displaying, for example `4829-1736`.
+
+                      Empty if the ticket has no short code.
+                  text_title:
+                    type: string
+                    description: 'Name of the event the ticket is for.'
+                required:
+                  - dtu_session_end
+                  - dtu_session_start
+                  - i_attend
+                  - i_sold
+                  - k_class_period_ticket
+                  - k_ticket_item
+                  - k_visit
+                  - text_ticket_code
+                  - text_title
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Checks in the ticket.'
+      description: |-
+        Validates the business and the access of the current user to it, finds the ticket, checks it against the
+        session sent by the client, and marks its visit as attended.
+      tags:
+        - Events
+        - Tickets
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                dtu_start:
+                  type: string
+                  format: date-time
+                  description: 'Start of the session being checked in, in UTC and MySQL format.'
+                id_mode:
+                  $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                  description: |-
+                    Source of the check-in. One of [ModeSid](#/components/schemas/Wl.Mode.ModeSid).
+
+                    `0` if not specified, in this case the source is detected from the current request.
+                is_past_allowed:
+                  type: boolean
+                  description: |-
+                    Whether it is allowed to check in a ticket after its session has ended.
+
+                    `false` to answer with an error in this case.
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_class_period:
+                  type: string
+                  description: 'Key of the class period the session being checked in belongs to.'
+                text_ticket:
+                  type: string
+                  description: |-
+                    Either the full key of the ticket or its short numbers-only code.
+
+                    The short code may contain any separators, for example `4829-1736`.
+              required:
+                - dtu_start
+                - id_mode
+                - is_past_allowed
+                - k_business
+                - k_class_period
+                - text_ticket
+      x-instance-get-key: 'dtu_start,k_business,k_class_period'
       x-rate-limit:
         -
           limit: 200000
@@ -53178,7 +53375,7 @@ paths:
                     description: |-
                       Keys of the client types that may book the class.
 
-                      Only taken into account while [ClassEditorApi::$is_bookable](/Wl/Classes/Editor/ClassEditor.json) is
+                      Only taken into account while [ClassEditorApi::$id_bookable](/Wl/Classes/Editor/ClassEditor.json) is
                       [BookableSid::CUSTOM](#/components/schemas/Wl.Service.BookableSid). Empty for a class every client type may book.
                     items:
                       type: string
@@ -53196,7 +53393,7 @@ paths:
                     description: |-
                       Keys of the client groups that may book the class.
 
-                      Only taken into account while [ClassEditorApi::$is_bookable](/Wl/Classes/Editor/ClassEditor.json) is
+                      Only taken into account while [ClassEditorApi::$id_bookable](/Wl/Classes/Editor/ClassEditor.json) is
                       [BookableSid::CUSTOM](#/components/schemas/Wl.Service.BookableSid). Empty for a class every client group may book.
                     items:
                       type: string
@@ -53417,11 +53614,9 @@ paths:
                     type: string
                     format: date
                     description: |-
-                      Last day of the early bird discount in MySQL format.
+                      Last day of the early bird discount.
 
                       Empty string if the event has no early bird discount.
-
-                      Copy of RsClassEarlySql.`dt_early`.
                   f_deposit:
                     type: string
                     description: |-
@@ -53431,8 +53626,6 @@ paths:
                       money otherwise. `0.00` unless [ClassEditorApi::$id_pay_require](/Wl/Classes/Editor/ClassEditor.json) is
                       [RequirePaySid::DEPOSIT](#/components/schemas/Wl.Classes.RequirePaySid). The field keeps the name the legacy form posts, which carries
                       both an amount of money and a percent.
-
-                      Copy of RsClassSql.`f_deposit`.
                     default: '0.00'
                   f_early:
                     type: string
@@ -53440,28 +53633,22 @@ paths:
                       Early bird discount of the event.
 
                       `0.00` if the event has no early bird discount. The field keeps the name the legacy form posts.
-
-                      Copy of RsClassEarlySql.`f_early`.
                     default: '0.00'
                   f_price:
                     type: string
                     description: |-
                       Price of one session of the event.
 
-                      Only taken into account while [ClassEditorApi::$not_single_buy](/Wl/Classes/Editor/ClassEditor.json) is `0`. The field keeps the name the
+                      Only taken into account while [ClassEditorApi::$is_buy_single](/Wl/Classes/Editor/ClassEditor.json) is `true`. The field keeps the name the
                       legacy form posts.
-
-                      Copy of RsClassSql.`f_price`.
                     default: '0.00'
                   f_price_total:
                     type: string
                     description: |-
                       Price of the whole event.
 
-                      Only taken into account while [ClassEditorApi::$not_single_buy](/Wl/Classes/Editor/ClassEditor.json) is `1`. The field keeps the name the
+                      Only taken into account while [ClassEditorApi::$is_buy_total](/Wl/Classes/Editor/ClassEditor.json) is `true`. The field keeps the name the
                       legacy form posts.
-
-                      Copy of RsClassSql.`f_price_total`.
                     default: '0.00'
                   hide_application:
                     type: boolean
@@ -53471,8 +53658,6 @@ paths:
                     description: |-
                       `true` if the price of a single session is hidden from a client who has an applicable Purchase Option,
                       `false` if it is shown to them.
-
-                      Copy of RsClassSql.`hide_price`.
                   html_policy:
                     type: string
                     description: |-
@@ -53518,8 +53703,6 @@ paths:
                       Months above the whole years of the minimum age of a client of the class.
 
                       `null` if the class has no minimum age.
-
-                      Copy of RsClassSql.`i_age_from_month`.
                   i_age_from_year:
                     type:
                       - integer
@@ -53529,8 +53712,6 @@ paths:
                       Whole years of the minimum age of a client of the class.
 
                       `null` if the class has no minimum age.
-
-                      Copy of RsClassSql.`i_age_from`.
                   i_age_to_month:
                     type:
                       - integer
@@ -53540,8 +53721,6 @@ paths:
                       Months above the whole years of the maximum age of a client of the class.
 
                       `null` if the class has no maximum age.
-
-                      Copy of RsClassSql.`i_age_to_month`.
                   i_age_to_year:
                     type:
                       - integer
@@ -53551,15 +53730,10 @@ paths:
                       Whole years of the maximum age of a client of the class.
 
                       `null` if the class has no maximum age.
-
-                      Copy of RsClassSql.`i_age_to`.
                   i_capacity:
                     type: integer
                     format: int32
-                    description: |-
-                      Number of clients that may enroll into each instance of the event.
-
-                      Copy of RsClassSql.`i_capacity`.
+                    description: 'Number of clients that may enroll into each instance of the event.'
                     default: 10
                   i_capacity_ticket:
                     type: integer
@@ -53573,7 +53747,7 @@ paths:
                   i_description_limit:
                     type: integer
                     format: int32
-                    description: 'Maximum length of `s_description`.'
+                    description: 'Maximum length of description.'
                   i_makeup_cap:
                     type: integer
                     format: int32
@@ -53581,50 +53755,37 @@ paths:
                       Maximum number of make-up sessions a client may take.
 
                       `0` stands for as many as the number of the sessions the client missed.
-
-                      Copy of RsClassSql.`i_makeup_cap`.
                   i_order_limit:
                     type: integer
                     format: int32
-                    description: |-
-                      Number of tickets that may be bought in one order of a ticketed event.
-
-                      Copy of TicketSettingsSql.`i_order_limit`.
+                    description: 'Number of tickets that may be bought in one order of a ticketed event.'
                     default: 1
-                  i_terms_limit:
-                    type: integer
-                    format: int32
-                    description: 'Maximum length of `xml_terms`.'
-                    default: 512
                   id_age_restrict:
                     $ref: '#/components/schemas/Wl.Service.AgeRestrictionStatusSid'
                     description: |-
                       Kind of the age restriction of the class.
 
                       Only taken into account while [ClassEditorApi::$is_age_restrict](/Wl/Classes/Editor/ClassEditor.json) is `true`.
+                  id_bookable:
+                    $ref: '#/components/schemas/Wl.Service.BookableSid'
+                    description: |-
+                      Who may book the class online.
 
-                      Copy of RsClassSql.`id_age_restrict`.
+                      The class keeps the client types and the groups whether online booking is open or not, so the form works this
+                      out from them: a class that is closed to everyone is only told apart from a restricted one by them being
+                      empty.
                   id_event_type:
                     $ref: '#/components/schemas/Wl.Classes.Edit.EventTypeEnum'
                     description: 'Type of the event.'
                   id_note:
                     $ref: '#/components/schemas/Wl.Visit.Note.Sid.NoteSid'
-                    description: |-
-                      Kind of note staff may take for a client visit.
-
-                      Copy of RsClassSql.`id_note`.
+                    description: 'Kind of note staff may take for a client visit.'
                   id_pay_require:
                     $ref: '#/components/schemas/Wl.Classes.RequirePaySid'
-                    description: |-
-                      Way a client pays for the event.
-
-                      Copy of RsClassSql.`id_pay_require`.
+                    description: 'Way a client pays for the event.'
                   id_virtual_provider:
                     $ref: '#/components/schemas/Wl.Virtual.VirtualProviderSid'
-                    description: |-
-                      Virtual meeting provider of the event. `null` for an in-person event.
-
-                      Copy of RsClassSql.`id_virtual_provider`.
+                    description: 'Virtual meeting provider of the event. `null` for an in-person event.'
                   is_account_require:
                     type: boolean
                     description: |-
@@ -53639,8 +53800,6 @@ paths:
                     description: |-
                       `true` if the class is shown to a client who does not meet its age requirement, `false` if it is hidden from
                       them.
-
-                      Copy of RsClassSql.`is_age_public`.
                   is_age_restrict:
                     type: boolean
                     description: |-
@@ -53651,29 +53810,44 @@ paths:
                   is_birthday_require:
                     type: boolean
                     description: |-
-                      `true` if the birth date is a required field of the client profile of the business, `false` otherwise.
+                      `true` if the birthdate is a required field of the client profile of the business, `false` otherwise.
 
-                      An age restriction can only be kept to when the birth date is known, so the form asks staff to make the field
+                      An age restriction can only be kept to when the birthdate is known, so the form asks staff to make the field
                       required while the restriction is switched on for a business that does not require it yet.
-                  is_bookable:
-                    type: integer
-                    format: int32
-                    description: 'Who may book the class online.'
-                    default: 1
                   is_bookable_staff:
                     type: boolean
                     description: |-
                       `true` if staff may book any client type into the class, `false` if only the client types of
                       [ClassEditorApi::$a_login_type_staff](/Wl/Classes/Editor/ClassEditor.json).
+                    default: true
+                  is_buy_promotion:
+                    type: boolean
+                    description: |-
+                      `true` if a client pays for the event with a Purchase Option only, `false` otherwise.
 
-                      Copy of RsClassSql.`is_bookable_staff`.
+                      One of the three ways a client pays for the event, which are mutually exclusive:
+                      [ClassEditorApi::$is_buy_promotion](/Wl/Classes/Editor/ClassEditor.json), [ClassEditorApi::$is_buy_single](/Wl/Classes/Editor/ClassEditor.json) and
+                      [ClassEditorApi::$is_buy_total](/Wl/Classes/Editor/ClassEditor.json).
+                      expects.
+                  is_buy_single:
+                    type: boolean
+                    description: |-
+                      `true` if a client buys one session of the event at a time, `false` otherwise.
+
+                      [ClassEditorApi::$f_price](/Wl/Classes/Editor/ClassEditor.json) is the price of a session. See
+                      [ClassEditorApi::$is_buy_promotion](/Wl/Classes/Editor/ClassEditor.json) for the other ways a client pays for the event.
+                  is_buy_total:
+                    type: boolean
+                    description: |-
+                      `true` if a client buys the whole event at once, `false` otherwise.
+
+                      [ClassEditorApi::$f_price_total](/Wl/Classes/Editor/ClassEditor.json) is the price of the event. Defaults to `true`, the same as the legacy
+                      form offers for a new event. See [ClassEditorApi::$is_buy_promotion](/Wl/Classes/Editor/ClassEditor.json) for the other ways a client pays
+                      for the event.
                     default: true
                   is_client_notification:
                     type: boolean
-                    description: |-
-                      `true` if the clients of the class receive the default client notifications, `false` otherwise.
-
-                      Copy of RsClassSql.`is_client_notification`.
+                    description: '`true` if the clients of the class receive the default client notifications, `false` otherwise.'
                     default: true
                   is_config_business:
                     type: boolean
@@ -53730,7 +53904,7 @@ paths:
                       `true` if [ClassEditorApi::$f_deposit](/Wl/Classes/Editor/ClassEditor.json) is a percent of the price of the event, `false` if it is an
                       amount of money.
 
-                      Copy of RsClassSql.`is_deposit_percent`.
+                      Copy of the `is_deposit_percent` column of the class.
                   is_door_pay:
                     type: boolean
                     description: |-
@@ -53765,10 +53939,7 @@ paths:
                       The Wellhub block of the Online visibility section is only shown while this is `true`.
                   is_online_private:
                     type: boolean
-                    description: |-
-                      `true` if the class is hidden from a client who may not book it, `false` if it is shown to them.
-
-                      Copy of RsClassSql.`is_online_private`.
+                    description: '`true` if the class is hidden from a client who may not book it, `false` if it is shown to them.'
                   is_prerequisite:
                     type: boolean
                     description: '`true` if a client must attend other services before booking this one, `false` otherwise.'
@@ -53783,10 +53954,7 @@ paths:
                     description: '`true` if the class requires Book-a-Spot assets, `false` otherwise.'
                   is_staff_notification:
                     type: boolean
-                    description: |-
-                      `true` if staff receive the default staff notifications of the class, `false` otherwise.
-
-                      Copy of RsClassSql.`is_staff_notification`.
+                    description: '`true` if staff receive the default staff notifications of the class, `false` otherwise.'
                     default: true
                   is_staff_session:
                     type: boolean
@@ -53829,49 +53997,22 @@ paths:
                       Revenue the business earns per client per session of an event offered on Wellhub.
 
                       Ignored while [ClassEditorApi::$is_gym_pass](/Wl/Classes/Editor/ClassEditor.json) is `false`.
-
-                      Copy of RsClassSql.`m_revenue_gym_pass`.
                     default: '0.00'
-                  not_single_buy:
-                    type: integer
-                    format: int32
-                    description: |-
-                      How a client pays for the event: `0` for a single session, `1` for the whole event, `2` for a Purchase Option
-                      only.
-
-                      The field keeps the name the legacy form posts, which stores the opposite of the first choice. Defaults to the
-                      whole event, the same as the legacy form offers for a new event.
-                    default: 1
                   s_color_background:
                     type: string
-                    description: |-
-                      Color of the event on the schedule in hex format, with a leading `#`.
-
-                      Copy of RsClassSql.`s_color_background`.
+                    description: 'Color of the event on the schedule in hex format.'
                   s_description:
                     type: string
-                    description: |-
-                      Description of the event.
-
-                      Copy of RsClassCmsSql.`s_description` in the current language.
+                    description: 'Description of the event.'
                   s_special:
                     type: string
-                    description: |-
-                      Special instructions of the event.
-
-                      Copy of RsClassCmsSql.`xml_special`.
+                    description: 'Special instructions of the event.'
                   s_title:
                     type: string
-                    description: |-
-                      Title of the event.
-
-                      Copy of RsClassCmsSql.`s_title` in the current language.
+                    description: 'Title of the event.'
                   show_special_instructions:
                     type: boolean
-                    description: |-
-                      `true` if the special instructions may be shown publicly, `false` if only to a client who booked the event.
-
-                      Copy of RsClassSql.`show_special_instructions`.
+                    description: '`true` if the special instructions may be shown publicly, `false` if only to a client who booked the event.'
                     default: true
                   text_currency:
                     type: string
@@ -53889,8 +54030,6 @@ paths:
                       Terms and conditions a buyer of a ticket must agree to.
 
                       Empty string for an event that is not ticketed, and for a ticketed event with no terms.
-
-                      Copy of TicketSettingsCmsSql.`xml_terms`.
                 required:
                   - a_class_tab
                   - a_class_tab_list
@@ -53923,8 +54062,8 @@ paths:
                   - i_description_limit
                   - i_makeup_cap
                   - i_order_limit
-                  - i_terms_limit
                   - id_age_restrict
+                  - id_bookable
                   - id_event_type
                   - id_note
                   - id_pay_require
@@ -53933,8 +54072,10 @@ paths:
                   - is_age_public
                   - is_age_restrict
                   - is_birthday_require
-                  - is_bookable
                   - is_bookable_staff
+                  - is_buy_promotion
+                  - is_buy_single
+                  - is_buy_total
                   - is_client_notification
                   - is_config_business
                   - is_custom_confirmation
@@ -53965,7 +54106,6 @@ paths:
                   - is_ticket_waiver_require
                   - k_tag_primary
                   - m_revenue_gym_pass
-                  - not_single_buy
                   - s_color_background
                   - s_description
                   - s_special
@@ -59577,22 +59717,22 @@ paths:
                       and invoices they have already been applied to.
 
                       The list is not sorted - sorting and filtering of the list is a matter of the page that shows it.
+
+                      <dl>
+                        <dt>array `a_service`</dt>
+                        <dd>List of services the code is applied to by default. 
+
+                        <dt>string `k_code`</dt>
+                        <dd>Key of the code. </dd>
+
+                        <dt>string `text_code`</dt>
+                        <dd>Code value, as it is printed on receipts and invoices.</dd>
+
+                        <dt>string `text_description`</dt>
+                        <dd>Description of the code the business typed in.</dd>
+                      </dl>
                     items:
-                      type: object
-                      properties:
-                        k_code:
-                          type: string
-                          description: 'Key of the code.'
-                        text_code:
-                          type: string
-                          description: 'Code value, as it is printed on receipts and invoices.'
-                        text_description:
-                          type: string
-                          description: 'Description of the code the business typed in.'
-                      required:
-                        - k_code
-                        - text_code
-                        - text_description
+                      type: array
                 required:
                   - a_code
         '400':
@@ -59624,6 +59764,13 @@ paths:
           schema:
             type: string
           description: 'Business key.'
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Service key. If set, only the codes that are applied to this service by default are returned.'
       x-instance-get-key: k_business
       x-rate-limit:
         -
@@ -119048,6 +119195,62 @@ components:
         - 'Task is not started.'
         - 'Task completed.'
         - 'Task in progress.'
+    Wl.Visit.VisitSid:
+      type: integer
+      format: int32
+      description: |-
+        Possible states of the visit: book, attended, cancelled, etc.
+
+        Last used ID: 8.
+
+        Values:
+        - 3 (`ATTEND`): Client has attended the session.
+        - 1 (`BOOK`): Active reservation means that user is going to attend the session.
+        - 6 (`CANCEL`): Client has cancelled the reservation in time and without penalty.
+        - 4 (`PENALTY`): Client has cancelled his reservation too late.
+        - 7 (`PENDING`): This state means that visit is registered, but it is unknown is it [VisitSid::ATTEND](#/components/schemas/Wl.Visit.VisitSid)
+          or [VisitSid::TRUANCY](#/components/schemas/Wl.Visit.VisitSid) or [VisitSid::PENALTY](#/components/schemas/Wl.Visit.VisitSid) but definitely one of these states.
+
+          The real type of this visit must be set manually by staff.
+          Status can be changed automatically to [VisitSid::ATTEND](#/components/schemas/Wl.Visit.VisitSid).
+        - 8 (`REMOVE`): Visit was removed.
+          Visits with this status are not shown anywhere in system, but still are saved in database.
+        - 5 (`TRUANCY`): Client has missed the session without cancellation.
+        - 2 (`WAIT`): Reservation in a wait list means that user is going to attend the session if someone will cancel his reservation.
+      enum:
+        - 3
+        - 1
+        - 6
+        - 4
+        - 7
+        - 8
+        - 5
+        - 2
+      x-enum-varnames:
+        - ATTEND
+        - BOOK
+        - CANCEL
+        - PENALTY
+        - PENDING
+        - REMOVE
+        - TRUANCY
+        - WAIT
+      x-enum-descriptions:
+        - 'Client has attended the session.'
+        - 'Active reservation means that user is going to attend the session.'
+        - 'Client has cancelled the reservation in time and without penalty.'
+        - 'Client has cancelled his reservation too late.'
+        - |-
+          This state means that visit is registered, but it is unknown is it {@link \Wl\Visit\VisitSid::ATTEND}
+          or {@link \Wl\Visit\VisitSid::TRUANCY} or {@link \Wl\Visit\VisitSid::PENALTY} but definitely one of these states.
+
+          The real type of this visit must be set manually by staff.
+          Status can be changed automatically to {@link \Wl\Visit\VisitSid::ATTEND}.
+        - |-
+          Visit was removed.
+          Visits with this status are not shown anywhere in system, but still are saved in database.
+        - 'Client has missed the session without cancellation.'
+        - 'Reservation in a wait list means that user is going to attend the session if someone will cancel his reservation.'
     Wl.Gender.GenderSid:
       type: integer
       format: int32
@@ -122046,62 +122249,6 @@ components:
           Not possible to process the message, for instance the security module is unavailable,
           the hardware is unavailable, or there is a problem of resource.
         - 'No relationship between register and terminal.'
-    Wl.Visit.VisitSid:
-      type: integer
-      format: int32
-      description: |-
-        Possible states of the visit: book, attended, cancelled, etc.
-
-        Last used ID: 8.
-
-        Values:
-        - 3 (`ATTEND`): Client has attended the session.
-        - 1 (`BOOK`): Active reservation means that user is going to attend the session.
-        - 6 (`CANCEL`): Client has cancelled the reservation in time and without penalty.
-        - 4 (`PENALTY`): Client has cancelled his reservation too late.
-        - 7 (`PENDING`): This state means that visit is registered, but it is unknown is it [VisitSid::ATTEND](#/components/schemas/Wl.Visit.VisitSid)
-          or [VisitSid::TRUANCY](#/components/schemas/Wl.Visit.VisitSid) or [VisitSid::PENALTY](#/components/schemas/Wl.Visit.VisitSid) but definitely one of these states.
-
-          The real type of this visit must be set manually by staff.
-          Status can be changed automatically to [VisitSid::ATTEND](#/components/schemas/Wl.Visit.VisitSid).
-        - 8 (`REMOVE`): Visit was removed.
-          Visits with this status are not shown anywhere in system, but still are saved in database.
-        - 5 (`TRUANCY`): Client has missed the session without cancellation.
-        - 2 (`WAIT`): Reservation in a wait list means that user is going to attend the session if someone will cancel his reservation.
-      enum:
-        - 3
-        - 1
-        - 6
-        - 4
-        - 7
-        - 8
-        - 5
-        - 2
-      x-enum-varnames:
-        - ATTEND
-        - BOOK
-        - CANCEL
-        - PENALTY
-        - PENDING
-        - REMOVE
-        - TRUANCY
-        - WAIT
-      x-enum-descriptions:
-        - 'Client has attended the session.'
-        - 'Active reservation means that user is going to attend the session.'
-        - 'Client has cancelled the reservation in time and without penalty.'
-        - 'Client has cancelled his reservation too late.'
-        - |-
-          This state means that visit is registered, but it is unknown is it {@link \Wl\Visit\VisitSid::ATTEND}
-          or {@link \Wl\Visit\VisitSid::TRUANCY} or {@link \Wl\Visit\VisitSid::PENALTY} but definitely one of these states.
-
-          The real type of this visit must be set manually by staff.
-          Status can be changed automatically to {@link \Wl\Visit\VisitSid::ATTEND}.
-        - |-
-          Visit was removed.
-          Visits with this status are not shown anywhere in system, but still are saved in database.
-        - 'Client has missed the session without cancellation.'
-        - 'Reservation in a wait list means that user is going to attend the session if someone will cancel his reservation.'
     Wl.Import.Custom.CustomSid:
       type: integer
       format: int32
@@ -122282,6 +122429,10 @@ components:
         - 1342 (`Wl\Alert\AlertChannel`): A message is sent through this channel every time an alert created or read.
         - 1921 (`Wl\Visit\VisitStatusChannel`): A message is sent through this channel when the status of a visit is changed.
         - 1869 (`Wl\Task\TaskChangeChannel`): A message is sent through this channel every time a task created or edited.
+        - 2382 (`Wl\Ticket\TicketScanChannel`): Channel to notify staff that a ticket of a session has been checked in.
+
+          Staff members who watch the check-in list of the same session subscribe to the channel to keep the list and the
+          counters up to date. The message carries no personal data of the ticket holder: clients load them with the list.
         - 1583 (`Wl\Fitbuilder\MessageChannel`): Channel to inform Fitbuilder messenger about new information.
         - 733 (`Wl\Virtual\AccountUpdateChannel`): Channel to pass over information about virtual account release.
         - 688 (`Wl\Virtual\MeetingScheduleChannel`): Channel to pass over information about meeting creation.
@@ -122316,6 +122467,7 @@ components:
         - 1342
         - 1921
         - 1869
+        - 2382
         - 1583
         - 733
         - 688
@@ -122350,6 +122502,7 @@ components:
         - Wl\Alert\AlertChannel
         - Wl\Visit\VisitStatusChannel
         - Wl\Task\TaskChangeChannel
+        - Wl\Ticket\TicketScanChannel
         - Wl\Fitbuilder\MessageChannel
         - Wl\Virtual\AccountUpdateChannel
         - Wl\Virtual\MeetingScheduleChannel
@@ -122384,6 +122537,11 @@ components:
         - 'A message is sent through this channel every time an alert created or read.'
         - 'A message is sent through this channel when the status of a visit is changed.'
         - 'A message is sent through this channel every time a task created or edited.'
+        - |-
+          Channel to notify staff that a ticket of a session has been checked in.
+
+          Staff members who watch the check-in list of the same session subscribe to the channel to keep the list and the
+          counters up to date. The message carries no personal data of the ticket holder: clients load them with the list.
         - 'Channel to inform Fitbuilder messenger about new information.'
         - 'Channel to pass over information about virtual account release.'
         - 'Channel to pass over information about meeting creation.'
