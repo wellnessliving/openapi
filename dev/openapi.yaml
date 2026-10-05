@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261005084808
+  version: 1.1.20261005094649
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -83807,7 +83807,7 @@ paths:
                           description: 'The date and time of the session in UTC.'
                         k_class_period:
                           type: string
-                          description: 'The class period key. Primary key in RsClassPeriodSql table.'
+                          description: 'The class period key.'
                       required:
                         - dt_date
                         - k_class_period
