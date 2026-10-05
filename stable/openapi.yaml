@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261005091015
+  version: 1.1.20261005093830
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -104651,6 +104651,12 @@ paths:
                         is_age_restricted:
                           type: boolean
                           description: "Determines whether this service can't be booked due to age restrictions."
+                        is_book_for_guest:
+                          type: boolean
+                          description: |-
+                            Whether clients can book this asset on behalf of a guest.
+                            If the asset has a service-specific booking policy, that value is used.
+                            Otherwise, the business-level booking policy applies.
                         k_class_tab:
                           type: string
                           description: 'Quick book tab key.'
@@ -104679,6 +104685,7 @@ paths:
                         - id_deny_reason
                         - id_service_require
                         - is_age_restricted
+                        - is_book_for_guest
                         - k_class_tab
                         - k_resource
                         - k_resource_category
