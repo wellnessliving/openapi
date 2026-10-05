@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261005134253
+  version: 1.1.20261005141059
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -130100,7 +130100,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 251.
+        Last Used ID: 252.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -130115,6 +130115,10 @@ components:
         - 49 (`APPOINTMENT_FOREIGN`): Change/View all appointment.
         - 51 (`APPOINTMENT_PERIOD`): Edit appointment schedule.
         - 52 (`APPOINTMENT_VIEW`): View appointment.
+        - 252 (`BILLING_CODE_ASSIGN`): Ability to assign billing and diagnostic codes to appointments.
+
+          Allows to select codes of the central billing code list and to search and apply ICD diagnostic codes. Adding a
+          new code to the central list is configuring it, so it requires [PrivilegeSid::BUSINESS_POLICY](#/components/schemas/Wl.Privilege.PrivilegeSid) instead.
         - 141 (`BOOK_OUTSIDE_PAID_PERIOD`): Ability to book clients outside their current paid period.
         - 154 (`BOOK_OVER_CAPACITY`): Ability to book clients over capacity during or after the services have been scheduled.
         - 138 (`BOOK_UNAVAILABLE_ASSETS`): Ability to book assets which are booked for another service or set as unavailable.
@@ -130355,6 +130359,7 @@ components:
         - 49
         - 51
         - 52
+        - 252
         - 141
         - 154
         - 138
@@ -130590,6 +130595,7 @@ components:
         - APPOINTMENT_FOREIGN
         - APPOINTMENT_PERIOD
         - APPOINTMENT_VIEW
+        - BILLING_CODE_ASSIGN
         - BOOK_OUTSIDE_PAID_PERIOD
         - BOOK_OVER_CAPACITY
         - BOOK_UNAVAILABLE_ASSETS
@@ -130825,6 +130831,11 @@ components:
         - 'Change/View all appointment.'
         - 'Edit appointment schedule.'
         - 'View appointment.'
+        - |-
+          Ability to assign billing and diagnostic codes to appointments.
+
+          Allows to select codes of the central billing code list and to search and apply ICD diagnostic codes. Adding a
+          new code to the central list is configuring it, so it requires {@link \Wl\Privilege\PrivilegeSid::BUSINESS_POLICY} instead.
         - 'Ability to book clients outside their current paid period.'
         - 'Ability to book clients over capacity during or after the services have been scheduled.'
         - 'Ability to book assets which are booked for another service or set as unavailable.'
