@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261006105759
+  version: 1.1.20261006134232
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -41991,6 +41991,113 @@ paths:
                   description: 'Key of the lead stage to move the client into.'
               required:
                 - k_lead_stage
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Lead/Stage/LeadStageImpact.json:
+    get:
+      operationId: Wl.Lead.Stage.LeadStageImpact.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_automation_start:
+                    type: array
+                    description: 'Automations the client is added to by the change.'
+                    items:
+                      type: object
+                      properties:
+                        k_automation:
+                          type: string
+                          description: 'Automation key.'
+                        text_title:
+                          type: string
+                          description: 'Name of the automation.'
+                      required:
+                        - k_automation
+                        - text_title
+                  a_automation_stop:
+                    type: array
+                    description: 'Automations the client is removed from by the change.'
+                    items:
+                      type: object
+                      properties:
+                        k_automation:
+                          type: string
+                          description: 'Automation key.'
+                        text_lead_stage_exit:
+                          type: string
+                          description: |-
+                            Name of the stage the automation moves the client into when the client leaves it. Empty string when the
+                            automation does not move clients anywhere.
+                        text_title:
+                          type: string
+                          description: 'Name of the automation.'
+                      required:
+                        - k_automation
+                        - text_lead_stage_exit
+                        - text_title
+                  id_lead_stage_type:
+                    $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid'
+                    description: 'Type of the stage the client is moved into. One of [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid) constants.'
+                  is_confirm:
+                    type: boolean
+                    description: |-
+                      Whether the change must be confirmed by the staff member.
+
+                      `true` if the change starts or stops an automation, or moves the client into a `Won` or `Lost` stage which
+                      is counted by the Lead Management report. `false` if the change has no such effect and can be saved at once.
+                  text_name_first:
+                    type: string
+                    description: 'First name of the client, or the full name if the client has no first name.'
+                required:
+                  - a_automation_start
+                  - a_automation_stop
+                  - id_lead_stage_type
+                  - is_confirm
+                  - text_name_first
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Finds out what moving the client into the lead stage is going to do.'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_lead_stage
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the lead stage to move the client into.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the client who is moved.'
       x-rate-limit:
         -
           limit: 200000
@@ -86067,7 +86174,7 @@ paths:
                         description: |-
                           List of possible plans for [WebsiteSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
 
-                          Last used ID: 8.
+                          Last used ID: 11.
 
                           Values:
                           - 2 (`BASIC`): Basic
@@ -133496,7 +133603,7 @@ components:
       description: |-
         List of possible plans for [WebsiteSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
 
-        Last used ID: 8.
+        Last used ID: 11.
 
         Values:
         - 2 (`BASIC`): Basic
