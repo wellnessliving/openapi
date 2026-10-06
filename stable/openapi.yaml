@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261006053803
+  version: 1.1.20261006074034
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -86413,7 +86413,7 @@ paths:
                         description: |-
                           List of possible plans for [WebsiteSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
 
-                          Last used ID: 8.
+                          Last used ID: 11.
 
                           Values:
                           - 2 (`BASIC`): Basic
@@ -131482,7 +131482,7 @@ components:
       description: |-
         List of possible plans for [WebsiteSubscription](#/components/schemas/Wl.Business.Account.Subscription.SubscriptionAbstract) subscription.
 
-        Last used ID: 8.
+        Last used ID: 11.
 
         Values:
         - 2 (`BASIC`): Basic
