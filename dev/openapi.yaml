@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261006144814
+  version: 1.1.20261007085458
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -59817,8 +59817,8 @@ paths:
                     description: |-
                       Billing codes of the business.
 
-                      Contains the custom codes of the business for now. The system codes of the ICD-10-CM reference library are to
-                      be returned here too, and a row is then to tell the two types apart.
+                      Contains the custom codes of the business and the system codes of the ICD-10-CM reference library, which are
+                      shared by all businesses.
 
                       Removed codes are not returned - they are not offered for selection anymore, they only stay on the receipts
                       and invoices they have already been applied to.
@@ -59829,20 +59829,28 @@ paths:
                       properties:
                         a_service:
                           type: array
-                          description: 'List of services the code is applied to by default.'
+                          description: |-
+                            List of services the code is applied to by default. Always empty for a system code: system codes are not
+                            applied to services by default.
                           items:
                             type: string
+                        is_custom:
+                          type: boolean
+                          description: '`true` for a custom code of the business, `false` for a system code of the ICD-10-CM reference library.'
                         k_code:
                           type: string
-                          description: 'Key of the code.'
+                          description: 'Key of the code. Keys of the custom and of the system codes never clash.'
                         text_code:
                           type: string
                           description: 'Code value, as it is printed on receipts and invoices.'
                         text_description:
                           type: string
-                          description: 'Description of the code the business typed in.'
+                          description: |-
+                            Description of the code. The business typed it in for a custom code. For a system code it comes from the
+                            reference library, in the language of the request.
                       required:
                         - a_service
+                        - is_custom
                         - k_code
                         - text_code
                         - text_description
@@ -59862,9 +59870,8 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Gets the billing code list of the business.'
       description: |-
-        The list contains the custom codes of the business for now, and is meant to become the single place a client
-        asks for codes, with the diagnostic codes of the read-only ICD-10-CM reference library to be returned
-        from here as well.
+        The list contains the custom codes of the business and the diagnostic codes of the read-only ICD-10-CM
+        reference library, the descriptions of the latter in the language of the request.
       tags:
         - Billing
       parameters:
@@ -59883,7 +59890,9 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Service key. If set, only the codes that are applied to this service by default are returned.'
+          description: |-
+            Service key. If set, only the codes that are applied to this service by default are returned. System codes are
+            not applied to services by default, so they are not returned then.
       x-instance-get-key: k_business
       x-rate-limit:
         -
