@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261007115834
+  version: 1.1.20261007123102
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -42075,6 +42075,8 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Finds out what moving the client into the lead stage is going to do.'
       description: 'The client must not be in the stage yet. The caller is expected to ask only about a stage the client is not in yet.'
+      tags:
+        - Leads
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
