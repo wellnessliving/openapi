@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261007133420
+  version: 1.1.20261007134440
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -16738,7 +16738,7 @@ paths:
                   i_sold:
                     type: integer
                     format: int32
-                    description: 'Number of the tickets sold for the session: not cancelled ones.'
+                    description: 'Number of the tickets sold for the session: not cancelled ones, including those whose holders have not come.'
                   k_class_period_ticket:
                     type: string
                     description: |-
@@ -16834,6 +16834,251 @@ paths:
                 - k_business
                 - k_class_period
                 - text_ticket
+      x-instance-get-key: 'dtu_start,k_business,k_class_period'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Ticket/TicketList.json:
+    get:
+      operationId: Wl.Ticket.TicketList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_location:
+                    type: object
+                    description: 'Location of the session. Has the next structure:'
+                    properties:
+                      k_location:
+                        type: string
+                        description: 'Location key.'
+                      text_title:
+                        type: string
+                        description: 'Title of the location.'
+                    required:
+                      - k_location
+                      - text_title
+                  a_order:
+                    type: array
+                    description: 'Orders of the session, from the most recent purchase to the oldest one. Every item has the next structure:'
+                    items:
+                      type: object
+                      properties:
+                        a_type:
+                          type: object
+                          description: 'Ticket types of the order, not counting cancelled tickets. Every item has the next structure:'
+                          properties:
+                            i_count:
+                              type: integer
+                              format: int32
+                              description: 'Number of not cancelled tickets of this type in the order.'
+                            k_ticket_option:
+                              type: string
+                              description: 'Key of the ticket type. Key of the ticket type.'
+                            text_title:
+                              type: string
+                              description: 'Name of the ticket type.'
+                          required:
+                            - i_count
+                            - k_ticket_option
+                            - text_title
+                        dtl_purchase:
+                          type: string
+                          description: 'Time when the order was bought, in the local time of the location, MySQL format.'
+                        i_attend:
+                          type: integer
+                          format: int32
+                          description: 'Number of tickets of the order that are checked in.'
+                        i_ticket:
+                          type: integer
+                          format: int32
+                          description: 'Number of tickets in the order, cancelled ones included.'
+                        is_guest:
+                          type: boolean
+                          description: '`true` if the order was bought by a guest, who has no profile. In this case `text_name` is empty.'
+                        k_purchase:
+                          type: string
+                          description: 'Number of the order: key of the purchase the tickets were bought with. Key of the purchase.'
+                        m_total:
+                          type: string
+                          description: |-
+                            Total paid for the tickets of the order, net of refunds, with the currency
+                            [TicketListApi::$k_currency](/Wl/Ticket/TicketList.json). Decimal string.
+                        text_name:
+                          type: string
+                          description: 'Full name of the buyer. Empty for a guest.'
+                      required:
+                        - a_type
+                        - dtl_purchase
+                        - i_attend
+                        - i_ticket
+                        - is_guest
+                        - k_purchase
+                        - m_total
+                        - text_name
+                  a_ticket:
+                    type: array
+                    description: 'Tickets of the session, cancelled ones included. Every item has the next structure:'
+                    items:
+                      type: object
+                      properties:
+                        dtl_attend:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Time of the check-in, in the local time of the location, MySQL format. `null` if the ticket is not
+                            checked in.
+                        dtl_cancel:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Time of the cancellation, in the local time of the location, MySQL format. `null` if the ticket is not
+                            cancelled.
+                        i_order:
+                          type: integer
+                          format: int32
+                          description: 'Position of the ticket in the order, starting from 1.'
+                        i_order_size:
+                          type: integer
+                          format: int32
+                          description: 'Number of tickets in the order, cancelled ones included.'
+                        is_attend:
+                          type: boolean
+                          description: 'Whether the ticket is checked in. A cancelled ticket is never checked in.'
+                        is_cancel:
+                          type: boolean
+                          description: 'Whether the ticket is cancelled: voided, or refunded with the seat returned.'
+                        k_purchase:
+                          type: string
+                          description: 'Order of the ticket, see [TicketListApi::$a_order](/Wl/Ticket/TicketList.json).'
+                        k_ticket_item:
+                          type: string
+                          description: 'Key of the ticket, the one [TicketScanApi](/Wl/Ticket/TicketScan.json) takes.'
+                        k_ticket_option:
+                          type: string
+                          description: 'Key of the ticket type. Key of the ticket type.'
+                        text_ticket_code:
+                          type: string
+                          description: |-
+                            Number of the ticket: its short code in the format for displaying, for example `4829-1736`. Empty if the
+                            ticket has no short code.
+                        text_type:
+                          type: string
+                          description: 'Name of the ticket type.'
+                      required:
+                        - dtl_attend
+                        - dtl_cancel
+                        - i_order
+                        - i_order_size
+                        - is_attend
+                        - is_cancel
+                        - k_purchase
+                        - k_ticket_item
+                        - k_ticket_option
+                        - text_ticket_code
+                        - text_type
+                  dtl_end:
+                    type: string
+                    format: date-time
+                    description: 'End of the session, in the local time of the location, MySQL format.'
+                  dtl_start:
+                    type: string
+                    format: date-time
+                    description: 'Start of the session, in the local time of the location, MySQL format.'
+                  i_attend:
+                    type: integer
+                    format: int32
+                    description: 'Number of tickets of the session that are checked in.'
+                  i_capacity:
+                    type: integer
+                    format: int32
+                    description: 'Number of tickets that can be sold for the event.'
+                  i_sold:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of tickets sold for the session, not counting cancelled ones.
+
+                      Counts tickets, not buyers.
+                  is_sell:
+                    type: boolean
+                    description: 'Whether tickets of the session can still be sold: there are free seats, and the session has not ended.'
+                  k_currency:
+                    type: string
+                    description: 'Key of the currency of all amounts of the answer.'
+                  m_total:
+                    type: string
+                    description: |-
+                      Total paid for the tickets of the session, net of refunds. Decimal string, in the currency
+                      [TicketListApi::$k_currency](/Wl/Ticket/TicketList.json).
+                  text_title:
+                    type: string
+                    description: 'Name of the event, with no date in it.'
+                required:
+                  - a_location
+                  - a_order
+                  - a_ticket
+                  - dtl_end
+                  - dtl_start
+                  - i_attend
+                  - i_capacity
+                  - i_sold
+                  - is_sell
+                  - k_currency
+                  - m_total
+                  - text_title
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns tickets and orders of the session.'
+      description: |-
+        Returns every ticket of the session, cancelled ones included, the orders they belong to, the counters of the
+        session, and the data needed to show the session: its name, location, start and end.
+        Requires access of the current staff member to the business.
+      tags:
+        - Events
+        - Tickets
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dtu_start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: 'Start of the session, in UTC, MySQL format.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the class period the session belongs to.'
       x-instance-get-key: 'dtu_start,k_business,k_class_period'
       x-rate-limit:
         -
