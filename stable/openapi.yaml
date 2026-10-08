@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261008044315
+  version: 1.1.20261008060550
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -99126,6 +99126,12 @@ paths:
                           description: |-
                             User key. 
                             Specify only in a case of booking for a lof of different users.
+                        url_virtual:
+                          type: string
+                          description: |-
+                            The meeting link for a non-integrated virtual service.
+                            Specify this for appointment bookings only when the service uses a non-integrated virtual provider.
+                            When provided, saved as both join and host link for the appointment.
                       required:
                         - dt_date
                         - k_service
