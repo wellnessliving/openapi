@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261008113201
+  version: 1.1.20261008133158
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -17358,6 +17358,32 @@ paths:
                           required:
                             - k_search_tag
                             - text_title
+                        a_ticket_inventory:
+                          type:
+                            - object
+                            - 'null'
+                          description: |-
+                            Returns how many tickets can be sold for the ticketed event the class belongs to, and how
+                             many of those are still available to sell. 
+
+                             `null` if the class is not a ticketed event.
+                          properties:
+                            i_capacity:
+                              type: integer
+                              format: int32
+                              description: 'Total number of tickets that can be sold for the event.'
+                            i_remain:
+                              type: integer
+                              format: int32
+                              description: 'Number of tickets still available to sell.'
+                            i_order_limit:
+                              type: integer
+                              format: int32
+                              description: 'Maximum number of tickets that can be ordered for the event in one purchase. `0` if there is no limit.'
+                          required:
+                            - i_capacity
+                            - i_remain
+                            - i_order_limit
                         a_tickets:
                           type: array
                           description: |-
@@ -58782,6 +58808,11 @@ paths:
                   is_in_progress:
                     type: boolean
                     description: '`true` - service is in progress; `false` - otherwise.'
+                  is_paid:
+                    type: boolean
+                    description: |-
+                      `true` if the visit has been paid for (via a purchase option, session pass, or single purchase).
+                      `false` if the visit is unpaid.
                   is_virtual:
                     type: boolean
                     description: '`true` - service is virtual; `false` - otherwise.'
@@ -58862,6 +58893,7 @@ paths:
                   - is_enable_client_cancel
                   - is_event
                   - is_in_progress
+                  - is_paid
                   - is_virtual
                   - k_location
                   - s_title
@@ -130506,7 +130538,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 252.
+        Last Used ID: 253.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -130523,8 +130555,11 @@ components:
         - 52 (`APPOINTMENT_VIEW`): View appointment.
         - 252 (`BILLING_CODE_ASSIGN`): Ability to assign billing and diagnostic codes to appointments.
 
-          Allows to select codes of the central billing code list and to search and apply ICD diagnostic codes. Adding a
-          new code to the central list is configuring it, so it requires [PrivilegeSid::BUSINESS_POLICY](#/components/schemas/Wl.Privilege.PrivilegeSid) instead.
+          Allows to select codes of the central billing code list and to search and apply ICD diagnostic codes.
+        - 253 (`BILLING_CODE_TEMPORARY`): Ability to add a temporary custom billing code at the appointment booking.
+
+          The code exists for that booking only: it shows up on the receipt, but is not saved to the central billing code
+          list. Adding a code to the central list requires [PrivilegeSid::BUSINESS_POLICY](#/components/schemas/Wl.Privilege.PrivilegeSid) instead.
         - 141 (`BOOK_OUTSIDE_PAID_PERIOD`): Ability to book clients outside their current paid period.
         - 154 (`BOOK_OVER_CAPACITY`): Ability to book clients over capacity during or after the services have been scheduled.
         - 138 (`BOOK_UNAVAILABLE_ASSETS`): Ability to book assets which are booked for another service or set as unavailable.
@@ -130766,6 +130801,7 @@ components:
         - 51
         - 52
         - 252
+        - 253
         - 141
         - 154
         - 138
@@ -131002,6 +131038,7 @@ components:
         - APPOINTMENT_PERIOD
         - APPOINTMENT_VIEW
         - BILLING_CODE_ASSIGN
+        - BILLING_CODE_TEMPORARY
         - BOOK_OUTSIDE_PAID_PERIOD
         - BOOK_OVER_CAPACITY
         - BOOK_UNAVAILABLE_ASSETS
@@ -131240,8 +131277,12 @@ components:
         - |-
           Ability to assign billing and diagnostic codes to appointments.
 
-          Allows to select codes of the central billing code list and to search and apply ICD diagnostic codes. Adding a
-          new code to the central list is configuring it, so it requires {@link \Wl\Privilege\PrivilegeSid::BUSINESS_POLICY} instead.
+          Allows to select codes of the central billing code list and to search and apply ICD diagnostic codes.
+        - |-
+          Ability to add a temporary custom billing code at the appointment booking.
+
+          The code exists for that booking only: it shows up on the receipt, but is not saved to the central billing code
+          list. Adding a code to the central list requires {@link \Wl\Privilege\PrivilegeSid::BUSINESS_POLICY} instead.
         - 'Ability to book clients outside their current paid period.'
         - 'Ability to book clients over capacity during or after the services have been scheduled.'
         - 'Ability to book assets which are booked for another service or set as unavailable.'
