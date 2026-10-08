@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261008095740
+  version: 1.1.20261008113201
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -44403,6 +44403,53 @@ paths:
                     description: 'Primary keys of bookings made.'
                     items:
                       type: string
+                  a_visit_payment:
+                    type: array
+                    description: 'Values are arrays with next keys:'
+                    items:
+                      type: object
+                      properties:
+                        is_free:
+                          type: boolean
+                          description: '`true` if the visit is free; `false` otherwise.'
+                        is_pay_required:
+                          type: boolean
+                          description: |-
+                            `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
+                              pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
+                              without paying at all.
+                        is_waitlist:
+                          type: boolean
+                          description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
+                        k_login_promotion:
+                          type: string
+                          description: "Applied user's purchase option."
+                        k_promotion:
+                          type: string
+                          description: 'Purchase option.'
+                        k_session_pass:
+                          type: string
+                          description: 'Applied session pass.'
+                        text_payment_link:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Link to complete the payment, the same one the client receives by email.
+                              `null` if `is_pay_required` is `false`.
+                        text_promotion:
+                          type: string
+                          description: 'Purchase option title.'
+                      required:
+                        - is_free
+                        - is_pay_required
+                        - is_waitlist
+                        - k_login_promotion
+                        - k_promotion
+                        - k_session_pass
+                        - text_payment_link
+                        - text_promotion
                   k_login_activity_purchase:
                     type:
                       - string
@@ -44413,6 +44460,7 @@ paths:
                 required:
                   - a_login_activity_book
                   - a_visit
+                  - a_visit_payment
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -87530,6 +87578,13 @@ paths:
                         is_free:
                           type: boolean
                           description: '`true` if the visit is free; `false` otherwise.'
+                        is_pay_required:
+                          type: boolean
+                          description: |-
+                            `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
+                              pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
+                              without paying at all.
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -87542,15 +87597,24 @@ paths:
                         k_session_pass:
                           type: string
                           description: 'Applied session pass.'
+                        text_payment_link:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Link to complete the payment, the same one the client receives by email.
+                              `null` if `is_pay_required` is `false`.
                         text_promotion:
                           type: string
                           description: 'Purchase option title.'
                       required:
                         - is_free
+                        - is_pay_required
                         - is_waitlist
                         - k_login_promotion
                         - k_promotion
                         - k_session_pass
+                        - text_payment_link
                         - text_promotion
                   k_login_activity_purchase:
                     type: string
@@ -91530,6 +91594,13 @@ paths:
                         is_free:
                           type: boolean
                           description: '`true` if the visit is free; `false` otherwise.'
+                        is_pay_required:
+                          type: boolean
+                          description: |-
+                            `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
+                              pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
+                              without paying at all.
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -91542,15 +91613,24 @@ paths:
                         k_session_pass:
                           type: string
                           description: 'Applied session pass.'
+                        text_payment_link:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Link to complete the payment, the same one the client receives by email.
+                              `null` if `is_pay_required` is `false`.
                         text_promotion:
                           type: string
                           description: 'Purchase option title.'
                       required:
                         - is_free
+                        - is_pay_required
                         - is_waitlist
                         - k_login_promotion
                         - k_promotion
                         - k_session_pass
+                        - text_payment_link
                         - text_promotion
                   is_card_authorize:
                     type: boolean
@@ -92307,6 +92387,13 @@ paths:
                         is_free:
                           type: boolean
                           description: '`true` if the visit is free; `false` otherwise.'
+                        is_pay_required:
+                          type: boolean
+                          description: |-
+                            `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
+                              pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
+                              without paying at all.
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -92319,15 +92406,24 @@ paths:
                         k_session_pass:
                           type: string
                           description: 'Applied session pass.'
+                        text_payment_link:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Link to complete the payment, the same one the client receives by email.
+                              `null` if `is_pay_required` is `false`.
                         text_promotion:
                           type: string
                           description: 'Purchase option title.'
                       required:
                         - is_free
+                        - is_pay_required
                         - is_waitlist
                         - k_login_promotion
                         - k_promotion
                         - k_session_pass
+                        - text_payment_link
                         - text_promotion
                   is_card_authorize:
                     type: boolean
@@ -92870,6 +92966,13 @@ paths:
                         is_free:
                           type: boolean
                           description: '`true` if the visit is free; `false` otherwise.'
+                        is_pay_required:
+                          type: boolean
+                          description: |-
+                            `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
+                              pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
+                              without paying at all.
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -92882,15 +92985,24 @@ paths:
                         k_session_pass:
                           type: string
                           description: 'Applied session pass.'
+                        text_payment_link:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Link to complete the payment, the same one the client receives by email.
+                              `null` if `is_pay_required` is `false`.
                         text_promotion:
                           type: string
                           description: 'Purchase option title.'
                       required:
                         - is_free
+                        - is_pay_required
                         - is_waitlist
                         - k_login_promotion
                         - k_promotion
                         - k_session_pass
+                        - text_payment_link
                         - text_promotion
                   is_next:
                     type: boolean
@@ -103746,6 +103858,13 @@ paths:
                         is_free:
                           type: boolean
                           description: '`true` if the visit is free; `false` otherwise.'
+                        is_pay_required:
+                          type: boolean
+                          description: |-
+                            `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
+                              pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
+                              without paying at all.
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -103758,15 +103877,24 @@ paths:
                         k_session_pass:
                           type: string
                           description: 'Applied session pass.'
+                        text_payment_link:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Link to complete the payment, the same one the client receives by email.
+                              `null` if `is_pay_required` is `false`.
                         text_promotion:
                           type: string
                           description: 'Purchase option title.'
                       required:
                         - is_free
+                        - is_pay_required
                         - is_waitlist
                         - k_login_promotion
                         - k_promotion
                         - k_session_pass
+                        - text_payment_link
                         - text_promotion
                 required:
                   - a_appointment
@@ -104624,6 +104752,12 @@ paths:
                           description: |-
                             User key. 
                             Specify only in a case of booking for a lof of different users.
+                        url_virtual:
+                          type: string
+                          description: |-
+                            The meeting link for a non-integrated virtual service.
+                            Specify this for appointment bookings only when the service uses a non-integrated virtual provider.
+                            When provided, saved as both join and host link for the appointment.
                       required:
                         - dt_date
                         - k_service
@@ -104934,6 +105068,13 @@ paths:
                         is_free:
                           type: boolean
                           description: '`true` if the visit is free; `false` otherwise.'
+                        is_pay_required:
+                          type: boolean
+                          description: |-
+                            `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
+                              pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
+                              without paying at all.
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -104946,15 +105087,24 @@ paths:
                         k_session_pass:
                           type: string
                           description: 'Applied session pass.'
+                        text_payment_link:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Link to complete the payment, the same one the client receives by email.
+                              `null` if `is_pay_required` is `false`.
                         text_promotion:
                           type: string
                           description: 'Purchase option title.'
                       required:
                         - is_free
+                        - is_pay_required
                         - is_waitlist
                         - k_login_promotion
                         - k_promotion
                         - k_session_pass
+                        - text_payment_link
                         - text_promotion
                 required:
                   - a_appointment
