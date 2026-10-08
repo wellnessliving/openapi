@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261008084826
+  version: 1.1.20261008112355
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -71161,6 +71161,11 @@ paths:
                   is_in_progress:
                     type: boolean
                     description: '`true` - service is in progress; `false` - otherwise.'
+                  is_paid:
+                    type: boolean
+                    description: |-
+                      `true` if the visit has been paid for (via a purchase option, session pass, or single purchase).
+                      `false` if the visit is unpaid.
                   is_virtual:
                     type: boolean
                     description: '`true` - service is virtual; `false` - otherwise.'
@@ -71241,6 +71246,7 @@ paths:
                   - is_enable_client_cancel
                   - is_event
                   - is_in_progress
+                  - is_paid
                   - is_virtual
                   - k_location
                   - s_title
