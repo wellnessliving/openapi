@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261009095334
+  version: 1.1.20261009104030
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -16882,7 +16882,7 @@ paths:
                               description: 'Number of not cancelled tickets of this type in the order.'
                             k_ticket_option:
                               type: string
-                              description: 'Key of the ticket type. Key of the ticket type.'
+                              description: 'Key of the ticket type.'
                             text_title:
                               type: string
                               description: 'Name of the ticket type.'
@@ -16966,7 +16966,24 @@ paths:
                           description: 'Key of the ticket, the one [TicketScanApi](/Wl/Ticket/TicketScan.json) takes.'
                         k_ticket_option:
                           type: string
-                          description: 'Key of the ticket type. Key of the ticket type.'
+                          description: 'Key of the ticket type.'
+                        m_refund:
+                          type: string
+                          description: |-
+                            Amount refunded for this ticket. The refunds of the purchase item of the ticket. If several tickets share
+                            one purchase item, the refunds of the item are split equally between its cancelled tickets. `0` if nothing
+                            was refunded. Decimal string, in the currency [TicketListApi::$k_currency](/Wl/Ticket/TicketList.json).
+                        m_price:
+                          type: string
+                          description: |-
+                            Price of the ticket: how much was paid for it, not net of refunds. Decimal string, in the currency
+                            [TicketListApi::$k_currency](/Wl/Ticket/TicketList.json). The paid amount of the purchase item of the ticket divided by the number
+                            of tickets bought with it.
+                        text_holder:
+                          type: string
+                          description: |-
+                            Full name of the holder of the ticket: the person who has claimed it. Empty if nobody has claimed the
+                            ticket.
                         text_ticket_code:
                           type: string
                           description: |-
@@ -16985,6 +17002,9 @@ paths:
                         - k_purchase
                         - k_ticket_item
                         - k_ticket_option
+                        - m_refund
+                        - m_price
+                        - text_holder
                         - text_ticket_code
                         - text_type
                   dtl_end:
@@ -17388,12 +17408,24 @@ paths:
                             - i_remain
                             - i_order_limit
                         a_tickets:
-                          type: array
+                          type: object
                           description: |-
                             List of ticket options available for booking the event. Empty if the event is not a ticketed
                             event.
-                          items:
-                            type: array
+                          properties:
+                            k_ticket_option:
+                              type: string
+                              description: 'Globally unique identifier of the ticket option. Primary key in TicketOptionsRouteSql.'
+                            m_price:
+                              type: string
+                              description: 'One ticket price.'
+                            text_title:
+                              type: string
+                              description: 'Ticket option name.'
+                          required:
+                            - k_ticket_option
+                            - m_price
+                            - text_title
                         can_book:
                           type: boolean
                           description: |-
@@ -46959,8 +46991,13 @@ paths:
                             type: string
                             description: 'Specifies the recipient of a transfer Purchase Option.'
                       a_signature:
-                        type: array
-                        description: 'Signatures for an item that requires agreement to several distinct contracts at once.'
+                        type: object
+                        description: |-
+                          Signatures for an item that requires agreement to several distinct contracts at once.
+                          Keys are internal contract identifiers tied to this specific item and participant.
+                          Values are the signature of the matching contract.
+                        additionalProperties:
+                          type: string
                       a_tax_custom:
                         type: object
                         description: 'Customer taxes (optional). Every element must contain the following keys:'
@@ -47335,12 +47372,25 @@ paths:
                           This applies to enrollment/event items.
                           `true` if the item is a ticketed event, `false` otherwise.
                       a_tickets:
-                        type: array
+                        type: object
                         description: |-
                           List of ticket options available for booking the event. Empty if the item is not a
                           ticketed event. .
-                        items:
-                          type: array
+                          Each element contains the following keys:
+                        properties:
+                          k_ticket_option:
+                            type: string
+                            description: 'Globally unique identifier of the ticket option.'
+                          m_price:
+                            type: string
+                            description: 'One ticket price.'
+                          text_title:
+                            type: string
+                            description: 'Ticket option name.'
+                        required:
+                          - k_ticket_option
+                          - m_price
+                          - text_title
                     required:
                       - a_service_access
                       - is_renew_public
@@ -47610,12 +47660,25 @@ paths:
                                 This applies to enrollment/event items.
                                 `true` if the item is a ticketed event, `false` otherwise.
                             a_tickets:
-                              type: array
+                              type: object
                               description: |-
                                 List of ticket options available for booking the event. Empty if the item is not a
                                 ticketed event. .
-                              items:
-                                type: array
+                                Each element contains the following keys:
+                              properties:
+                                k_ticket_option:
+                                  type: string
+                                  description: 'Globally unique identifier of the ticket option.'
+                                m_price:
+                                  type: string
+                                  description: 'One ticket price.'
+                                text_title:
+                                  type: string
+                                  description: 'Ticket option name.'
+                              required:
+                                - k_ticket_option
+                                - m_price
+                                - text_title
                           required:
                             - a_service_access
                             - is_renew_public
@@ -48322,12 +48385,25 @@ paths:
                           This applies to enrollment/event items.
                           `true` if the item is a ticketed event, `false` otherwise.
                       a_tickets:
-                        type: array
+                        type: object
                         description: |-
                           List of ticket options available for booking the event. Empty if the item is not a
                           ticketed event. .
-                        items:
-                          type: array
+                          Each element contains the following keys:
+                        properties:
+                          k_ticket_option:
+                            type: string
+                            description: 'Globally unique identifier of the ticket option.'
+                          m_price:
+                            type: string
+                            description: 'One ticket price.'
+                          text_title:
+                            type: string
+                            description: 'Ticket option name.'
+                        required:
+                          - k_ticket_option
+                          - m_price
+                          - text_title
                     required:
                       - a_service_access
                       - is_renew_public
@@ -48597,12 +48673,25 @@ paths:
                                 This applies to enrollment/event items.
                                 `true` if the item is a ticketed event, `false` otherwise.
                             a_tickets:
-                              type: array
+                              type: object
                               description: |-
                                 List of ticket options available for booking the event. Empty if the item is not a
                                 ticketed event. .
-                              items:
-                                type: array
+                                Each element contains the following keys:
+                              properties:
+                                k_ticket_option:
+                                  type: string
+                                  description: 'Globally unique identifier of the ticket option.'
+                                m_price:
+                                  type: string
+                                  description: 'One ticket price.'
+                                text_title:
+                                  type: string
+                                  description: 'Ticket option name.'
+                              required:
+                                - k_ticket_option
+                                - m_price
+                                - text_title
                           required:
                             - a_service_access
                             - is_renew_public
@@ -49156,12 +49245,25 @@ paths:
                           items:
                             type: string
                         a_tickets:
-                          type: array
+                          type: object
                           description: |-
                             List of ticket options available for booking the event. Empty if the item is not a
                             ticketed event. .
-                          items:
-                            type: array
+                            Each element contains the following keys:
+                          properties:
+                            k_ticket_option:
+                              type: string
+                              description: 'Globally unique identifier of the ticket option.'
+                            m_price:
+                              type: string
+                              description: 'One ticket price.'
+                            text_title:
+                              type: string
+                              description: 'Ticket option name.'
+                          required:
+                            - k_ticket_option
+                            - m_price
+                            - text_title
                         dtu_create:
                           type: string
                           description: 'UTC creation date of the item in MySQL format.'
@@ -49235,12 +49337,25 @@ paths:
                         items:
                           type: string
                       a_tickets:
-                        type: array
+                        type: object
                         description: |-
                           List of ticket options available for booking the event. Empty if the item is not a
                           ticketed event. .
-                        items:
-                          type: array
+                          Each element contains the following keys:
+                        properties:
+                          k_ticket_option:
+                            type: string
+                            description: 'Globally unique identifier of the ticket option.'
+                          m_price:
+                            type: string
+                            description: 'One ticket price.'
+                          text_title:
+                            type: string
+                            description: 'Ticket option name.'
+                        required:
+                          - k_ticket_option
+                          - m_price
+                          - text_title
                       dtu_create:
                         type: string
                         description: 'UTC creation date of the item in MySQL format.'
@@ -97193,7 +97308,21 @@ paths:
 
                       Always empty for sale items other than [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid).
                     items:
-                      type: array
+                      type: object
+                      properties:
+                        k_ticket_option:
+                          type: string
+                          description: 'Globally unique identifier of the ticket option. Primary key in TicketOptionsRouteSql.'
+                        m_price:
+                          type: string
+                          description: 'One ticket price.'
+                        text_title:
+                          type: string
+                          description: 'Ticket option name.'
+                      required:
+                        - k_ticket_option
+                        - m_price
+                        - text_title
                   is_ticket:
                     type: boolean
                     description: |-
@@ -97212,9 +97341,6 @@ paths:
                   m_total:
                     type: string
                     description: 'The calculated amount of the sale item, including taxes.'
-                  xml_terms:
-                    type: string
-                    description: 'The text of the terms and conditions for the sale item.'
                 required:
                   - a_tax_data
                   - a_tickets
@@ -97223,7 +97349,6 @@ paths:
                   - m_subtotal
                   - m_tax
                   - m_total
-                  - xml_terms
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -112378,12 +112503,25 @@ paths:
                             - uid
                             - url_logo
                         a_tickets:
-                          type: array
+                          type: object
                           description: |-
                             List of ticket options available for booking the event. Empty if the event is not a
                             ticketed event. .
-                          items:
-                            type: array
+                            Each element contains the following keys:
+                          properties:
+                            k_ticket_option:
+                              type: string
+                              description: 'Globally unique identifier of the ticket option.'
+                            m_price:
+                              type: string
+                              description: 'One ticket price.'
+                            text_title:
+                              type: string
+                              description: 'Ticket option name.'
+                          required:
+                            - k_ticket_option
+                            - m_price
+                            - text_title
                         dt_book_date:
                           type: string
                           description: 'Date/time of first event session.'
@@ -112724,7 +112862,21 @@ paths:
                       List of ticket options available for booking the event. Empty if the event is not a ticketed
                       event.
                     items:
-                      type: array
+                      type: object
+                      properties:
+                        k_ticket_option:
+                          type: string
+                          description: 'Globally unique identifier of the ticket option. Primary key in TicketOptionsRouteSql.'
+                        m_price:
+                          type: string
+                          description: 'One ticket price.'
+                        text_title:
+                          type: string
+                          description: 'Ticket option name.'
+                      required:
+                        - k_ticket_option
+                        - m_price
+                        - text_title
                   a_timezone_info:
                     type: array
                     description: |-
