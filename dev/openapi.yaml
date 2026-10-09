@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261008154631
+  version: 1.1.20261009091135
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -62,6 +62,9 @@ tags:
   -
     name: Billing
     description: 'Charge many clients for the same promotions and products at once.'
+  -
+    name: 'Billing Code'
+    description: 'Adds, reads, edits and removes a single custom billing code of a business.'
   -
     name: Booking
     description: 'Class and service booking process endpoints.'
@@ -27304,10 +27307,6 @@ paths:
                           type: integer
                           format: int32
                           description: 'Number of matching records.'
-                        i_priority_multiplier:
-                          type: integer
-                          format: int32
-                          description: 'Usage-statistics priority multiplier. Present for the usage-statistics source.'
                         cid_problem:
                           $ref: '#/components/schemas/Core.AI.LogTriage.TriageProblemAbstract'
                           description: 'CID of a [TriageProblemAbstract](#/components/schemas/Core.AI.LogTriage.TriageProblemAbstract) subclass.'
@@ -27337,7 +27336,6 @@ paths:
                         - dtu_first_seen
                         - dtu_last_seen
                         - i_occurrence_count
-                        - i_priority_multiplier
                         - cid_problem
                         - s_object
                         - eid_period
@@ -60445,7 +60443,7 @@ paths:
         value occupied. Adding the same value again brings this very code back, see `put()`.
         Removing a code that is removed already does nothing.
       tags:
-        - Billing
+        - 'Billing Code'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -60511,7 +60509,7 @@ paths:
         A removed code is returned as well, with [BillingCodeApi::$is_remove](/Wl/Billing/Code/BillingCode.json) set - it is still shown on the
         receipts it has been applied to.
       tags:
-        - Billing
+        - 'Billing Code'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -60556,7 +60554,7 @@ paths:
         The new value applies going forward only - every receipt and invoice that has already been generated with the
         old value keeps it.
       tags:
-        - Billing
+        - 'Billing Code'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -60628,7 +60626,7 @@ paths:
         instead of a second code with the same value being created, and [BillingCodeApi::$k_code](/Wl/Billing/Code/BillingCode.json) returns the key
         of that very code.
       tags:
-        - Billing
+        - 'Billing Code'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -60734,7 +60732,7 @@ paths:
         reference library, the descriptions of the latter in the language of the request. The diagnostic codes are
         returned only if the business has turned on ICD diagnostic codes.
       tags:
-        - Billing
+        - 'Billing Code'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
@@ -86514,6 +86512,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Saves [CustomTermsApi::$a_term_option](/Wl/Business/Custom/Terms/CustomTerms.json) as the custom terms of [CustomTermsApi::$k_business](/Wl/Business/Custom/Terms/CustomTerms.json).'
+      description: 'Validates every posted term slot and its selected option, then writes.'
       tags:
         - 'Custom Terms'
       parameters:
@@ -86536,9 +86535,10 @@ paths:
                         $ref: '#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid'
                         description: 'Term ID. One of [CustomTermSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) constants.'
                       id_term_option:
-                        type: integer
-                        format: int32
-                        description: 'Selected custom term. Depends on `id_term`.'
+                        $ref: '#/components/schemas/Wl.Business.Custom.Terms.ClassTermOptionSid'
+                        description: |-
+                          Selected custom term. Depends on `id_term`.
+                           One of [ClassTermOptionSid](#/components/schemas/Wl.Business.Custom.Terms.ClassTermOptionSid) or other option class constants.
                     required:
                       - id_term
                       - id_term_option
@@ -110410,6 +110410,213 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Visit/Billing/Code/VisitBillingCodeAssign.json:
+    get:
+      operationId: Wl.Visit.Billing.Code.VisitBillingCodeAssign.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_code:
+                    type: array
+                    description: |-
+                      Billing codes applied to the visit, the custom codes first, each type sorted by the code value.
+
+                      A staff member who can not assign billing codes gets the custom codes only: the diagnostic codes are a part of
+                      the medical record of the client. The codes are changed by posting [VisitBillingCodeAssignApi::$a_text_code](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
+                    items:
+                      type: object
+                      properties:
+                        is_custom:
+                          type: boolean
+                          description: |-
+                            `true` for a custom code of the business or a temporary code for this visit only, `false` for an ICD-10-CM
+                            diagnostic code.
+                        text_code:
+                          type: string
+                          description: 'Code value, as it is printed on receipts and invoices.'
+                        text_description:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Description of the code as it was when the code was applied. `null` for a temporary code.'
+                      required:
+                        - is_custom
+                        - text_code
+                        - text_description
+                  a_history:
+                    type: array
+                    description: |-
+                      History of the changes of the billing codes of the visit, the latest change first: a record per added or removed
+                      code.
+
+                      Empty for a staff member who can not assign billing codes.
+                    items:
+                      type: object
+                      properties:
+                        dtu_change:
+                          type: string
+                          description: 'Date and time of the change in UTC.'
+                        text_log:
+                          type: string
+                          description: 'What changed.'
+                        text_reason:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Reason of the change the staff member gave. `null` if no reason was given.'
+                        text_signature:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Signature of the staff member who made the change. `null` if no signature was given, or if the business did
+                            not require one.
+                        uid_staff:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Key of the staff member who made the change. `null` if the user is deleted.'
+                      required:
+                        - dtu_change
+                        - text_log
+                        - text_reason
+                        - text_signature
+                        - uid_staff
+                required:
+                  - a_code
+                  - a_history
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the billing codes applied to a visit and the history of their changes.'
+      description: |-
+        A staff member who can not assign billing codes gets the custom codes only, without the diagnostic codes and
+        without the history.
+      tags:
+        - 'Billing Code'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_visit
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Visit key.'
+      x-instance-get-key: 'k_business,k_visit'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Visit.Billing.Code.VisitBillingCodeAssign.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Applies billing codes to a visit.'
+      description: |-
+        The given list replaces the codes of the visit as a whole. A code the visit has already keeps the type and the
+        description it was applied with. A new code is looked up in the billing code list of the business first, then
+        among the ICD-10-CM diagnostic codes if the business has turned them on. A code found nowhere is a temporary
+        code for this visit only: it requires the access to create temporary codes, and it is not added to the billing
+        code list. Every added and every removed code is logged with the reason and, if the business requires it, the
+        signature.
+      tags:
+        - 'Billing Code'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_visit
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Visit key.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_text_code:
+                  type: array
+                  description: |-
+                    Values of all billing codes the visit must have, as they are printed on receipts and invoices.
+
+                    The list replaces the codes of the visit as a whole: a code that is not in the list is removed from the visit.
+                    A value may be a code of the billing code list of the business, an ICD-10-CM diagnostic code if the business
+                    has turned them on, or a temporary code for this visit only. A temporary code requires the access to create
+                    temporary codes. The case of a value does not matter. The codes the visit has are returned in
+                    [VisitBillingCodeAssignApi::$a_code](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
+                  items:
+                    type: string
+                text_reason:
+                  type: string
+                  maxLength: 200
+                  description: |-
+                    Reason of the change, for example when the codes are changed after the receipt has been sent to the client.
+
+                    Empty string if no reason is given.
+                text_signature:
+                  type: string
+                  maxLength: 255
+                  description: |-
+                    Signature of the staff member who applies the codes.
+
+                    Required and stored only if the business requires a signature when billing codes are saved. Empty string if no
+                    signature is given.
+              required:
+                - a_text_code
+                - text_reason
+                - text_signature
+      x-instance-get-key: 'k_business,k_visit'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Reward/Action/CategoryList/CategoryList.json:
     get:
       operationId: Wl.Reward.Action.CategoryList.CategoryList.get
@@ -134141,6 +134348,58 @@ components:
         - Class.
         - Client.
         - Staff.
+    Wl.Business.Custom.Terms.ClassTermOptionSid:
+      type: integer
+      format: int32
+      description: |-
+        Preset options for the [CustomTermSid::CLASS_TERM](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) custom term.
+
+        Last used ID: 10.
+
+        Values:
+        - 1 (`ACTIVITY`): Activity.
+        - 2 (`CLASS_TERM`): Class.
+        - 3 (`COURSE`): Course.
+        - 4 (`GROUP_SESSION`): Group Session.
+        - 5 (`LESSON`): Lesson.
+        - 6 (`PRACTICE`): Practice.
+        - 7 (`PROGRAM`): Program.
+        - 8 (`SESSION`): Session.
+        - 9 (`TRAINING`): Training.
+        - 10 (`WORKSHOP`): Workshop.
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+      x-enum-varnames:
+        - ACTIVITY
+        - CLASS_TERM
+        - COURSE
+        - GROUP_SESSION
+        - LESSON
+        - PRACTICE
+        - PROGRAM
+        - SESSION
+        - TRAINING
+        - WORKSHOP
+      x-enum-descriptions:
+        - Activity.
+        - Class.
+        - Course.
+        - 'Group Session.'
+        - Lesson.
+        - Practice.
+        - Program.
+        - Session.
+        - Training.
+        - Workshop.
     Wl.Business.Account.Subscription.Collections.CollectionsSubscriptionSid:
       type: integer
       format: int32
