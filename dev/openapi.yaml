@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261009104030
+  version: 1.1.20261009121052
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -60796,7 +60796,8 @@ paths:
                       Removed codes are not returned - they are not offered for selection anymore, they only stay on the receipts
                       and invoices they have already been applied to.
 
-                      The list is not sorted - sorting and filtering of the list is a matter of the page that shows it.
+                      The custom codes go first, then the system codes, each type sorted by the code value. Filtering of the list is a
+                      matter of the page that shows it.
                     items:
                       type: object
                       properties:
@@ -60810,9 +60811,6 @@ paths:
                         is_custom:
                           type: boolean
                           description: '`true` for a custom code of the business, `false` for a system code of the ICD-10-CM reference library.'
-                        k_code:
-                          type: string
-                          description: 'Key of the code. Keys of the custom and of the system codes never clash.'
                         text_code:
                           type: string
                           description: 'Code value, as it is printed on receipts and invoices.'
@@ -60824,7 +60822,6 @@ paths:
                       required:
                         - a_service
                         - is_custom
-                        - k_code
                         - text_code
                         - text_description
                 required:
