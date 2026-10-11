@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261009160551
+  version: 1.1.20261011172743
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -3689,6 +3689,13 @@ paths:
                 s_subject:
                   type: string
                   description: "The message's subject line."
+                uid:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    The receiver user key.
+                    `null` if the email should not be linked to a specific user's contact history.
               required:
                 - s_business_mail
                 - s_business_name
