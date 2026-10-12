@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261011183748
+  version: 1.1.20261012091424
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -775,6 +775,9 @@ paths:
                       This is needed to send message that were generated before a client has subscribed.
                     items:
                       oneOf:
+                        -
+                          type: object
+                          title: 'Parameters for `2389`'
                         -
                           type: object
                           title: 'Parameters for `1342`'
@@ -1818,6 +1821,15 @@ paths:
               properties:
                 a_key:
                   oneOf:
+                    -
+                      type: object
+                      title: 'Parameters for `2389`'
+                      properties:
+                        uid:
+                          type: string
+                          description: 'The user whose access has changed. Primary key in PassportLoginSql.'
+                      required:
+                        - uid
                     -
                       type: object
                       title: 'Parameters for `1342`'
@@ -124031,6 +124043,14 @@ components:
         * Issue [ChannelAbstract::notify() notify()](#/components/schemas/Core.WebSocket.ChannelAbstract) on it.
 
         Values:
+        - 2389 (`Core\OAuth\AuthorizeChangeChannel`): The channel "the access of a user has changed": the authorization page of the user loads the request again.
+
+          A project sends a message when it changes what its OAuthAccessInterface::access() checks for the user, for
+          example when an administrator approves or rejects a request for access. The page `Core_OAuth_AuthorizeSpa`
+          subscribes while it shows a refusal of the project to a signed-in user, and on a message asks
+          [AuthorizeApi](/Core/OAuth/Authorize.json) again: the consent or the new refusal appears without a reload of the page. The message has
+          no data: only the fact of the change matters, so only the last message is kept. To send it, create an object, set
+          [AuthorizeChangeChannel::$uid](#/components/schemas/Core.WebSocket.ChannelBroadcast) and call [ChannelBroadcast::notify()](#/components/schemas/Core.WebSocket.ChannelBroadcast).
         - 1342 (`Wl\Alert\AlertChannel`): A message is sent through this channel every time an alert created or read.
         - 1921 (`Wl\Visit\VisitStatusChannel`): A message is sent through this channel when the status of a visit is changed.
         - 1869 (`Wl\Task\TaskChangeChannel`): A message is sent through this channel every time a task created or edited.
@@ -124069,6 +124089,7 @@ components:
         - 952 (`Wl\Business\Sms\Chat\Dialog\MessageHistoryChannel`): Channel to pass over information about new message in the chat.
         - 549 (`Wl\Business\Franchise\Report\Curves\AccumulationProcessChannel`): When accumulation progress was changed new value is sent over this channel.
       enum:
+        - 2389
         - 1342
         - 1921
         - 1869
@@ -124104,6 +124125,7 @@ components:
         - 952
         - 549
       x-enum-varnames:
+        - Core\OAuth\AuthorizeChangeChannel
         - Wl\Alert\AlertChannel
         - Wl\Visit\VisitStatusChannel
         - Wl\Task\TaskChangeChannel
@@ -124139,6 +124161,15 @@ components:
         - Wl\Business\Sms\Chat\Dialog\MessageHistoryChannel
         - Wl\Business\Franchise\Report\Curves\AccumulationProcessChannel
       x-enum-descriptions:
+        - |-
+          The channel "the access of a user has changed": the authorization page of the user loads the request again.
+
+          A project sends a message when it changes what its {@link \Core\OAuth\OAuthAccessInterface::access()} checks for the user, for
+          example when an administrator approves or rejects a request for access. The page `Core_OAuth_AuthorizeSpa`
+          subscribes while it shows a refusal of the project to a signed-in user, and on a message asks
+          {@link \Core\OAuth\AuthorizeApi} again: the consent or the new refusal appears without a reload of the page. The message has
+          no data: only the fact of the change matters, so only the last message is kept. To send it, create an object, set
+          {@link \Core\OAuth\AuthorizeChangeChannel::$uid} and call {@link \Core\WebSocket\ChannelBroadcast::notify()}.
         - 'A message is sent through this channel every time an alert created or read.'
         - 'A message is sent through this channel when the status of a visit is changed.'
         - 'A message is sent through this channel every time a task created or edited.'
