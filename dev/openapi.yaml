@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261012100219
+  version: 1.1.20261012133405
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -54156,7 +54156,11 @@ paths:
                           f_early:
                             type: string
                             description: |-
-                              Early bird price of the class.
+                              Early bird amount of the class.
+
+                              The price that replaces the price of the class while `id_early_amount` is
+                              [EarlyAmountEnum::PRICE](#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum), and the discount from the price of the class otherwise: a percent of the price
+                              while `is_early_percent` is `true`, an amount of money otherwise.
 
                               Only taken into account while `is_early` is `true`.
                           f_price:
@@ -54176,6 +54180,30 @@ paths:
                             description: |-
                               `true` if the price of a single session is hidden from a client who has an applicable Purchase Option,
                               `false` if it is shown to them.
+                          i_early_duration:
+                            type: integer
+                            format: int32
+                            description: |-
+                              How long before the class starts the early bird period ends.
+
+                              Only taken into account while `id_early_period` is [EarlyPeriodEnum::BEFORE](#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum).
+                          id_early_amount:
+                            $ref: '#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum'
+                            description: |-
+                              Meaning of `f_early`.
+
+                              Only [EarlyAmountEnum::PRICE](#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum) and [EarlyAmountEnum::DISCOUNT](#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum) are picked on the form: a discount of
+                              a percent is a discount with `is_early_percent` set, the same as the legacy form posts
+                              it.
+                          id_early_duration:
+                            $ref: '#/components/schemas/ADurationSid'
+                            description: |-
+                              Measurement unit of `i_early_duration`.
+
+                              Only taken into account while `id_early_period` is [EarlyPeriodEnum::BEFORE](#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum).
+                          id_early_period:
+                            $ref: '#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum'
+                            description: 'Way the end of the early bird period is specified.'
                           id_pay_require:
                             $ref: '#/components/schemas/Wl.Classes.RequirePaySid'
                             description: 'Way a client pays for the class.'
@@ -54208,6 +54236,14 @@ paths:
                           is_early:
                             type: boolean
                             description: '`true` if the class has an early bird discount, `false` otherwise.'
+                          is_early_percent:
+                            type: boolean
+                            description: |-
+                              `true` if `f_early` is a percent of the price of the class, `false` if it is an amount
+                              of money.
+
+                              Only taken into account while `id_early_amount` is [EarlyAmountEnum::DISCOUNT](#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum):
+                              a price that replaces the price of the class is always an amount of money.
                           is_tax_enable:
                             type: boolean
                             description: '`true` if taxes are applied to the sales of the class, `false` otherwise.'
@@ -54226,12 +54262,17 @@ paths:
                           - f_price
                           - f_price_total
                           - hide_price
+                          - i_early_duration
+                          - id_early_amount
+                          - id_early_duration
+                          - id_early_period
                           - id_pay_require
                           - is_buy_promotion
                           - is_buy_single
                           - is_buy_total
                           - is_deposit_percent
                           - is_early
+                          - is_early_percent
                           - is_tax_enable
                           - text_early
                       o_ticket:
@@ -55072,7 +55113,11 @@ paths:
                         f_early:
                           type: string
                           description: |-
-                            Early bird price of the class.
+                            Early bird amount of the class.
+
+                            The price that replaces the price of the class while `id_early_amount` is
+                            [EarlyAmountEnum::PRICE](#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum), and the discount from the price of the class otherwise: a percent of the price
+                            while `is_early_percent` is `true`, an amount of money otherwise.
 
                             Only taken into account while `is_early` is `true`.
                         f_price:
@@ -55092,6 +55137,30 @@ paths:
                           description: |-
                             `true` if the price of a single session is hidden from a client who has an applicable Purchase Option,
                             `false` if it is shown to them.
+                        i_early_duration:
+                          type: integer
+                          format: int32
+                          description: |-
+                            How long before the class starts the early bird period ends.
+
+                            Only taken into account while `id_early_period` is [EarlyPeriodEnum::BEFORE](#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum).
+                        id_early_amount:
+                          $ref: '#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum'
+                          description: |-
+                            Meaning of `f_early`.
+
+                            Only [EarlyAmountEnum::PRICE](#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum) and [EarlyAmountEnum::DISCOUNT](#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum) are picked on the form: a discount of
+                            a percent is a discount with `is_early_percent` set, the same as the legacy form posts
+                            it.
+                        id_early_duration:
+                          $ref: '#/components/schemas/ADurationSid'
+                          description: |-
+                            Measurement unit of `i_early_duration`.
+
+                            Only taken into account while `id_early_period` is [EarlyPeriodEnum::BEFORE](#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum).
+                        id_early_period:
+                          $ref: '#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum'
+                          description: 'Way the end of the early bird period is specified.'
                         id_pay_require:
                           $ref: '#/components/schemas/Wl.Classes.RequirePaySid'
                           description: 'Way a client pays for the class.'
@@ -55124,6 +55193,14 @@ paths:
                         is_early:
                           type: boolean
                           description: '`true` if the class has an early bird discount, `false` otherwise.'
+                        is_early_percent:
+                          type: boolean
+                          description: |-
+                            `true` if `f_early` is a percent of the price of the class, `false` if it is an amount
+                            of money.
+
+                            Only taken into account while `id_early_amount` is [EarlyAmountEnum::DISCOUNT](#/components/schemas/Wl.Classes.Edit.EarlyAmountEnum):
+                            a price that replaces the price of the class is always an amount of money.
                         is_tax_enable:
                           type: boolean
                           description: '`true` if taxes are applied to the sales of the class, `false` otherwise.'
@@ -55142,12 +55219,17 @@ paths:
                         - f_price
                         - f_price_total
                         - hide_price
+                        - i_early_duration
+                        - id_early_amount
+                        - id_early_duration
+                        - id_early_period
                         - id_pay_require
                         - is_buy_promotion
                         - is_buy_single
                         - is_buy_total
                         - is_deposit_percent
                         - is_early
+                        - is_early_percent
                         - is_tax_enable
                         - text_early
                     o_ticket:
@@ -132830,6 +132912,59 @@ components:
       x-enum-descriptions:
         - 'Means that resource used in individual usage.'
         - 'Resource is reserved for the entire class.'
+    Wl.Classes.Edit.EarlyAmountEnum:
+      type: integer
+      format: int32
+      description: |-
+        Meaning of the early bird amount that is stored in RsClassEarlySql.
+
+        The event setup form offers a block or a non-block event the whole list, and a ticketed event
+        only the discounts - a ticketed event has no regular price to replace.
+
+        Values:
+        - 2 (`DISCOUNT`): The amount is a discount in the currency of the business.
+          The regular price of the event is reduced by this amount.
+        - 3 (`PERCENT`): The amount is a discount in percent of the regular price of the event.
+        - 1 (`PRICE`): The amount is the price that replaces the regular price of the event.
+
+          Legacy behavior - this is the only way the early bird price was stored before the early
+          bird discount was introduced.
+      enum:
+        - 2
+        - 3
+        - 1
+      x-enum-varnames:
+        - DISCOUNT
+        - PERCENT
+        - PRICE
+      x-enum-descriptions:
+        - |-
+          The amount is a discount in the currency of the business.
+          The regular price of the event is reduced by this amount.
+        - 'The amount is a discount in percent of the regular price of the event.'
+        - |-
+          The amount is the price that replaces the regular price of the event.
+
+          Legacy behavior - this is the only way the early bird price was stored before the early
+          bird discount was introduced.
+    Wl.Classes.Edit.EarlyPeriodEnum:
+      type: integer
+      format: int32
+      description: |-
+        The way the end of the early bird period is specified for the event.
+
+        Values:
+        - 2 (`BEFORE`): The period ends a certain amount of time before the event starts.
+        - 1 (`DATE`): The period ends on the date.
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - BEFORE
+        - DATE
+      x-enum-descriptions:
+        - 'The period ends a certain amount of time before the event starts.'
+        - 'The period ends on the date.'
     Wl.Coupon.TypeSid:
       type: integer
       format: int32
