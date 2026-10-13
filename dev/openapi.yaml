@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261013105321
+  version: 1.1.20261013113608
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -111081,9 +111081,22 @@ paths:
                         - text_reason
                         - text_signature
                         - uid_staff
+                  s_version:
+                    type: string
+                    maxLength: 32
+                    description: |-
+                      Version of the billing codes of the visit: a value that changes every time the codes of the visit change.
+
+                      The version comes with the codes and must be posted back together with them. A post that carries an outdated
+                      version is rejected with the error `code-version-outdated`, so that the codes another staff member has changed
+                      in the meantime are not overwritten without being seen. The answer of a successful post carries the new version,
+                      so the codes can be changed again without reading them anew.
+
+                      Empty string if the codes of the visit have never been changed.
                 required:
                   - a_code
                   - a_history
+                  - s_version
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -111099,7 +111112,8 @@ paths:
       summary: 'Returns the billing codes applied to a visit and the history of their changes.'
       description: |-
         A staff member who can not assign billing codes gets the custom codes only, without the diagnostic codes and
-        without the history.
+        without the history. The answer carries the version of the codes, which must be posted back to change them,
+        see [VisitBillingCodeAssignApi::$s_version](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
       tags:
         - 'Billing Code'
       parameters:
@@ -111129,6 +111143,25 @@ paths:
       responses:
         '200':
           description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_version:
+                    type: string
+                    maxLength: 32
+                    description: |-
+                      Version of the billing codes of the visit: a value that changes every time the codes of the visit change.
+
+                      The version comes with the codes and must be posted back together with them. A post that carries an outdated
+                      version is rejected with the error `code-version-outdated`, so that the codes another staff member has changed
+                      in the meantime are not overwritten without being seen. The answer of a successful post carries the new version,
+                      so the codes can be changed again without reading them anew.
+
+                      Empty string if the codes of the visit have never been changed.
+                required:
+                  - s_version
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -111149,6 +111182,10 @@ paths:
         code for this visit only: it requires the access to create temporary codes, and it is not added to the billing
         code list. Every added and every removed code is logged with the reason and, if the business requires it, the
         signature.
+
+        The version of the codes the list is made from is posted together with the list: if another staff member has
+        changed the codes in the meantime, the post is rejected with the error `code-version-outdated` instead of
+        overwriting that change, see [VisitBillingCodeAssignApi::$s_version](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
       tags:
         - 'Billing Code'
       parameters:
@@ -111187,6 +111224,18 @@ paths:
                     [VisitBillingCodeAssignApi::$a_code](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
                   items:
                     type: string
+                s_version:
+                  type: string
+                  maxLength: 32
+                  description: |-
+                    Version of the billing codes of the visit: a value that changes every time the codes of the visit change.
+
+                    The version comes with the codes and must be posted back together with them. A post that carries an outdated
+                    version is rejected with the error `code-version-outdated`, so that the codes another staff member has changed
+                    in the meantime are not overwritten without being seen. The answer of a successful post carries the new version,
+                    so the codes can be changed again without reading them anew.
+
+                    Empty string if the codes of the visit have never been changed.
                 text_reason:
                   type: string
                   maxLength: 200
@@ -111204,6 +111253,7 @@ paths:
                     signature is given.
               required:
                 - a_text_code
+                - s_version
                 - text_reason
                 - text_signature
       x-instance-get-key: 'k_business,k_visit'
