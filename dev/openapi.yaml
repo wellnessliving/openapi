@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261012162714
+  version: 1.1.20261013094952
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -23445,6 +23445,26 @@ paths:
               schema:
                 type: object
                 properties:
+                  m_amount:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Payment amount.
+
+                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                      instead of a rejected request.
+                  m_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount.
+
+                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   text_message:
                     type:
                       - string
@@ -23553,7 +23573,10 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet.
+                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                    instead of a rejected request.
                 m_surcharge:
                   type:
                     - string
@@ -23561,7 +23584,8 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                 s_nuvei_order:
                   type:
                     - string
@@ -23616,6 +23640,26 @@ paths:
                       Key of payment transaction that was created.
 
                       `null` in case when not initialized yet.
+                  m_amount:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Payment amount.
+
+                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                      instead of a rejected request.
+                  m_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount.
+
+                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   text_message:
                     type:
                       - string
@@ -23811,7 +23855,10 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet.
+                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                    instead of a rejected request.
                 m_surcharge:
                   type:
                     - string
@@ -23819,7 +23866,8 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                 uid_purchase:
                   type:
                     - string
@@ -23856,6 +23904,26 @@ paths:
                       Key of payment transaction that was created.
 
                       `null` in case when not initialized yet.
+                  m_amount:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Payment amount.
+
+                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                      instead of a rejected request.
+                  m_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount.
+
+                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   s_nuvei_order:
                     type:
                       - string
@@ -23973,7 +24041,10 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet.
+                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                    instead of a rejected request.
                 m_surcharge:
                   type:
                     - string
@@ -23981,7 +24052,8 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                 uid_purchase:
                   type:
                     - string
@@ -24226,6 +24298,26 @@ paths:
                       Key of payment transaction that was created.
 
                       `null` in case when not initialized yet.
+                  m_amount:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Payment amount.
+
+                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                      instead of a rejected request.
+                  m_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount.
+
+                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   s_client_secret:
                     type: string
                     description: 'Payment Intent client secret key.'
@@ -24432,7 +24524,10 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet.
+                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                    instead of a rejected request.
                 m_surcharge:
                   type:
                     - string
@@ -24440,7 +24535,8 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                 s_payment_method:
                   type:
                     - string
@@ -26311,6 +26407,28 @@ paths:
                     description: |-
                       Determines whether newly added payment sources should be saved. This will be `true` if payment sources should be saved,
                       `false` if otherwise.
+                  is_surcharge_card_present_blocked:
+                    type: boolean
+                    description: |-
+                      Whether a card-present (POS) source at this business can never carry a surcharge (SAL-1314, FR-007): the
+                      business's processor implements the card-type contract and card-present surcharge is out of the rule's
+                      scope for it. `false` on a build whose monolith part is not live yet, or whenever surcharges are not
+                      configured for POS at all - both read the same as "nothing to suppress".
+
+                      The browser uses this to hide the surcharge row for a POS source outright, without calling
+                      [SurchargeTenderApi](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json): a card-present decision never depends on the BIN or
+                      the saved card, only on the business and the pay method.
+                  is_surcharge_tender_contract:
+                    type: boolean
+                    description: |-
+                      Whether the business's ECOMMERCE processor implements the SAL-1314 card-type contract.
+
+                      `false` on a build whose monolith part is not live yet, same as a processor that never implements it.
+
+                      The browser uses this to decide whether it is worth calling
+                      [SurchargeTenderApi](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) at all for a typed card number or a saved-card
+                      switch - calling it when this is `false` would always get `is_allowed=true` back, so the hooks stay
+                      inactive instead.
                   is_tip:
                     type: boolean
                     description: 'Whether tips are accepted.'
@@ -26337,6 +26455,8 @@ paths:
                   - dl_now
                   - is_save_optional
                   - is_save_source
+                  - is_surcharge_card_present_blocked
+                  - is_surcharge_tender_contract
                   - is_tip
         '400':
           $ref: '#/components/responses/400'
@@ -26858,6 +26978,28 @@ paths:
                     description: |-
                       Determines whether newly added payment sources should be saved. This will be `true` if payment sources should be saved,
                       `false` if otherwise.
+                  is_surcharge_card_present_blocked:
+                    type: boolean
+                    description: |-
+                      Whether a card-present (POS) source at this business can never carry a surcharge (SAL-1314, FR-007): the
+                      business's processor implements the card-type contract and card-present surcharge is out of the rule's
+                      scope for it. `false` on a build whose monolith part is not live yet, or whenever surcharges are not
+                      configured for POS at all - both read the same as "nothing to suppress".
+
+                      The browser uses this to hide the surcharge row for a POS source outright, without calling
+                      [SurchargeTenderApi](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json): a card-present decision never depends on the BIN or
+                      the saved card, only on the business and the pay method.
+                  is_surcharge_tender_contract:
+                    type: boolean
+                    description: |-
+                      Whether the business's ECOMMERCE processor implements the SAL-1314 card-type contract.
+
+                      `false` on a build whose monolith part is not live yet, same as a processor that never implements it.
+
+                      The browser uses this to decide whether it is worth calling
+                      [SurchargeTenderApi](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) at all for a typed card number or a saved-card
+                      switch - calling it when this is `false` would always get `is_allowed=true` back, so the hooks stay
+                      inactive instead.
                   is_tip:
                     type: boolean
                     description: 'Whether tips are accepted.'
@@ -26884,6 +27026,8 @@ paths:
                   - dl_now
                   - is_save_optional
                   - is_save_source
+                  - is_surcharge_card_present_blocked
+                  - is_surcharge_tender_contract
                   - is_tip
         '400':
           $ref: '#/components/responses/400'
@@ -47833,6 +47977,23 @@ paths:
                             - i_width
                             - is_empty
                             - s_url
+                        a_purchase_error:
+                          type: object
+                          description: 'Purchase errors for this item. The same structure as [ElementApi::$a_purchase_error](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            text_code:
+                              type: string
+                              description: 'A machine-readable error code identifying the restriction type.'
+                            text_field:
+                              type: string
+                              description: 'The field associated with the error. Empty string if not applicable.'
+                            text_message:
+                              type: string
+                              description: 'A human-readable error message describing the restriction.'
+                          required:
+                            - text_code
+                            - text_field
+                            - text_message
                         a_tax:
                           type: array
                           description: 'Tax amounts keyed by tax key. The same structure as [ElementApi::$a_tax](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -47863,6 +48024,7 @@ paths:
                         - a_data
                         - a_guest_pass
                         - a_image
+                        - a_purchase_error
                         - a_tax
                         - id_purchase_option_view
                         - m_discount_code
@@ -47871,6 +48033,29 @@ paths:
                         - s_price
                         - s_sale
                         - s_title
+                  a_purchase_error:
+                    type: array
+                    description: |-
+                      A list of purchase errors that would prevent this item from being purchased by the current user.
+
+                      Each element represents a server-side validation error. Empty if there are no purchase restrictions
+                      or if the request is unauthenticated. Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        text_code:
+                          type: string
+                          description: 'A machine-readable error code identifying the restriction type.'
+                        text_field:
+                          type: string
+                          description: 'The field associated with the error. Empty string if not applicable.'
+                        text_message:
+                          type: string
+                          description: 'A human-readable error message describing the restriction.'
+                      required:
+                        - text_code
+                        - text_field
+                        - text_message
                   a_tax:
                     type: array
                     description: |-
@@ -48001,6 +48186,7 @@ paths:
                   - a_image_list
                   - a_installment_template
                   - a_item
+                  - a_purchase_error
                   - a_tax
                   - f_price_retail_product
                   - f_price_total_enrollment
@@ -48846,6 +49032,23 @@ paths:
                             - i_width
                             - is_empty
                             - s_url
+                        a_purchase_error:
+                          type: object
+                          description: 'Purchase errors for this item. The same structure as [ElementApi::$a_purchase_error](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            text_code:
+                              type: string
+                              description: 'A machine-readable error code identifying the restriction type.'
+                            text_field:
+                              type: string
+                              description: 'The field associated with the error. Empty string if not applicable.'
+                            text_message:
+                              type: string
+                              description: 'A human-readable error message describing the restriction.'
+                          required:
+                            - text_code
+                            - text_field
+                            - text_message
                         a_tax:
                           type: array
                           description: 'Tax amounts keyed by tax key. The same structure as [ElementApi::$a_tax](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -48876,6 +49079,7 @@ paths:
                         - a_data
                         - a_guest_pass
                         - a_image
+                        - a_purchase_error
                         - a_tax
                         - id_purchase_option_view
                         - m_discount_code
@@ -48884,6 +49088,29 @@ paths:
                         - s_price
                         - s_sale
                         - s_title
+                  a_purchase_error:
+                    type: array
+                    description: |-
+                      A list of purchase errors that would prevent this item from being purchased by the current user.
+
+                      Each element represents a server-side validation error. Empty if there are no purchase restrictions
+                      or if the request is unauthenticated. Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        text_code:
+                          type: string
+                          description: 'A machine-readable error code identifying the restriction type.'
+                        text_field:
+                          type: string
+                          description: 'The field associated with the error. Empty string if not applicable.'
+                        text_message:
+                          type: string
+                          description: 'A human-readable error message describing the restriction.'
+                      required:
+                        - text_code
+                        - text_field
+                        - text_message
                   a_tax:
                     type: array
                     description: |-
@@ -49014,6 +49241,7 @@ paths:
                   - a_image_list
                   - a_installment_template
                   - a_item
+                  - a_purchase_error
                   - a_tax
                   - f_price_retail_product
                   - f_price_total_enrollment
@@ -60899,8 +61127,8 @@ paths:
                       Removed codes are not returned - they are not offered for selection anymore, they only stay on the receipts
                       and invoices they have already been applied to.
 
-                      The custom codes go first, then the system codes, each type sorted by the code value. Filtering of the list is a
-                      matter of the page that shows it.
+                      The custom codes go first, then the system codes, each type sorted by the code value. Only the codes that match
+                      [BillingCodeListApi::$text_search](/Wl/Billing/Code/BillingCodeList.json) are returned, if it is given.
                     items:
                       type: object
                       properties:
@@ -60958,6 +61186,19 @@ paths:
           schema:
             type: string
           description: 'Business key.'
+        -
+          name: text_search
+          in: query
+          required: true
+          schema:
+            type: string
+            maxLength: 60
+          description: |-
+            Part of a code value or of a description to search for, in any case. Empty string to get the whole list.
+
+            A code is returned if its value or its description contains this text. The case does not matter, and a code
+            value is matched by a part of it: `99` matches `99213`. A longer text than a description can not match
+            anything, so it is not accepted.
       x-instance-get-key: k_business
       x-rate-limit:
         -
@@ -82430,6 +82671,111 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Pay/Form/Surcharge/SurchargeTender.json:
+    get:
+      operationId: Wl.Pay.Form.Surcharge.SurchargeTender.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_allowed:
+                    type: boolean
+                    description: |-
+                      Whether a surcharge is allowed for the card identified by [SurchargeTenderApi::$s_bin](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) or
+                      [SurchargeTenderApi::$k_pay_bank](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json).
+
+                      `true` whenever the business's processor is not subject to the rule, or the rule does not apply to this
+                      country/pay method - exactly the same meaning as "do not suppress", never a stand-in for "lookup failed".
+                    default: true
+                required:
+                  - is_allowed
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Previews whether a surcharge is allowed for a card.'
+      description: |-
+        Called while the client is typing a card number, or has selected a saved card, so the browser can show the
+        correct total and lock the surcharge switch before the card is actually charged (SAL-1314 step 10).
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_pay_method
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayMethodSid'
+          description: |-
+            Payment method the card would be charged with.
+
+            Must be [RsPayMethodSid::ECOMMERCE](#/components/schemas/RsPayMethodSid) or [RsPayMethodSid::POS](#/components/schemas/RsPayMethodSid).
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_currency
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Currency key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Location key.
+
+            `null`/`'0'` to use the system-wide merchant.
+        -
+          name: k_pay_bank
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Key of a saved card to preview.
+
+            Exactly one of [SurchargeTenderApi::$k_pay_bank](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) and [SurchargeTenderApi::$s_bin](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) must be set.
+        -
+          name: s_bin
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            First digits of a newly-typed card number (at least 6).
+
+            Exactly one of [SurchargeTenderApi::$k_pay_bank](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) and [SurchargeTenderApi::$s_bin](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) must be set.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Pay/Bank/Card/List.json:
     get:
       operationId: Wl.Pay.Bank.Card.List.get
@@ -100059,6 +100405,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -100069,6 +100422,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   a_timezone_data:
                     type: object
                     description: 'Information about timezone.'
@@ -100442,6 +100796,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -100452,6 +100813,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   dt_date:
                     type: string
                     format: date-time
@@ -100743,6 +101105,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -100753,6 +101122,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   dt_date:
                     type: string
                     format: date-time
@@ -101208,6 +101578,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -101218,6 +101595,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   a_timezone_data:
                     type: object
                     description: 'Information about timezone.'
@@ -110889,7 +111267,7 @@ paths:
                   a_code_top:
                     type: array
                     description: |-
-                      Codes most used for the visits of the client, the most used first.
+                      Codes last applied for the visits of the client, the most recently applied first.
 
                       Only the codes the current staff member can apply again are returned: a custom code that is still in the billing
                       code list, a diagnostic code while the business has them turned on, and a temporary code only if the staff
@@ -110930,8 +111308,8 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Returns the codes suggested for a visit.'
       description: |-
-        The default codes of the service and of the staff member, and up to 5 codes most used for the client, each list
-        separately. The current staff member must be able to assign billing codes to appointments.
+        The default codes of the service and of the staff member, and up to 5 codes last applied for the client, each
+        list separately. The current staff member must be able to assign billing codes to appointments.
       tags:
         - 'Billing Code'
       parameters:
@@ -115090,6 +115468,26 @@ paths:
                       Key of payment transaction that was created.
 
                       `null` in case when not initialized yet.
+                  m_amount:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Payment amount.
+
+                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                      instead of a rejected request.
+                  m_surcharge:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Surcharge amount.
+
+                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   s_exchange_identification:
                     type: string
                     description: |-
@@ -115193,7 +115591,10 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet.
+                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
+                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
+                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
+                    instead of a rejected request.
                 m_surcharge:
                   type:
                     - string
@@ -115201,7 +115602,8 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
+                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                 m_tip:
                   type: string
                   description: 'Amount of tips entered in shopping cart.'
@@ -120736,6 +121138,8 @@ paths:
     $ref: '#/paths/~1Wl~1Pay~1Method~1List.json'
   /Thoth/WlPay/Address/Widget/WidgetEdit.json:
     $ref: '#/paths/~1Wl~1Pay~1Address~1Widget~1WidgetEdit.json'
+  /Thoth/WlPay/Form/Surcharge/SurchargeTender.json:
+    $ref: '#/paths/~1Wl~1Pay~1Form~1Surcharge~1SurchargeTender.json'
   /Thoth/WlPay/Bank/Card/List.json:
     $ref: '#/paths/~1Wl~1Pay~1Bank~1Card~1List.json'
   /Thoth/WlPay/Bank/Ach/List.json:
@@ -132916,7 +133320,7 @@ components:
       type: integer
       format: int32
       description: |-
-        Meaning of the early bird amount that is stored in RsClassEarlySql.
+        Meaning of the early bird amount.
 
         The event setup form offers a block or a non-block event the whole list, and a ticketed event
         only the discounts - a ticketed event has no regular price to replace.
