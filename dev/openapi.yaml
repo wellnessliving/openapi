@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261013130930
+  version: 1.1.20261013133633
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -17438,12 +17438,19 @@ paths:
                             m_price:
                               type: string
                               description: 'One ticket price.'
+                            m_price_early:
+                              type:
+                                - number
+                                - 'null'
+                              format: float
+                              description: 'One ticket price with the early bird applied. `null` if the event has no early bird.'
                             text_title:
                               type: string
                               description: 'Ticket option name.'
                           required:
                             - k_ticket_option
                             - m_price
+                            - m_price_early
                             - text_title
                         can_book:
                           type: boolean
@@ -61127,8 +61134,15 @@ paths:
                       Removed codes are not returned - they are not offered for selection anymore, they only stay on the receipts
                       and invoices they have already been applied to.
 
-                      The custom codes go first, then the system codes, each type sorted by the code value. Only the codes that match
-                      [BillingCodeListApi::$text_search](/Wl/Billing/Code/BillingCodeList.json) are returned, if it is given.
+                      The custom codes go first, then the system codes. Only the codes that match
+                      [BillingCodeListApi::$text_search](/Wl/Billing/Code/BillingCodeList.json) are returned, if it is given, and then each group is ranked by the
+                      search, the best match first: the code value equal to the search, the code value beginning with it, the
+                      description equal to it, the description beginning with it, the rest. Without a search each group is sorted by
+                      the code value.
+
+                      The list is a page of the codes: [BillingCodeListApi::$i_limit](/Wl/Billing/Code/BillingCodeList.json) of them from the page
+                      [BillingCodeListApi::$i_page](/Wl/Billing/Code/BillingCodeList.json), out of the [BillingCodeListApi::$i_count](/Wl/Billing/Code/BillingCodeList.json) codes that answer the
+                      request.
                     items:
                       type: object
                       properties:
@@ -61155,8 +61169,55 @@ paths:
                         - is_custom
                         - text_code
                         - text_description
+                  a_code_similar:
+                    type: array
+                    description: |-
+                      Up to `SIMILAR_MAX` codes nearest to the search, the nearest first.
+
+                      Filled only when [BillingCodeListApi::$text_search](/Wl/Billing/Code/BillingCodeList.json) is given and has found nothing, so that a client may
+                      offer something instead of an empty list: the words of the search are matched by their first characters, and
+                      one word matching is enough, so a word that is mistyped or cut short at its end still finds a code. Empty
+                      while the search has found codes, while it is not given, or while nothing in the list comes close to it.
+
+                      The rows are the same as the rows of [BillingCodeListApi::$a_code](/Wl/Billing/Code/BillingCodeList.json).
+                    items:
+                      type: object
+                      properties:
+                        a_service:
+                          type: array
+                          description: |-
+                            List of services the code is applied to by default. Always empty for a system code: system codes are not
+                            applied to services by default.
+                          items:
+                            type: string
+                        is_custom:
+                          type: boolean
+                          description: '`true` for a custom code of the business, `false` for a system code of the ICD-10-CM reference library.'
+                        text_code:
+                          type: string
+                          description: 'Code value, as it is printed on receipts and invoices.'
+                        text_description:
+                          type: string
+                          description: |-
+                            Description of the code. The business typed it in for a custom code. For a system code it comes from the
+                            reference library, in the language of the request.
+                      required:
+                        - a_service
+                        - is_custom
+                        - text_code
+                        - text_description
+                  i_count:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of the codes that answer the request, the page not applied.
+
+                      A client knows by it how many pages the list has, see [BillingCodeListApi::$i_limit](/Wl/Billing/Code/BillingCodeList.json) and
+                      [BillingCodeListApi::$i_page](/Wl/Billing/Code/BillingCodeList.json). `0` while nothing answers the request.
                 required:
                   - a_code
+                  - a_code_similar
+                  - i_count
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -61173,12 +61234,43 @@ paths:
       description: |-
         The list contains the custom codes of the business and the diagnostic codes of the read-only ICD-10-CM
         reference library, the descriptions of the latter in the language of the request. The diagnostic codes are
-        returned only if the business has turned on ICD diagnostic codes.
+        returned only if the business has turned on ICD diagnostic codes. A search ranks the codes it has found, and a
+        search that has found nothing gets the nearest codes instead. The answer is one page of the codes.
       tags:
         - 'Billing Code'
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: i_limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 5000
+            default: 50
+          description: |-
+            Number of the codes to return: the size of a page of the list.
+
+            Not more than `LIMIT_MAX`, and
+            `LIMIT_DEFAULT` while it is not given.
+        -
+          name: i_page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            default: 1
+          description: |-
+            Number of the page of the list to return, `1` for the first one.
+
+            A page holds [BillingCodeListApi::$i_limit](/Wl/Billing/Code/BillingCodeList.json) codes, so the page number 2 is the codes from the 51st to
+            the 100th while the limit is the default one. A page beyond the end of the list is empty, while
+            [BillingCodeListApi::$i_count](/Wl/Billing/Code/BillingCodeList.json) still tells how many codes answer the request.
         -
           name: k_business
           in: query
@@ -61194,11 +61286,17 @@ paths:
             type: string
             maxLength: 60
           description: |-
-            Part of a code value or of a description to search for, in any case. Empty string to get the whole list.
+            Text to search for, in any case: the value of a code, a part of a description, or plain words. Empty string to
+            get the whole list.
 
-            A code is returned if its value or its description contains this text. The case does not matter, and a code
-            value is matched by a part of it: `99` matches `99213`. A longer text than a description can not match
-            anything, so it is not accepted.
+            The search is split into words, and a code is returned while every word of the search occurs in its value or
+            in its description. So the words may come in any order, and `pain in left shoulder` finds the diagnostic code
+            `M25.512 Pain in left shoulder`. A search of a single word matches a part of a value or of a description as it
+            is: `99` matches `99213`. The case does not matter. A longer text than a description can not match anything,
+            so it is not accepted.
+
+            A search that has found nothing gets the nearest codes in
+            [BillingCodeListApi::$a_code_similar](/Wl/Billing/Code/BillingCodeList.json) instead.
       x-instance-get-key: k_business
       x-rate-limit:
         -
@@ -96958,6 +97056,35 @@ paths:
                               type: object
                               description: 'List of tuition events for tuition participant. Each record has the next structure:'
                               properties:
+                                a_checkout:
+                                  type:
+                                    - object
+                                    - 'null'
+                                  description: |-
+                                    Output only. Additional information about how `m_checkout` was calculated when
+                                         the first membership payment is prorated, `null` otherwise:
+                                  properties:
+                                    i_days_prorate:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of days the first payment is charged for. `null` if prorated by sessions.'
+                                    i_days_total:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of days in the billing cycle. `null` if prorated by sessions.'
+                                    i_sessions_prorate:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of sessions the first payment is charged for. `null` if prorated by days.'
+                                    i_sessions_total:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
+                                  required:
+                                    - i_days_prorate
+                                    - i_days_total
+                                    - i_sessions_prorate
+                                    - i_sessions_total
                                 a_discount:
                                   type: object
                                   description: 'Discount applied to the event price:'
@@ -96999,6 +97126,7 @@ paths:
                                   type: string
                                   description: 'Key of the tuition participant.'
                               required:
+                                - a_checkout
                                 - k_class
                                 - uid
                             a_registration_fee_list:
@@ -97255,6 +97383,43 @@ paths:
                       type: object
                       description: 'List of tuition events for tuition participant. Each record has the next structure:'
                       properties:
+                        a_checkout:
+                          type:
+                            - object
+                            - 'null'
+                          description: |-
+                            Output only. Additional information about how `m_checkout` was calculated when
+                                 the first membership payment is prorated, `null` otherwise:
+                          properties:
+                            i_days_prorate:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of days the first payment is charged for. `null` if prorated by sessions.'
+                            i_days_total:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of days in the billing cycle. `null` if prorated by sessions.'
+                            i_sessions_prorate:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of sessions the first payment is charged for. `null` if prorated by days.'
+                            i_sessions_total:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
+                          required:
+                            - i_days_prorate
+                            - i_days_total
+                            - i_sessions_prorate
+                            - i_sessions_total
                         a_discount:
                           type: object
                           description: 'Discount applied to the event price:'
@@ -97296,6 +97461,7 @@ paths:
                           type: string
                           description: 'Key of the tuition participant.'
                       required:
+                        - a_checkout
                         - k_class
                         - uid
                     a_registration_fee_list:
@@ -97753,12 +97919,19 @@ paths:
                         m_price:
                           type: string
                           description: 'One ticket price.'
+                        m_price_early:
+                          type:
+                            - number
+                            - 'null'
+                          format: float
+                          description: 'One ticket price with the early bird applied. `null` if the event has no early bird.'
                         text_title:
                           type: string
                           description: 'Ticket option name.'
                       required:
                         - k_ticket_option
                         - m_price
+                        - m_price_early
                         - text_title
                   is_ticket:
                     type: boolean
@@ -113544,12 +113717,19 @@ paths:
                         m_price:
                           type: string
                           description: 'One ticket price.'
+                        m_price_early:
+                          type:
+                            - number
+                            - 'null'
+                          format: float
+                          description: 'One ticket price with the early bird applied. `null` if the event has no early bird.'
                         text_title:
                           type: string
                           description: 'Ticket option name.'
                       required:
                         - k_ticket_option
                         - m_price
+                        - m_price_early
                         - text_title
                   a_timezone_info:
                     type: array
