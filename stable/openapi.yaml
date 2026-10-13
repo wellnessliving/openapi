@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261013034221
+  version: 1.1.20261013114047
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -59167,6 +59167,23 @@ paths:
                             - i_width
                             - is_empty
                             - s_url
+                        a_purchase_error:
+                          type: object
+                          description: 'Purchase errors for this item. The same structure as [ElementApi::$a_purchase_error](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            text_code:
+                              type: string
+                              description: 'A machine-readable error code identifying the restriction type.'
+                            text_field:
+                              type: string
+                              description: 'The field associated with the error. Empty string if not applicable.'
+                            text_message:
+                              type: string
+                              description: 'A human-readable error message describing the restriction.'
+                          required:
+                            - text_code
+                            - text_field
+                            - text_message
                         a_tax:
                           type: array
                           description: 'Tax amounts keyed by tax key. The same structure as [ElementApi::$a_tax](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -59197,6 +59214,7 @@ paths:
                         - a_data
                         - a_guest_pass
                         - a_image
+                        - a_purchase_error
                         - a_tax
                         - id_purchase_option_view
                         - m_discount_code
@@ -59205,6 +59223,29 @@ paths:
                         - s_price
                         - s_sale
                         - s_title
+                  a_purchase_error:
+                    type: array
+                    description: |-
+                      A list of purchase errors that would prevent this item from being purchased by the current user.
+
+                      Each element represents a server-side validation error. Empty if there are no purchase restrictions
+                      or if the request is unauthenticated. Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        text_code:
+                          type: string
+                          description: 'A machine-readable error code identifying the restriction type.'
+                        text_field:
+                          type: string
+                          description: 'The field associated with the error. Empty string if not applicable.'
+                        text_message:
+                          type: string
+                          description: 'A human-readable error message describing the restriction.'
+                      required:
+                        - text_code
+                        - text_field
+                        - text_message
                   a_tax:
                     type: array
                     description: |-
@@ -59335,6 +59376,7 @@ paths:
                   - a_image_list
                   - a_installment_template
                   - a_item
+                  - a_purchase_error
                   - a_tax
                   - f_price_retail_product
                   - f_price_total_enrollment
@@ -60126,6 +60168,23 @@ paths:
                             - i_width
                             - is_empty
                             - s_url
+                        a_purchase_error:
+                          type: object
+                          description: 'Purchase errors for this item. The same structure as [ElementApi::$a_purchase_error](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            text_code:
+                              type: string
+                              description: 'A machine-readable error code identifying the restriction type.'
+                            text_field:
+                              type: string
+                              description: 'The field associated with the error. Empty string if not applicable.'
+                            text_message:
+                              type: string
+                              description: 'A human-readable error message describing the restriction.'
+                          required:
+                            - text_code
+                            - text_field
+                            - text_message
                         a_tax:
                           type: array
                           description: 'Tax amounts keyed by tax key. The same structure as [ElementApi::$a_tax](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -60156,6 +60215,7 @@ paths:
                         - a_data
                         - a_guest_pass
                         - a_image
+                        - a_purchase_error
                         - a_tax
                         - id_purchase_option_view
                         - m_discount_code
@@ -60164,6 +60224,29 @@ paths:
                         - s_price
                         - s_sale
                         - s_title
+                  a_purchase_error:
+                    type: array
+                    description: |-
+                      A list of purchase errors that would prevent this item from being purchased by the current user.
+
+                      Each element represents a server-side validation error. Empty if there are no purchase restrictions
+                      or if the request is unauthenticated. Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        text_code:
+                          type: string
+                          description: 'A machine-readable error code identifying the restriction type.'
+                        text_field:
+                          type: string
+                          description: 'The field associated with the error. Empty string if not applicable.'
+                        text_message:
+                          type: string
+                          description: 'A human-readable error message describing the restriction.'
+                      required:
+                        - text_code
+                        - text_field
+                        - text_message
                   a_tax:
                     type: array
                     description: |-
@@ -60294,6 +60377,7 @@ paths:
                   - a_image_list
                   - a_installment_template
                   - a_item
+                  - a_purchase_error
                   - a_tax
                   - f_price_retail_product
                   - f_price_total_enrollment
@@ -95585,6 +95669,35 @@ paths:
                               type: object
                               description: 'List of tuition events for tuition participant. Each record has the next structure:'
                               properties:
+                                a_checkout:
+                                  type:
+                                    - object
+                                    - 'null'
+                                  description: |-
+                                    Output only. Additional information about how `m_checkout` was calculated when
+                                         the first membership payment is prorated, `null` otherwise:
+                                  properties:
+                                    i_days_prorate:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of days the first payment is charged for. `null` if prorated by sessions.'
+                                    i_days_total:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of days in the billing cycle. `null` if prorated by sessions.'
+                                    i_sessions_prorate:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of sessions the first payment is charged for. `null` if prorated by days.'
+                                    i_sessions_total:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
+                                  required:
+                                    - i_days_prorate
+                                    - i_days_total
+                                    - i_sessions_prorate
+                                    - i_sessions_total
                                 a_discount:
                                   type: object
                                   description: 'Discount applied to the event price:'
@@ -95626,6 +95739,7 @@ paths:
                                   type: string
                                   description: 'Key of the tuition participant.'
                               required:
+                                - a_checkout
                                 - k_class
                                 - uid
                             a_registration_fee_list:
@@ -95882,6 +95996,43 @@ paths:
                       type: object
                       description: 'List of tuition events for tuition participant. Each record has the next structure:'
                       properties:
+                        a_checkout:
+                          type:
+                            - object
+                            - 'null'
+                          description: |-
+                            Output only. Additional information about how `m_checkout` was calculated when
+                                 the first membership payment is prorated, `null` otherwise:
+                          properties:
+                            i_days_prorate:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of days the first payment is charged for. `null` if prorated by sessions.'
+                            i_days_total:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of days in the billing cycle. `null` if prorated by sessions.'
+                            i_sessions_prorate:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of sessions the first payment is charged for. `null` if prorated by days.'
+                            i_sessions_total:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
+                          required:
+                            - i_days_prorate
+                            - i_days_total
+                            - i_sessions_prorate
+                            - i_sessions_total
                         a_discount:
                           type: object
                           description: 'Discount applied to the event price:'
@@ -95923,6 +96074,7 @@ paths:
                           type: string
                           description: 'Key of the tuition participant.'
                       required:
+                        - a_checkout
                         - k_class
                         - uid
                     a_registration_fee_list:
