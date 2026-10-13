@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261013143439
+  version: 1.1.20261013160257
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -17364,6 +17364,13 @@ paths:
 
                                 Empty string, if no off-site location is used.
                                 `null` if field is not loaded.
+                            s_timezone_location:
+                              type: string
+                              description: |-
+                                Identifier of the timezone of the location of the session (for example `America/New_York`).
+
+                                It never depends on the timezone of the client. Use it to find out whether the early bird price is still
+                                applied, see `dl_early`.
                             text_location:
                               type: string
                               description: 'Location title.'
@@ -17384,6 +17391,7 @@ paths:
                             - k_class_period
                             - k_location
                             - k_resource_location
+                            - s_timezone_location
                             - text_location
                             - text_room
                             - text_time
@@ -17434,7 +17442,7 @@ paths:
                           properties:
                             k_ticket_option:
                               type: string
-                              description: 'Globally unique identifier of the ticket option. Primary key in TicketOptionsRouteSql.'
+                              description: 'Globally unique identifier of the ticket option.'
                             m_price:
                               type: string
                               description: 'One ticket price.'
@@ -17443,7 +17451,10 @@ paths:
                                 - number
                                 - 'null'
                               format: float
-                              description: 'One ticket price with the early bird applied. `null` if the event has no early bird.'
+                              description: |-
+                                One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
+                                has no early bird. The end of the early bird period is not taken into account, so the client decides
+                                whether to apply this price. See `a_options`.
                             text_title:
                               type: string
                               description: 'Ticket option name.'
@@ -17470,8 +17481,18 @@ paths:
                           type: boolean
                           description: 'Whether current user can cancel already booked event.'
                         dl_early:
-                          type: string
-                          description: 'End date, when early bird price ends in `MySql` format.'
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The last date when the early bird price is applied, in `MySql` date format. `null` if the event has
+                            no early bird.
+
+                            The early bird price applies while the current date in the timezone of the location of the session
+                            (`s_timezone_location`) is not later than this date, the date itself
+                            included. This is the same rule that is used when the event is purchased.
+                            Applies to `m_price_total_early` and to `m_price_early` of
+                            `a_tickets`.
                         dl_end:
                           type: string
                           description: 'End date of the scheduled session in `MySql` format.'
@@ -17698,7 +17719,6 @@ paths:
                         - a_tickets
                         - can_book
                         - can_cancel
-                        - dl_early
                         - dl_end
                         - dl_session
                         - dl_start
@@ -49706,7 +49726,6 @@ paths:
                 description: |-
                   `true` if `k_id` value is product key, `false` if `k_id` value is product option key.
                        Optional. Default value is `false`.
-                       Used for `id_sale` === [RsSaleSid::PRODUCT](#/components/schemas/RsSaleSid) only.
               k_id:
                 type: string
                 description: 'Key of item.'
@@ -56985,6 +57004,16 @@ paths:
                         items:
                           type: integer
                           format: int32
+                      a_tickets:
+                        type: array
+                        description: |-
+                          Ticket options available for booking the event. Empty if the event is not a ticketed event.
+
+                          Each element has `k_ticket_option`, `m_price`, `m_price_early` and `text_title` keys. `m_price_early` is
+                          taken from the settings of the event, and is returned even when the early bird period is over:
+                          the client decides whether to apply it, see `dt_early` and `s_timezone_location`.
+                        items:
+                          type: array
                       can_book:
                         type: boolean
                         description: 'Whether current client can book class.'
@@ -56994,6 +57023,14 @@ paths:
                       dt_date_local:
                         type: string
                         description: 'Start date in local time.'
+                      dt_early:
+                        type:
+                          - string
+                          - 'null'
+                        description: |-
+                          The last date when the early bird price is applied, in MySQL date format, the date itself included. `null`
+                          if the event has no early bird. The early bird price applies while the current date in the timezone
+                          `s_timezone_location` is not later than this date.
                       html_deny_reason:
                         type: string
                         description: 'Reason why client can not book class. Not empty only if `can_book` is `false`.'
@@ -57059,6 +57096,11 @@ paths:
                       id_deny_reason:
                         $ref: '#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid'
                         description: 'ID of deny reason. One of [DenyReasonSid](#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid) constants.'
+                      is_block:
+                        type: boolean
+                        description: |-
+                          `true` if the event is a block event: all its sessions are booked together. `false` for a non-block event
+                          and for a class. Makes sense only if `is_event` is `true`.
                       is_book:
                         type: boolean
                         description: 'Whether current class was booked by current client.'
@@ -57080,6 +57122,9 @@ paths:
                       is_promotion_only:
                         type: boolean
                         description: '`true` if this class can be paid with promotion only; `false` otherwise.'
+                      is_ticket:
+                        type: boolean
+                        description: '`true` if the event is a ticketed event; `false` otherwise.'
                       is_virtual:
                         type: boolean
                         description: '`true` if class is virtual, `false` otherwise.'
@@ -57098,6 +57143,12 @@ paths:
                       s_duration:
                         type: string
                         description: 'Class duration. In human readable format.'
+                      s_timezone_location:
+                        type: string
+                        description: |-
+                          Identifier of the timezone of the location of the session (for example `America/New_York`). Unlike
+                          `text_timezone`, it never depends on the timezone of the client. Use it to find out whether the
+                          early bird price is still applied, see `dt_early`.
                       s_title:
                         type: string
                         description: 'Class name.'
@@ -57109,9 +57160,11 @@ paths:
                       - a_image
                       - a_search_tag
                       - a_tag
+                      - a_tickets
                       - can_book
                       - dt_date_global
                       - dt_date_local
+                      - dt_early
                       - html_deny_reason
                       - html_description
                       - html_special
@@ -57129,18 +57182,21 @@ paths:
                       - i_visit
                       - i_wait_limit
                       - id_deny_reason
+                      - is_block
                       - is_book
                       - is_book_for_guest
                       - is_cancel
                       - is_cancellation_enabled
                       - is_event
                       - is_promotion_only
+                      - is_ticket
                       - is_virtual
                       - is_wait_list
                       - is_wait_list_enabled
                       - k_resource_location
                       - m_price
                       - s_duration
+                      - s_timezone_location
                       - s_title
                       - text_room
                   a_location:
@@ -57294,6 +57350,16 @@ paths:
                               items:
                                 type: integer
                                 format: int32
+                            a_tickets:
+                              type: array
+                              description: |-
+                                Ticket options available for booking the event. Empty if the event is not a ticketed event.
+
+                                Each element has `k_ticket_option`, `m_price`, `m_price_early` and `text_title` keys. `m_price_early` is
+                                taken from the settings of the event, and is returned even when the early bird period is over:
+                                the client decides whether to apply it, see `dt_early` and `s_timezone_location`.
+                              items:
+                                type: array
                             can_book:
                               type: boolean
                               description: 'Whether current client can book class.'
@@ -57303,6 +57369,14 @@ paths:
                             dt_date_local:
                               type: string
                               description: 'Start date in local time.'
+                            dt_early:
+                              type:
+                                - string
+                                - 'null'
+                              description: |-
+                                The last date when the early bird price is applied, in MySQL date format, the date itself included. `null`
+                                if the event has no early bird. The early bird price applies while the current date in the timezone
+                                `s_timezone_location` is not later than this date.
                             html_deny_reason:
                               type: string
                               description: 'Reason why client can not book class. Not empty only if `can_book` is `false`.'
@@ -57368,6 +57442,11 @@ paths:
                             id_deny_reason:
                               $ref: '#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid'
                               description: 'ID of deny reason. One of [DenyReasonSid](#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid) constants.'
+                            is_block:
+                              type: boolean
+                              description: |-
+                                `true` if the event is a block event: all its sessions are booked together. `false` for a non-block event
+                                and for a class. Makes sense only if `is_event` is `true`.
                             is_book:
                               type: boolean
                               description: 'Whether current class was booked by current client.'
@@ -57389,6 +57468,9 @@ paths:
                             is_promotion_only:
                               type: boolean
                               description: '`true` if this class can be paid with promotion only; `false` otherwise.'
+                            is_ticket:
+                              type: boolean
+                              description: '`true` if the event is a ticketed event; `false` otherwise.'
                             is_virtual:
                               type: boolean
                               description: '`true` if class is virtual, `false` otherwise.'
@@ -57407,6 +57489,12 @@ paths:
                             s_duration:
                               type: string
                               description: 'Class duration. In human readable format.'
+                            s_timezone_location:
+                              type: string
+                              description: |-
+                                Identifier of the timezone of the location of the session (for example `America/New_York`). Unlike
+                                `text_timezone`, it never depends on the timezone of the client. Use it to find out whether the
+                                early bird price is still applied, see `dt_early`.
                             s_title:
                               type: string
                               description: 'Class name.'
@@ -57418,9 +57506,11 @@ paths:
                             - a_image
                             - a_search_tag
                             - a_tag
+                            - a_tickets
                             - can_book
                             - dt_date_global
                             - dt_date_local
+                            - dt_early
                             - html_deny_reason
                             - html_description
                             - html_special
@@ -57438,18 +57528,21 @@ paths:
                             - i_visit
                             - i_wait_limit
                             - id_deny_reason
+                            - is_block
                             - is_book
                             - is_book_for_guest
                             - is_cancel
                             - is_cancellation_enabled
                             - is_event
                             - is_promotion_only
+                            - is_ticket
                             - is_virtual
                             - is_wait_list
                             - is_wait_list_enabled
                             - k_resource_location
                             - m_price
                             - s_duration
+                            - s_timezone_location
                             - s_title
                             - text_room
                         a_location:
@@ -57874,6 +57967,16 @@ paths:
                         items:
                           type: integer
                           format: int32
+                      a_tickets:
+                        type: array
+                        description: |-
+                          Ticket options available for booking the event. Empty if the event is not a ticketed event.
+
+                          Each element has `k_ticket_option`, `m_price`, `m_price_early` and `text_title` keys. `m_price_early` is
+                          taken from the settings of the event, and is returned even when the early bird period is over:
+                          the client decides whether to apply it, see `dt_early` and `s_timezone_location`.
+                        items:
+                          type: array
                       can_book:
                         type: boolean
                         description: 'Whether current client can book class.'
@@ -57883,6 +57986,14 @@ paths:
                       dt_date_local:
                         type: string
                         description: 'Start date in local time.'
+                      dt_early:
+                        type:
+                          - string
+                          - 'null'
+                        description: |-
+                          The last date when the early bird price is applied, in MySQL date format, the date itself included. `null`
+                          if the event has no early bird. The early bird price applies while the current date in the timezone
+                          `s_timezone_location` is not later than this date.
                       html_deny_reason:
                         type: string
                         description: 'Reason why client can not book class. Not empty only if `can_book` is `false`.'
@@ -57948,6 +58059,11 @@ paths:
                       id_deny_reason:
                         $ref: '#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid'
                         description: 'ID of deny reason. One of [DenyReasonSid](#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid) constants.'
+                      is_block:
+                        type: boolean
+                        description: |-
+                          `true` if the event is a block event: all its sessions are booked together. `false` for a non-block event
+                          and for a class. Makes sense only if `is_event` is `true`.
                       is_book:
                         type: boolean
                         description: 'Whether current class was booked by current client.'
@@ -57969,6 +58085,9 @@ paths:
                       is_promotion_only:
                         type: boolean
                         description: '`true` if this class can be paid with promotion only; `false` otherwise.'
+                      is_ticket:
+                        type: boolean
+                        description: '`true` if the event is a ticketed event; `false` otherwise.'
                       is_virtual:
                         type: boolean
                         description: '`true` if class is virtual, `false` otherwise.'
@@ -57987,6 +58106,12 @@ paths:
                       s_duration:
                         type: string
                         description: 'Class duration. In human readable format.'
+                      s_timezone_location:
+                        type: string
+                        description: |-
+                          Identifier of the timezone of the location of the session (for example `America/New_York`). Unlike
+                          `text_timezone`, it never depends on the timezone of the client. Use it to find out whether the
+                          early bird price is still applied, see `dt_early`.
                       s_title:
                         type: string
                         description: 'Class name.'
@@ -57998,9 +58123,11 @@ paths:
                       - a_image
                       - a_search_tag
                       - a_tag
+                      - a_tickets
                       - can_book
                       - dt_date_global
                       - dt_date_local
+                      - dt_early
                       - html_deny_reason
                       - html_description
                       - html_special
@@ -58018,18 +58145,21 @@ paths:
                       - i_visit
                       - i_wait_limit
                       - id_deny_reason
+                      - is_block
                       - is_book
                       - is_book_for_guest
                       - is_cancel
                       - is_cancellation_enabled
                       - is_event
                       - is_promotion_only
+                      - is_ticket
                       - is_virtual
                       - is_wait_list
                       - is_wait_list_enabled
                       - k_resource_location
                       - m_price
                       - s_duration
+                      - s_timezone_location
                       - s_title
                       - text_room
                   a_location:
@@ -58183,6 +58313,16 @@ paths:
                               items:
                                 type: integer
                                 format: int32
+                            a_tickets:
+                              type: array
+                              description: |-
+                                Ticket options available for booking the event. Empty if the event is not a ticketed event.
+
+                                Each element has `k_ticket_option`, `m_price`, `m_price_early` and `text_title` keys. `m_price_early` is
+                                taken from the settings of the event, and is returned even when the early bird period is over:
+                                the client decides whether to apply it, see `dt_early` and `s_timezone_location`.
+                              items:
+                                type: array
                             can_book:
                               type: boolean
                               description: 'Whether current client can book class.'
@@ -58192,6 +58332,14 @@ paths:
                             dt_date_local:
                               type: string
                               description: 'Start date in local time.'
+                            dt_early:
+                              type:
+                                - string
+                                - 'null'
+                              description: |-
+                                The last date when the early bird price is applied, in MySQL date format, the date itself included. `null`
+                                if the event has no early bird. The early bird price applies while the current date in the timezone
+                                `s_timezone_location` is not later than this date.
                             html_deny_reason:
                               type: string
                               description: 'Reason why client can not book class. Not empty only if `can_book` is `false`.'
@@ -58257,6 +58405,11 @@ paths:
                             id_deny_reason:
                               $ref: '#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid'
                               description: 'ID of deny reason. One of [DenyReasonSid](#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid) constants.'
+                            is_block:
+                              type: boolean
+                              description: |-
+                                `true` if the event is a block event: all its sessions are booked together. `false` for a non-block event
+                                and for a class. Makes sense only if `is_event` is `true`.
                             is_book:
                               type: boolean
                               description: 'Whether current class was booked by current client.'
@@ -58278,6 +58431,9 @@ paths:
                             is_promotion_only:
                               type: boolean
                               description: '`true` if this class can be paid with promotion only; `false` otherwise.'
+                            is_ticket:
+                              type: boolean
+                              description: '`true` if the event is a ticketed event; `false` otherwise.'
                             is_virtual:
                               type: boolean
                               description: '`true` if class is virtual, `false` otherwise.'
@@ -58296,6 +58452,12 @@ paths:
                             s_duration:
                               type: string
                               description: 'Class duration. In human readable format.'
+                            s_timezone_location:
+                              type: string
+                              description: |-
+                                Identifier of the timezone of the location of the session (for example `America/New_York`). Unlike
+                                `text_timezone`, it never depends on the timezone of the client. Use it to find out whether the
+                                early bird price is still applied, see `dt_early`.
                             s_title:
                               type: string
                               description: 'Class name.'
@@ -58307,9 +58469,11 @@ paths:
                             - a_image
                             - a_search_tag
                             - a_tag
+                            - a_tickets
                             - can_book
                             - dt_date_global
                             - dt_date_local
+                            - dt_early
                             - html_deny_reason
                             - html_description
                             - html_special
@@ -58327,18 +58491,21 @@ paths:
                             - i_visit
                             - i_wait_limit
                             - id_deny_reason
+                            - is_block
                             - is_book
                             - is_book_for_guest
                             - is_cancel
                             - is_cancellation_enabled
                             - is_event
                             - is_promotion_only
+                            - is_ticket
                             - is_virtual
                             - is_wait_list
                             - is_wait_list_enabled
                             - k_resource_location
                             - m_price
                             - s_duration
+                            - s_timezone_location
                             - s_title
                             - text_room
                         a_location:
@@ -58840,6 +59007,11 @@ paths:
                           description: |-
                             ID of deny reason. One of [DenyReasonSid](#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid) constants. Only present if
                             [ClassList68Api::$show_book_status](/Wl/Schedule/ClassList/ClassList68.json) is `true`. `null` if not requested.
+                        is_block:
+                          type: boolean
+                          description: |-
+                            `true` if the event is a block event: all its sessions are booked together. `false` for a non-block event
+                            and for a class. Makes sense only if `is_event` is `true`.
                         is_book:
                           type:
                             - boolean
@@ -58870,6 +59042,12 @@ paths:
                           description: |-
                             Whether special instructions are configured for this session and are visible to the current client.
                             The content itself (`html_special` in [ClassViewApi](/Wl/Schedule/ClassView/ClassView.json)) is not returned here.
+                        is_ticket:
+                          type: boolean
+                          description: |-
+                            `true` if the event is a ticketed event; `false` otherwise.
+                            Tickets are booked into the same capacity as regular bookings, so `i_capacity` and `i_book`
+                            show how many tickets are sold and whether the event is sold out.
                         is_virtual:
                           type: boolean
                           description: 'If `true`, this class is virtual. Otherwise, this will be `false`.'
@@ -58940,6 +59118,7 @@ paths:
                         - i_wait_limit
                         - i_wait_spot
                         - id_deny_reason
+                        - is_block
                         - is_book
                         - is_age_public
                         - is_book_for_guest
@@ -58947,6 +59126,7 @@ paths:
                         - is_cancellation_enabled
                         - is_event
                         - is_special_instructions
+                        - is_ticket
                         - is_virtual
                         - is_wait
                         - is_wait_list
@@ -97915,7 +98095,7 @@ paths:
                       properties:
                         k_ticket_option:
                           type: string
-                          description: 'Globally unique identifier of the ticket option. Primary key in TicketOptionsRouteSql.'
+                          description: 'Globally unique identifier of the ticket option.'
                         m_price:
                           type: string
                           description: 'One ticket price.'
@@ -97924,7 +98104,10 @@ paths:
                             - number
                             - 'null'
                           format: float
-                          description: 'One ticket price with the early bird applied. `null` if the event has no early bird.'
+                          description: |-
+                            One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
+                            has no early bird. The end of the early bird period is not taken into account, so the client decides
+                            whether to apply this price. See `a_options`.
                         text_title:
                           type: string
                           description: 'Ticket option name.'
@@ -113299,6 +113482,12 @@ paths:
                             s_timezone:
                               type: string
                               description: 'The name of the timezone in which the session is held.'
+                            s_timezone_location:
+                              type: string
+                              description: |-
+                                Identifier of the timezone of the location of the session (for example `America/New_York`). Unlike
+                                `s_timezone`, it never depends on the timezone of the client. Use it to find out whether the early bird
+                                price is still applied, see [ElementApi::$dt_early](/Wl/Event/Book/EventView/Element.json).
                             text_room:
                               type: string
                               description: 'The room of the event.'
@@ -113320,6 +113509,7 @@ paths:
                             - s_location
                             - s_time
                             - s_timezone
+                            - s_timezone_location
                             - text_room
                         a_shop_category:
                           type: array
@@ -113349,6 +113539,28 @@ paths:
                             - i_width
                             - uid
                             - url_logo
+                        a_ticket_inventory:
+                          type: object
+                          description: |-
+                            How many tickets can be sold for the event and how many of those are still available. Empty if the
+                            event is not a ticketed event. .
+                          properties:
+                            i_capacity:
+                              type: integer
+                              format: int32
+                              description: 'Total number of tickets that can be sold for the event.'
+                            i_order_limit:
+                              type: integer
+                              format: int32
+                              description: 'Maximum number of tickets that can be ordered in one purchase. `0` if there is no limit.'
+                            i_remain:
+                              type: integer
+                              format: int32
+                              description: 'Number of tickets still available to sell. `0` if the event is sold out.'
+                          required:
+                            - i_capacity
+                            - i_order_limit
+                            - i_remain
                         a_tickets:
                           type: object
                           description: |-
@@ -113362,19 +113574,33 @@ paths:
                             m_price:
                               type: string
                               description: 'One ticket price.'
+                            m_price_early:
+                              type:
+                                - number
+                                - 'null'
+                              format: float
+                              description: |-
+                                One ticket price with the early bird applied, taken from the settings of the event. `null` if the
+                                event has no early bird. It is returned even when the early bird period is over: the client decides
+                                whether to apply it, see `dt_early` and `s_timezone_location` of the schedule.
                             text_title:
                               type: string
                               description: 'Ticket option name.'
                           required:
                             - k_ticket_option
                             - m_price
+                            - m_price_early
                             - text_title
                         dt_book_date:
                           type: string
                           description: 'Date/time of first event session.'
                         dt_early:
-                          type: string
-                          description: 'Early date of event purchase.'
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The last date when the early bird price is applied, the date itself included. `null` if the event has
+                            no early bird. See [ElementApi::$dt_early](/Wl/Event/Book/EventView/Element.json).
                         dt_end:
                           type: string
                           description: 'End date of the event instance.'
@@ -113432,6 +113658,15 @@ paths:
                         is_ticket:
                           type: boolean
                           description: '`true` if the event is a ticketed event; `false` otherwise.'
+                        is_ticket_guest_allowed:
+                          type: boolean
+                          description: '`true` if a client can buy tickets without creating an account; `false` otherwise.'
+                        is_ticket_terms:
+                          type: boolean
+                          description: '`true` if a client must accept the terms and conditions before buying a ticket; `false` otherwise.'
+                        is_ticket_unpaid_allowed:
+                          type: boolean
+                          description: '`true` if a client can reserve tickets without payment and pay at the door; `false` otherwise.'
                         is_virtual:
                           type: boolean
                           description: '`true` if event is virtual; `false` otherwise.'
@@ -113456,6 +113691,9 @@ paths:
                         xml_description:
                           type: string
                           description: 'Description of event. Ready to put into browser.'
+                        xml_ticket_terms:
+                          type: string
+                          description: 'Terms and conditions of a ticketed event as HTML. Empty if there are none.'
                       required:
                         - a_book_available
                         - a_class_logo
@@ -113465,6 +113703,7 @@ paths:
                         - a_schedule
                         - a_shop_category
                         - a_staff_logo
+                        - a_ticket_inventory
                         - a_tickets
                         - dt_book_date
                         - dt_early
@@ -113485,6 +113724,9 @@ paths:
                         - is_past
                         - is_policy_custom
                         - is_ticket
+                        - is_ticket_guest_allowed
+                        - is_ticket_terms
+                        - is_ticket_unpaid_allowed
                         - is_virtual
                         - k_book_class_period
                         - m_price
@@ -113493,6 +113735,7 @@ paths:
                         - s_deny_reason
                         - s_title
                         - xml_description
+                        - xml_ticket_terms
                   a_installment_template:
                     type: array
                     description: 'A list of installment plans. Each element has the following next keys:'
@@ -113653,6 +113896,12 @@ paths:
                         s_timezone:
                           type: string
                           description: 'The name of the timezone in which the session is held.'
+                        s_timezone_location:
+                          type: string
+                          description: |-
+                            Identifier of the timezone of the location of the session (for example `America/New_York`). Unlike
+                            `s_timezone`, it never depends on the timezone of the client. Use it to find out whether the early bird
+                            price is still applied, see [ElementApi::$dt_early](/Wl/Event/Book/EventView/Element.json).
                         text_room:
                           type: string
                           description: 'The room of the event.'
@@ -113674,6 +113923,7 @@ paths:
                         - s_location
                         - s_time
                         - s_timezone
+                        - s_timezone_location
                         - text_room
                   a_shop_category:
                     type: array
@@ -113703,6 +113953,11 @@ paths:
                       - i_width
                       - uid
                       - url_logo
+                  a_ticket_inventory:
+                    type: array
+                    description: |-
+                      How many tickets can be sold for the ticketed event and how many of those are still available.
+                      Empty if the event is not a ticketed event.
                   a_tickets:
                     type: array
                     description: |-
@@ -113713,7 +113968,7 @@ paths:
                       properties:
                         k_ticket_option:
                           type: string
-                          description: 'Globally unique identifier of the ticket option. Primary key in TicketOptionsRouteSql.'
+                          description: 'Globally unique identifier of the ticket option.'
                         m_price:
                           type: string
                           description: 'One ticket price.'
@@ -113722,7 +113977,10 @@ paths:
                             - number
                             - 'null'
                           format: float
-                          description: 'One ticket price with the early bird applied. `null` if the event has no early bird.'
+                          description: |-
+                            One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
+                            has no early bird. The end of the early bird period is not taken into account, so the client decides
+                            whether to apply this price. See `a_options`.
                         text_title:
                           type: string
                           description: 'Ticket option name.'
@@ -113797,7 +114055,13 @@ paths:
                       - string
                       - 'null'
                     format: date-time
-                    description: 'The early registration date of the event.'
+                    description: |-
+                      The last date when the early bird price is applied, in MySQL date format. `null` if the event has no early bird.
+
+                      The early bird price applies while the current date in the timezone of the location of the session
+                      (`s_timezone_location` of the [ElementApi::$a_schedule](/Wl/Event/Book/EventView/Element.json) item) is not later than this date,
+                      the date itself included. This is the same rule that is used when the event is purchased.
+                      Applies to [ElementApi::$m_price_total_early](/Wl/Event/Book/EventView/Element.json) and to `m_price_early` of [ElementApi::$a_tickets](/Wl/Event/Book/EventView/Element.json).
                   dt_end:
                     type: string
                     format: date-time
@@ -113918,6 +114182,21 @@ paths:
                   is_ticket:
                     type: boolean
                     description: '`true` if this event is a ticketed event, `false` otherwise.'
+                  is_ticket_guest_allowed:
+                    type: boolean
+                    description: |-
+                      `true` if a client can buy tickets without creating an account. `false` if the event is not
+                      a ticketed event.
+                  is_ticket_terms:
+                    type: boolean
+                    description: |-
+                      `true` if a client must accept terms and conditions before buying a ticket, see
+                      [ElementApi::$xml_ticket_terms](/Wl/Event/Book/EventView/Element.json). `false` if the event is not a ticketed event.
+                  is_ticket_unpaid_allowed:
+                    type: boolean
+                    description: |-
+                      `true` if a client can reserve tickets without payment and pay at the door. `false` if the event
+                      is not a ticketed event.
                   is_virtual:
                     type: boolean
                     description: '`true` if event is virtual; `false` otherwise.'
@@ -113969,6 +114248,11 @@ paths:
                       - string
                       - 'null'
                     description: 'The description of the event.'
+                  xml_ticket_terms:
+                    type: string
+                    description: |-
+                      Terms and conditions as HTML that a client must accept before buying a ticket. Empty if the event
+                      is not a ticketed event or does not require the client to accept anything.
                 required:
                   - a_age_restrictions
                   - a_book_available
@@ -113981,6 +114265,7 @@ paths:
                   - a_schedule
                   - a_shop_category
                   - a_staff_logo
+                  - a_ticket_inventory
                   - a_tickets
                   - a_timezone_info
                   - a_visits_required
@@ -114005,6 +114290,9 @@ paths:
                   - is_prorate
                   - is_single_session_buy
                   - is_ticket
+                  - is_ticket_guest_allowed
+                  - is_ticket_terms
+                  - is_ticket_unpaid_allowed
                   - is_virtual
                   - k_book_class_period
                   - m_price
@@ -114013,6 +114301,7 @@ paths:
                   - show_special_instructions
                   - text_end
                   - text_start
+                  - xml_ticket_terms
         '400':
           $ref: '#/components/responses/400'
         '401':
