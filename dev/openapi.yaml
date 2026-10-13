@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261013133633
+  version: 1.1.20261013143439
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -129464,7 +129464,7 @@ components:
 
         Pay attention that all `\MailPrioritySid` must start with backslash.
 
-        Last used ID: 224.
+        Last used ID: 225.
 
         Values:
         - 220 (`ABANDONED_CHECKOUT`): Sent when a client abandons a checkout (used in automations).
@@ -129900,6 +129900,9 @@ components:
           including their contact details and any relevant notes from the conversation.
         - 104 (`TASK_ASSIGN`): Sends when task assigned to staff.
         - 99 (`TERM_COPY`): Send a copy of waiver.
+        - 225 (`TICKET_PURCHASE`): Sent after a ticketed event is purchased.
+
+          Contains the order summary and QR codes of the tickets. Is sent to a buyer with or without an account.
         - 112 (`USER_CAMPAIGN`): Global email campaigns allows to send email to all clients, business owners, admins, etc.
         - 140 (`VIDEO_SUBSCRIPTION_UPGRADE`): Request a video subscription.
 
@@ -130103,6 +130106,7 @@ components:
         - 196
         - 104
         - 99
+        - 225
         - 112
         - 140
         - 94
@@ -130302,6 +130306,7 @@ components:
         - STAFF_CALLBACK_REQUEST
         - TASK_ASSIGN
         - TERM_COPY
+        - TICKET_PURCHASE
         - USER_CAMPAIGN
         - VIDEO_SUBSCRIPTION_UPGRADE
         - VISIT_CAMPAIGN
@@ -130824,6 +130829,10 @@ components:
           including their contact details and any relevant notes from the conversation.
         - 'Sends when task assigned to staff.'
         - 'Send a copy of waiver.'
+        - |-
+          Sent after a ticketed event is purchased.
+
+          Contains the order summary and QR codes of the tickets. Is sent to a buyer with or without an account.
         - 'Global email campaigns allows to send email to all clients, business owners, admins, etc.'
         - |-
           Request a video subscription.
