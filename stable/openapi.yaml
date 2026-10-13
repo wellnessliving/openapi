@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261013032736
+  version: 1.1.20261013034221
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -99336,6 +99336,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -99346,6 +99353,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   dt_date:
                     type: string
                     format: date-time
@@ -99801,6 +99809,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -99811,6 +99826,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   a_timezone_data:
                     type: object
                     description: 'Information about timezone.'
@@ -100184,6 +100200,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -100194,6 +100217,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   dt_date:
                     type: string
                     format: date-time
@@ -100535,6 +100559,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -100545,6 +100576,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   a_timezone_data:
                     type: object
                     description: 'Information about timezone.'
