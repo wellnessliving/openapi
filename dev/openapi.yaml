@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261014131416
+  version: 1.1.20261014132641
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -17448,9 +17448,8 @@ paths:
                               description: 'One ticket price.'
                             m_price_early:
                               type:
-                                - number
+                                - string
                                 - 'null'
-                              format: float
                               description: |-
                                 One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
                                 has no early bird. The end of the early bird period is not taken into account, so the client decides
@@ -57119,15 +57118,36 @@ paths:
                           type: integer
                           format: int32
                       a_tickets:
-                        type: array
+                        type: object
                         description: |-
                           Ticket options available for booking the event. Empty if the event is not a ticketed event.
 
                           Each element has `k_ticket_option`, `m_price`, `m_price_early` and `text_title` keys. `m_price_early` is
                           taken from the settings of the event, and is returned even when the early bird period is over:
                           the client decides whether to apply it, see `dt_early` and `s_timezone_location`.
-                        items:
-                          type: array
+                        properties:
+                          k_ticket_option:
+                            type: string
+                            description: 'Globally unique identifier of the ticket option.'
+                          m_price:
+                            type: string
+                            description: 'One ticket price.'
+                          m_price_early:
+                            type:
+                              - string
+                              - 'null'
+                            description: |-
+                              One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
+                              has no early bird. The end of the early bird period is not taken into account, so the client decides
+                              whether to apply this price. See `a_options`.
+                          text_title:
+                            type: string
+                            description: 'Ticket option name.'
+                        required:
+                          - k_ticket_option
+                          - m_price
+                          - m_price_early
+                          - text_title
                       can_book:
                         type: boolean
                         description: 'Whether current client can book class.'
@@ -57465,15 +57485,36 @@ paths:
                                 type: integer
                                 format: int32
                             a_tickets:
-                              type: array
+                              type: object
                               description: |-
                                 Ticket options available for booking the event. Empty if the event is not a ticketed event.
 
                                 Each element has `k_ticket_option`, `m_price`, `m_price_early` and `text_title` keys. `m_price_early` is
                                 taken from the settings of the event, and is returned even when the early bird period is over:
                                 the client decides whether to apply it, see `dt_early` and `s_timezone_location`.
-                              items:
-                                type: array
+                              properties:
+                                k_ticket_option:
+                                  type: string
+                                  description: 'Globally unique identifier of the ticket option.'
+                                m_price:
+                                  type: string
+                                  description: 'One ticket price.'
+                                m_price_early:
+                                  type:
+                                    - string
+                                    - 'null'
+                                  description: |-
+                                    One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
+                                    has no early bird. The end of the early bird period is not taken into account, so the client decides
+                                    whether to apply this price. See `a_options`.
+                                text_title:
+                                  type: string
+                                  description: 'Ticket option name.'
+                              required:
+                                - k_ticket_option
+                                - m_price
+                                - m_price_early
+                                - text_title
                             can_book:
                               type: boolean
                               description: 'Whether current client can book class.'
@@ -58082,15 +58123,36 @@ paths:
                           type: integer
                           format: int32
                       a_tickets:
-                        type: array
+                        type: object
                         description: |-
                           Ticket options available for booking the event. Empty if the event is not a ticketed event.
 
                           Each element has `k_ticket_option`, `m_price`, `m_price_early` and `text_title` keys. `m_price_early` is
                           taken from the settings of the event, and is returned even when the early bird period is over:
                           the client decides whether to apply it, see `dt_early` and `s_timezone_location`.
-                        items:
-                          type: array
+                        properties:
+                          k_ticket_option:
+                            type: string
+                            description: 'Globally unique identifier of the ticket option.'
+                          m_price:
+                            type: string
+                            description: 'One ticket price.'
+                          m_price_early:
+                            type:
+                              - string
+                              - 'null'
+                            description: |-
+                              One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
+                              has no early bird. The end of the early bird period is not taken into account, so the client decides
+                              whether to apply this price. See `a_options`.
+                          text_title:
+                            type: string
+                            description: 'Ticket option name.'
+                        required:
+                          - k_ticket_option
+                          - m_price
+                          - m_price_early
+                          - text_title
                       can_book:
                         type: boolean
                         description: 'Whether current client can book class.'
@@ -58428,15 +58490,36 @@ paths:
                                 type: integer
                                 format: int32
                             a_tickets:
-                              type: array
+                              type: object
                               description: |-
                                 Ticket options available for booking the event. Empty if the event is not a ticketed event.
 
                                 Each element has `k_ticket_option`, `m_price`, `m_price_early` and `text_title` keys. `m_price_early` is
                                 taken from the settings of the event, and is returned even when the early bird period is over:
                                 the client decides whether to apply it, see `dt_early` and `s_timezone_location`.
-                              items:
-                                type: array
+                              properties:
+                                k_ticket_option:
+                                  type: string
+                                  description: 'Globally unique identifier of the ticket option.'
+                                m_price:
+                                  type: string
+                                  description: 'One ticket price.'
+                                m_price_early:
+                                  type:
+                                    - string
+                                    - 'null'
+                                  description: |-
+                                    One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
+                                    has no early bird. The end of the early bird period is not taken into account, so the client decides
+                                    whether to apply this price. See `a_options`.
+                                text_title:
+                                  type: string
+                                  description: 'Ticket option name.'
+                              required:
+                                - k_ticket_option
+                                - m_price
+                                - m_price_early
+                                - text_title
                             can_book:
                               type: boolean
                               description: 'Whether current client can book class.'
@@ -98297,9 +98380,8 @@ paths:
                           description: 'One ticket price.'
                         m_price_early:
                           type:
-                            - number
+                            - string
                             - 'null'
-                          format: float
                           description: |-
                             One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
                             has no early bird. The end of the early bird period is not taken into account, so the client decides
@@ -113772,9 +113854,8 @@ paths:
                               description: 'One ticket price.'
                             m_price_early:
                               type:
-                                - number
+                                - string
                                 - 'null'
-                              format: float
                               description: |-
                                 One ticket price with the early bird applied, taken from the settings of the event. `null` if the
                                 event has no early bird. It is returned even when the early bird period is over: the client decides
@@ -114150,10 +114231,27 @@ paths:
                       - uid
                       - url_logo
                   a_ticket_inventory:
-                    type: array
+                    type: object
                     description: |-
                       How many tickets can be sold for the ticketed event and how many of those are still available.
                       Empty if the event is not a ticketed event.
+                    properties:
+                      i_capacity:
+                        type: integer
+                        format: int32
+                        description: 'Total number of tickets that can be sold for the event.'
+                      i_remain:
+                        type: integer
+                        format: int32
+                        description: 'Number of tickets still available to sell.'
+                      i_order_limit:
+                        type: integer
+                        format: int32
+                        description: 'Maximum number of tickets that can be ordered for the event in one purchase. `0` if there is no limit.'
+                    required:
+                      - i_capacity
+                      - i_remain
+                      - i_order_limit
                   a_tickets:
                     type: array
                     description: |-
@@ -114170,9 +114268,8 @@ paths:
                           description: 'One ticket price.'
                         m_price_early:
                           type:
-                            - number
+                            - string
                             - 'null'
-                          format: float
                           description: |-
                             One ticket price with the early bird applied, taken from the settings of the event. `null` if the event
                             has no early bird. The end of the early bird period is not taken into account, so the client decides
