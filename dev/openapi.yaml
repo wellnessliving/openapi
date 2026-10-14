@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261013214854
+  version: 1.1.20261014073055
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -38873,6 +38873,12 @@ paths:
                     required:
                       - html_contract
                       - uid
+                  has_signature:
+                    type: boolean
+                    description: |-
+                      Whether the agreement requires a signature.
+                      `false` for a simple agreement without a signature, e.g. terms and conditions of a ticket.
+                    default: true
                   html_contract:
                     type: string
                     description: 'The text of the contract.'
@@ -38885,6 +38891,7 @@ paths:
                     description: 'Title of purchase option.'
                 required:
                   - a_contract_list
+                  - has_signature
                   - html_contract
                   - i_minor_age
                   - text_title
@@ -50585,6 +50592,99 @@ paths:
 
             `null` in case when quizzes requested for guest.
       x-instance-get-key: 'k_business,uid,a_purchase_item'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Catalog/Terms/Terms.json:
+    post:
+      operationId: Wl.Catalog.Terms.Terms.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url_list:
+                    type: string
+                    description: |-
+                      Link to the catalog list. Set only if the cart became empty after
+                      [TermsActionSid::DECLINE](#/components/schemas/Wl.Catalog.Terms.TermsActionSid), an empty string otherwise.
+                required:
+                  - url_list
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Performs [TermsApi::$id_terms_action](/Wl/Catalog/Terms/Terms.json) for every item of [TermsApi::$a_item](/Wl/Catalog/Terms/Terms.json).'
+      tags:
+        - Catalog
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_place
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPlaceSid'
+          description: 'From where request comes. One of [RsPlaceSid](#/components/schemas/RsPlaceSid).'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_item:
+                  type: array
+                  description: 'Cart items to apply the action to. Every element has next fields:'
+                  items:
+                    type: object
+                    properties:
+                      id_purchase_item:
+                        $ref: '#/components/schemas/RsPurchaseItemSid'
+                        description: 'Purchase item ID, one of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.'
+                      k_id:
+                        type: string
+                        description: 'Product ID.'
+                      s_item_key:
+                        type: string
+                        description: 'Cart item key.'
+                    required:
+                      - id_purchase_item
+                      - k_id
+                      - s_item_key
+                a_quick_config:
+                  type: array
+                  description: |-
+                    Data for Quick Buy.
+
+                    Structure of this array is described in RsCatalogCart::__construct().
+                id_terms_action:
+                  $ref: '#/components/schemas/Wl.Catalog.Terms.TermsActionSid'
+                  description: 'Action to perform. One of [TermsActionSid](#/components/schemas/Wl.Catalog.Terms.TermsActionSid).'
+                k_business:
+                  type: string
+                  description: |-
+                    Business the cart belongs to.
+
+                    Primary key in RsBusinessSql table.
+              required:
+                - a_item
+                - a_quick_config
+                - id_terms_action
+                - k_business
       x-rate-limit:
         -
           limit: 200000
@@ -87324,6 +87424,72 @@ paths:
           limit: 200000
           period: 3600
   /Wl/Business/Custom/Terms/CustomTerms.json:
+    get:
+      operationId: Wl.Business.Custom.Terms.CustomTerms.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_term_option:
+                    type: array
+                    description: |-
+                      Current value of every term slot. Returned by `get()`, posted to
+                      `post()` to save.
+                    items:
+                      type: object
+                      properties:
+                        id_term:
+                          $ref: '#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid'
+                          description: 'Term. One of [CustomTermSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) constants.'
+                        id_term_option:
+                          $ref: '#/components/schemas/Wl.Business.Custom.Terms.ClientTermOptionSid'
+                          description: |-
+                            Selected custom term option. Sid class depends on `id_term`
+                            (e.g. for [CustomTermSid::CLIENT](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid), this is one of [ClientTermOptionSid](#/components/schemas/Wl.Business.Custom.Terms.ClientTermOptionSid) constants).
+
+                            `null` if the slot has no customization - the business-type default, or the system default
+                            if the business type has none either, applies.
+                      required:
+                        - id_term
+                required:
+                  - a_term_option
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the current value of every term slot of [CustomTermsApi::$k_business](/Wl/Business/Custom/Terms/CustomTerms.json).'
+      description: |-
+        No access check - the terms a business picked (e.g. "Session" instead of "Class") are not sensitive, and
+        public-facing pages (the booking widget, for example) need them to render their own wording for a client
+        who is not signed in.
+      tags:
+        - 'Custom Terms'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
     post:
       operationId: Wl.Business.Custom.Terms.CustomTerms.post
       responses:
@@ -87348,6 +87514,13 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
       requestBody:
         required: true
         content:
@@ -87357,27 +87530,27 @@ paths:
               properties:
                 a_term_option:
                   type: array
-                  description: 'Current value of every term slot to save. Has the following structure:'
+                  description: |-
+                    Current value of every term slot. Returned by `get()`, posted to
+                    `post()` to save.
                   items:
                     type: object
                     properties:
                       id_term:
                         $ref: '#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid'
-                        description: 'Term ID. One of [CustomTermSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) constants.'
+                        description: 'Term. One of [CustomTermSid](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) constants.'
                       id_term_option:
-                        $ref: '#/components/schemas/Wl.Business.Custom.Terms.ClassTermOptionSid'
+                        $ref: '#/components/schemas/Wl.Business.Custom.Terms.ClientTermOptionSid'
                         description: |-
-                          Selected custom term. Depends on `id_term`.
-                           One of [ClassTermOptionSid](#/components/schemas/Wl.Business.Custom.Terms.ClassTermOptionSid) or other option class constants.
+                          Selected custom term option. Sid class depends on `id_term`
+                          (e.g. for [CustomTermSid::CLIENT](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid), this is one of [ClientTermOptionSid](#/components/schemas/Wl.Business.Custom.Terms.ClientTermOptionSid) constants).
+
+                          `null` if the slot has no customization - the business-type default, or the system default
+                          if the business type has none either, applies.
                     required:
                       - id_term
-                      - id_term_option
-                k_business:
-                  type: string
-                  description: 'Business key.'
               required:
                 - a_term_option
-                - k_business
       x-rate-limit:
         -
           limit: 200000
@@ -132673,6 +132846,28 @@ components:
         - |-
           Sort by name/title.
           Each entity can be sorted by name/title.
+    Wl.Catalog.Terms.TermsActionSid:
+      type: integer
+      format: int32
+      description: |-
+        Action that a client or staff performs with terms and conditions of cart items.
+
+        Values:
+        - 1 (`AGREE`): Terms and conditions are accepted.
+        - 2 (`DECLINE`): Terms and conditions are declined, so items are removed from the cart.
+        - 3 (`SKIP`): Terms and conditions are skipped by staff in the point of sale.
+      enum:
+        - 1
+        - 2
+        - 3
+      x-enum-varnames:
+        - AGREE
+        - DECLINE
+        - SKIP
+      x-enum-descriptions:
+        - 'Terms and conditions are accepted.'
+        - 'Terms and conditions are declined, so items are removed from the cart.'
+        - 'Terms and conditions are skipped by staff in the point of sale.'
     ASocialSid:
       type: integer
       format: int32
@@ -135750,25 +135945,34 @@ components:
         - Class.
         - Client.
         - Staff.
-    Wl.Business.Custom.Terms.ClassTermOptionSid:
-      type: integer
+    Wl.Business.Custom.Terms.ClientTermOptionSid:
+      type:
+        - integer
+        - 'null'
       format: int32
       description: |-
-        Preset options for the [CustomTermSid::CLASS_TERM](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) custom term.
+        Preset options for the [CustomTermSid::CLIENT](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) custom term.
 
-        Last used ID: 10.
+        Last used ID: 17.
 
         Values:
-        - 1 (`ACTIVITY`): Activity.
-        - 2 (`CLASS_TERM`): Class.
-        - 3 (`COURSE`): Course.
-        - 4 (`GROUP_SESSION`): Group Session.
-        - 5 (`LESSON`): Lesson.
-        - 6 (`PRACTICE`): Practice.
-        - 7 (`PROGRAM`): Program.
-        - 8 (`SESSION`): Session.
-        - 9 (`TRAINING`): Training.
-        - 10 (`WORKSHOP`): Workshop.
+        - 1 (`ATHLETE`): Athlete.
+        - 2 (`CADET`): Cadet.
+        - 3 (`CAMPER`): Camper.
+        - 4 (`CARE_RECIPIENT`): Care Recipient.
+        - 5 (`CHILD`): Child.
+        - 6 (`CLIENT`): Client.
+        - 7 (`CUSTOMER`): Customer.
+        - 8 (`DANCER`): Dancer.
+        - 9 (`FAMILY`): Family.
+        - 10 (`GUEST`): Guest.
+        - 11 (`MEMBER`): Member.
+        - 12 (`NINJA`): Ninja.
+        - 13 (`PARTICIPANT`): Participant.
+        - 14 (`PATIENT`): Patient.
+        - 15 (`PATRON`): Patron.
+        - 16 (`RESIDENT`): Resident.
+        - 17 (`STUDENT`): Student.
       enum:
         - 1
         - 2
@@ -135780,28 +135984,49 @@ components:
         - 8
         - 9
         - 10
+        - 11
+        - 12
+        - 13
+        - 14
+        - 15
+        - 16
+        - 17
       x-enum-varnames:
-        - ACTIVITY
-        - CLASS_TERM
-        - COURSE
-        - GROUP_SESSION
-        - LESSON
-        - PRACTICE
-        - PROGRAM
-        - SESSION
-        - TRAINING
-        - WORKSHOP
+        - ATHLETE
+        - CADET
+        - CAMPER
+        - CARE_RECIPIENT
+        - CHILD
+        - CLIENT
+        - CUSTOMER
+        - DANCER
+        - FAMILY
+        - GUEST
+        - MEMBER
+        - NINJA
+        - PARTICIPANT
+        - PATIENT
+        - PATRON
+        - RESIDENT
+        - STUDENT
       x-enum-descriptions:
-        - Activity.
-        - Class.
-        - Course.
-        - 'Group Session.'
-        - Lesson.
-        - Practice.
-        - Program.
-        - Session.
-        - Training.
-        - Workshop.
+        - Athlete.
+        - Cadet.
+        - Camper.
+        - 'Care Recipient.'
+        - Child.
+        - Client.
+        - Customer.
+        - Dancer.
+        - Family.
+        - Guest.
+        - Member.
+        - Ninja.
+        - Participant.
+        - Patient.
+        - Patron.
+        - Resident.
+        - Student.
     Wl.Business.Account.Subscription.Collections.CollectionsSubscriptionSid:
       type: integer
       format: int32
