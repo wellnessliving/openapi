@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261014092324
+  version: 1.1.20261014103525
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -54558,6 +54558,12 @@ paths:
                           id_early_period:
                             $ref: '#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum'
                             description: 'Way the end of the early bird period is specified.'
+                          id_enroll_time:
+                            $ref: '#/components/schemas/Wl.Classes.Edit.EnrollTimeSid'
+                            description: |-
+                              Whether a client may enroll into a block event that is already in progress, and how much they pay for it.
+
+                              Only taken into account while the event is a block event: [EventTypeEnum::BLOCK](#/components/schemas/Wl.Classes.Edit.EventTypeEnum).
                           id_pay_require:
                             $ref: '#/components/schemas/Wl.Classes.RequirePaySid'
                             description: 'Way a client pays for the class.'
@@ -54620,6 +54626,7 @@ paths:
                           - id_early_amount
                           - id_early_duration
                           - id_early_period
+                          - id_enroll_time
                           - id_pay_require
                           - is_buy_promotion
                           - is_buy_single
@@ -55515,6 +55522,12 @@ paths:
                         id_early_period:
                           $ref: '#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum'
                           description: 'Way the end of the early bird period is specified.'
+                        id_enroll_time:
+                          $ref: '#/components/schemas/Wl.Classes.Edit.EnrollTimeSid'
+                          description: |-
+                            Whether a client may enroll into a block event that is already in progress, and how much they pay for it.
+
+                            Only taken into account while the event is a block event: [EventTypeEnum::BLOCK](#/components/schemas/Wl.Classes.Edit.EventTypeEnum).
                         id_pay_require:
                           $ref: '#/components/schemas/Wl.Classes.RequirePaySid'
                           description: 'Way a client pays for the class.'
@@ -55577,6 +55590,7 @@ paths:
                         - id_early_amount
                         - id_early_duration
                         - id_early_period
+                        - id_enroll_time
                         - id_pay_require
                         - is_buy_promotion
                         - is_buy_single
@@ -61414,7 +61428,8 @@ paths:
                       Removed codes are not returned - they are not offered for selection anymore, they only stay on the receipts
                       and invoices they have already been applied to.
 
-                      The custom codes go first, then the system codes. Only the codes that match
+                      The custom codes go first, then the system codes: the library has about 75 000 codes, and the business must
+                      see its own codes on the first pages of the list. Only the codes that match
                       [BillingCodeListApi::$text_search](/Wl/Billing/Code/BillingCodeList.json) are returned, if it is given, and then each group is ranked by the
                       search, the best match first: the code value equal to the search, the code value beginning with it, the
                       description equal to it, the description beginning with it, the rest. Without a search each group is sorted by
@@ -111547,7 +111562,7 @@ paths:
                   a_code:
                     type: array
                     description: |-
-                      Billing codes applied to the visit, the custom codes first, each type sorted by the code value.
+                      Billing codes applied to the visit, the diagnostic codes first, each type sorted by the code value.
 
                       A staff member who can not assign billing codes gets the custom codes only: the diagnostic codes are a part of
                       the medical record of the client. The codes are changed by posting [VisitBillingCodeAssignApi::$a_text_code](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
@@ -134094,6 +134109,29 @@ components:
       x-enum-descriptions:
         - 'The period ends a certain amount of time before the event starts.'
         - 'The period ends on the date.'
+    Wl.Classes.Edit.EnrollTimeSid:
+      type: integer
+      format: int32
+      description: |-
+        Event time enrollment rules.
+        Influence only block events.
+
+        Values:
+        - 1 (`PROGRESS_DENY`): Deny enrollment of the event that is in progress.
+        - 3 (`PROGRESS_FULL`): Allow enrollment to event in progress with full payment.
+        - 2 (`PROGRESS_PRORATE`): Allow enrollment to event in progress with prorated payment.
+      enum:
+        - 1
+        - 3
+        - 2
+      x-enum-varnames:
+        - PROGRESS_DENY
+        - PROGRESS_FULL
+        - PROGRESS_PRORATE
+      x-enum-descriptions:
+        - 'Deny enrollment of the event that is in progress.'
+        - 'Allow enrollment to event in progress with full payment.'
+        - 'Allow enrollment to event in progress with prorated payment.'
     Wl.Coupon.TypeSid:
       type: integer
       format: int32
