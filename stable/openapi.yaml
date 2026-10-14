@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261013114047
+  version: 1.1.20261014080950
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -95693,11 +95693,15 @@ paths:
                                       type: [integer, 'null']
                                       format: int32
                                       description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
+                                    m_calculated:
+                                      type: string
+                                      description: 'Prorated amount as calculated by the system, before any manual override of `m_checkout`.'
                                   required:
                                     - i_days_prorate
                                     - i_days_total
                                     - i_sessions_prorate
                                     - i_sessions_total
+                                    - m_calculated
                                 a_discount:
                                   type: object
                                   description: 'Discount applied to the event price:'
@@ -96028,11 +96032,15 @@ paths:
                                 - 'null'
                               format: int32
                               description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
+                            m_calculated:
+                              type: string
+                              description: 'Prorated amount as calculated by the system, before any manual override of `m_checkout`.'
                           required:
                             - i_days_prorate
                             - i_days_total
                             - i_sessions_prorate
                             - i_sessions_total
+                            - m_calculated
                         a_discount:
                           type: object
                           description: 'Discount applied to the event price:'
