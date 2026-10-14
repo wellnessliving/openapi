@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261014133610
+  version: 1.1.20261014145008
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -31544,6 +31544,12 @@ paths:
                       Whether this service be carried out in Zoom.
                       `true` - If the service can be carried out in Zoom.
                       `false` - otherwise.
+                  is_ticket:
+                    type: boolean
+                    description: |-
+                      Whether the session belongs to a ticketed event.
+
+                      `false` for classes, appointments, assets and events that are not ticketed.
                   k_class:
                     type: string
                     description: 'Class identifier. Not empty if service is class or event reservation.'
@@ -31590,6 +31596,7 @@ paths:
                   - id_note
                   - id_service
                   - is_start_virtual_service
+                  - is_ticket
                   - k_class
                   - k_location
                   - k_resource
@@ -31850,6 +31857,12 @@ paths:
                       Whether this service be carried out in Zoom.
                       `true` - If the service can be carried out in Zoom.
                       `false` - otherwise.
+                  is_ticket:
+                    type: boolean
+                    description: |-
+                      Whether the session belongs to a ticketed event.
+
+                      `false` for classes, appointments, assets and events that are not ticketed.
                   k_class:
                     type: string
                     description: 'Class identifier. Not empty if service is class or event reservation.'
@@ -31896,6 +31909,7 @@ paths:
                   - id_note
                   - id_service
                   - is_start_virtual_service
+                  - is_ticket
                   - k_class
                   - k_location
                   - k_resource
@@ -125354,7 +125368,7 @@ components:
         - 1342 (`Wl\Alert\AlertChannel`): A message is sent through this channel every time an alert created or read.
         - 1921 (`Wl\Visit\VisitStatusChannel`): A message is sent through this channel when the status of a visit is changed.
         - 1869 (`Wl\Task\TaskChangeChannel`): A message is sent through this channel every time a task created or edited.
-        - 2382 (`Wl\Ticket\TicketScanChannel`): Channel to notify staff that a ticket of a session has been checked in.
+        - 2382 (`Wl\Ticket\TicketScanChannel`): Channel to notify staff that the visit of a ticket of a session has been created or changed, for ex. checked in.
 
           Staff members who watch the check-in list of the same session subscribe to the channel to keep the list and the
           counters up to date. The message carries no personal data of the ticket holder: clients load them with the list.
@@ -125474,7 +125488,7 @@ components:
         - 'A message is sent through this channel when the status of a visit is changed.'
         - 'A message is sent through this channel every time a task created or edited.'
         - |-
-          Channel to notify staff that a ticket of a session has been checked in.
+          Channel to notify staff that the visit of a ticket of a session has been created or changed, for ex. checked in.
 
           Staff members who watch the check-in list of the same session subscribe to the channel to keep the list and the
           counters up to date. The message carries no personal data of the ticket holder: clients load them with the list.
