@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261008053848
+  version: 1.1.20261015060208
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -581,8 +581,9 @@ paths:
                   show_term:
                     type: boolean
                     description: |-
-                      `true` to show the "Powered by WellnessLiving" branding and Terms & Conditions links in the footer;
-                      `false` for white-label businesses, which must not display WellnessLiving branding.
+                      Whether the "Powered by WellnessLiving" branding and Terms & Conditions links are shown in the footer.
+
+                      `true` to show them; `false` for white-label businesses, which must not display WellnessLiving branding.
                 required:
                   - show_term
         '400':
@@ -597,10 +598,11 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Returns the data required to render the site footer for the given business.'
+      summary: 'Loads the data required to render the site footer for the given business.'
       description: |-
         Loads the business's white-label status and derives whether the "Powered by WellnessLiving"
-        branding and the Terms and Conditions link should be shown in the footer.
+        branding and the Terms and Conditions link should be shown in the footer. The result is stored in
+        [FooterApi::$show_term](/Thoth/LayoutBe/Footer/Footer.json).
       tags:
         - Business
       parameters:
@@ -7174,6 +7176,13 @@ paths:
                 s_subject:
                   type: string
                   description: "The message's subject line."
+                uid:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    The receiver user key.
+                    `null` if the email should not be linked to a specific user's contact history.
               required:
                 - s_business_mail
                 - s_business_name
@@ -48992,6 +49001,23 @@ paths:
                             - i_width
                             - is_empty
                             - s_url
+                        a_purchase_error:
+                          type: object
+                          description: 'Purchase errors for this item. The same structure as [ElementApi::$a_purchase_error](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            text_code:
+                              type: string
+                              description: 'A machine-readable error code identifying the restriction type.'
+                            text_field:
+                              type: string
+                              description: 'The field associated with the error. Empty string if not applicable.'
+                            text_message:
+                              type: string
+                              description: 'A human-readable error message describing the restriction.'
+                          required:
+                            - text_code
+                            - text_field
+                            - text_message
                         a_tax:
                           type: array
                           description: 'Tax amounts keyed by tax key. The same structure as [ElementApi::$a_tax](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -49022,6 +49048,7 @@ paths:
                         - a_data
                         - a_guest_pass
                         - a_image
+                        - a_purchase_error
                         - a_tax
                         - id_purchase_option_view
                         - m_discount_code
@@ -49030,6 +49057,29 @@ paths:
                         - s_price
                         - s_sale
                         - s_title
+                  a_purchase_error:
+                    type: array
+                    description: |-
+                      A list of purchase errors that would prevent this item from being purchased by the current user.
+
+                      Each element represents a server-side validation error. Empty if there are no purchase restrictions
+                      or if the request is unauthenticated. Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        text_code:
+                          type: string
+                          description: 'A machine-readable error code identifying the restriction type.'
+                        text_field:
+                          type: string
+                          description: 'The field associated with the error. Empty string if not applicable.'
+                        text_message:
+                          type: string
+                          description: 'A human-readable error message describing the restriction.'
+                      required:
+                        - text_code
+                        - text_field
+                        - text_message
                   a_tax:
                     type: array
                     description: |-
@@ -49160,6 +49210,7 @@ paths:
                   - a_image_list
                   - a_installment_template
                   - a_item
+                  - a_purchase_error
                   - a_tax
                   - f_price_retail_product
                   - f_price_total_enrollment
@@ -49951,6 +50002,23 @@ paths:
                             - i_width
                             - is_empty
                             - s_url
+                        a_purchase_error:
+                          type: object
+                          description: 'Purchase errors for this item. The same structure as [ElementApi::$a_purchase_error](/Wl/Catalog/CatalogList/Element.json) has.'
+                          properties:
+                            text_code:
+                              type: string
+                              description: 'A machine-readable error code identifying the restriction type.'
+                            text_field:
+                              type: string
+                              description: 'The field associated with the error. Empty string if not applicable.'
+                            text_message:
+                              type: string
+                              description: 'A human-readable error message describing the restriction.'
+                          required:
+                            - text_code
+                            - text_field
+                            - text_message
                         a_tax:
                           type: array
                           description: 'Tax amounts keyed by tax key. The same structure as [ElementApi::$a_tax](/Wl/Catalog/CatalogList/Element.json) has.'
@@ -49981,6 +50049,7 @@ paths:
                         - a_data
                         - a_guest_pass
                         - a_image
+                        - a_purchase_error
                         - a_tax
                         - id_purchase_option_view
                         - m_discount_code
@@ -49989,6 +50058,29 @@ paths:
                         - s_price
                         - s_sale
                         - s_title
+                  a_purchase_error:
+                    type: array
+                    description: |-
+                      A list of purchase errors that would prevent this item from being purchased by the current user.
+
+                      Each element represents a server-side validation error. Empty if there are no purchase restrictions
+                      or if the request is unauthenticated. Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        text_code:
+                          type: string
+                          description: 'A machine-readable error code identifying the restriction type.'
+                        text_field:
+                          type: string
+                          description: 'The field associated with the error. Empty string if not applicable.'
+                        text_message:
+                          type: string
+                          description: 'A human-readable error message describing the restriction.'
+                      required:
+                        - text_code
+                        - text_field
+                        - text_message
                   a_tax:
                     type: array
                     description: |-
@@ -50119,6 +50211,7 @@ paths:
                   - a_image_list
                   - a_installment_template
                   - a_item
+                  - a_purchase_error
                   - a_tax
                   - f_price_retail_product
                   - f_price_total_enrollment
@@ -70939,6 +71032,11 @@ paths:
                   is_in_progress:
                     type: boolean
                     description: '`true` - service is in progress; `false` - otherwise.'
+                  is_paid:
+                    type: boolean
+                    description: |-
+                      `true` if the visit has been paid for (via a purchase option, session pass, or single purchase).
+                      `false` if the visit is unpaid.
                   is_virtual:
                     type: boolean
                     description: '`true` - service is virtual; `false` - otherwise.'
@@ -71019,6 +71117,7 @@ paths:
                   - is_enable_client_cancel
                   - is_event
                   - is_in_progress
+                  - is_paid
                   - is_virtual
                   - k_location
                   - s_title
@@ -94478,6 +94577,39 @@ paths:
                               type: object
                               description: 'List of tuition events for tuition participant. Each record has the next structure:'
                               properties:
+                                a_checkout:
+                                  type:
+                                    - object
+                                    - 'null'
+                                  description: |-
+                                    Output only. Additional information about how `m_checkout` was calculated when
+                                         the first membership payment is prorated, `null` otherwise:
+                                  properties:
+                                    i_days_prorate:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of days the first payment is charged for. `null` if prorated by sessions.'
+                                    i_days_total:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of days in the billing cycle. `null` if prorated by sessions.'
+                                    i_sessions_prorate:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of sessions the first payment is charged for. `null` if prorated by days.'
+                                    i_sessions_total:
+                                      type: [integer, 'null']
+                                      format: int32
+                                      description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
+                                    m_calculated:
+                                      type: string
+                                      description: 'Prorated amount as calculated by the system, before any manual override of `m_checkout`.'
+                                  required:
+                                    - i_days_prorate
+                                    - i_days_total
+                                    - i_sessions_prorate
+                                    - i_sessions_total
+                                    - m_calculated
                                 a_discount:
                                   type: object
                                   description: 'Discount applied to the event price:'
@@ -94519,6 +94651,7 @@ paths:
                                   type: string
                                   description: 'Key of the tuition participant.'
                               required:
+                                - a_checkout
                                 - k_class
                                 - uid
                             a_registration_fee_list:
@@ -94775,6 +94908,47 @@ paths:
                       type: object
                       description: 'List of tuition events for tuition participant. Each record has the next structure:'
                       properties:
+                        a_checkout:
+                          type:
+                            - object
+                            - 'null'
+                          description: |-
+                            Output only. Additional information about how `m_checkout` was calculated when
+                                 the first membership payment is prorated, `null` otherwise:
+                          properties:
+                            i_days_prorate:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of days the first payment is charged for. `null` if prorated by sessions.'
+                            i_days_total:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of days in the billing cycle. `null` if prorated by sessions.'
+                            i_sessions_prorate:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of sessions the first payment is charged for. `null` if prorated by days.'
+                            i_sessions_total:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
+                            m_calculated:
+                              type: string
+                              description: 'Prorated amount as calculated by the system, before any manual override of `m_checkout`.'
+                          required:
+                            - i_days_prorate
+                            - i_days_total
+                            - i_sessions_prorate
+                            - i_sessions_total
+                            - m_calculated
                         a_discount:
                           type: object
                           description: 'Discount applied to the event price:'
@@ -94816,6 +94990,7 @@ paths:
                           type: string
                           description: 'Key of the tuition participant.'
                       required:
+                        - a_checkout
                         - k_class
                         - uid
                     a_registration_fee_list:
@@ -99275,6 +99450,12 @@ paths:
                           description: |-
                             User key. 
                             Specify only in a case of booking for a lof of different users.
+                        url_virtual:
+                          type: string
+                          description: |-
+                            The meeting link for a non-integrated virtual service.
+                            Specify this for appointment bookings only when the service uses a non-integrated virtual provider.
+                            When provided, saved as both join and host link for the appointment.
                       required:
                         - dt_date
                         - k_service
@@ -99464,6 +99645,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -99474,6 +99662,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   dt_date:
                     type: string
                     format: date-time
@@ -99929,6 +100118,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -99939,6 +100135,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   a_timezone_data:
                     type: object
                     description: 'Information about timezone.'
@@ -100312,6 +100509,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -100322,6 +100526,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   dt_date:
                     type: string
                     format: date-time
@@ -100663,6 +100868,13 @@ paths:
                       s_title:
                         type: string
                         description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
                     required:
                       - dt_date
                       - dtu_date
@@ -100673,6 +100885,7 @@ paths:
                       - k_staff
                       - uid_staff
                       - s_title
+                      - uid_staff_suggest
                   a_timezone_data:
                     type: object
                     description: 'Information about timezone.'
