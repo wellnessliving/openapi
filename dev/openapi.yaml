@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261015132750
+  version: 1.1.20261015154806
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -17120,6 +17120,81 @@ paths:
           schema:
             type: string
           description: 'Key of the class period the session belongs to.'
+      x-instance-get-key: 'dtu_start,k_business,k_class_period'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Ticket/TicketUndo.json:
+    post:
+      operationId: Wl.Ticket.TicketUndo.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  i_attend:
+                    type: integer
+                    format: int32
+                    description: 'Number of the tickets checked in for the session after the call.'
+                  i_sold:
+                    type: integer
+                    format: int32
+                    description: 'Number of the tickets sold for the session: not cancelled ones, including those whose holders have not come.'
+                required:
+                  - i_attend
+                  - i_sold
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Undoes the check-in of the ticket.'
+      description: |-
+        Validates the business and the access of the current user to it, finds the ticket, checks it against the
+        session sent by the client, and returns its visit from attended to booked. Takes the same critical section as
+        [TicketScanApi](/Wl/Ticket/TicketScan.json), so a check-in and an undo of the same ticket never run at the same time.
+      tags:
+        - Events
+        - Tickets
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                dtu_start:
+                  type: string
+                  format: date-time
+                  description: 'Start of the session, in UTC and MySQL format.'
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_class_period:
+                  type: string
+                  description: 'Key of the class period the session belongs to.'
+                k_ticket_item:
+                  type: string
+                  description: 'Key of the ticket to undo the check-in of.'
+              required:
+                - dtu_start
+                - k_business
+                - k_class_period
+                - k_ticket_item
       x-instance-get-key: 'dtu_start,k_business,k_class_period'
       x-rate-limit:
         -
