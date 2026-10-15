@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261015154806
+  version: 1.1.20261015160019
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -76457,6 +76457,53 @@ paths:
                     Task status.
 
                     `null` means not set.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Ticket/Purchase/TicketPurchaseMail.json:
+    post:
+      operationId: Wl.Ticket.Purchase.TicketPurchaseMail.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Sends the confirmation of the purchase with the tickets.'
+      tags:
+        - Tickets
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_purchase:
+                  type: string
+                  description: 'The key of the purchase of tickets.'
+                text_mail:
+                  type: string
+                  description: |-
+                    Email to send the tickets to instead of the email of the buyer.
+
+                    Empty to send the email to the buyer.
+              required:
+                - k_purchase
+                - text_mail
       x-rate-limit:
         -
           limit: 200000
