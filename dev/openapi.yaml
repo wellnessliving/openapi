@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261016133910
+  version: 1.1.20261016142935
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -43927,6 +43927,9 @@ paths:
                         description: |-
                           `true` to display only available spots (e.g., "3 spots left");
                            `false` to display both available spots and total capacity (e.g., "3 spots left of 10").
+                      is_fb_capi_access_token:
+                        type: boolean
+                        description: 'Whether Meta Conversion API Access Token is set.'
                       is_show_name:
                         type: boolean
                         description: 'If `true`, the business name will be shown.'
@@ -43971,7 +43974,7 @@ paths:
                         description: 'Meta Conversion API Test Event Code. Optional, used for QA in Meta Events Manager. Empty string if not used or application that made request does not have access to it.'
                       s_fb_pixel_id:
                         type: string
-                        description: 'Facebook Pixel ID. Used for Facebook analytics tracking. Empty string if tracking is disabled.'
+                        description: 'Meta Pixel ID. Used for Meta analytics tracking. Empty string if tracking is disabled.'
                       s_ga_tracking_id:
                         type: string
                         description: 'Google Analytics Tracking ID. Used for Google Analytics tracking. Empty string if tracking is disabled.'
@@ -43991,6 +43994,7 @@ paths:
                       - is_class_capacity
                       - is_class_quick
                       - is_class_spot_only
+                      - is_fb_capi_access_token
                       - is_show_name
                       - s_color_background
                       - s_color_header
