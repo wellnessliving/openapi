@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261016082805
+  version: 1.1.20261016095112
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -16760,6 +16760,14 @@ paths:
                     type: integer
                     format: int32
                     description: 'Number of the tickets sold for the session: not cancelled ones, including those whose holders have not come.'
+                  is_paid:
+                    type: boolean
+                    description: |-
+                      Whether the ticket is paid.
+
+                      `false` if the ticket was reserved to be paid at the door: the session pass of the ticket is not tied to a
+                      purchase item. The client offers to collect the payment in this case.
+                    default: true
                   k_class_period_ticket:
                     type: string
                     description: |-
@@ -16786,6 +16794,7 @@ paths:
                   - dtu_session_start
                   - i_attend
                   - i_sold
+                  - is_paid
                   - k_class_period_ticket
                   - k_ticket_item
                   - k_visit
@@ -16911,6 +16920,11 @@ paths:
                         dtl_purchase:
                           type: string
                           description: 'Time when the order was bought, in the local time of the location, MySQL format.'
+                        has_terms_agree:
+                          type: boolean
+                          description: |-
+                            `true` if the buyer agreed to the terms and conditions of the event. `false` if the terms were skipped,
+                            or if the event has no terms.
                         i_attend:
                           type: integer
                           format: int32
@@ -16936,6 +16950,7 @@ paths:
                       required:
                         - a_type
                         - dtl_purchase
+                        - has_terms_agree
                         - i_attend
                         - i_ticket
                         - is_guest
@@ -16976,6 +16991,11 @@ paths:
                         is_cancel:
                           type: boolean
                           description: 'Whether the ticket is cancelled: voided, or refunded with the seat returned.'
+                        is_paid:
+                          type: boolean
+                          description: |-
+                            Whether the ticket is paid. `false` if it was reserved to be paid at the door: its session pass is not tied
+                            to a purchase item. A cancelled ticket cannot be paid.
                         k_purchase:
                           type: string
                           description: 'Order of the ticket, see [TicketListApi::$a_order](/Wl/Ticket/TicketList.json).'
@@ -17017,6 +17037,7 @@ paths:
                         - i_order_size
                         - is_attend
                         - is_cancel
+                        - is_paid
                         - k_purchase
                         - k_ticket_item
                         - k_ticket_option
@@ -38960,12 +38981,6 @@ paths:
                     required:
                       - html_contract
                       - uid
-                  has_signature:
-                    type: boolean
-                    description: |-
-                      Whether the agreement requires a signature.
-                      `false` for a simple agreement without a signature, e.g. terms and conditions of a ticket.
-                    default: true
                   html_contract:
                     type: string
                     description: 'The text of the contract.'
@@ -38978,7 +38993,6 @@ paths:
                     description: 'Title of purchase option.'
                 required:
                   - a_contract_list
-                  - has_signature
                   - html_contract
                   - i_minor_age
                   - text_title
