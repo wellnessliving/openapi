@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261016130159
+  version: 1.1.20261016133910
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -54410,6 +54410,15 @@ paths:
                         type: object
                         description: 'Settings of the way the class is attended.'
                         properties:
+                          a_replace:
+                            type: array
+                            description: |-
+                              Classes and events a client may transfer a missed session of this one to as a make-up.
+
+                              Only taken into account while `is_replace` is `true`, and then may not be
+                              empty.
+                            items:
+                              type: string
                           a_resource_type:
                             type: object
                             description: |-
@@ -54446,7 +54455,9 @@ paths:
                             description: '`true` if staff may sell products from the attendance list of the class, `false` otherwise.'
                           is_replace:
                             type: boolean
-                            description: '`true` if the number of the make-up sessions of the class is limited, `false` otherwise.'
+                            description: |-
+                              `true` if a client may transfer a missed session of this class to an eligible make-up class or event, `false`
+                              otherwise.
                           is_resource_type:
                             type: boolean
                             description: '`true` if the class requires Book-a-Spot assets, `false` otherwise.'
@@ -54457,6 +54468,7 @@ paths:
 
                               Ignored for a class, and for a non-block or a ticketed event.
                         required:
+                          - a_replace
                           - a_resource_type
                           - i_makeup_cap
                           - is_prerequisite
@@ -54919,6 +54931,43 @@ paths:
                       - is_login_type_all
                       - is_member_group
                       - is_member_group_all
+                  a_replace_available:
+                    type: array
+                    description: |-
+                      Classes and events of the business that a client may use a make-up session on, grouped by service.
+
+                      Every element is an array:
+                    items:
+                      type: object
+                      properties:
+                        a_list:
+                          type: object
+                          description: 'Classes or events of the group. Every element is an array:'
+                          properties:
+                            k_id:
+                              type: string
+                              description: 'Key of the class or event.'
+                            text_title:
+                              type: string
+                              description: 'Title of the class or event.'
+                          required:
+                            - k_id
+                            - text_title
+                        i_level:
+                          type: integer
+                          format: int32
+                          description: 'Level of the group. Always `1`, there is only one level of groups.'
+                        text_group_key:
+                          type: string
+                          description: 'Key of the group.'
+                        text_title:
+                          type: string
+                          description: 'Title of the group.'
+                      required:
+                        - a_list
+                        - i_level
+                        - text_group_key
+                        - text_title
                   a_search_tag_list:
                     type: array
                     description: 'Quick search tags of the category of the business. Every element is an array:'
@@ -55093,6 +55142,7 @@ paths:
                   - a_class
                   - a_class_tab_list
                   - a_reminder_info
+                  - a_replace_available
                   - a_search_tag_list
                   - a_shop_category_list
                   - a_url
@@ -55374,6 +55424,15 @@ paths:
                       type: object
                       description: 'Settings of the way the class is attended.'
                       properties:
+                        a_replace:
+                          type: array
+                          description: |-
+                            Classes and events a client may transfer a missed session of this one to as a make-up.
+
+                            Only taken into account while `is_replace` is `true`, and then may not be
+                            empty.
+                          items:
+                            type: string
                         a_resource_type:
                           type: object
                           description: |-
@@ -55410,7 +55469,9 @@ paths:
                           description: '`true` if staff may sell products from the attendance list of the class, `false` otherwise.'
                         is_replace:
                           type: boolean
-                          description: '`true` if the number of the make-up sessions of the class is limited, `false` otherwise.'
+                          description: |-
+                            `true` if a client may transfer a missed session of this class to an eligible make-up class or event, `false`
+                            otherwise.
                         is_resource_type:
                           type: boolean
                           description: '`true` if the class requires Book-a-Spot assets, `false` otherwise.'
@@ -55421,6 +55482,7 @@ paths:
 
                             Ignored for a class, and for a non-block or a ticketed event.
                       required:
+                        - a_replace
                         - a_resource_type
                         - i_makeup_cap
                         - is_prerequisite
