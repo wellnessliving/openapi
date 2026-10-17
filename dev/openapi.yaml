@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261017111500
+  version: 1.1.20261017124615
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -17314,6 +17314,112 @@ paths:
                 - k_business
                 - k_class_period
                 - k_ticket_item
+      x-instance-get-key: 'dtu_start,k_business,k_class_period'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Ticket/TicketScanList.json:
+    post:
+      operationId: Wl.Ticket.TicketScanList.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_result:
+                    type: array
+                    description: |-
+                      Outcome of every ticket of the request, in the order of [TicketScanListApi::$a_ticket_item](/Wl/Ticket/TicketScanList.json) without
+                      repeated keys. Every item has the next structure:
+                    items:
+                      type: object
+                      properties:
+                        id_outcome:
+                          type: string
+                          description: 'Outcome of the ticket, see the description of the class.'
+                        k_ticket_item:
+                          type: string
+                          description: 'Key of the ticket, as it was sent.'
+                      required:
+                        - id_outcome
+                        - k_ticket_item
+                  i_attend:
+                    type: integer
+                    format: int32
+                    description: 'Number of the tickets already checked in for the session, after the call. Returned once for the whole call.'
+                  i_sold:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of the tickets sold for the session, after the call: not cancelled ones, including those whose holders
+                      have not come. Returned once for the whole call.
+                required:
+                  - a_result
+                  - i_attend
+                  - i_sold
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Checks in the tickets.'
+      description: |-
+        Validates the business and the access of the current user to it once for the whole call, then checks in every
+        ticket on its own and loads the counters of the session once, after all of them.
+      tags:
+        - Events
+        - Tickets
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_ticket_item:
+                  type: array
+                  description: |-
+                    Keys of the tickets to check in, as [TicketListApi](/Wl/Ticket/TicketList.json) returns them.
+
+                    A key that is repeated is checked in once.
+                  items:
+                    type: string
+                dtu_start:
+                  type: string
+                  format: date-time
+                  description: 'Start of the session being checked in, in UTC and MySQL format.'
+                id_mode:
+                  $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                  description: |-
+                    Source of the check-in. One of [ModeSid](#/components/schemas/Wl.Mode.ModeSid).
+
+                    `0` if not specified, in this case the source is detected from the current request.
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_class_period:
+                  type: string
+                  description: 'Key of the class period the session being checked in belongs to.'
+              required:
+                - a_ticket_item
+                - dtu_start
+                - id_mode
+                - k_business
+                - k_class_period
       x-instance-get-key: 'dtu_start,k_business,k_class_period'
       x-rate-limit:
         -
