@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261017064353
+  version: 1.1.20261017111500
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -118786,6 +118786,95 @@ paths:
           limit: 200000
           period: 3600
   /Wl/Login/Promotion/GuestPass/Apply/Apply.json:
+    get:
+      operationId: Wl.Login.Promotion.GuestPass.Apply.Apply.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_login_promotion:
+                    type: array
+                    description: |-
+                      A list of login promotions with available guest passes for the given visit.
+
+                      Each element is an array with the following keys:
+                    items:
+                      type: object
+                      properties:
+                        k_login_promotion:
+                          type: string
+                          description: 'Login promotion key.'
+                        text_description:
+                          type: string
+                          description: 'Remaining guest pass balance description for this login promotion.'
+                        text_title:
+                          type: string
+                          description: 'Name of the host member who owns this guest pass.'
+                        uid:
+                          type: string
+                          description: 'Key of the host member who owns this guest pass.'
+                      required:
+                        - k_login_promotion
+                        - text_description
+                        - text_title
+                        - uid
+                required:
+                  - a_login_promotion
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns a list of login promotions with available guest passes for a visit.'
+      description: |-
+        Searches for members who have active class memberships with guest pass balance
+        applicable to the class and location of the given visit. Each result item represents
+        one eligible login promotion, not one user: if a member has several qualifying memberships,
+        each appears as a separate item.
+      tags:
+        - 'Guest Pass'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_visit_search
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Visit key of the attendee for whom the list of guest passes is requested.'
+        -
+          name: text_search
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Text to search guest pass hosts by (for example, a member name).
+
+            Empty string means no search.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
     post:
       operationId: Wl.Login.Promotion.GuestPass.Apply.Apply.post
       responses:
