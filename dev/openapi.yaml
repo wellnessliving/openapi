@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261017130702
+  version: 1.1.20261017144104
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -136627,7 +136627,6 @@ components:
         - 1 (`ATHLETE`): Athlete.
         - 2 (`CADET`): Cadet.
         - 3 (`CAMPER`): Camper.
-        - 4 (`CARE_RECIPIENT`): Care Recipient.
         - 5 (`CHILD`): Child.
         - 6 (`CLIENT`): Client.
         - 7 (`CUSTOMER`): Customer.
@@ -136641,11 +136640,11 @@ components:
         - 15 (`PATRON`): Patron.
         - 16 (`RESIDENT`): Resident.
         - 17 (`STUDENT`): Student.
+        - 4 (`SWIMMER`): Swimmer.
       enum:
         - 1
         - 2
         - 3
-        - 4
         - 5
         - 6
         - 7
@@ -136659,11 +136658,11 @@ components:
         - 15
         - 16
         - 17
+        - 4
       x-enum-varnames:
         - ATHLETE
         - CADET
         - CAMPER
-        - CARE_RECIPIENT
         - CHILD
         - CLIENT
         - CUSTOMER
@@ -136677,11 +136676,11 @@ components:
         - PATRON
         - RESIDENT
         - STUDENT
+        - SWIMMER
       x-enum-descriptions:
         - Athlete.
         - Cadet.
         - Camper.
-        - 'Care Recipient.'
         - Child.
         - Client.
         - Customer.
@@ -136695,6 +136694,7 @@ components:
         - Patron.
         - Resident.
         - Student.
+        - Swimmer.
     Wl.Business.Account.Subscription.Collections.CollectionsSubscriptionSid:
       type: integer
       format: int32
