@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261019092223
+  version: 1.1.20261019103509
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -44979,8 +44979,8 @@ paths:
                           description: |-
                             `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
                               pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
-                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
-                              without paying at all.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the payment is optional
+                              (pay later, or the application is allowed to book without paying).
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -89787,8 +89787,8 @@ paths:
                           description: |-
                             `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
                               pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
-                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
-                              without paying at all.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the payment is optional
+                              (pay later, or the application is allowed to book without paying).
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -93803,8 +93803,8 @@ paths:
                           description: |-
                             `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
                               pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
-                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
-                              without paying at all.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the payment is optional
+                              (pay later, or the application is allowed to book without paying).
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -94596,8 +94596,8 @@ paths:
                           description: |-
                             `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
                               pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
-                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
-                              without paying at all.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the payment is optional
+                              (pay later, or the application is allowed to book without paying).
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -95175,8 +95175,8 @@ paths:
                           description: |-
                             `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
                               pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
-                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
-                              without paying at all.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the payment is optional
+                              (pay later, or the application is allowed to book without paying).
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -106202,8 +106202,8 @@ paths:
                           description: |-
                             `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
                               pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
-                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
-                              without paying at all.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the payment is optional
+                              (pay later, or the application is allowed to book without paying).
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
@@ -107412,8 +107412,8 @@ paths:
                           description: |-
                             `true` if the booking triggered the payment flow: the visit is booked, is not paid, and the client must
                               pay for it by the link in `text_payment_link`, otherwise the visit is cancelled automatically.
-                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the application is allowed to book
-                              without paying at all.
+                              `false` otherwise: the visit is paid, free, waitlisted, cancelled, or the payment is optional
+                              (pay later, or the application is allowed to book without paying).
                         is_waitlist:
                           type: boolean
                           description: '`true` whether the booked slot was waitlisted; `false` otherwise.'
