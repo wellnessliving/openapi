@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261019083944
+  version: 1.1.20261019092223
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -16973,9 +16973,7 @@ paths:
                           description: 'Key of the buyer, for the link to the profile. `null` for a guest.'
                         url_viewer:
                           type: string
-                          description: |-
-                            Link to the page with all tickets of the order, to view and print them. See
-                            TicketViewController::urlTicket().
+                          description: 'Link to the page with all tickets of the order, to view and print them. .'
                       required:
                         - a_type
                         - dtl_purchase
@@ -17088,7 +17086,7 @@ paths:
                           description: 'Name of the ticket type.'
                         url_viewer:
                           type: string
-                          description: 'Link to the page with this ticket for view and print. See TicketViewController::urlTicket().'
+                          description: 'Link to the page with this ticket for view and print.'
                       required:
                         - dtl_attend
                         - dtl_cancel
@@ -17338,14 +17336,14 @@ paths:
                     items:
                       type: object
                       properties:
-                        id_outcome:
+                        sid_outcome:
                           type: string
                           description: 'Outcome of the ticket, see the description of the class.'
                         k_ticket_item:
                           type: string
                           description: 'Key of the ticket, as it was sent.'
                       required:
-                        - id_outcome
+                        - sid_outcome
                         - k_ticket_item
                   i_attend:
                     type: integer
