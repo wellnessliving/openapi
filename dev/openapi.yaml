@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261019134417
+  version: 1.1.20261019223129
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -83616,8 +83616,8 @@ paths:
                   is_allowed:
                     type: boolean
                     description: |-
-                      Whether a surcharge is allowed for the card identified by [SurchargeTenderApi::$s_bin](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) or
-                      [SurchargeTenderApi::$k_pay_bank](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json).
+                      Whether a surcharge is allowed for the card identified by
+                      [SurchargeTenderApi::$s_bin](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) or [SurchargeTenderApi::$k_pay_bank](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json).
 
                       `true` whenever the business's processor is not subject to the rule, or the rule does not apply to this
                       country/pay method - exactly the same meaning as "do not suppress", never a stand-in for "lookup failed".
