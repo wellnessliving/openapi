@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261019105130
+  version: 1.1.20261019121039
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -113,6 +113,9 @@ tags:
   -
     name: Discounts
     description: 'Discount code and gift card management endpoints.'
+  -
+    name: 'Door Access'
+    description: 'Brivo door access and mobile pass invitation endpoints.'
   -
     name: Email
     description: 'Email sending endpoints.'
@@ -50942,6 +50945,10 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Performs [TermsApi::$id_terms_action](/Wl/Catalog/Terms/Terms.json) for every item of [TermsApi::$a_item](/Wl/Catalog/Terms/Terms.json).'
+      description: |-
+        Agreeing or skipping marks the cart items as resolved, so the client can proceed to checkout. Declining removes
+        the items from the cart, and [TermsApi::$url_list](/Wl/Catalog/Terms/Terms.json) is returned if the cart became empty. Skipping is
+        available only in the point of sale.
       tags:
         - Catalog
       parameters:
@@ -50981,20 +50988,33 @@ paths:
                       - k_id
                       - s_item_key
                 a_quick_config:
-                  type: array
-                  description: |-
-                    Data for Quick Buy.
-
-                    Structure of this array is described in RsCatalogCart::__construct().
+                  type: object
+                  description: 'Data for Quick Buy. Empty if the purchase is not in Quick Buy mode. Structure of the array:'
+                  properties:
+                    id_table:
+                      $ref: '#/components/schemas/Wl.Catalog.QuickPurchaseTypeSid'
+                      description: 'Quick purchase type. One of [QuickPurchaseTypeSid](#/components/schemas/Wl.Catalog.QuickPurchaseTypeSid).'
+                    is_quick_buy:
+                      type: boolean
+                      description: 'Whether Quick Buy mode is used.'
+                    k_appointment:
+                      type: string
+                      description: 'Appointment key to pay for.'
+                    k_id:
+                      type: string
+                      description: 'Key of the item within the `id_table` table that Quick Buy is performed for.'
+                    k_visit:
+                      type: string
+                      description: 'Visit key to pay for.'
+                    uid:
+                      type: string
+                      description: 'User that Quick Buy is performed for.'
                 id_terms_action:
                   $ref: '#/components/schemas/Wl.Catalog.Terms.TermsActionSid'
                   description: 'Action to perform. One of [TermsActionSid](#/components/schemas/Wl.Catalog.Terms.TermsActionSid).'
                 k_business:
                   type: string
-                  description: |-
-                    Business the cart belongs to.
-
-                    Primary key in RsBusinessSql table.
+                  description: 'Business the cart belongs to.'
               required:
                 - a_item
                 - a_quick_config
@@ -55290,7 +55310,11 @@ paths:
                   i_description_limit:
                     type: integer
                     format: int32
-                    description: 'Maximum length of description.'
+                    description: 'Maximum length of the description of a class that is not virtual.'
+                  i_description_limit_virtual:
+                    type: integer
+                    format: int32
+                    description: 'Maximum length of the description of a virtual class.'
                   is_admin:
                     type: boolean
                     description: '`true` if the Administration section may be shown, `false` otherwise.'
@@ -55358,6 +55382,7 @@ paths:
                   - html_quick_buy
                   - html_tax
                   - i_description_limit
+                  - i_description_limit_virtual
                   - is_admin
                   - is_birthday_require
                   - is_currency_before
@@ -87603,6 +87628,86 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Profile/Overview/QuickContact/QuickContactOption.json:
+    get:
+      operationId: Wl.Profile.Overview.QuickContact.QuickContactOption.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_brivo:
+                    type: boolean
+                    description: |-
+                      Whether the Brivo mobile pass invitation action is available for this client.
+                      `true` if Brivo invitation is available, `false` otherwise.
+                  is_password_reset:
+                    type: boolean
+                    description: |-
+                      Whether the Password Reset email action is available for this client.
+                      `true` if the password reset template is enabled, the client login is not disabled
+                      and the client is not a virtual user, `false` otherwise.
+                  is_welcome:
+                    type: boolean
+                    description: |-
+                      Whether the Welcome email action is available for this client.
+                      `true` if the Welcome email template is enabled for this business and the client has
+                      an email address, `false` otherwise.
+                  is_welcome_sent:
+                    type: boolean
+                    description: |-
+                      Whether the Welcome email has already been sent to this client.
+                      `true` if a Welcome email was sent previously, `false` otherwise.
+                      Only meaningful when [QuickContactOptionApi::$is_welcome](/Wl/Profile/Overview/QuickContact/QuickContactOption.json) is `true`.
+                required:
+                  - is_brivo
+                  - is_password_reset
+                  - is_welcome
+                  - is_welcome_sent
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns notification availability flags for the specified client.'
+      description: |-
+        Checks whether the Welcome email, Password Reset email and Brivo mobile pass invitation
+        actions are available for the client identified by [QuickContactOptionApi::$k_business](/Wl/Profile/Overview/QuickContact/QuickContactOption.json)
+        and [QuickContactOptionApi::$uid](/Wl/Profile/Overview/QuickContact/QuickContactOption.json).
+      tags:
+        - 'Profile Notifications'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Client user key.'
+      x-instance-get-key: 'k_business,uid'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Profile/Account/Select/Select.json:
     get:
       operationId: Wl.Profile.Account.Select.Select.get
@@ -116449,6 +116554,125 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/DoorAccess/Brivo/Invitation/BrivoUserInvitation.json:
+    get:
+      operationId: Wl.DoorAccess.Brivo.Invitation.BrivoUserInvitation.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  has_brivo_invitation:
+                    type: boolean
+                    description: |-
+                      Whether the client has a Brivo invitation, and is present in the client's group with Brivo invitation enabled.
+                      `true` if the client has a Brivo invitation, `false` otherwise.
+                  is_redeem:
+                    type: boolean
+                    description: 'This will be `true` an invitation is redeemed see [BrivoInvitationStatusEnum](#/components/schemas/Wl.DoorAccess.Brivo.Invitation.BrivoInvitationStatusEnum), `false` otherwise.'
+                required:
+                  - has_brivo_invitation
+                  - is_redeem
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the redemption status of the Brivo mobile pass invitation.'
+      description: |-
+        Sets [BrivoUserInvitationApi::$is_redeem](/Wl/DoorAccess/Brivo/Invitation/BrivoUserInvitation.json) to `true` if an invitation is redeemed,
+        and to `false` otherwise. Retrieves an invitation status from the database; when it is not
+        redeemed, the invitation data is retrieved from Brivo. Controls the time of the last update
+        of the invitation data and updates it if necessary.
+      tags:
+        - 'Door Access'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'UID of a user for whom an invitation should be sent.'
+      x-instance-get-key: 'k_business,uid'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.DoorAccess.Brivo.Invitation.BrivoUserInvitation.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_redeem:
+                    type: boolean
+                    description: 'This will be `true` an invitation is redeemed see [BrivoInvitationStatusEnum](#/components/schemas/Wl.DoorAccess.Brivo.Invitation.BrivoInvitationStatusEnum), `false` otherwise.'
+                required:
+                  - is_redeem
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Sends a Brivo mobile pass invitation to a client.'
+      description: |-
+        Processes a request for Brivo mobile pass invitation for a client. If the invitation
+        has not been redeemed, schedules a task to send it.
+      tags:
+        - 'Door Access'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'UID of a user for whom an invitation should be sent.'
+      x-instance-get-key: 'k_business,uid'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Insurance/Enrollment/Field/EnrollmentFieldList.json:
     get:
       operationId: Wl.Insurance.Enrollment.Field.EnrollmentFieldList.get
@@ -133489,6 +133713,28 @@ components:
         - |-
           Sort by name/title.
           Each entity can be sorted by name/title.
+    Wl.Catalog.QuickPurchaseTypeSid:
+      type: integer
+      format: int32
+      description: |-
+        List of quick purchase item types.
+
+        Values:
+        - 224 (`CLASSES`): Classes.
+        - 681 (`RESOURCE`): Resource.
+        - 690 (`SERVICE`): Service.
+      enum:
+        - 224
+        - 681
+        - 690
+      x-enum-varnames:
+        - CLASSES
+        - RESOURCE
+        - SERVICE
+      x-enum-descriptions:
+        - Classes.
+        - Resource.
+        - Service.
     Wl.Catalog.Terms.TermsActionSid:
       type: integer
       format: int32
@@ -135259,28 +135505,6 @@ components:
         - 'Quiz response received by direct link.'
         - 'Quiz response received during purchase process.'
         - 'Quiz response received during registration process.'
-    Wl.Catalog.QuickPurchaseTypeSid:
-      type: integer
-      format: int32
-      description: |-
-        List of quick purchase item types.
-
-        Values:
-        - 224 (`CLASSES`): Classes.
-        - 681 (`RESOURCE`): Resource.
-        - 690 (`SERVICE`): Service.
-      enum:
-        - 224
-        - 681
-        - 690
-      x-enum-varnames:
-        - CLASSES
-        - RESOURCE
-        - SERVICE
-      x-enum-descriptions:
-        - Classes.
-        - Resource.
-        - Service.
     Wl.Resource.Layout.Shape.LayoutShapeSid:
       type: integer
       format: int32
