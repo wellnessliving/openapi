@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261019131733
+  version: 1.1.20261019133303
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -106126,6 +106126,118 @@ paths:
       deprecated: true
       x-deprecated: 'New version {@link \Wl\Appointment\Book\Service\ServiceList52Api} should be used instead.'
       x-instance-get-key: 'k_location,k_service_category,k_class_tab,is_backend,uid,is_tab_all'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Book/Service/ServiceListBusiness.json:
+    get:
+      operationId: Wl.Appointment.Book.Service.ServiceListBusiness.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_category:
+                    type: array
+                    description: |-
+                      A list of service categories of the business.
+
+                      Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        a_location:
+                          type: array
+                          description: 'List of location keys where this category has at least one active service.'
+                          items:
+                            type: string
+                        i_sort:
+                          type: integer
+                          format: int32
+                          description: 'Sort order of the category.'
+                        k_service_category:
+                          type: string
+                          description: 'Service category key.'
+                        s_title:
+                          type: string
+                          description: 'Service category title.'
+                      required:
+                        - a_location
+                        - i_sort
+                        - k_service_category
+                        - s_title
+                  a_service:
+                    type: array
+                    description: |-
+                      A list of appointment services of the business.
+
+                      Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        a_location:
+                          type: array
+                          description: 'List of location keys where this service is available.'
+                          items:
+                            type: string
+                        i_sort:
+                          type: integer
+                          format: int32
+                          description: 'Sort order of the service within its category.'
+                        k_service:
+                          type: string
+                          description: 'Service key.'
+                        k_service_category:
+                          type: string
+                          description: 'Service category key.'
+                        s_service:
+                          type: string
+                          description: 'Service title.'
+                      required:
+                        - a_location
+                        - i_sort
+                        - k_service
+                        - k_service_category
+                        - s_service
+                required:
+                  - a_category
+                  - a_service
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Retrieves the full list of appointment services and categories for a business.'
+      description: |-
+        Returns all active appointment services and their categories across every location of the business.
+        Each service and category includes an array of location keys where it is available.
+        All active services are returned: unlike the location-scoped list, the result is not filtered by class tab
+        or by online bookability, and removed locations are skipped.
+        The caller must be a staff member or admin of the business.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key.'
+      x-instance-get-key: k_business
       x-rate-limit:
         -
           limit: 200000
