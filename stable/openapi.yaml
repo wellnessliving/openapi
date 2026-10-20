@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261020073450
+  version: 1.1.20261020081119
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -92263,6 +92263,52 @@ paths:
                             - i_age_to
                             - i_age_to_month
                             - is_age_public
+                        a_config:
+                          type: object
+                          description: |-
+                            The asset's effective booking window policy.
+                            When the asset has its own booking policy, these values come from that policy.
+                            Otherwise, the business-level policy values are used.
+                          properties:
+                            a_member_group_book_window:
+                              type: object
+                              description: |-
+                                Member group overrides for the advance booking window, keyed by member group key.
+                                Each value has the following structure:
+
+
+                                Empty array if no member group overrides are set.
+                              properties:
+                                i_book_future:
+                                  type: integer
+                                  format: int32
+                                  description: 'The advance booking window duration for this member group.'
+                                id_book_future:
+                                  $ref: '#/components/schemas/ADurationSid'
+                                  description: 'The duration type for the advance booking window. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
+                              required:
+                                - i_book_future
+                                - id_book_future
+                            i_book_before:
+                              type: integer
+                              format: int32
+                              description: 'The minimum time before a session starts that a booking can be made.'
+                            i_book_future:
+                              type: integer
+                              format: int32
+                              description: 'The maximum advance booking window duration.'
+                            id_book_before:
+                              $ref: '#/components/schemas/ADurationSid'
+                              description: 'The duration type for the minimum booking time. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
+                            id_book_future:
+                              $ref: '#/components/schemas/ADurationSid'
+                              description: 'The duration type for the advance booking window. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
+                          required:
+                            - a_member_group_book_window
+                            - i_book_before
+                            - i_book_future
+                            - id_book_before
+                            - id_book_future
                         a_class_tab:
                           type: array
                           description: |-
@@ -92392,6 +92438,7 @@ paths:
                           description: 'String representation of the deny reason. `null` if no deny reason.'
                       required:
                         - a_age_restrictions
+                        - a_config
                         - a_class_tab
                         - a_direct_link
                         - a_image
