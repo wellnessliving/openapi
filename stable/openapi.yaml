@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261020024444
+  version: 1.1.20261020041714
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -24182,6 +24182,93 @@ paths:
                           - is_support_magtek
                       -
                         type: object
+                        title: Nuvei
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Present only when at least one location has an active merchant configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: |-
+                                  Terminal lists grouped by connection type.
+                                  Both lists contain identical entries - the same terminal appears in both.
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet terminals, plus one synthetic `MagTek` USB entry appended last when
+                                      [NuveiTerminalTypeSid::supportsMagTekUsb()](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) returns `true`.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants, or\n[TerminalTypeSid::MAGTEK_USB](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) for the synthetic `MagTek` USB entry." }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Always `null`. Present only in the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
                         title: Nmi
                         properties:
                           id_device:
@@ -24273,93 +24360,6 @@ paths:
                             description: 'Whether `MagTek` USB reader is supported.'
                         required:
                           - a_terminal_location
-                          - has_expire_date
-                          - has_readers_selection
-                          - is_support_magtek
-                      -
-                        type: object
-                        title: Nuvei
-                        properties:
-                          a_terminal_location:
-                            type: object
-                            description: |-
-                              Terminal configuration keyed by location key.
-
-                              Present only when at least one location has an active merchant configured.
-                              Each value:
-                            properties:
-                              a_terminal:
-                                type: object
-                                description: |-
-                                  Terminal lists grouped by connection type.
-                                  Both lists contain identical entries - the same terminal appears in both.
-                                properties:
-                                  a_terminal_elevate:
-                                    type: object
-                                    description: 'Elevate-model terminals. Each element:'
-                                    properties:
-                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
-                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
-                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
-                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
-                                      k_terminal: { type: string, description: 'Terminal key.' }
-                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
-                                      text_name: { type: string, description: 'Human-readable terminal label.' }
-                                    required:
-                                      - can_cancel_swipe_from_pos
-                                      - id_model
-                                      - id_status
-                                      - id_type
-                                      - k_terminal
-                                      - text_id
-                                      - text_name
-                                  a_terminal_web:
-                                    type: object
-                                    description: |-
-                                      Ethernet terminals, plus one synthetic `MagTek` USB entry appended last when
-                                      [NuveiTerminalTypeSid::supportsMagTekUsb()](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) returns `true`.
-                                      Each element:
-                                    properties:
-                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
-                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
-                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
-                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants, or\n[TerminalTypeSid::MAGTEK_USB](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) for the synthetic `MagTek` USB entry." }
-                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
-                                      s_serial_number: { type: [string, 'null'], description: 'Always `null`. Present only in the synthetic `MagTek` USB entry.' }
-                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
-                                      text_name: { type: string, description: 'Human-readable terminal label.' }
-                                    required:
-                                      - can_cancel_swipe_from_pos
-                                      - id_model
-                                      - id_status
-                                      - id_type
-                                      - k_terminal
-                                      - s_serial_number
-                                      - text_id
-                                      - text_name
-                                required:
-                                  - a_terminal_elevate
-                                  - a_terminal_web
-                              text_location_name:
-                                type: string
-                                description: 'Display name of the location.'
-                            required:
-                              - a_terminal
-                              - text_location_name
-                          can_cancel_swipe_from_pos:
-                            type: boolean
-                            description: 'Whether card swipe can be cancelled from the POS terminal.'
-                          has_expire_date:
-                            type: boolean
-                            description: 'Whether the card expiry date entry is required.'
-                          has_readers_selection:
-                            type: boolean
-                            description: 'Whether the card reader selection UI is shown.'
-                          is_support_magtek:
-                            type: boolean
-                            description: 'Whether `MagTek` USB reader is supported.'
-                        required:
-                          - can_cancel_swipe_from_pos
                           - has_expire_date
                           - has_readers_selection
                           - is_support_magtek
@@ -24729,6 +24729,93 @@ paths:
                           - is_support_magtek
                       -
                         type: object
+                        title: Nuvei
+                        properties:
+                          a_terminal_location:
+                            type: object
+                            description: |-
+                              Terminal configuration keyed by location key.
+
+                              Present only when at least one location has an active merchant configured.
+                              Each value:
+                            properties:
+                              a_terminal:
+                                type: object
+                                description: |-
+                                  Terminal lists grouped by connection type.
+                                  Both lists contain identical entries - the same terminal appears in both.
+                                properties:
+                                  a_terminal_elevate:
+                                    type: object
+                                    description: 'Elevate-model terminals. Each element:'
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
+                                      k_terminal: { type: string, description: 'Terminal key.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - text_id
+                                      - text_name
+                                  a_terminal_web:
+                                    type: object
+                                    description: |-
+                                      Ethernet terminals, plus one synthetic `MagTek` USB entry appended last when
+                                      [NuveiTerminalTypeSid::supportsMagTekUsb()](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) returns `true`.
+                                      Each element:
+                                    properties:
+                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
+                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
+                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
+                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants, or\n[TerminalTypeSid::MAGTEK_USB](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) for the synthetic `MagTek` USB entry." }
+                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
+                                      s_serial_number: { type: [string, 'null'], description: 'Always `null`. Present only in the synthetic `MagTek` USB entry.' }
+                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
+                                      text_name: { type: string, description: 'Human-readable terminal label.' }
+                                    required:
+                                      - can_cancel_swipe_from_pos
+                                      - id_model
+                                      - id_status
+                                      - id_type
+                                      - k_terminal
+                                      - s_serial_number
+                                      - text_id
+                                      - text_name
+                                required:
+                                  - a_terminal_elevate
+                                  - a_terminal_web
+                              text_location_name:
+                                type: string
+                                description: 'Display name of the location.'
+                            required:
+                              - a_terminal
+                              - text_location_name
+                          can_cancel_swipe_from_pos:
+                            type: boolean
+                            description: 'Whether card swipe can be cancelled from the POS terminal.'
+                          has_expire_date:
+                            type: boolean
+                            description: 'Whether the card expiry date entry is required.'
+                          has_readers_selection:
+                            type: boolean
+                            description: 'Whether the card reader selection UI is shown.'
+                          is_support_magtek:
+                            type: boolean
+                            description: 'Whether `MagTek` USB reader is supported.'
+                        required:
+                          - can_cancel_swipe_from_pos
+                          - has_expire_date
+                          - has_readers_selection
+                          - is_support_magtek
+                      -
+                        type: object
                         title: Nmi
                         properties:
                           id_device:
@@ -24820,93 +24907,6 @@ paths:
                             description: 'Whether `MagTek` USB reader is supported.'
                         required:
                           - a_terminal_location
-                          - has_expire_date
-                          - has_readers_selection
-                          - is_support_magtek
-                      -
-                        type: object
-                        title: Nuvei
-                        properties:
-                          a_terminal_location:
-                            type: object
-                            description: |-
-                              Terminal configuration keyed by location key.
-
-                              Present only when at least one location has an active merchant configured.
-                              Each value:
-                            properties:
-                              a_terminal:
-                                type: object
-                                description: |-
-                                  Terminal lists grouped by connection type.
-                                  Both lists contain identical entries - the same terminal appears in both.
-                                properties:
-                                  a_terminal_elevate:
-                                    type: object
-                                    description: 'Elevate-model terminals. Each element:'
-                                    properties:
-                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
-                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
-                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
-                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: 'Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.' }
-                                      k_terminal: { type: string, description: 'Terminal key.' }
-                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway.' }
-                                      text_name: { type: string, description: 'Human-readable terminal label.' }
-                                    required:
-                                      - can_cancel_swipe_from_pos
-                                      - id_model
-                                      - id_status
-                                      - id_type
-                                      - k_terminal
-                                      - text_id
-                                      - text_name
-                                  a_terminal_web:
-                                    type: object
-                                    description: |-
-                                      Ethernet terminals, plus one synthetic `MagTek` USB entry appended last when
-                                      [NuveiTerminalTypeSid::supportsMagTekUsb()](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) returns `true`.
-                                      Each element:
-                                    properties:
-                                      can_cancel_swipe_from_pos: { type: boolean, description: 'Whether swipe can be cancelled from the POS terminal.' }
-                                      id_model: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal model. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants.\n`null` for the synthetic `MagTek` USB entry." }
-                                      id_status: { $ref: '#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid', description: 'Terminal status. One of [TerminalStatusSid](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalStatusSid) constants.' }
-                                      id_type: { $ref: '#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid', description: "Terminal type. One of [NuveiTerminalTypeSid](#/components/schemas/Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid) constants, or\n[TerminalTypeSid::MAGTEK_USB](#/components/schemas/Thoth.PayProcessor.Terminal.TerminalTypeSid) for the synthetic `MagTek` USB entry." }
-                                      k_terminal: { type: [string, 'null'], description: "Terminal key. \n`null` for the synthetic `MagTek` USB entry." }
-                                      s_serial_number: { type: [string, 'null'], description: 'Always `null`. Present only in the synthetic `MagTek` USB entry.' }
-                                      text_id: { type: string, description: 'Terminal ID assigned by the gateway, or `id_type_N` for the synthetic `MagTek` USB entry.' }
-                                      text_name: { type: string, description: 'Human-readable terminal label.' }
-                                    required:
-                                      - can_cancel_swipe_from_pos
-                                      - id_model
-                                      - id_status
-                                      - id_type
-                                      - k_terminal
-                                      - s_serial_number
-                                      - text_id
-                                      - text_name
-                                required:
-                                  - a_terminal_elevate
-                                  - a_terminal_web
-                              text_location_name:
-                                type: string
-                                description: 'Display name of the location.'
-                            required:
-                              - a_terminal
-                              - text_location_name
-                          can_cancel_swipe_from_pos:
-                            type: boolean
-                            description: 'Whether card swipe can be cancelled from the POS terminal.'
-                          has_expire_date:
-                            type: boolean
-                            description: 'Whether the card expiry date entry is required.'
-                          has_readers_selection:
-                            type: boolean
-                            description: 'Whether the card reader selection UI is shown.'
-                          is_support_magtek:
-                            type: boolean
-                            description: 'Whether `MagTek` USB reader is supported.'
-                        required:
-                          - can_cancel_swipe_from_pos
                           - has_expire_date
                           - has_readers_selection
                           - is_support_magtek
@@ -25761,743 +25761,6 @@ paths:
         -
           limit: 200000
           period: 3600
-  /Wl/Pay/Processor/StripeCom/StripeComConnectionToken.json:
-    post:
-      operationId: Wl.Pay.Processor.StripeCom.StripeComConnectionToken.post
-      responses:
-        '200':
-          description: 'Successful response.'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  s_secret:
-                    type: string
-                    description: 'Connection token secret key.'
-                required:
-                  - s_secret
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Gets a secret from a connection token for the Stripe Terminal SDK.'
-      description: |-
-        Validates the business merchant, the payer, and that the currency supports point-of-sale payments, then
-        creates a Stripe Terminal connection token, optionally scoped to the given location, and returns its secret.
-      tags:
-        - StripeCom
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                id_currency:
-                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
-                  description: |-
-                    ID of the currency.
-
-                    One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
-                id_pay_actor:
-                  $ref: '#/components/schemas/RsPayActorSid'
-                  description: |-
-                    ID of the actor.
-
-                    One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
-                k_business:
-                  type: string
-                  description: 'Key of the business.'
-                k_business_merchant:
-                  type: string
-                  description: 'Key of the business merchant to get the public key for.'
-                k_location:
-                  type:
-                    - string
-                    - 'null'
-                  description: |-
-                    Location key that this connection token is scoped to.
-
-                    If you provide a location, the connection token is only usable with smart readers assigned to that location.
-                    If you do not provide a location, the connection token is usable with all readers.
-                    For Bluetooth readers, the location of a connection token has no effect.
-                    This ensures that Bluetooth readers near you are always discoverable.
-
-                    `null` if the connection token should be usable with all readers.
-                uid_purchase:
-                  type: string
-                  description: 'Payment owner user key.'
-              required:
-                - id_currency
-                - id_pay_actor
-                - k_business
-                - k_business_merchant
-                - uid_purchase
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
-  /Wl/Pay/Processor/StripeCom/StripeComCharge.json:
-    get:
-      operationId: Wl.Pay.Processor.StripeCom.StripeComCharge.get
-      responses:
-        '200':
-          description: 'Successful response.'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  o_payment_method_details:
-                    type: object
-                    description: 'Details about the payment method at the time of the transaction:'
-                    properties:
-                      s_generated_card_id:
-                        type: string
-                        description: 'ID of a card payment method generated.'
-                      text_brand:
-                        type: string
-                        description: 'Card brand, like visa or mastercard.'
-                      text_cardholder_name:
-                        type: string
-                        description: 'The cardholder name as read from the card.'
-                      text_exp_month:
-                        type: string
-                        description: "Two-digit number representing the card's expiration month."
-                      text_exp_year:
-                        type: string
-                        description: "Four-digit number representing the card's expiration year."
-                      text_last4:
-                        type: string
-                        description: 'Last four digits of the card number.'
-                    required:
-                      - s_generated_card_id
-                      - text_brand
-                      - text_cardholder_name
-                      - text_exp_month
-                      - text_exp_year
-                      - text_last4
-                  s_payment_method:
-                    type: string
-                    description: 'ID of the payment method used in this charge.'
-                required:
-                  - o_payment_method_details
-                  - s_payment_method
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Gets Stripe charge information.'
-      description: |-
-        Validates the business merchant and payer, retrieves the charge from Stripe by its charge id,
-        and returns the payment method used along with the payment method details captured at the time
-        of the transaction.
-      tags:
-        - StripeCom
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-        -
-          name: id_currency
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/Core.Locale.CurrencySid'
-          description: |-
-            ID of the currency.
-
-            One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
-        -
-          name: id_pay_actor
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/RsPayActorSid'
-          description: |-
-            ID of the actor.
-
-            One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
-        -
-          name: k_business
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Key of the business.'
-        -
-          name: k_business_merchant
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Key of the business merchant to get the public key for.'
-        -
-          name: s_charge
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Charge id to get data for.'
-        -
-          name: uid_purchase
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Payment owner user key.'
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
-  /Wl/Pay/Processor/StripeCom/StripeComPayInit.json:
-    post:
-      operationId: Wl.Pay.Processor.StripeCom.StripeComPayInit.post
-      responses:
-        '200':
-          description: 'Successful response.'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id_status:
-                    $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.PaymentIntentStatusSid'
-                    description: 'Status of this Payment Intent.'
-                  k_pay_transaction:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Key of payment transaction that was created.
-
-                      `null` in case when not initialized yet.
-                  m_amount:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Payment amount.
-
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
-                  m_surcharge:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Surcharge amount.
-
-                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
-                  s_client_secret:
-                    type: string
-                    description: 'Payment Intent client secret key.'
-                  s_payment_intent:
-                    type: string
-                    description: 'Payment intent ID.'
-                  text_message:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Error message.
-
-                      `null` in case response has not received yet or request is not failed.
-                required:
-                  - id_status
-                  - s_client_secret
-                  - s_payment_intent
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Initializes a `Stripe` payment.'
-      description: |-
-        Starts a payment transaction and creates a not-captured Payment Intent at `stripe.com`, returning
-         its status and client secret to continue the payment flow on the frontend.
-      tags:
-        - Payments
-        - StripeCom
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                a_card:
-                  type:
-                    - object
-                    - 'null'
-                  description: |-
-                    Credit card data.
-
-                    Contents of the payment source as it presents on the payment form.
-
-                    Supplied in case payment source is card.
-                    `null` if payment source is other than card or payment is initialized before card data is known.
-                  properties:
-                    a_pay_address:
-                      type: object
-                      description: 'Payment address for address edit widget. Used only if `is_new` is `true`:'
-                      properties:
-                        is_new:
-                          type: boolean
-                          description: '`true` if user has chosen to add new address, `false` otherwise.'
-                        k_geo_country:
-                          type: string
-                          description: 'Key of the country.  Used only if `is_new` is `true`.'
-                        k_geo_region:
-                          type: string
-                          description: 'Key of the region.  Used only if `is_new` is `true`.'
-                        k_pay_address:
-                          type:
-                            - string
-                            - 'null'
-                          description: |-
-                            Chosen payment address key. 
-                            Set even if user decided to add new address.
-                        s_city:
-                          type: string
-                          description: 'City name. Used only if `is_new` is `true`.'
-                        s_name:
-                          type: string
-                          description: "User's full name."
-                        s_phone:
-                          type: string
-                          description: 'Phone number. Used only if `is_new` is `true`.'
-                        s_postal:
-                          type: string
-                          description: 'Postal code. Used only if `is_new` is `true`.'
-                        s_street1:
-                          type: string
-                          description: 'First address line. Used only if `is_new` is `true`.'
-                        s_street2:
-                          type: string
-                          description: 'Second address line. Used only if `is_new` is `true`.'
-                        text_mail:
-                          type:
-                            - string
-                            - 'null'
-                          description: "User's email. `null` if not specified. Used only if `is_new` is `true`."
-                    i_csc:
-                      type: integer
-                      format: int32
-                      description: 'Card CSC code. Used only if `is_new` is `true`.'
-                    i_month:
-                      type: integer
-                      format: int32
-                      description: 'Card expiration month. Used only if `is_new` is `true`.'
-                    i_year:
-                      type: integer
-                      format: int32
-                      description: 'Card expiration year. Used only if `is_new` is `true`.'
-                    id_card_type:
-                      $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
-                      description: 'Card type. One of [CardTypeEnum](#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum) constants as int. Used only if `is_new` is `true`.'
-                    is_default:
-                      type: boolean
-                      description: 'If the card should be made the default payment method. Used only if `is_new` is `true`.'
-                    is_new:
-                      type: boolean
-                      description: 'Whether a new card is being added instead of an existing one being selected.'
-                    is_save:
-                      type: boolean
-                      description: 'If the card information should be saved for future transactions. Used only if `is_new` is `true`.'
-                    k_pay_bank:
-                      type: string
-                      description: 'Selected payment card key. Used only if `is_new` is `false`. `0` if no existing card is selected.'
-                    s_name:
-                      type: string
-                      description: 'Card nickname. Used only if `is_new` is `true`.'
-                    s_number:
-                      type: string
-                      description: 'Card number. Used only if `is_new` is `true`.'
-                  required:
-                    - is_new
-                id_currency:
-                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
-                  description: |-
-                    ID of the currency.
-
-                    One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
-
-                    `null` in case when not initialized yet.
-                id_pay_actor:
-                  $ref: '#/components/schemas/RsPayActorSid'
-                  description: |-
-                    ID of the actor.
-
-                    One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
-
-                    `null` in case when not initialized yet.
-                id_pay_method:
-                  $ref: '#/components/schemas/RsPayMethodSid'
-                  description: |-
-                    ID of pay method.
-
-                    One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
-
-                    `null` in case when not initialized yet.
-                is_authorize:
-                  type: boolean
-                  description: |-
-                    Whether authorization or capture should be performed.
-
-                    `true` (or anything that is not empty) to perform authorization.
-
-                    `false` (or anything that is empty, or do not pass this value) to charge the payment amount.
-                is_pos:
-                  type: boolean
-                  description: '`true` if card swiper is used, `false` otherwise.'
-                is_stripe_elements:
-                  type: boolean
-                  description: '`true` if Stripe Payment Element form (@link https://stripe.com/docs/payments/elements) is used, `false` otherwise.'
-                k_business:
-                  type:
-                    - string
-                    - 'null'
-                  description: |-
-                    Key of the business which receives the payment.
-
-                    `null` in case when not initialized yet.
-                k_business_merchant:
-                  type:
-                    - string
-                    - 'null'
-                  description: |-
-                    Key of the business merchant that should be used to perform the request.
-
-                    `null` in case when not initialized yet.
-                k_pay_method:
-                  type:
-                    - string
-                    - 'null'
-                  description: |-
-                    Key of a custom payment method.
-
-                    `null` in case when not initialized yet or empty if payment is performed with a standard payment method.
-                m_amount:
-                  type:
-                    - string
-                    - 'null'
-                  description: |-
-                    Payment amount.
-
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
-                m_surcharge:
-                  type:
-                    - string
-                    - 'null'
-                  description: |-
-                    Surcharge amount.
-
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
-                s_payment_method:
-                  type:
-                    - string
-                    - 'null'
-                  description: |-
-                    Payment method ID.
-
-                    `null` if Payment intent must be created without existing Payment method.
-                uid_purchase:
-                  type:
-                    - string
-                    - 'null'
-                  description: |-
-                    Payment owner user key.
-
-                    `null` in case when not initialized yet or if pay owner is anonymous.
-              required:
-                - is_authorize
-                - is_pos
-                - is_stripe_elements
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
-  /Wl/Pay/Processor/StripeCom/PaymentIntentUpdate.json:
-    post:
-      operationId: Wl.Pay.Processor.StripeCom.PaymentIntentUpdate.post
-      responses:
-        '200':
-          description: 'Successful response.'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Updates a `Stripe` Payment Intent.'
-      description: |-
-        Adjusts the amount and surcharge of the Payment Intent created for the Stripe Payment Element
-         form when the cart contents change, keeping the underlying payment transaction in sync.
-      tags:
-        - Payments
-        - StripeCom
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-        -
-          name: id_pay_actor
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/RsPayActorSid'
-          description: 'ID of the actor. One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.'
-        -
-          name: k_business
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Key of the business to update Payment Intent for.'
-        -
-          name: k_business_merchant
-          in: query
-          required: true
-          schema:
-            type: string
-          description: 'Key of the business merchant to update Payment Intent for.'
-        -
-          name: k_pay_transaction
-          in: query
-          required: true
-          schema:
-            type: string
-          description: |-
-            Key of the payment transaction to update.
-            Required.
-        -
-          name: s_payment_intent
-          in: query
-          required: true
-          schema:
-            type: string
-          description: |-
-            Payment intent ID to update.
-            Required.
-        -
-          name: uid_purchase
-          in: query
-          required: false
-          schema:
-            type:
-              - string
-              - 'null'
-          description: |-
-            Payment owner user key.
-            `null` if pay owner is anonymous.
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                id_currency:
-                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
-                  description: |-
-                    ID of the currency.
-                    Required.
-                m_amount:
-                  type: string
-                  description: |-
-                    Payment amount to set.
-                    Required.
-                  default: '0.00'
-                m_surcharge:
-                  type: string
-                  description: |-
-                    Surcharge amount to set.
-                    Required.
-                  default: '0.00'
-              required:
-                - id_currency
-                - m_amount
-                - m_surcharge
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
-  /Wl/Pay/Processor/StripeCom/StripeComKey.json:
-    post:
-      operationId: Wl.Pay.Processor.StripeCom.StripeComKey.post
-      responses:
-        '200':
-          description: 'Successful response.'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  s_public:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Merchant public key.
-
-                      `null` before the key is set.
-                      It is set by `post()`.
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Gets the `Stripe` public key for a merchant.'
-      description: |-
-        Returns the publishable key configured for the business merchant, so it can be used by the
-         frontend to initialize `Stripe` payment elements.
-      tags:
-        - Payments
-        - StripeCom
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                id_pay_actor:
-                  $ref: '#/components/schemas/RsPayActorSid'
-                  description: 'ID of the actor.'
-                k_business:
-                  type: string
-                  description: 'Key of the business.'
-                k_business_merchant:
-                  type: string
-                  description: 'Key of the business merchant to get the public key for.'
-                uid_purchase:
-                  type: string
-                  description: 'Payment owner user key.'
-              required:
-                - id_pay_actor
-                - k_business
-                - k_business_merchant
-                - uid_purchase
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
-  /Wl/Pay/Processor/StripeCom/StripeComPaymentIntentCancel.json:
-    post:
-      operationId: Wl.Pay.Processor.StripeCom.StripeComPaymentIntentCancel.post
-      responses:
-        '200':
-          description: 'Successful response.'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Cancels a `Stripe` Payment Intent.'
-      description: |-
-        Verifies that the Payment Intent belongs to the current payer authentication session, then
-         refunds the associated payment transaction to release the reserved amount.
-      tags:
-        - Payments
-        - StripeCom
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                id_pay_actor:
-                  $ref: '#/components/schemas/RsPayActorSid'
-                  description: 'ID of the actor.'
-                k_business:
-                  type: string
-                  description: 'Key of the business.'
-                k_business_merchant:
-                  type: string
-                  description: 'Key of the business merchant, that processes payment.'
-                k_pay_transaction:
-                  type: string
-                  description: 'Pay transaction key, which was used to create payment intent.'
-                s_payment_intent:
-                  type: string
-                  description: 'Payment intent ID.'
-                uid_purchase:
-                  type: string
-                  description: 'Payment owner user key.'
-              required:
-                - id_pay_actor
-                - k_business
-                - k_business_merchant
-                - k_pay_transaction
-                - s_payment_intent
-                - uid_purchase
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
   /Wl/Pay/Processor/CyberSource/CsPaEnrollment.json:
     post:
       operationId: Wl.Pay.Processor.CyberSource.CsPaEnrollment.post
@@ -27123,26 +26386,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  m_amount:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Payment amount.
-
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
-                  m_surcharge:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Surcharge amount.
-
-                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   text_message:
                     type:
                       - string
@@ -27251,10 +26494,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -27262,8 +26502,7 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
                 s_nuvei_order:
                   type:
                     - string
@@ -27318,26 +26557,6 @@ paths:
                       Key of payment transaction that was created.
 
                       `null` in case when not initialized yet.
-                  m_amount:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Payment amount.
-
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
-                  m_surcharge:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Surcharge amount.
-
-                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   text_message:
                     type:
                       - string
@@ -27533,10 +26752,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -27544,8 +26760,7 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
                 uid_purchase:
                   type:
                     - string
@@ -27582,26 +26797,6 @@ paths:
                       Key of payment transaction that was created.
 
                       `null` in case when not initialized yet.
-                  m_amount:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Payment amount.
-
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
-                  m_surcharge:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Surcharge amount.
-
-                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   s_nuvei_order:
                     type:
                       - string
@@ -27719,10 +26914,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -27730,8 +26922,7 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
                 uid_purchase:
                   type:
                     - string
@@ -27742,6 +26933,719 @@ paths:
                     `null` in case when not initialized yet or if pay owner is anonymous.
               required:
                 - is_authorize
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/StripeCom/StripeComCharge.json:
+    get:
+      operationId: Wl.Pay.Processor.StripeCom.StripeComCharge.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  o_payment_method_details:
+                    type: object
+                    description: 'Details about the payment method at the time of the transaction:'
+                    properties:
+                      s_generated_card_id:
+                        type: string
+                        description: 'ID of a card payment method generated.'
+                      text_brand:
+                        type: string
+                        description: 'Card brand, like visa or mastercard.'
+                      text_cardholder_name:
+                        type: string
+                        description: 'The cardholder name as read from the card.'
+                      text_exp_month:
+                        type: string
+                        description: "Two-digit number representing the card's expiration month."
+                      text_exp_year:
+                        type: string
+                        description: "Four-digit number representing the card's expiration year."
+                      text_last4:
+                        type: string
+                        description: 'Last four digits of the card number.'
+                    required:
+                      - s_generated_card_id
+                      - text_brand
+                      - text_cardholder_name
+                      - text_exp_month
+                      - text_exp_year
+                      - text_last4
+                  s_payment_method:
+                    type: string
+                    description: 'ID of the payment method used in this charge.'
+                required:
+                  - o_payment_method_details
+                  - s_payment_method
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets Stripe charge information.'
+      description: |-
+        Validates the business merchant and payer, retrieves the charge from Stripe by its charge id,
+        and returns the payment method used along with the payment method details captured at the time
+        of the transaction.
+      tags:
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_currency
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Core.Locale.CurrencySid'
+          description: |-
+            ID of the currency.
+
+            One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
+        -
+          name: id_pay_actor
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayActorSid'
+          description: |-
+            ID of the actor.
+
+            One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business.'
+        -
+          name: k_business_merchant
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business merchant to get the public key for.'
+        -
+          name: s_charge
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Charge id to get data for.'
+        -
+          name: uid_purchase
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Payment owner user key.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/StripeCom/StripeComConnectionToken.json:
+    post:
+      operationId: Wl.Pay.Processor.StripeCom.StripeComConnectionToken.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_secret:
+                    type: string
+                    description: 'Connection token secret key.'
+                required:
+                  - s_secret
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets a secret from a connection token for the Stripe Terminal SDK.'
+      description: |-
+        Validates the business merchant, the payer, and that the currency supports point-of-sale payments, then
+        creates a Stripe Terminal connection token, optionally scoped to the given location, and returns its secret.
+      tags:
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+
+                    One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: |-
+                    ID of the actor.
+
+                    One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant to get the public key for.'
+                k_location:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Location key that this connection token is scoped to.
+
+                    If you provide a location, the connection token is only usable with smart readers assigned to that location.
+                    If you do not provide a location, the connection token is usable with all readers.
+                    For Bluetooth readers, the location of a connection token has no effect.
+                    This ensures that Bluetooth readers near you are always discoverable.
+
+                    `null` if the connection token should be usable with all readers.
+                uid_purchase:
+                  type: string
+                  description: 'Payment owner user key.'
+              required:
+                - id_currency
+                - id_pay_actor
+                - k_business
+                - k_business_merchant
+                - uid_purchase
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/StripeCom/StripeComPayInit.json:
+    post:
+      operationId: Wl.Pay.Processor.StripeCom.StripeComPayInit.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_status:
+                    $ref: '#/components/schemas/Thoth.PayProcessor.StripeCom.PaymentIntentStatusSid'
+                    description: 'Status of this Payment Intent.'
+                  k_pay_transaction:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Key of payment transaction that was created.
+
+                      `null` in case when not initialized yet.
+                  s_client_secret:
+                    type: string
+                    description: 'Payment Intent client secret key.'
+                  s_payment_intent:
+                    type: string
+                    description: 'Payment intent ID.'
+                  text_message:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Error message.
+
+                      `null` in case response has not received yet or request is not failed.
+                required:
+                  - id_status
+                  - s_client_secret
+                  - s_payment_intent
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Initializes a `Stripe` payment.'
+      description: |-
+        Starts a payment transaction and creates a not-captured Payment Intent at `stripe.com`, returning
+         its status and client secret to continue the payment flow on the frontend.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_card:
+                  type:
+                    - object
+                    - 'null'
+                  description: |-
+                    Credit card data.
+
+                    Contents of the payment source as it presents on the payment form.
+
+                    Supplied in case payment source is card.
+                    `null` if payment source is other than card or payment is initialized before card data is known.
+                  properties:
+                    a_pay_address:
+                      type: object
+                      description: 'Payment address for address edit widget. Used only if `is_new` is `true`:'
+                      properties:
+                        is_new:
+                          type: boolean
+                          description: '`true` if user has chosen to add new address, `false` otherwise.'
+                        k_geo_country:
+                          type: string
+                          description: 'Key of the country.  Used only if `is_new` is `true`.'
+                        k_geo_region:
+                          type: string
+                          description: 'Key of the region.  Used only if `is_new` is `true`.'
+                        k_pay_address:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Chosen payment address key. 
+                            Set even if user decided to add new address.
+                        s_city:
+                          type: string
+                          description: 'City name. Used only if `is_new` is `true`.'
+                        s_name:
+                          type: string
+                          description: "User's full name."
+                        s_phone:
+                          type: string
+                          description: 'Phone number. Used only if `is_new` is `true`.'
+                        s_postal:
+                          type: string
+                          description: 'Postal code. Used only if `is_new` is `true`.'
+                        s_street1:
+                          type: string
+                          description: 'First address line. Used only if `is_new` is `true`.'
+                        s_street2:
+                          type: string
+                          description: 'Second address line. Used only if `is_new` is `true`.'
+                        text_mail:
+                          type:
+                            - string
+                            - 'null'
+                          description: "User's email. `null` if not specified. Used only if `is_new` is `true`."
+                    i_csc:
+                      type: integer
+                      format: int32
+                      description: 'Card CSC code. Used only if `is_new` is `true`.'
+                    i_month:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration month. Used only if `is_new` is `true`.'
+                    i_year:
+                      type: integer
+                      format: int32
+                      description: 'Card expiration year. Used only if `is_new` is `true`.'
+                    id_card_type:
+                      $ref: '#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum'
+                      description: 'Card type. One of [CardTypeEnum](#/components/schemas/Thoth.WlPay.Bank.Card.CardTypeEnum) constants as int. Used only if `is_new` is `true`.'
+                    is_default:
+                      type: boolean
+                      description: 'If the card should be made the default payment method. Used only if `is_new` is `true`.'
+                    is_new:
+                      type: boolean
+                      description: 'Whether a new card is being added instead of an existing one being selected.'
+                    is_save:
+                      type: boolean
+                      description: 'If the card information should be saved for future transactions. Used only if `is_new` is `true`.'
+                    k_pay_bank:
+                      type: string
+                      description: 'Selected payment card key. Used only if `is_new` is `false`. `0` if no existing card is selected.'
+                    s_name:
+                      type: string
+                      description: 'Card nickname. Used only if `is_new` is `true`.'
+                    s_number:
+                      type: string
+                      description: 'Card number. Used only if `is_new` is `true`.'
+                  required:
+                    - is_new
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+
+                    One of [CurrencySid](#/components/schemas/Core.Locale.CurrencySid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: |-
+                    ID of the actor.
+
+                    One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.
+
+                    `null` in case when not initialized yet.
+                id_pay_method:
+                  $ref: '#/components/schemas/RsPayMethodSid'
+                  description: |-
+                    ID of pay method.
+
+                    One of [RsPayMethodSid](#/components/schemas/RsPayMethodSid) constants.
+
+                    `null` in case when not initialized yet.
+                is_authorize:
+                  type: boolean
+                  description: |-
+                    Whether authorization or capture should be performed.
+
+                    `true` (or anything that is not empty) to perform authorization.
+
+                    `false` (or anything that is empty, or do not pass this value) to charge the payment amount.
+                is_pos:
+                  type: boolean
+                  description: '`true` if card swiper is used, `false` otherwise.'
+                is_stripe_elements:
+                  type: boolean
+                  description: '`true` if Stripe Payment Element form (@link https://stripe.com/docs/payments/elements) is used, `false` otherwise.'
+                k_business:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business which receives the payment.
+
+                    `null` in case when not initialized yet.
+                k_business_merchant:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the business merchant that should be used to perform the request.
+
+                    `null` in case when not initialized yet.
+                k_pay_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of a custom payment method.
+
+                    `null` in case when not initialized yet or empty if payment is performed with a standard payment method.
+                m_amount:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment amount.
+
+                    `null` in case when not initialized yet.
+                m_surcharge:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Surcharge amount.
+
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
+                s_payment_method:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment method ID.
+
+                    `null` if Payment intent must be created without existing Payment method.
+                uid_purchase:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Payment owner user key.
+
+                    `null` in case when not initialized yet or if pay owner is anonymous.
+              required:
+                - is_authorize
+                - is_pos
+                - is_stripe_elements
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/StripeCom/PaymentIntentUpdate.json:
+    post:
+      operationId: Wl.Pay.Processor.StripeCom.PaymentIntentUpdate.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Updates a `Stripe` Payment Intent.'
+      description: |-
+        Adjusts the amount and surcharge of the Payment Intent created for the Stripe Payment Element
+         form when the cart contents change, keeping the underlying payment transaction in sync.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: id_pay_actor
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/RsPayActorSid'
+          description: 'ID of the actor. One of [RsPayActorSid](#/components/schemas/RsPayActorSid) constants.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business to update Payment Intent for.'
+        -
+          name: k_business_merchant
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business merchant to update Payment Intent for.'
+        -
+          name: k_pay_transaction
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the payment transaction to update.
+            Required.
+        -
+          name: s_payment_intent
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Payment intent ID to update.
+            Required.
+        -
+          name: uid_purchase
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Payment owner user key.
+            `null` if pay owner is anonymous.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_currency:
+                  $ref: '#/components/schemas/Core.Locale.CurrencySid'
+                  description: |-
+                    ID of the currency.
+                    Required.
+                m_amount:
+                  type: string
+                  description: |-
+                    Payment amount to set.
+                    Required.
+                  default: '0.00'
+                m_surcharge:
+                  type: string
+                  description: |-
+                    Surcharge amount to set.
+                    Required.
+                  default: '0.00'
+              required:
+                - id_currency
+                - m_amount
+                - m_surcharge
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/StripeCom/StripeComKey.json:
+    post:
+      operationId: Wl.Pay.Processor.StripeCom.StripeComKey.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_public:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Merchant public key.
+
+                      `null` before the key is set.
+                      It is set by `post()`.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets the `Stripe` public key for a merchant.'
+      description: |-
+        Returns the publishable key configured for the business merchant, so it can be used by the
+         frontend to initialize `Stripe` payment elements.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: 'ID of the actor.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant to get the public key for.'
+                uid_purchase:
+                  type: string
+                  description: 'Payment owner user key.'
+              required:
+                - id_pay_actor
+                - k_business
+                - k_business_merchant
+                - uid_purchase
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Pay/Processor/StripeCom/StripeComPaymentIntentCancel.json:
+    post:
+      operationId: Wl.Pay.Processor.StripeCom.StripeComPaymentIntentCancel.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Cancels a `Stripe` Payment Intent.'
+      description: |-
+        Verifies that the Payment Intent belongs to the current payer authentication session, then
+         refunds the associated payment transaction to release the reserved amount.
+      tags:
+        - Payments
+        - StripeCom
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_pay_actor:
+                  $ref: '#/components/schemas/RsPayActorSid'
+                  description: 'ID of the actor.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_business_merchant:
+                  type: string
+                  description: 'Key of the business merchant, that processes payment.'
+                k_pay_transaction:
+                  type: string
+                  description: 'Pay transaction key, which was used to create payment intent.'
+                s_payment_intent:
+                  type: string
+                  description: 'Payment intent ID.'
+                uid_purchase:
+                  type: string
+                  description: 'Payment owner user key.'
+              required:
+                - id_pay_actor
+                - k_business
+                - k_business_merchant
+                - k_pay_transaction
+                - s_payment_intent
+                - uid_purchase
       x-rate-limit:
         -
           limit: 200000
@@ -118172,26 +118076,6 @@ paths:
                       Key of payment transaction that was created.
 
                       `null` in case when not initialized yet.
-                  m_amount:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Payment amount.
-
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
-                  m_surcharge:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      Surcharge amount.
-
-                      `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                      [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
                   s_exchange_identification:
                     type: string
                     description: |-
@@ -118295,10 +118179,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -118306,8 +118187,7 @@ paths:
                   description: |-
                     Surcharge amount.
 
-                    `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
-                    [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
+                    `null` in case when not initialized yet, empty string or null for zero surcharge amount.
                 m_tip:
                   type: string
                   description: 'Amount of tips entered in shopping cart.'
@@ -122634,18 +122514,6 @@ paths:
     $ref: '#/paths/~1Wl~1Pay~1Owner~1Owner.json'
   /Thoth/WlPay/Method/List.json:
     $ref: '#/paths/~1Wl~1Pay~1Method~1List.json'
-  /Thoth/PayProcessor/StripeCom/StripeComConnectionToken.json:
-    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComConnectionToken.json'
-  /Thoth/PayProcessor/StripeCom/StripeComCharge.json:
-    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComCharge.json'
-  /Thoth/PayProcessor/StripeCom/StripeComPayInit.json:
-    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComPayInit.json'
-  /Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json:
-    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1PaymentIntentUpdate.json'
-  /Thoth/PayProcessor/StripeCom/StripeComKey.json:
-    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComKey.json'
-  /Thoth/PayProcessor/StripeCom/StripeComPaymentIntentCancel.json:
-    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComPaymentIntentCancel.json'
   /Thoth/PayProcessor/CyberSource/CsPaEnrollment.json:
     $ref: '#/paths/~1Wl~1Pay~1Processor~1CyberSource~1CsPaEnrollment.json'
   /Thoth/PayProcessor/CyberSource/CsPaValidate.json:
@@ -122656,6 +122524,18 @@ paths:
     $ref: '#/paths/~1Wl~1Pay~1Processor~1CyberSource~1CsCaptureContext.json'
   /Thoth/PayProcessor/Nuvei/NuveiTransactionStart.json:
     $ref: '#/paths/~1Wl~1Pay~1Processor~1Nuvei~1NuveiTransactionStart.json'
+  /Thoth/PayProcessor/StripeCom/StripeComCharge.json:
+    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComCharge.json'
+  /Thoth/PayProcessor/StripeCom/StripeComConnectionToken.json:
+    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComConnectionToken.json'
+  /Thoth/PayProcessor/StripeCom/StripeComPayInit.json:
+    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComPayInit.json'
+  /Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json:
+    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1PaymentIntentUpdate.json'
+  /Thoth/PayProcessor/StripeCom/StripeComKey.json:
+    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComKey.json'
+  /Thoth/PayProcessor/StripeCom/StripeComPaymentIntentCancel.json:
+    $ref: '#/paths/~1Wl~1Pay~1Processor~1StripeCom~1StripeComPaymentIntentCancel.json'
   /Thoth/WlPay/Address/Widget/WidgetEdit.json:
     $ref: '#/paths/~1Wl~1Pay~1Address~1Widget~1WidgetEdit.json'
   /Thoth/WlPay/Bank/Card/List.json:
@@ -129639,30 +129519,6 @@ components:
           Virtual device for testing purposes.
 
           Currently supported only by Direct Connect.
-    Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid:
-      type: integer
-      format: int32
-      description: |-
-        List of [PayProcessorSid::STRIPE_COM](#/components/schemas/Thoth.PayProcessor.PayProcessorSid) supported terminal types.
-
-        Values:
-        - 2 (`JS_SDK`): Terminals that work via Stripe javascript SDK.
-          Requires registration on Hardware page.
-        - 1 (`MAGTEK_USB`): Magtek USB.
-          This type of terminal does not require registration on Hardware page.
-      enum:
-        - 2
-        - 1
-      x-enum-varnames:
-        - JS_SDK
-        - MAGTEK_USB
-      x-enum-descriptions:
-        - |-
-          Terminals that work via Stripe javascript SDK.
-          Requires registration on Hardware page.
-        - |-
-          Magtek USB.
-          This type of terminal does not require registration on Hardware page.
     Thoth.PayProcessor.Nuvei.Terminal.NuveiTerminalTypeSid:
       type: integer
       format: int32
@@ -129688,6 +129544,30 @@ components:
           Requires registration on Hardware page.
 
           See Nuvei/doc/OMNI_Channel_ISO20022_V2.38.pdf
+        - |-
+          Magtek USB.
+          This type of terminal does not require registration on Hardware page.
+    Thoth.PayProcessor.StripeCom.Terminal.StripeTerminalTypeSid:
+      type: integer
+      format: int32
+      description: |-
+        List of [PayProcessorSid::STRIPE_COM](#/components/schemas/Thoth.PayProcessor.PayProcessorSid) supported terminal types.
+
+        Values:
+        - 2 (`JS_SDK`): Terminals that work via Stripe javascript SDK.
+          Requires registration on Hardware page.
+        - 1 (`MAGTEK_USB`): Magtek USB.
+          This type of terminal does not require registration on Hardware page.
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - JS_SDK
+        - MAGTEK_USB
+      x-enum-descriptions:
+        - |-
+          Terminals that work via Stripe javascript SDK.
+          Requires registration on Hardware page.
         - |-
           Magtek USB.
           This type of terminal does not require registration on Hardware page.
