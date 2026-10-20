@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261020081119
+  version: 1.1.20261020084014
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -36491,6 +36491,13 @@ paths:
                       id_sale:
                         $ref: '#/components/schemas/RsSaleSid'
                         description: 'The item type ID. One of the [RsSaleSid](#/components/schemas/RsSaleSid) constants.'
+                      id_terms_action:
+                        type: integer
+                        format: int32
+                        description: |-
+                          The decision on the terms and conditions of the ticket, used only for tickets.
+                          [TermsActionSid::AGREE](#/components/schemas/Wl.Catalog.Terms.TermsActionSid) if the client agreed to them, [TermsActionSid::SKIP](#/components/schemas/Wl.Catalog.Terms.TermsActionSid) if staff skipped them
+                          to let the client agree later. Not set if there is no decision.
                       k_id:
                         type: string
                         description: 'The item key.'
