@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261022051142
+  version: 1.1.20261022072222
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -97232,6 +97232,12 @@ paths:
                         - text_reason
                         - text_signature
                         - uid_staff
+                  is_signature:
+                    type: boolean
+                    description: '`true` if the business requires a signature when diagnostic codes of a visit are saved, `false` otherwise.'
+                  is_system:
+                    type: boolean
+                    description: '`true` if the business has the diagnostic codes turned on, `false` otherwise.'
                   s_version:
                     type: string
                     maxLength: 32
@@ -97247,6 +97253,8 @@ paths:
                 required:
                   - a_code
                   - a_history
+                  - is_signature
+                  - is_system
                   - s_version
         '400':
           $ref: '#/components/responses/400'
