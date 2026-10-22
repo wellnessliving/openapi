@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261021170400
+  version: 1.1.20261022041107
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -136931,7 +136931,7 @@ components:
       description: |-
         Preset options for the [CustomTermSid::CLIENT](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) custom term.
 
-        Last used ID: 17.
+        Last used ID: 18.
 
         Values:
         - 1 (`ATHLETE`): Athlete.
@@ -136950,7 +136950,7 @@ components:
         - 15 (`PATRON`): Patron.
         - 16 (`RESIDENT`): Resident.
         - 17 (`STUDENT`): Student.
-        - 4 (`SWIMMER`): Swimmer.
+        - 18 (`SWIMMER`): Swimmer.
       enum:
         - 1
         - 2
@@ -136968,7 +136968,7 @@ components:
         - 15
         - 16
         - 17
-        - 4
+        - 18
       x-enum-varnames:
         - ATHLETE
         - CADET
