@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261022083613
+  version: 1.1.20261022090618
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -117052,6 +117052,11 @@ paths:
                         hide_application:
                           type: boolean
                           description: '`true` - all resources are hidden in this category for White Label mobile application. `false` - otherwise.'
+                        k_resource_layout:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Layout key of the category at the location. `null` if the category has no layout.'
                         k_resource_type:
                           type: string
                           description: 'Resource type ID.'
@@ -117063,6 +117068,7 @@ paths:
                           description: 'Title of resource type as text.'
                       required:
                         - hide_application
+                        - k_resource_layout
                         - k_resource_type
                         - html_title
                         - text_title
