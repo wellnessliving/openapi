@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261021224348
+  version: 1.1.20261022083613
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -55742,6 +55742,29 @@ paths:
                           description: 'Shop category keys the item belongs to.'
                           items:
                             type: string
+                        a_ticket_inventory:
+                          type: object
+                          description: |-
+                            How many tickets can be sold for the event and how many of those are still available. Empty if the
+                            item is not a ticketed event. 
+                            Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
+                          properties:
+                            i_capacity:
+                              type: integer
+                              format: int32
+                              description: 'Total number of tickets that can be sold for the event.'
+                            i_order_limit:
+                              type: integer
+                              format: int32
+                              description: 'Maximum number of tickets that can be ordered in one purchase. `0` if there is no limit.'
+                            i_remain:
+                              type: integer
+                              format: int32
+                              description: 'Number of tickets still available to sell. `0` if the event is sold out.'
+                          required:
+                            - i_capacity
+                            - i_order_limit
+                            - i_remain
                         a_tickets:
                           type: object
                           description: |-
@@ -55785,6 +55808,12 @@ paths:
                           description: |-
                             `true` if the item is a ticketed event, `false` otherwise.
                             Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
+                        is_ticket_guest_allowed:
+                          type: boolean
+                          description: |-
+                            `true` if a client can buy tickets without creating an account. `false` if the item is not a
+                            ticketed event.
+                            Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
                         k_id:
                           type: string
                           description: 'The item key.'
@@ -55803,6 +55832,7 @@ paths:
                       required:
                         - a_location
                         - a_shop_category
+                        - a_ticket_inventory
                         - a_tickets
                         - dtu_create
                         - f_price
@@ -55811,6 +55841,7 @@ paths:
                         - is_direct
                         - is_introductory
                         - is_ticket
+                        - is_ticket_guest_allowed
                         - k_id
                         - k_shop_category
                         - s_key
@@ -55834,6 +55865,29 @@ paths:
                         description: 'Shop category keys the item belongs to.'
                         items:
                           type: string
+                      a_ticket_inventory:
+                        type: object
+                        description: |-
+                          How many tickets can be sold for the event and how many of those are still available. Empty if the
+                          item is not a ticketed event. 
+                          Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
+                        properties:
+                          i_capacity:
+                            type: integer
+                            format: int32
+                            description: 'Total number of tickets that can be sold for the event.'
+                          i_order_limit:
+                            type: integer
+                            format: int32
+                            description: 'Maximum number of tickets that can be ordered in one purchase. `0` if there is no limit.'
+                          i_remain:
+                            type: integer
+                            format: int32
+                            description: 'Number of tickets still available to sell. `0` if the event is sold out.'
+                        required:
+                          - i_capacity
+                          - i_order_limit
+                          - i_remain
                       a_tickets:
                         type: object
                         description: |-
@@ -55877,6 +55931,12 @@ paths:
                         description: |-
                           `true` if the item is a ticketed event, `false` otherwise.
                           Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
+                      is_ticket_guest_allowed:
+                        type: boolean
+                        description: |-
+                          `true` if a client can buy tickets without creating an account. `false` if the item is not a
+                          ticketed event.
+                          Returned for items with `id_sale` equal to [RsSaleSid::ENROLLMENT](#/components/schemas/RsSaleSid) only.
                       k_id:
                         type: string
                         description: 'The item key.'
@@ -55895,6 +55955,7 @@ paths:
                     required:
                       - a_location
                       - a_shop_category
+                      - a_ticket_inventory
                       - a_tickets
                       - dtu_create
                       - f_price
@@ -55903,6 +55964,7 @@ paths:
                       - is_direct
                       - is_introductory
                       - is_ticket
+                      - is_ticket_guest_allowed
                       - k_id
                       - k_shop_category
                       - s_key
@@ -144537,7 +144599,7 @@ components:
       description: |-
         Preset options for the [CustomTermSid::CLIENT](#/components/schemas/Wl.Business.Custom.Terms.CustomTermSid) custom term.
 
-        Last used ID: 17.
+        Last used ID: 18.
 
         Values:
         - 1 (`ATHLETE`): Athlete.
@@ -144556,7 +144618,7 @@ components:
         - 15 (`PATRON`): Patron.
         - 16 (`RESIDENT`): Resident.
         - 17 (`STUDENT`): Student.
-        - 4 (`SWIMMER`): Swimmer.
+        - 18 (`SWIMMER`): Swimmer.
       enum:
         - 1
         - 2
@@ -144574,7 +144636,7 @@ components:
         - 15
         - 16
         - 17
-        - 4
+        - 18
       x-enum-varnames:
         - ATHLETE
         - CADET
