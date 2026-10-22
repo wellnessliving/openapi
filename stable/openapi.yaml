@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261022085320
+  version: 1.1.20261022103508
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -48854,6 +48854,14 @@ paths:
                           is_early:
                             type: boolean
                             description: '`true` if the class has an early bird discount, `false` otherwise.'
+                          is_early_ended:
+                            type: boolean
+                            description: |-
+                              `true` if `dl_early` is a date that has already passed, `false` otherwise.
+
+                              Only taken into account while `id_early_period` is [EarlyPeriodEnum::DATE](#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum). A
+                              date that has ended does not block saving and does not clear `is_early`: only the
+                              server sets this field, and a value posted by the client is ignored.
                           is_early_percent:
                             type: boolean
                             description: |-
@@ -48891,6 +48899,7 @@ paths:
                           - is_buy_total
                           - is_deposit_percent
                           - is_early
+                          - is_early_ended
                           - is_early_percent
                           - is_tax_enable
                           - text_early
@@ -48938,9 +48947,6 @@ paths:
                           is_account_require:
                             type: boolean
                             description: '`true` if a buyer of a ticket must have an account, `false` if a name and an email address are enough.'
-                          is_door_pay:
-                            type: boolean
-                            description: '`true` if a buyer may reserve a ticket and pay for it at the door, `false` if a ticket is paid for at once.'
                           is_terms:
                             type: boolean
                             description: '`true` if a buyer of a ticket must agree to terms and conditions, `false` otherwise.'
@@ -48954,7 +48960,6 @@ paths:
                           - a_ticket_option
                           - i_order_limit
                           - is_account_require
-                          - is_door_pay
                           - is_terms
                           - xml_terms
                       s_color_background:
@@ -49873,6 +49878,14 @@ paths:
                         is_early:
                           type: boolean
                           description: '`true` if the class has an early bird discount, `false` otherwise.'
+                        is_early_ended:
+                          type: boolean
+                          description: |-
+                            `true` if `dl_early` is a date that has already passed, `false` otherwise.
+
+                            Only taken into account while `id_early_period` is [EarlyPeriodEnum::DATE](#/components/schemas/Wl.Classes.Edit.EarlyPeriodEnum). A
+                            date that has ended does not block saving and does not clear `is_early`: only the
+                            server sets this field, and a value posted by the client is ignored.
                         is_early_percent:
                           type: boolean
                           description: |-
@@ -49910,6 +49923,7 @@ paths:
                         - is_buy_total
                         - is_deposit_percent
                         - is_early
+                        - is_early_ended
                         - is_early_percent
                         - is_tax_enable
                         - text_early
@@ -49957,9 +49971,6 @@ paths:
                         is_account_require:
                           type: boolean
                           description: '`true` if a buyer of a ticket must have an account, `false` if a name and an email address are enough.'
-                        is_door_pay:
-                          type: boolean
-                          description: '`true` if a buyer may reserve a ticket and pay for it at the door, `false` if a ticket is paid for at once.'
                         is_terms:
                           type: boolean
                           description: '`true` if a buyer of a ticket must agree to terms and conditions, `false` otherwise.'
@@ -49973,7 +49984,6 @@ paths:
                         - a_ticket_option
                         - i_order_limit
                         - is_account_require
-                        - is_door_pay
                         - is_terms
                         - xml_terms
                     s_color_background:
