@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261022094156
+  version: 1.1.20261022124203
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -4226,7 +4226,6 @@ paths:
                           type: string
                           description: 'Business key. Required.'
                       required:
-                        - a_asset
                         - a_visit
                         - k_business
                     -
@@ -4253,7 +4252,6 @@ paths:
                             Key of the staff member who receives the e-mail. 
                             Required.
                       required:
-                        - a_visit
                         - k_business
                         - k_staff
                     -
@@ -92210,6 +92208,185 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Login/Attendance/Row/Row.json:
+    get:
+      operationId: Wl.Login.Attendance.Row.Row.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_row:
+                    type: object
+                    description: 'Data for a single attendance list row.'
+                    properties:
+                      a_quiz:
+                        type: object
+                        description: 'Map of form quiz key to form data. Each value is:'
+                        properties:
+                          a_quiz_status:
+                            type: object
+                            description: 'Status and action data for a single form:'
+                            properties:
+                              can_amend:
+                                type: boolean
+                                description: '`true` if the current staff member may amend the completed form.'
+                              can_complete:
+                                type: boolean
+                                description: '`true` if the current staff member may complete the form.'
+                              can_view:
+                                type: boolean
+                                description: '`true` if the current staff member may view the form response.'
+                              id_render:
+                                $ref: '#/components/schemas/Core.Quiz.RenderModeSid'
+                                description: 'Render mode for the form. One of [RenderModeSid](#/components/schemas/Core.Quiz.RenderModeSid) constants.'
+                              id_status:
+                                $ref: '#/components/schemas/Core.Quiz.Response.ResponseStatusSid'
+                                description: 'Response status. One of [ResponseStatusSid](#/components/schemas/Core.Quiz.Response.ResponseStatusSid) constants.'
+                              is_private:
+                                type: boolean
+                                description: '`true` if the form is private.'
+                              k_business:
+                                type: string
+                                description: 'Business key.'
+                              k_quiz:
+                                type: string
+                                description: 'Quiz key.'
+                              k_quiz_login:
+                                type: string
+                                description: 'Quiz login key.'
+                              k_quiz_response:
+                                type: string
+                                description: 'Quiz response key.'
+                              text_title:
+                                type: string
+                                description: 'Form title.'
+                              url_csv:
+                                type: string
+                                description: 'URL to export the completed form as CSV. Empty string if not available.'
+                              url_direct:
+                                type: string
+                                description: 'Direct URL to fill in the outstanding form. Empty string if not available.'
+                              url_pdf:
+                                type: string
+                                description: 'URL to export the completed form as PDF. Empty string if not available.'
+                              url_print:
+                                type: string
+                                description: 'URL to print the form. Empty string if not available.'
+                            required:
+                              - can_amend
+                              - can_complete
+                              - can_view
+                              - id_render
+                              - id_status
+                              - is_private
+                              - k_business
+                              - k_quiz
+                              - k_quiz_login
+                              - k_quiz_response
+                              - text_title
+                              - url_csv
+                              - url_direct
+                              - url_pdf
+                              - url_print
+                          html_quiz_status:
+                            type: string
+                            description: 'Rendered HTML of the form status badge, as shown in the attendance list.'
+                        required:
+                          - a_quiz_status
+                          - html_quiz_status
+                      dtu_date:
+                        type: string
+                        description: 'Visit date and time in UTC, MySQL format.'
+                      html_icon:
+                        type: string
+                        description: 'Rendered HTML of the client info icon, as shown in the attendance list. Empty string if the visit has no client.'
+                      html_remain:
+                        type: string
+                        description: 'Rendered HTML of the promotion progress bar, as shown in the attendance list.'
+                      html_visit_note:
+                        type: string
+                        description: 'Rendered HTML of the visit note, as shown in the attendance list.'
+                      is_quiz_subscription_active:
+                        type: boolean
+                        description: '`true` if the business has an active quiz subscription.'
+                      k_business:
+                        type: string
+                        description: 'Business key.'
+                      k_visit:
+                        type: string
+                        description: 'Visit key.'
+                      sid_list_type:
+                        type: string
+                        description: 'String identifier of the attendance list view type. Corresponds to a [ListTypeSid](#/components/schemas/Wl.Login.Attendance.Design.ListTypeSid) constant.'
+                      uid:
+                        type: string
+                        description: 'Client user key.'
+                    required:
+                      - a_quiz
+                      - dtu_date
+                      - html_icon
+                      - html_remain
+                      - html_visit_note
+                      - is_quiz_subscription_active
+                      - k_business
+                      - k_visit
+                      - sid_list_type
+                      - uid
+                required:
+                  - a_row
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns data for a single attendance list row.'
+      description: |-
+        Loads the visit, its form statuses and the action URLs for each form
+        that is linked to the visit. The render mode and the URLs follow the
+        same gates as the legacy appointment panel.
+      tags:
+        - Login
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dtu_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: 'Visit date and time in UTC, MySQL format.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_visit
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Visit key.'
+      x-instance-get-key: 'k_business,k_visit'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Login/Attendance/Add/Add.json:
     get:
       operationId: Wl.Login.Attendance.Add.Add.get
@@ -112183,7 +112360,6 @@ paths:
         Each service and category includes an array of location keys where it is available.
         All active services are returned: unlike the location-scoped list, the result is not filtered by class tab
         or by online bookability, and removed locations are skipped.
-        The caller must be a staff member or admin of the business.
       tags:
         - Appointments
       parameters:
@@ -118378,6 +118554,12 @@ paths:
                         - text_reason
                         - text_signature
                         - uid_staff
+                  is_signature:
+                    type: boolean
+                    description: '`true` if the business requires a signature when diagnostic codes of a visit are saved, `false` otherwise.'
+                  is_system:
+                    type: boolean
+                    description: '`true` if the business has the diagnostic codes turned on, `false` otherwise.'
                   s_version:
                     type: string
                     maxLength: 32
@@ -118393,6 +118575,8 @@ paths:
                 required:
                   - a_code
                   - a_history
+                  - is_signature
+                  - is_system
                   - s_version
         '400':
           $ref: '#/components/responses/400'
@@ -144543,6 +144727,48 @@ components:
         - 'Purchase Option converts now and the client is not charged for the new Purchase Option.'
         - 'Purchase Option converts now and the client is changed for the new Purchase Option.'
         - 'Purchase Option converts on the specified date and the client is charged for the new Purchase Option.'
+    Core.Quiz.RenderModeSid:
+      type: integer
+      format: int32
+      description: |-
+        List of render modes.
+
+        Values:
+        - 8 (`ACCESS_DENIED_PRIVATE`): Mode for displaying the error message about access restriction to private quiz.
+        - 5 (`AMEND`): Mode to provide ability to perform question amendment.
+        - 7 (`AMEND_ADD`): Mode to display only part of the question with answer element.
+        - 6 (`ANSWER`): Mode to display only answer of the question without actual question information.
+        - 2 (`EDIT`): Edit mode on quiz edit form.
+        - 1 (`PREVIEW`): Preview mode on quiz edit form.
+        - 4 (`REPORT`): Mode to display element with response.
+        - 3 (`RESPONSE`): Response mode on the form where response expected.
+      enum:
+        - 8
+        - 5
+        - 7
+        - 6
+        - 2
+        - 1
+        - 4
+        - 3
+      x-enum-varnames:
+        - ACCESS_DENIED_PRIVATE
+        - AMEND
+        - AMEND_ADD
+        - ANSWER
+        - EDIT
+        - PREVIEW
+        - REPORT
+        - RESPONSE
+      x-enum-descriptions:
+        - 'Mode for displaying the error message about access restriction to private quiz.'
+        - 'Mode to provide ability to perform question amendment.'
+        - 'Mode to display only part of the question with answer element.'
+        - 'Mode to display only answer of the question without actual question information.'
+        - 'Edit mode on quiz edit form.'
+        - 'Preview mode on quiz edit form.'
+        - 'Mode to display element with response.'
+        - 'Response mode on the form where response expected.'
     Wl.Login.Attendance.AddOptionSid:
       type: integer
       format: int32
