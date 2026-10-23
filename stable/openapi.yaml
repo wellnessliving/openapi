@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261023064201
+  version: 1.1.20261023071928
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -41981,6 +41981,11 @@ paths:
                         is_free:
                           type: boolean
                           description: 'This will be `true` if the visit is free.'
+                        is_guest:
+                          type: boolean
+                          description: |-
+                            `true` if this visit is paid with a guest pass.
+                            When `true`, `text_promotion` contains the formatted guest label instead of the Purchase Option title.
                         is_hidden:
                           type: boolean
                           description: 'This will be `true` if details on this visit should be hidden from staff members.'
@@ -42059,7 +42064,10 @@ paths:
                           description: 'Title of purchase option usages of that was returned to user.'
                         text_promotion:
                           type: string
-                          description: 'The description of the type of Purchase Option.'
+                          description: |-
+                            The description of the type of Purchase Option.
+                            When `is_guest` is `true`, this contains a formatted label such as "Guest of [Member Name] - [Pass Name]"
+                            instead of the raw Purchase Option title.
                         text_restrict_title:
                           type: string
                           description: 'The Purchase Option restriction description. It can be empty string when the Purchase Option has no restrictions.'
@@ -42126,6 +42134,7 @@ paths:
                         - is_deposit
                         - is_early
                         - is_free
+                        - is_guest
                         - is_hidden
                         - is_penalty
                         - is_promotion_first
@@ -42571,6 +42580,11 @@ paths:
                         is_free:
                           type: boolean
                           description: 'This will be `true` if the visit is free.'
+                        is_guest:
+                          type: boolean
+                          description: |-
+                            `true` if this visit is paid with a guest pass.
+                            When `true`, `text_promotion` contains the formatted guest label instead of the Purchase Option title.
                         is_hidden:
                           type: boolean
                           description: 'This will be `true` if details on this visit should be hidden from staff members.'
@@ -42649,7 +42663,10 @@ paths:
                           description: 'Title of purchase option usages of that was returned to user.'
                         text_promotion:
                           type: string
-                          description: 'The description of the type of Purchase Option.'
+                          description: |-
+                            The description of the type of Purchase Option.
+                            When `is_guest` is `true`, this contains a formatted label such as "Guest of [Member Name] - [Pass Name]"
+                            instead of the raw Purchase Option title.
                         text_restrict_title:
                           type: string
                           description: 'The Purchase Option restriction description. It can be empty string when the Purchase Option has no restrictions.'
@@ -42716,6 +42733,7 @@ paths:
                         - is_deposit
                         - is_early
                         - is_free
+                        - is_guest
                         - is_hidden
                         - is_penalty
                         - is_promotion_first
@@ -43161,6 +43179,11 @@ paths:
                         is_free:
                           type: boolean
                           description: 'This will be `true` if the visit is free.'
+                        is_guest:
+                          type: boolean
+                          description: |-
+                            `true` if this visit is paid with a guest pass.
+                            When `true`, `text_promotion` contains the formatted guest label instead of the Purchase Option title.
                         is_hidden:
                           type: boolean
                           description: 'This will be `true` if details on this visit should be hidden from staff members.'
@@ -43239,7 +43262,10 @@ paths:
                           description: 'Title of purchase option usages of that was returned to user.'
                         text_promotion:
                           type: string
-                          description: 'The description of the type of Purchase Option.'
+                          description: |-
+                            The description of the type of Purchase Option.
+                            When `is_guest` is `true`, this contains a formatted label such as "Guest of [Member Name] - [Pass Name]"
+                            instead of the raw Purchase Option title.
                         text_restrict_title:
                           type: string
                           description: 'The Purchase Option restriction description. It can be empty string when the Purchase Option has no restrictions.'
@@ -43306,6 +43332,7 @@ paths:
                         - is_deposit
                         - is_early
                         - is_free
+                        - is_guest
                         - is_hidden
                         - is_penalty
                         - is_promotion_first
@@ -43860,6 +43887,11 @@ paths:
                         is_free:
                           type: boolean
                           description: 'This will be `true` if the visit is free.'
+                        is_guest:
+                          type: boolean
+                          description: |-
+                            `true` if this visit is paid with a guest pass.
+                            When `true`, `text_promotion` contains the formatted guest label instead of the Purchase Option title.
                         is_hidden:
                           type: boolean
                           description: 'This will be `true` if details on this visit should be hidden from staff members.'
@@ -43938,7 +43970,10 @@ paths:
                           description: 'Title of purchase option usages of that was returned to user.'
                         text_promotion:
                           type: string
-                          description: 'The description of the type of Purchase Option.'
+                          description: |-
+                            The description of the type of Purchase Option.
+                            When `is_guest` is `true`, this contains a formatted label such as "Guest of [Member Name] - [Pass Name]"
+                            instead of the raw Purchase Option title.
                         text_restrict_title:
                           type: string
                           description: 'The Purchase Option restriction description. It can be empty string when the Purchase Option has no restrictions.'
@@ -44005,6 +44040,7 @@ paths:
                         - is_deposit
                         - is_early
                         - is_free
+                        - is_guest
                         - is_hidden
                         - is_penalty
                         - is_promotion_first
@@ -44450,6 +44486,11 @@ paths:
                         is_free:
                           type: boolean
                           description: 'This will be `true` if the visit is free.'
+                        is_guest:
+                          type: boolean
+                          description: |-
+                            `true` if this visit is paid with a guest pass.
+                            When `true`, `text_promotion` contains the formatted guest label instead of the Purchase Option title.
                         is_hidden:
                           type: boolean
                           description: 'This will be `true` if details on this visit should be hidden from staff members.'
@@ -44528,7 +44569,10 @@ paths:
                           description: 'Title of purchase option usages of that was returned to user.'
                         text_promotion:
                           type: string
-                          description: 'The description of the type of Purchase Option.'
+                          description: |-
+                            The description of the type of Purchase Option.
+                            When `is_guest` is `true`, this contains a formatted label such as "Guest of [Member Name] - [Pass Name]"
+                            instead of the raw Purchase Option title.
                         text_restrict_title:
                           type: string
                           description: 'The Purchase Option restriction description. It can be empty string when the Purchase Option has no restrictions.'
@@ -44595,6 +44639,7 @@ paths:
                         - is_deposit
                         - is_early
                         - is_free
+                        - is_guest
                         - is_hidden
                         - is_penalty
                         - is_promotion_first
@@ -45040,6 +45085,11 @@ paths:
                         is_free:
                           type: boolean
                           description: 'This will be `true` if the visit is free.'
+                        is_guest:
+                          type: boolean
+                          description: |-
+                            `true` if this visit is paid with a guest pass.
+                            When `true`, `text_promotion` contains the formatted guest label instead of the Purchase Option title.
                         is_hidden:
                           type: boolean
                           description: 'This will be `true` if details on this visit should be hidden from staff members.'
@@ -45118,7 +45168,10 @@ paths:
                           description: 'Title of purchase option usages of that was returned to user.'
                         text_promotion:
                           type: string
-                          description: 'The description of the type of Purchase Option.'
+                          description: |-
+                            The description of the type of Purchase Option.
+                            When `is_guest` is `true`, this contains a formatted label such as "Guest of [Member Name] - [Pass Name]"
+                            instead of the raw Purchase Option title.
                         text_restrict_title:
                           type: string
                           description: 'The Purchase Option restriction description. It can be empty string when the Purchase Option has no restrictions.'
@@ -45185,6 +45238,7 @@ paths:
                         - is_deposit
                         - is_early
                         - is_free
+                        - is_guest
                         - is_hidden
                         - is_penalty
                         - is_promotion_first
@@ -92937,6 +92991,11 @@ paths:
                         hide_application:
                           type: boolean
                           description: '`true` - all resources are hidden in this category for White Label mobile application. `false` - otherwise.'
+                        k_resource_layout:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Layout key of the category at the location. `null` if the category has no layout.'
                         k_resource_type:
                           type: string
                           description: 'Resource type ID.'
@@ -92948,6 +93007,7 @@ paths:
                           description: 'Title of resource type as text.'
                       required:
                         - hide_application
+                        - k_resource_layout
                         - k_resource_type
                         - html_title
                         - text_title
