@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261022103508
+  version: 1.1.20261022214114
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -50141,6 +50141,25 @@ paths:
             Filtering by Book Now Tab is not supported if [ListApi::$is_franchise](/Wl/Classes/ClassList/List.json) is `true`.
 
             `null` if no filtering by Book Now Tab is required.
+        -
+          name: a_direct_link
+          in: query
+          required: true
+          schema:
+            type: object
+            properties:
+              k_class:
+                type: string
+                description: 'The class/event key.'
+            required:
+              - k_class
+          description: |-
+            Direct booking link parameters.
+
+            When provided, the event identified by `k_class` is treated as accessed via a direct booking URL.
+            This grants the caller the ability to view and book the event even when it is restricted to direct-link-only access.
+
+            An empty array when no direct link is used.
         -
           name: id_class_tab
           in: query
