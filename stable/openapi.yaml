@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261023071928
+  version: 1.1.20261023121926
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -36601,6 +36601,16 @@ paths:
                           s_sender:
                             type: string
                             description: 'The gift card sender name. This is required for gift cards.'
+                          text_guest_mail:
+                            type: string
+                            description: |-
+                              The email of the guest who buys the ticket. Used only for tickets. Specify it when the payment
+                              owner is an anonymous user ([PaymentApi::$is_guest](/Wl/Catalog/Payment/Payment.json)). It is saved in the ticket order.
+                          text_guest_name:
+                            type: string
+                            description: |-
+                              The name of the guest who buys the ticket. Used only for tickets. Specify it when the payment
+                              owner is an anonymous user ([PaymentApi::$is_guest](/Wl/Catalog/Payment/Payment.json)).
                           uid_staff:
                             type: string
                             description: 'The staff member user ID, used only for appointment tips.'
