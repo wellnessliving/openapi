@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261026075301
+  version: 1.1.20261026081258
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -41588,7 +41588,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -42187,7 +42191,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -42786,7 +42794,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -43494,7 +43506,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -44093,7 +44109,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -44692,7 +44712,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
