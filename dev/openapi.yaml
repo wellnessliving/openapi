@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261023152633
+  version: 1.1.20261026114613
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8160,6 +8160,12 @@ paths:
                         m_amount:
                           type: string
                           description: 'An amount which was debit from a client account.'
+                        uid_money:
+                          type: string
+                          description: |-
+                            Money owner of the account debit. Used together with `k_login_promotion` or
+                            `k_pay_installment`: the email is sent to this user. If not set, the email is sent to the payer of
+                            the purchase option, see PayerMail.
                       required:
                         - dtu_purchase
                         - k_currency
@@ -8747,6 +8753,11 @@ paths:
                           description: |-
                             ID of an installment plan to charge for. If `k_login_promotion` not specified
                             then this field is required otherwise is should not be specified.
+                        uid_money:
+                          type: string
+                          description: |-
+                            Money owner of the charge. The e-mail is sent to this user. If not set, the e-mail is sent to the payer of
+                            the purchase option, see PayerMail.
                       required:
                         - dt_date
                         - f_account_amount
@@ -8782,6 +8793,11 @@ paths:
                         s_message:
                           type: string
                           description: 'Error messages that occurred while payment.'
+                        uid_money:
+                          type: string
+                          description: |-
+                            Optional. Money owner of the charge. The e-mail is sent to this user. If not set, the e-mail is sent to the
+                            payer of the purchase option, see PayerMail.
                       required:
                         - dt_date
                         - k_login_promotion
@@ -8789,6 +8805,7 @@ paths:
                         - k_promotion
                         - o_pay_amount
                         - s_message
+                        - uid_money
                     -
                       type: object
                       title: 'promotion-membership-pay-ok (id_mail 56)'
@@ -8803,10 +8820,16 @@ paths:
                         o_pay_amount:
                           type: object
                           description: 'Payment amount.'
+                        uid_money:
+                          type: string
+                          description: |-
+                            Optional. Money owner of the charge. The e-mail is sent to this user. If not set, the e-mail is sent to the
+                            payer of the purchase option, see PayerMail.
                       required:
                         - dt_date
                         - k_login_promotion
                         - o_pay_amount
+                        - uid_money
                     -
                       type: object
                       title: 'promotion-membership-reactivate (id_mail 75)'
@@ -8974,11 +8997,18 @@ paths:
                           description: |-
                             Optional. Key of the user the e-mail is sent to. Used only if the purchase was made by a business;
                             otherwise the user is taken from the purchase.
+                        uid_money:
+                          type: string
+                          description: |-
+                            Optional. Money owner of the charge. Used only if the purchase was made by a user: the e-mail is sent to
+                            this user. If not set, or the user does not exist, the e-mail is sent to the money owner of the user who
+                            made the purchase.
                       required:
                         - is_send_force
                         - k_business
                         - k_purchase
                         - uid
+                        - uid_money
                     -
                       type: object
                       title: 'purchase-payment-account (id_mail 107)'
@@ -42051,6 +42081,9 @@ paths:
          the target profile. Attempts to redeem the code as a coupon first; if the code is not a coupon,
          falls back to checking it as another type of redemption code, for example a gift card number,
          and logs the change.
+
+        Failed attempts are limited per session, per IP address and per profile, so that codes can not be guessed.
+         A successful redemption is not counted.
       tags:
         - 'Redemption Codes'
       parameters:
@@ -53411,6 +53444,16 @@ paths:
                           s_sender:
                             type: string
                             description: 'The gift card sender name. This is required for gift cards.'
+                          text_guest_mail:
+                            type: string
+                            description: |-
+                              The email of the guest who buys the ticket. Used only for tickets. Specify it when the payment
+                              owner is an anonymous user ([PaymentApi::$is_guest](/Wl/Catalog/Payment/Payment.json)). It is saved in the ticket order.
+                          text_guest_name:
+                            type: string
+                            description: |-
+                              The name of the guest who buys the ticket. Used only for tickets. Specify it when the payment
+                              owner is an anonymous user ([PaymentApi::$is_guest](/Wl/Catalog/Payment/Payment.json)).
                           uid_staff:
                             type: string
                             description: 'The staff member user ID, used only for appointment tips.'
@@ -70287,8 +70330,9 @@ paths:
       description: |-
         Validates that the current user has access to the target user's profile and that the payer and
          the target user are family relatives. Rejects the request if the payer already pays for another
-         user, if another user already pays for the target user, or if either user is restricted by
-         franchise rules. Persists the new payer relationship in a database transaction.
+         user, if another user already pays for the target user, if the target user pays for a purchase option of
+         another user, or if either user is restricted by franchise rules. Persists the new payer relationship in a
+         database transaction.
       tags:
         - 'Family Billing'
       parameters:
@@ -144870,31 +144914,39 @@ components:
       description: |-
         Term slots available on the Custom Terms settings page.
 
-        Last used ID: 5.
+        Last used ID: 7.
 
         Values:
         - 2 (`APPOINTMENT`): Appointment.
         - 5 (`BUSINESS`): Business.
         - 3 (`CLASS_TERM`): Class.
         - 4 (`CLIENT`): Client.
+        - 6 (`DROP_IN`): Drop-in.
+        - 7 (`PURCHASE_OPTION`): Purchase Option.
         - 1 (`STAFF`): Staff.
       enum:
         - 2
         - 5
         - 3
         - 4
+        - 6
+        - 7
         - 1
       x-enum-varnames:
         - APPOINTMENT
         - BUSINESS
         - CLASS_TERM
         - CLIENT
+        - DROP_IN
+        - PURCHASE_OPTION
         - STAFF
       x-enum-descriptions:
         - Appointment.
         - Business.
         - Class.
         - Client.
+        - Drop-in.
+        - 'Purchase Option.'
         - Staff.
     Wl.Business.Custom.Terms.ClientTermOptionSid:
       type:
