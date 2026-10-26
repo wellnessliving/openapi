@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261026114613
+  version: 1.1.20261026153209
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -30538,12 +30538,33 @@ paths:
 
                       `null` in case when not initialized yet, empty string or null for zero surcharge amount. See
                       [AbstractTransactionStartupApi::$m_amount](/Thoth/PayProcessor/AbstractTransactionStartup.json) about a subclass correcting this value (SAL-1314).
+                  s_checkout_session:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      ID of the Checkout Session when the client card form runs on a Checkout Session.
+
+                      `null` if the form runs on a Payment Intent. In that case [StripeComPayInitApi::$s_client_secret](/Thoth/PayProcessor/StripeCom/StripeComPayInit.json) is the
+                      client secret of the session, and [StripeComPayInitApi::$s_payment_intent](/Thoth/PayProcessor/StripeCom/StripeComPayInit.json) is empty: Stripe creates the
+                      Payment Intent when the client confirms the session.
                   s_client_secret:
                     type: string
                     description: 'Payment Intent client secret key.'
                   s_payment_intent:
                     type: string
                     description: 'Payment intent ID.'
+                  text_mail_payer:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Email of the payer from the profile, for the client card form that runs on a Checkout Session.
+
+                      Stripe needs an email to complete a session. The client passes it to `confirm` of the session, because the
+                      Stripe customer of the payer is created without an email.
+
+                      `null` if the card form does not run on a Checkout Session, or the payer has no email in the profile.
                   text_message:
                     type:
                       - string
@@ -30675,6 +30696,34 @@ paths:
                       description: 'Card number. Used only if `is_new` is `true`.'
                   required:
                     - is_new
+                a_line_item:
+                  type: array
+                  description: |-
+                    Items of the sale for the Checkout Session. Every element: 
+
+                    The total of the items must equal [StripeComPayInitApi::$m_amount](/Thoth/PayProcessor/StripeCom/StripeComPayInit.json).
+                    Empty to send one item for the whole amount. Used only if the payment runs on a Checkout Session.
+                  items:
+                    type: object
+                    properties:
+                      i_quantity:
+                        oneOf:
+                          -
+                            type: integer
+                            format: int32
+                          -
+                            type: string
+                        description: 'Quantity, at least `1`. A string of digits is accepted: the values of an API request are strings.'
+                      m_amount:
+                        type: string
+                        description: 'Unit amount. Not negative: a discount is a smaller amount.'
+                      text_name:
+                        type: string
+                        description: 'Name of the item.'
+                    required:
+                      - i_quantity
+                      - m_amount
+                      - text_name
                 id_currency:
                   $ref: '#/components/schemas/Core.Locale.CurrencySid'
                   description: |-
@@ -30707,6 +30756,16 @@ paths:
                     `true` (or anything that is not empty) to perform authorization.
 
                     `false` (or anything that is empty, or do not pass this value) to charge the payment amount.
+                is_checkout_session:
+                  type: boolean
+                  description: |-
+                    `true` if the client card form can run on a Checkout Session, `false` otherwise.
+
+                    Only the card form of the web sets it. API clients and the mobile apps do not: the mobile Payment Sheet takes
+                    the client secret of a Payment Intent only. A session is created only if this flag is set, the Stripe Payment
+                    Element is used ([StripeComPayInitApi::$is_stripe_elements](/Thoth/PayProcessor/StripeCom/StripeComPayInit.json)) and the environment allows it. The answer
+                    tells which one was created:
+                    [StripeComPayInitApi::$s_checkout_session](/Thoth/PayProcessor/StripeCom/StripeComPayInit.json).
                 is_pos:
                   type: boolean
                   description: '`true` if card swiper is used, `false` otherwise.'
@@ -30771,7 +30830,9 @@ paths:
 
                     `null` in case when not initialized yet or if pay owner is anonymous.
               required:
+                - a_line_item
                 - is_authorize
+                - is_checkout_session
                 - is_pos
                 - is_stripe_elements
       x-rate-limit:
@@ -30837,6 +30898,15 @@ paths:
             Key of the payment transaction to update.
             Required.
         -
+          name: s_checkout_session
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            ID of the Checkout Session to update.
+            Required if [PaymentIntentUpdateApi::$s_payment_intent](/Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json) is empty.
+        -
           name: s_payment_intent
           in: query
           required: true
@@ -30844,7 +30914,7 @@ paths:
             type: string
           description: |-
             Payment intent ID to update.
-            Required.
+            Required if [PaymentIntentUpdateApi::$s_checkout_session](/Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json) is empty.
         -
           name: uid_purchase
           in: query
@@ -30863,6 +30933,36 @@ paths:
             schema:
               type: object
               properties:
+                a_line_item:
+                  type: array
+                  description: |-
+                    Items of the sale to set in the Checkout Session. Every element: 
+
+                    The whole list is sent, the items of the session that are not in it are removed. The total of the items must
+                    equal [PaymentIntentUpdateApi::$m_amount](/Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json).
+                    Empty to replace the items of the session with one item for [PaymentIntentUpdateApi::$m_amount](/Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json).
+                    Used only with [PaymentIntentUpdateApi::$s_checkout_session](/Thoth/PayProcessor/StripeCom/PaymentIntentUpdate.json).
+                  items:
+                    type: object
+                    properties:
+                      i_quantity:
+                        oneOf:
+                          -
+                            type: integer
+                            format: int32
+                          -
+                            type: string
+                        description: 'Quantity, at least `1`. A string of digits is accepted: the values of an API request are strings.'
+                      m_amount:
+                        type: string
+                        description: 'Unit amount. Not negative: a discount is a smaller amount.'
+                      text_name:
+                        type: string
+                        description: 'Name of the item.'
+                    required:
+                      - i_quantity
+                      - m_amount
+                      - text_name
                 id_currency:
                   $ref: '#/components/schemas/Core.Locale.CurrencySid'
                   description: |-
@@ -30881,6 +30981,7 @@ paths:
                     Required.
                   default: '0.00'
               required:
+                - a_line_item
                 - id_currency
                 - m_amount
                 - m_surcharge
@@ -67453,7 +67554,7 @@ paths:
                   description: 'Whether to include the pre-configured taxes into the totals.'
                 s_uid:
                   type: string
-                  description: 'List of client user keys to bill joined with comma.'
+                  description: 'List of client user keys to bill joined with comma. Every key must be a client of the business.'
                 text_note:
                   type: string
                   description: 'A note to store with each client purchase and to show on the receipt. Empty string for no note.'
@@ -111760,6 +111861,9 @@ paths:
         -
           limit: 200000
           period: 3600
+        -
+          limit: 3000
+          period: 300
   /Wl/Appointment/Book/Service/Category.json:
     get:
       operationId: Wl.Appointment.Book.Service.Category.get
@@ -118642,7 +118746,8 @@ paths:
                     type: array
                     description: |-
                       History of the changes of the billing codes of the visit, the latest change first: a record per added or removed
-                      code.
+                      code, per "Codes applied by default" batch, per "Signed & locked billing codes" lock and per void of the codes
+                      on a cancel or a no-show.
 
                       Empty for a staff member who can not assign billing codes.
                     items:
@@ -118670,13 +118775,66 @@ paths:
                           type:
                             - string
                             - 'null'
-                          description: 'Key of the staff member who made the change. `null` if the user is deleted.'
+                          description: |-
+                            Key of the staff member who made the change. `null` if the user is deleted, for the codes applied by
+                            default, and for a void made not by a user.
                       required:
                         - dtu_change
                         - text_log
                         - text_reason
                         - text_signature
                         - uid_staff
+                  a_void:
+                    type: array
+                    description: |-
+                      Voided billing codes of the visit.
+
+                      A visit gets voided codes when it is cancelled, late-cancelled or marked as a no-show: the codes are kept for
+                      the record but become read-only. The slide-out of the appointment shows them in a separate read-only section.
+                      A staff member who can not assign billing codes gets the voided custom codes only.
+                      Empty while the visit has no voided codes, and empty while the visit is live: if a cancelled visit is restored,
+                      its voided codes stay in the database but are not returned any more, the history has the record of the voiding.
+                    items:
+                      type: object
+                      properties:
+                        is_custom:
+                          type: boolean
+                          description: |-
+                            `true` for a custom code of the business or a temporary code for this visit only, `false` for an ICD-10-CM
+                            diagnostic code.
+                        text_code:
+                          type: string
+                          description: 'Code value, as it was printed on receipts and invoices.'
+                        text_description:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Description of the code as it was when the code was applied. `null` for a temporary code.'
+                      required:
+                        - is_custom
+                        - text_code
+                        - text_description
+                  dtu_lock:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: |-
+                      Date and time the diagnostic codes of the visit were locked, in UTC.
+                      `null` when the diagnostic codes are not locked.
+                  is_locked:
+                    type: boolean
+                    description: |-
+                      `true` when the diagnostic codes of the visit are locked by a staff member who signed, `false` otherwise.
+
+                      A locked save that adds or removes any code requires a short reason, and a save that adds or removes a
+                      diagnostic code requires a new signature, which re-locks the codes under the new signer.
+                  is_receipt_sent:
+                    type: boolean
+                    description: |-
+                      `true` when a receipt for this visit has been generated at least once.
+
+                      While it is `true`, a save that adds or removes any code requires a short reason.
                   is_signature:
                     type: boolean
                     description: '`true` if the business requires a signature when diagnostic codes of a visit are saved, `false` otherwise.'
@@ -118695,9 +118853,30 @@ paths:
                       so the codes can be changed again without reading them anew.
 
                       Empty string if the codes of the visit have never been changed.
+                  text_staff_name_lock:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Full name of the staff member who signed and locked the diagnostic codes of the visit, as it is at the moment
+                      of the request.
+
+                      `null` when the diagnostic codes are not locked or when the user is deleted; the lock itself stays, so the
+                      diagnostic codes are kept frozen.
+                  uid_staff_lock:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Key of the staff member who signed and locked the diagnostic codes of the visit.
+
+                      `null` when the diagnostic codes are not locked or when the user is deleted.
                 required:
                   - a_code
                   - a_history
+                  - a_void
+                  - is_locked
+                  - is_receipt_sent
                   - is_signature
                   - is_system
                   - s_version
