@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261027164617
+  version: 1.1.20261027191221
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -107708,6 +107708,276 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Appointment/Book/Conflict/Conflict78.json:
+    get:
+      operationId: Wl.Appointment.Book.Conflict.Conflict78.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_conflict:
+                    type: array
+                    description: 'List of appointment booking conflicts.'
+                    items:
+                      type: object
+                      properties:
+                        a_resource:
+                          type: array
+                          description: 'Titles of assets that cause the conflict. Not empty only if the conflict is caused by assets.'
+                          items:
+                            type: string
+                        dt_date_global:
+                          type: string
+                          description: 'Date and time of the conflict in UTC, in MySQL format.'
+                        dt_date_local:
+                          type: string
+                          description: 'Date and time of the conflict in the location timezone, in MySQL format.'
+                        html_title:
+                          type: string
+                          description: 'Message describing a client age restriction conflict, already HTML-escaped.'
+                        is_age_conflict:
+                          type: boolean
+                          description: '`true` if the conflict is caused by a client age restriction.'
+                        is_holiday:
+                          type: boolean
+                          description: '`true` if the conflict is caused by a holiday, `false` for another reason.'
+                        is_staff_conflict:
+                          type: boolean
+                          description: "`true` if the conflict is caused by the staff member's working hours, `false` for another reason."
+                        k_staff:
+                          type: string
+                          description: 'Staff member key, kept only for applications still using the deprecated legacy staff identifier.'
+                        text_staff:
+                          type: string
+                          description: 'Name of the staff member who conducts the appointment.'
+                        uid:
+                          type: string
+                          description: 'User ID of the client whose age restriction caused the conflict.'
+                        uid_staff:
+                          type: string
+                          description: 'Staff member user ID resolved for the conflict entry.'
+                  k_location:
+                    type: string
+                    description: 'Location to show available appointment booking schedule.'
+                required:
+                  - a_conflict
+                  - k_location
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets booking conflicts.'
+      description: |-
+        Validates the requested date, duration, location, staff member, and either the selected
+         asset or service, then checks for scheduling conflicts (staff working hours, holidays,
+         asset availability) and, for services with an age restriction, for client age conflicts.
+         The result is written to [Conflict56Api::$a_conflict](/Wl/Appointment/Book/Conflict/Conflict56.json).
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_product
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 'List of add-ons.'
+        -
+          name: a_repeat
+          in: query
+          required: false
+          schema:
+            type:
+              - object
+              - 'null'
+            properties:
+              a_week:
+                type: array
+                description: |-
+                  Days of week when the appointment repeats. One of [ADateWeekSid](#/components/schemas/ADateWeekSid) constants.
+                     Empty if the appointment does not repeat weekly.
+                items:
+                  type: integer
+                  format: int32
+              dl_end:
+                type: string
+                description: 'Date when the repeat cycle stops. Empty if the repeat cycle does not stop at a certain date.'
+              i_occurrence:
+                type: integer
+                format: int32
+                description: |-
+                  Number of occurrences after which the repeat cycle stops. Empty if the repeat cycle does
+                     not stop after a certain number of occurrences.
+              i_period:
+                type: integer
+                format: int32
+                description: 'Frequency of the repeat cycle.'
+              id_period:
+                $ref: '#/components/schemas/ADurationSid'
+                description: 'Measurement unit of `i_period`. One of [ADurationSid](#/components/schemas/ADurationSid) constants.'
+              is_month:
+                type: boolean
+                description: |-
+                  `true` if the appointment repeats monthly on the same date, `false` if it repeats
+                     monthly on the same day of the week, `null` if the appointment does not repeat monthly.
+            required:
+              - i_period
+              - id_period
+          description: |-
+            Data of appointment repeat.
+            See key `a_repeat` of [FinishApi::$a_book_data](/Wl/Appointment/Book/Finish/Finish.json) for details.
+
+            `null` if repeat is not required. Empty array if the appointment is not recurring, otherwise:
+        -
+          name: a_resource
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                i_index:
+                  type: integer
+                  format: int32
+                  description: 'Asset index in layout.'
+                k_resource:
+                  type: string
+                  description: 'Asset key.'
+              required:
+                - k_resource
+          description: |-
+            List of assets.
+
+
+            May be specified for service booking only.
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of user keys to book appointments.
+            There may be empty values in this list, which means that this is a walk-in.
+        -
+          name: dt_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: 'Date/time of appointment. In location timezone.'
+        -
+          name: i_duration
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            Appointment duration.
+            Must be specified for asset booking only.
+        -
+          name: is_walk_in
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'If `true`, the client is a walk-in. Otherwise, this will be `false`.'
+        -
+          name: json_service_addon
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Keys of the selected add-ons of the appointment, in JSON.
+
+            For example `["12","34"]`. An empty string or an empty list if the appointment is booked without add-ons. The
+            add-ons are services that are linked to the appointment as its add-ons. They run after the appointment, and the
+            staff member of the appointment conducts them.
+        -
+          name: k_appointment
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Appointment key. Empty for a new appointment.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Location to show available appointment booking schedule.'
+        -
+          name: k_resource
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Asset key. Empty for service booking.'
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Service key. Empty for asset booking.'
+        -
+          name: k_staff
+          in: query
+          required: true
+          schema:
+            type: string
+            deprecated: true
+            x-deprecated: 'Use [Conflict56Api::$uid_staff](/Wl/Appointment/Book/Conflict/Conflict56.json).'
+          description: 'Staff member key.'
+          deprecated: true
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The user key.
+
+            This field is used if the client books for himself or for the relative.
+
+            This field is incorrect to use for guest booking since in this case the client will be checked as a relative.
+
+            In case of a group booking or a guest booking, the key of the client who is making the booking is set here.
+        -
+          name: uid_staff
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Staff member user ID.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Appointment/Book/Question/Question.json:
     get:
       operationId: Wl.Appointment.Book.Question.Question.get
@@ -109736,6 +110006,1046 @@ paths:
             In case of back-to-back booking - staff user key of first appointment.
             `0` means any available staff.
       x-instance-get-key: 'id_gender_staff,dt_date,k_location,k_service,k_resource,i_index,i_duration,uid,s_product,s_appointment,is_staff,is_back_to_back,k_timezone,k_class_tab,is_tab_all,uid_staff'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Book/Schedule/Calendar78.json:
+    get:
+      operationId: Wl.Appointment.Book.Schedule.Calendar78.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_date:
+                    type: array
+                    description: |-
+                      A list with all calendar days in the specified month with
+                      available and unavailable appointment bookings in the schedule.
+                    items:
+                      type: object
+                      properties:
+                        dt_date:
+                          type: string
+                          description: 'Date item of the calendar.'
+                        i_week:
+                          type: integer
+                          format: int32
+                          description: 'Number of day in week.'
+                        is_available:
+                          type: boolean
+                          description: 'Whether booking is available for this day.'
+                        is_current:
+                          type: boolean
+                          description: 'Whether date is current.'
+                        is_out:
+                          type: boolean
+                          description: "Whether date is out of current month or it's business/location closed date."
+                        is_waitlist_only:
+                          type: boolean
+                          description: 'Whether booking for this day available only in wait list.'
+                        is_week_end:
+                          type: boolean
+                          description: 'Whether date is last day of the week.'
+                        is_week_start:
+                          type: boolean
+                          description: 'Whether date is first day of the week.'
+                        s_day:
+                          type: string
+                          description: 'String representation of day number with leading zeroes.'
+                        s_week:
+                          type: string
+                          description: 'String representation of week day (one letter, i.e. "F").'
+                      required:
+                        - dt_date
+                        - i_week
+                        - is_available
+                        - is_current
+                        - is_out
+                        - is_waitlist_only
+                        - is_week_end
+                        - is_week_start
+                        - s_day
+                        - s_week
+                  a_time:
+                    type: object
+                    description: 'An array with a schedule of available appointment booking times.'
+                    properties:
+                      dt_date:
+                        type: string
+                        description: 'Date of the calendar.'
+                      dtu_date:
+                        type: string
+                        description: 'Same moment as `dt_date`, converted to real UTC date and time, in MySQL format.'
+                      i_count:
+                        type: integer
+                        format: int32
+                        description: 'The count of clients that have already booked this appointment.'
+                      i_time:
+                        type: integer
+                        format: int32
+                        description: 'Integer representation of appointment schedule time.'
+                      i_wait:
+                        type: integer
+                        format: int32
+                        description: 'The count of clients on the waiting list for this appointment.'
+                      is_waitlist:
+                        type: boolean
+                        description: 'Whether the appointment can be booked only in a wait list.'
+                      k_staff:
+                        type: string
+                        description: |-
+                          **DEPRECATED** If this time is already occupied by any client and staff member
+                          (but service capacity is not exhausted), this key contains key of staff member.
+                           Otherwise - `0`.
+                      uid_staff:
+                        type: string
+                        description: |-
+                          If this time is already occupied by any client and staff member (but service capacity is not exhausted),
+                            this key contains user key of staff member.  Otherwise - `0`.
+                      s_title:
+                        type: string
+                        description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
+                    required:
+                      - dt_date
+                      - dtu_date
+                      - i_count
+                      - i_time
+                      - i_wait
+                      - is_waitlist
+                      - k_staff
+                      - uid_staff
+                      - s_title
+                      - uid_staff_suggest
+                  a_timezone_data:
+                    type: object
+                    description: 'Information about timezone.'
+                    properties:
+                      a_timezone:
+                        type:
+                          - object
+                          - 'null'
+                        description: "`null` if business settings doesn't allow client to adjust timezone, otherwise list of timezones:"
+                        properties:
+                          i_order:
+                            type: integer
+                            format: int32
+                            description: 'Timezone order.'
+                          i_shift:
+                            type: integer
+                            format: int32
+                            description: 'Timezone shift from UTC in hours.'
+                          is_select:
+                            type: boolean
+                            description: "`true` for selected timezone - from [CalendarApi::$k_timezone](/Wl/Appointment/Book/Schedule/Calendar.json) param or client's default timezone when param not set."
+                          k_timezone:
+                            type: string
+                            description: 'Timezone key.'
+                          s_title:
+                            type: string
+                            description: 'Timezone name.'
+                          text_abbr:
+                            type: string
+                            description: 'Timezone abbreviation.'
+                        required:
+                          - i_order
+                          - i_shift
+                          - is_select
+                          - k_timezone
+                          - s_title
+                          - text_abbr
+                      name:
+                        type:
+                          - string
+                          - 'null'
+                        description: "`null` if business settings doesn't allow client to adjust timezone, otherwise timezone input name."
+                    required:
+                      - a_timezone
+                      - name
+                  a_week_name:
+                    type: object
+                    description: "Array with short week day's names (2 letters, i.e. 'Fr') for calendar month view. Week days order according to business's settings."
+                    properties:
+                      i_day:
+                        type: integer
+                        format: int32
+                        description: 'Week day, one of the [ADateWeekSid](#/components/schemas/ADateWeekSid) constants.'
+                      html_week_day:
+                        type: string
+                        description: "Short week day's name (2 letters, i.e. 'Fr')."
+                    required:
+                      - i_day
+                      - html_week_day
+                  can_backwards:
+                    type: boolean
+                    description: 'Whether previous calendar period can be shown (start of shown period later than current date).'
+                  dt_date:
+                    type: string
+                    format: date-time
+                    description: 'The date to show the available appointment booking schedule.'
+                  i_capacity:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Maximum number of clients that can simultaneously book this service.
+                      `null` for asset bookings where this limit does not apply.
+                  i_capacity_waitlist:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Maximum number of clients that can be placed on the waitlist for this service.
+                      `null` if waitlist is disabled, the waitlist has no capacity limit, or for asset bookings.
+                  i_week_end:
+                    $ref: '#/components/schemas/ADateWeekSid'
+                    description: 'Last day of the week. One of [ADateWeekSid](#/components/schemas/ADateWeekSid) constants.'
+                  i_week_start:
+                    $ref: '#/components/schemas/ADateWeekSid'
+                    description: 'First day of the week. One of [ADateWeekSid](#/components/schemas/ADateWeekSid) constants.'
+                  is_waitlist:
+                    type: boolean
+                    description: 'Whether list of available times contains slots with only waitlist booking available.'
+                  k_location:
+                    type: string
+                    description: 'Location to show available appointment booking schedule.'
+                required:
+                  - a_date
+                  - a_time
+                  - a_timezone_data
+                  - a_week_name
+                  - can_backwards
+                  - dt_date
+                  - i_week_end
+                  - i_week_start
+                  - is_waitlist
+                  - k_location
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Retrieves a list with all calendar days in specified period with available and unavailable appointment booking schedule.'
+      description: |-
+        Returns each day in the requested month marked as available or unavailable for booking the given
+         service at the given location. Availability is determined by the business schedule, holidays,
+         and staff availability for the selected date range.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of user keys to book appointments.
+            There may be empty values in this list, which means that this is a walk-in.
+        -
+          name: dt_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: 'The date to show the available appointment booking schedule.'
+        -
+          name: i_duration
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            The duration of the asset booking or custom appointment duration in minutes. Zero in case of service predefined duration.
+            In case of back-to-back booking - custom duration of first appointment.
+        -
+          name: i_index
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: 'An index of the selected asset. `0` for booking of service or if asset is not on layout.'
+        -
+          name: id_gender_staff
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/AGenderSid'
+          description: |-
+            The ID of the staff member's gender.
+            In case of back-to-back booking - staff gender of first appointment.
+            One of the [AGenderSid](#/components/schemas/AGenderSid) constants. `0` means no limitations on staff gender.
+        -
+          name: is_back_to_back
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Determines whether multiple appointments are booked in back-to-back mode.'
+        -
+          name: is_month_view
+          in: query
+          required: true
+          schema:
+            type: boolean
+            default: true
+          description: 'If calendar should be displayed in month view mode.'
+        -
+          name: is_staff
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` if the request is made by staff member; in this case booking policy restrictions are ignored.
+            `false` if the request is made by client; booking policy restrictions are applied.
+        -
+          name: is_tab_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - search in all tabs.
+            `false` - search only for the selected bookable tab.
+
+            Cannot be set simultaneously with {DayTimeApi::$k_class_tab}.
+        -
+          name: is_unavailable
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - return service categories that have no staff members able to conduct them.
+            `false` - return only service categories that have staff members able to conduct them.
+        -
+          name: is_walk_in
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'If `true`, the client is a walk-in. Otherwise, this will be `false`.'
+        -
+          name: json_service_addon
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Keys of the selected add-ons of the appointment, in JSON.
+
+            For example `["12","34"]`. An empty string or an empty list if the appointment is booked without add-ons. The
+            add-ons are services that are linked to the appointment as its add-ons. They run after the appointment, and the
+            staff member of the appointment conducts them. They are available only for the booking of an appointment, not of
+            an asset, and not for the back-to-back booking.
+        -
+          name: k_class_tab
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Current booking tab.
+            Only used for asset booking with "Allow clients to select a date and time, then the available asset" booking policy enabled.
+
+            Cannot be set simultaneously with {DayTimeApi::$is_tab_all}.
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Location to show available appointment booking schedule.'
+        -
+          name: k_resource
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The resource key to show which days are available for booking.
+            Should be `0` in case of back-to-back booking.
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The service key used for showing the available appointment booking schedule.
+            In case of back-to-back booking - service key of first appointment.
+        -
+          name: k_timezone
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Key of timezone.
+
+            `null` if not set to use client's profile timezone.
+        -
+          name: s_appointment
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The staff key to show what days are available for booking.
+
+            For back-to-back booking ([DayTimeApi::$is_back_to_back](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
+            Converted to JSON string to be usable as model key. Each item is an array with next structure:
+        -
+          name: s_product
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            A list of service add-ons keys(encoded as JSON string).
+            In case of back-to-back booking - add-ons of first appointment.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The user key.
+
+            This field is used if the client books for himself or for the relative.
+
+            This field is incorrect to use for guest booking since in this case the client will be checked as a relative.
+
+            In case of a group booking or a guest booking, the key of the client who is making the booking is set here.
+        -
+          name: uid_staff
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The staff user key used for showing the available appointment booking schedule.
+            In case of back-to-back booking - staff user key of first appointment.
+            `0` means any available staff.
+      x-instance-get-key: 'id_gender_staff,k_location,k_service,k_resource,i_index,i_duration,uid,s_product,is_month_view,s_appointment,is_staff,is_back_to_back,k_timezone,k_class_tab,is_tab_all,uid_staff,json_service_addon'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Book/Schedule/DayTime78.json:
+    get:
+      operationId: Wl.Appointment.Book.Schedule.DayTime78.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_time:
+                    type: object
+                    description: 'An array with a schedule of available appointment booking times.'
+                    properties:
+                      dt_date:
+                        type: string
+                        description: 'Date of the calendar.'
+                      dtu_date:
+                        type: string
+                        description: 'Same moment as `dt_date`, converted to real UTC date and time, in MySQL format.'
+                      i_count:
+                        type: integer
+                        format: int32
+                        description: 'The count of clients that have already booked this appointment.'
+                      i_time:
+                        type: integer
+                        format: int32
+                        description: 'Integer representation of appointment schedule time.'
+                      i_wait:
+                        type: integer
+                        format: int32
+                        description: 'The count of clients on the waiting list for this appointment.'
+                      is_waitlist:
+                        type: boolean
+                        description: 'Whether the appointment can be booked only in a wait list.'
+                      k_staff:
+                        type: string
+                        description: |-
+                          **DEPRECATED** If this time is already occupied by any client and staff member
+                          (but service capacity is not exhausted), this key contains key of staff member.
+                           Otherwise - `0`.
+                      uid_staff:
+                        type: string
+                        description: |-
+                          If this time is already occupied by any client and staff member (but service capacity is not exhausted),
+                            this key contains user key of staff member.  Otherwise - `0`.
+                      s_title:
+                        type: string
+                        description: 'String representation of appointment schedule time.'
+                      uid_staff_suggest:
+                        type: string
+                        description: |-
+                          User key of the staff member the system would assign for this time if the client booked with any staff member.
+                          Populated only when no specific staff member is requested and the booking is not back-to-back.
+
+                          `'0'` when not applicable or for asset bookings.
+                    required:
+                      - dt_date
+                      - dtu_date
+                      - i_count
+                      - i_time
+                      - i_wait
+                      - is_waitlist
+                      - k_staff
+                      - uid_staff
+                      - s_title
+                      - uid_staff_suggest
+                  dt_date:
+                    type: string
+                    format: date-time
+                    description: 'The date to show the available appointment booking schedule.'
+                  i_capacity:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Maximum number of clients that can simultaneously book this service.
+                      `null` for asset bookings where this limit does not apply.
+                  i_capacity_waitlist:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Maximum number of clients that can be placed on the waitlist for this service.
+                      `null` if waitlist is disabled, the waitlist has no capacity limit, or for asset bookings.
+                  is_waitlist:
+                    type: boolean
+                    description: 'Whether list of available times contains slots with only waitlist booking available.'
+                  k_location:
+                    type: string
+                    description: 'Location to show available appointment booking schedule.'
+                required:
+                  - a_time
+                  - dt_date
+                  - is_waitlist
+                  - k_location
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Retrieves a list of available appointment booking schedule.'
+      description: |-
+        Returns available time slots for the specified service, location, staff member, and date range.
+         Each slot includes the start time, duration, available capacity, and staff information. Supports
+         both frontend and backend modes, as well as asset bookings and back-to-back scheduling.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of user keys to book appointments.
+            There may be empty values in this list, which means that this is a walk-in.
+        -
+          name: dt_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: 'The date to show the available appointment booking schedule.'
+        -
+          name: i_duration
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            The duration of the asset booking or custom appointment duration in minutes. Zero in case of service predefined duration.
+            In case of back-to-back booking - custom duration of first appointment.
+        -
+          name: i_index
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: 'An index of the selected asset. `0` for booking of service or if asset is not on layout.'
+        -
+          name: id_gender_staff
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/AGenderSid'
+          description: |-
+            The ID of the staff member's gender.
+            In case of back-to-back booking - staff gender of first appointment.
+            One of the [AGenderSid](#/components/schemas/AGenderSid) constants. `0` means no limitations on staff gender.
+        -
+          name: is_back_to_back
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Determines whether multiple appointments are booked in back-to-back mode.'
+        -
+          name: is_staff
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` if the request is made by staff member; in this case booking policy restrictions are ignored.
+            `false` if the request is made by client; booking policy restrictions are applied.
+        -
+          name: is_tab_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - search in all tabs.
+            `false` - search only for the selected bookable tab.
+
+            Cannot be set simultaneously with {DayTimeApi::$k_class_tab}.
+        -
+          name: is_unavailable
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - return service categories that have no staff members able to conduct them.
+            `false` - return only service categories that have staff members able to conduct them.
+        -
+          name: is_walk_in
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'If `true`, the client is a walk-in. Otherwise, this will be `false`.'
+        -
+          name: json_service_addon
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Keys of the selected add-ons of the appointment, in JSON.
+
+            For example `["12","34"]`. An empty string or an empty list if the appointment is booked without add-ons. The
+            add-ons are services that are linked to the appointment as its add-ons. They run after the appointment, and the
+            staff member of the appointment conducts them. They are available only for the booking of an appointment, not of
+            an asset, and not for the back-to-back booking.
+        -
+          name: k_class_tab
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Current booking tab.
+            Only used for asset booking with "Allow clients to select a date and time, then the available asset" booking policy enabled.
+
+            Cannot be set simultaneously with {DayTimeApi::$is_tab_all}.
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Location to show available appointment booking schedule.'
+        -
+          name: k_resource
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The resource key to show which days are available for booking.
+            Should be `0` in case of back-to-back booking.
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The service key used for showing the available appointment booking schedule.
+            In case of back-to-back booking - service key of first appointment.
+        -
+          name: k_timezone
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Key of timezone.
+
+            `null` if not set then use default timezone client.
+        -
+          name: s_appointment
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The staff key to show what days are available for booking.
+
+            For back-to-back booking ([DayTimeApi::$is_back_to_back](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
+            Converted to JSON string to be usable as model key. Each item is an array with next structure:
+        -
+          name: s_product
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            A list of service add-ons keys(encoded as JSON string).
+            In case of back-to-back booking - add-ons of first appointment.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The user key.
+
+            This field is used if the client books for himself or for the relative.
+
+            This field is incorrect to use for guest booking since in this case the client will be checked as a relative.
+
+            In case of a group booking or a guest booking, the key of the client who is making the booking is set here.
+        -
+          name: uid_staff
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The staff user key used for showing the available appointment booking schedule.
+            In case of back-to-back booking - staff user key of first appointment.
+            `0` means any available staff.
+      x-instance-get-key: 'id_gender_staff,dt_date,k_location,k_service,k_resource,i_index,i_duration,uid,is_unavailable,s_product,s_appointment,is_staff,is_back_to_back,k_timezone,k_class_tab,is_tab_all,uid_staff,json_service_addon'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Book/Schedule/NextAvailableDay78.json:
+    get:
+      operationId: Wl.Appointment.Book.Schedule.NextAvailableDay78.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dt_date:
+                    type: string
+                    format: date-time
+                    description: 'Start date to search next available date in MySQL format. If empty, the search will start from the current date.'
+                  dt_next:
+                    type: string
+                    format: date-time
+                    description: 'Next available date in MySQL format.'
+                  i_capacity:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Maximum number of clients that can simultaneously book this service.
+                      `null` for asset bookings where this limit does not apply.
+                  i_capacity_waitlist:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Maximum number of clients that can be placed on the waitlist for this service.
+                      `null` if waitlist is disabled, the waitlist has no capacity limit, or for asset bookings.
+                  is_waitlist:
+                    type: boolean
+                    description: 'Whether list of available times contains slots with only waitlist booking available.'
+                  k_location:
+                    type: string
+                    description: 'Location to show available appointment booking schedule.'
+                required:
+                  - dt_date
+                  - dt_next
+                  - is_waitlist
+                  - k_location
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Finds and returns the next available date for appointment booking starting from the given date.'
+      description: |-
+        Searches forward from the specified start date until it finds a day with at least one available
+         time slot for the given service, location, and optional staff member. Returns the first available
+         date so the client side can pre-select it in the booking calendar. This request may take longer
+         than usual on production and uses an extended execution time limit.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of user keys to book appointments.
+            There may be empty values in this list, which means that this is a walk-in.
+        -
+          name: dt_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: 'Start date to search next available date in MySQL format. If empty, the search will start from the current date.'
+        -
+          name: i_duration
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: |-
+            The duration of the asset booking or custom appointment duration in minutes. Zero in case of service predefined duration.
+            In case of back-to-back booking - custom duration of first appointment.
+        -
+          name: i_index
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: 'An index of the selected asset. `0` for booking of service or if asset is not on layout.'
+        -
+          name: id_gender_staff
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/AGenderSid'
+          description: |-
+            The ID of the staff member's gender.
+            In case of back-to-back booking - staff gender of first appointment.
+            One of the [AGenderSid](#/components/schemas/AGenderSid) constants. `0` means no limitations on staff gender.
+        -
+          name: is_back_to_back
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Determines whether multiple appointments are booked in back-to-back mode.'
+        -
+          name: is_staff
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` if the request is made by staff member; in this case booking policy restrictions are ignored.
+            `false` if the request is made by client; booking policy restrictions are applied.
+        -
+          name: is_tab_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - search in all tabs.
+            `false` - search only for the selected bookable tab.
+
+            Cannot be set simultaneously with {DayTimeApi::$k_class_tab}.
+        -
+          name: is_walk_in
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'If `true`, the client is a walk-in. Otherwise, this will be `false`.'
+        -
+          name: json_service_addon
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Keys of the selected add-ons of the appointment, in JSON.
+
+            For example `["12","34"]`. An empty string or an empty list if the appointment is booked without add-ons. The
+            add-ons are services that are linked to the appointment as its add-ons. They run after the appointment, and the
+            staff member of the appointment conducts them. They are available only for the booking of an appointment, not of
+            an asset, and not for the back-to-back booking.
+        -
+          name: k_class_tab
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Current booking tab.
+            Only used for asset booking with "Allow clients to select a date and time, then the available asset" booking policy enabled.
+
+            Cannot be set simultaneously with {DayTimeApi::$is_tab_all}.
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Location to show available appointment booking schedule.'
+        -
+          name: k_resource
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The resource key to show which days are available for booking.
+            Should be `0` in case of back-to-back booking.
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The service key used for showing the available appointment booking schedule.
+            In case of back-to-back booking - service key of first appointment.
+        -
+          name: k_timezone
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Key of timezone.
+
+            `null` if not set then use default timezone client.
+        -
+          name: s_appointment
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The staff key to show what days are available for booking.
+
+            For back-to-back booking ([DayTimeApi::$is_back_to_back](/Wl/Appointment/Book/Schedule/DayTime.json) == `true`): array of appointments for back-to-back booking.
+            Converted to JSON string to be usable as model key. Each item is an array with next structure:
+        -
+          name: s_product
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            A list of service add-ons keys(encoded as JSON string).
+            In case of back-to-back booking - add-ons of first appointment.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The user key.
+
+            This field is used if the client books for himself or for the relative.
+
+            This field is incorrect to use for guest booking since in this case the client will be checked as a relative.
+
+            In case of a group booking or a guest booking, the key of the client who is making the booking is set here.
+        -
+          name: uid_staff
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The staff user key used for showing the available appointment booking schedule.
+            In case of back-to-back booking - staff user key of first appointment.
+            `0` means any available staff.
+      x-instance-get-key: 'id_gender_staff,dt_date,k_location,k_service,k_resource,i_index,i_duration,uid,s_product,s_appointment,is_staff,is_back_to_back,k_timezone,k_class_tab,is_tab_all,uid_staff,json_service_addon'
       x-rate-limit:
         -
           limit: 200000
@@ -114896,6 +116206,226 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Appointment/Book/Staff/StaffList78.json:
+    get:
+      operationId: Wl.Appointment.Book.Staff.StaffList78.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_staff:
+                    type: array
+                    description: 'A list of staff members with information about them.'
+                    items:
+                      type: object
+                      properties:
+                        id_gender:
+                          $ref: '#/components/schemas/AGenderSid'
+                          description: "Staff member's gender. One of [AGenderSid](#/components/schemas/AGenderSid) constants."
+                        i_free_spot:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            How many clients can still be booked with the staff member at the requested time.
+                            <p>If [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is not passed, this value is `null`.</p>
+                            <p>If [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed, this is calculated for the specific staff member at that time.</p>
+                        is_available:
+                          type: boolean
+                          description: |-
+                            Whether staff member is available for booking. Note, if staff member reached daily limits, this field
+                            will be different for client and staff booking flows. If client books, such staff member is not available and
+                            this field is `false`. If staff member books, such staff member is available.
+                        is_daily_limit:
+                          type: boolean
+                          description: 'Whether staff member reached daily limits on number or total duration of the appointments for one day.'
+                        is_wait_list:
+                          type: boolean
+                          description: 'Whether staff member available only for wait list booking.'
+                        k_staff:
+                          type: string
+                          description: '**DEPRECATED** Legacy staff key.  Returned only for allow-listed apps.'
+                        s_position:
+                          type: string
+                          description: 'Position of the staff member in the business.'
+                        s_staff:
+                          type: string
+                          description: 'Name of the staff member.'
+                        uid:
+                          type: string
+                          description: 'UID of the staff member.'
+                        xml_biography:
+                          type: string
+                          description: 'Biography of the staff member.'
+                      required:
+                        - id_gender
+                        - i_free_spot
+                        - is_available
+                        - is_daily_limit
+                        - is_wait_list
+                        - k_staff
+                        - s_position
+                        - s_staff
+                        - uid
+                        - xml_biography
+                  can_book_unavailable_staff:
+                    type: boolean
+                    description: 'Can staff booked unavailable staff.'
+                  has_gender:
+                    type: boolean
+                    description: "Determines whether to select the staff member's gender for the appointment."
+                  has_staff:
+                    type: boolean
+                    description: 'Determines whether to select staff member(s) for the appointment.'
+                  is_gender_different:
+                    type: boolean
+                    description: 'Determines if the staff list has male and female members.'
+                required:
+                  - a_staff
+                  - can_book_unavailable_staff
+                  - has_gender
+                  - has_staff
+                  - is_gender_different
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Retrieves an information about staff members for the current service.'
+      description: |-
+        Returns the list of staff members who can perform the specified service at the given location
+         on the specified date and time. Each entry includes the staff member's name, image, gender,
+         and availability. An 'any staff' option is included when the service allows random staff assignment.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dt_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: "The date/time of the appointment selected by user, in the location's time zone."
+        -
+          name: i_client
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            default: 1
+          description: |-
+            Count of clients on the appointment.
+
+            Default value is 1.
+        -
+          name: i_duration_custom
+          in: query
+          required: false
+          schema:
+            type:
+              - integer
+              - 'null'
+            format: int32
+          description: |-
+            Custom appointment duration in minutes.
+
+            `null` if not set.
+        -
+          name: id_role
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Login.LoginRoleSid'
+          description: |-
+            User role by whom this api called.
+            For different roles different results might be generated.
+        -
+          name: is_unavailable
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - returns service categories that have no staff members available to conduct them.
+            `false` - returns only service categories that have staff members available to conduct them.
+        -
+          name: json_service_addon
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Keys of the selected add-ons of the appointment, in JSON.
+
+            For example `["12","34"]`. An empty string or an empty list if the appointment is booked without add-ons. The
+            add-ons are services that are linked to the appointment as its add-ons. They run after the appointment, and the
+            staff member of the appointment conducts them.
+        -
+          name: k_appointment_ignore
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of appointment which must be ignored when searches available staff.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the location.'
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of a service for which to show information.'
+        -
+          name: k_timezone
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            User's timezone.
+
+            `null` until initialized or to use location timezone.
+        -
+          name: uid
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            The user key for whom the service is booking.
+
+            `null` when not set.
+      x-instance-get-key: 'k_location,k_service,dt_date,is_unavailable,id_role,k_appointment_ignore,k_timezone,uid,i_client,json_service_addon'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Appointment/Book/Payment/Payment.json:
     get:
       operationId: Wl.Appointment.Book.Payment.Payment.get
@@ -117843,6 +119373,135 @@ paths:
             type: string
           description: 'The key of a service to show information for.'
       x-instance-get-key: k_service
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Book/Block/Eligible.json:
+    get:
+      operationId: Wl.Appointment.Book.Block.Eligible.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_ineligible:
+                    type: array
+                    description: 'The selected add-ons that the client is not eligible for, in the order in which they run after the appointment.'
+                    items:
+                      type: object
+                      properties:
+                        is_age:
+                          type: boolean
+                          description: '`true` if the age of the client does not fit the age restriction of the add-on.'
+                        is_restricted:
+                          type: boolean
+                          description: '`true` if the type or the group of the client, or the sale online, does not allow the add-on.'
+                        k_service_addon:
+                          type: string
+                          description: 'Key of the add-on service.'
+                      required:
+                        - is_age
+                        - is_restricted
+                        - k_service_addon
+                  k_location:
+                    type: string
+                    description: 'Location to show available appointment booking schedule.'
+                required:
+                  - a_ineligible
+                  - k_location
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Finds the selected add-ons that the client is not eligible for.'
+      description: |-
+        Each add-on is checked under the restrictions of its own, independent of the appointment: the age of the client,
+        the type and the group of the client, and the sale online. The client or the staff member who books for him
+        removes only these add-ons from the booking, after telling the booker. The appointment and the other add-ons
+        stay. A guest is not checked, because nothing is known about him before he signs in.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of user keys to book appointments.
+            There may be empty values in this list, which means that this is a walk-in.
+        -
+          name: is_staff
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Whether a staff member books for the client. `false` if the client books.'
+        -
+          name: is_walk_in
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'If `true`, the client is a walk-in. Otherwise, this will be `false`.'
+        -
+          name: json_service_addon
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Keys of the selected add-ons of the appointment, in JSON.
+
+            For example `["12","34"]`. An empty string or an empty list if the appointment is booked without add-ons. The
+            add-ons are services that are linked to the appointment as its add-ons. They run after the appointment, and the
+            staff member of the appointment conducts them.
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Location to show available appointment booking schedule.'
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the appointment to which the add-ons are added.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The user key.
+
+            This field is used if the client books for himself or for the relative.
+
+            This field is incorrect to use for guest booking since in this case the client will be checked as a relative.
+
+            In case of a group booking or a guest booking, the key of the client who is making the booking is set here.
+      x-instance-get-key: 'k_location,k_service,json_service_addon,uid,is_staff'
       x-rate-limit:
         -
           limit: 200000
@@ -125870,6 +127529,12 @@ paths:
             schema:
               type: object
               properties:
+                id_mode:
+                  $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                  description: |-
+                    The source of the visit change.
+                    One of the [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants.
+                    If you're unsure about the value to use, keep the default value `null`: the source is detected automatically.
                 k_login_promotion:
                   type: string
                   description: |-
