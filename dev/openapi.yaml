@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261027140055
+  version: 1.1.20261027164617
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -89,9 +89,6 @@ tags:
   -
     name: Collector
     description: 'Debt collection and payment management endpoints.'
-  -
-    name: 'Component Timing'
-    description: 'Client-side component load timing endpoints.'
   -
     name: Coupons
     description: 'Coupon list endpoints.'
@@ -1063,6 +1060,14 @@ paths:
                                 - text_status
                                 - text_type
                                 - text_value
+                            i_reset_month:
+                              type: integer
+                              format: int32
+                              description: |-
+                                Number of resets of the domain that the staff of the business made in its current calendar month.
+
+
+                                `0` if the domain is not verified.
                             id_domain_status:
                               $ref: '#/components/schemas/Wl.Mail.Domain.DomainVerifyStatusSid'
                               description: |-
@@ -1077,6 +1082,7 @@ paths:
                                 Empty string if the business does not have a mail domain set up.
                           required:
                             - a_domain_token
+                            - i_reset_month
                             - id_domain_status
                             - text_domain_status_icon
                         -
@@ -2376,147 +2382,6 @@ paths:
         -
           limit: 200000
           period: 3600
-  /Core/Timing/ComponentTiming.json:
-    post:
-      operationId: Core.Timing.ComponentTiming.post
-      responses:
-        '200':
-          description: 'Successful response.'
-        '400':
-          $ref: '#/components/responses/400'
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '422':
-          $ref: '#/components/responses/422'
-        '500':
-          $ref: '#/components/responses/500'
-      summary: 'Logs component load timing entries reported by browser.'
-      description: |-
-        Ignores requests from bots and monitoring user agents. Accepts up to `MAX_ENTRY`
-         entries per request, discarding any extra entries. Each entry is written to [ComponentTimingLog](#/components/schemas/Core.Log.CoreLog)
-         and reported to Cloud Watch as up to three `ComponentTime` data points (one per phase that has a value),
-         tagged with `Component` and `Phase` dimensions. Phases of a request entry are 'network', 'request' and
-         'server'. Phases of a view entry are 'render', 'startup' and 'view'. A view entry is logged as one record
-         together with its requests, and the requests are also reported to Cloud Watch with their own phases.
-      tags:
-        - 'Component Timing'
-      parameters:
-        -
-          $ref: '#/components/parameters/X-Error-Rules'
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                a_timing_list:
-                  type: object
-                  description: |-
-                    List of timing entries. Each entry has next keys:
-
-                    JSON-encoded array may arrive as a `string`.
-                  properties:
-                    a_request:
-                      type: object
-                      description: |-
-                        Only for view entries. Timings of the requests made while the view was loading. Absent for request
-                        entries. Each item has next keys:
-                      properties:
-                        i_duration_network:
-                          type: integer
-                          format: int32
-                          description: 'Approximate network duration in milliseconds. `null` if `i_duration_server` is unavailable.'
-                        i_duration_server:
-                          type: integer
-                          format: int32
-                          description: 'Server-side processing duration in milliseconds. `null` if the header was not present.'
-                        i_duration_total:
-                          type: integer
-                          format: int32
-                          description: 'Total client-perceived duration of the request in milliseconds.'
-                        is_success:
-                          type: boolean
-                          description: '`true` if the request succeeded, `false` otherwise.'
-                        s_correlation:
-                          type:
-                            - string
-                            - 'null'
-                          description: 'Correlation ID of the timed request, taken from the `X-Correlation-Id` response header.'
-                        s_url:
-                          type: string
-                          description: 'URL of the timed request.'
-                      required:
-                        - i_duration_network
-                        - i_duration_server
-                        - i_duration_total
-                        - is_success
-                        - s_correlation
-                        - s_url
-                    i_duration_network:
-                      type: integer
-                      format: int32
-                      description: |-
-                        Approximate network duration in milliseconds (`i_duration_total` minus `i_duration_server`).
-                        `null` if `i_duration_server` is unavailable.
-                    i_duration_render:
-                      type: integer
-                      format: int32
-                      description: |-
-                        Only for view entries. Browser-side duration in milliseconds: from the moment view data is ready
-                        until the rendered content is painted. Absent for request entries.
-                    i_duration_server:
-                      type: integer
-                      format: int32
-                      description: |-
-                        Server-side processing duration in milliseconds, taken from the `X-Response-Time` response
-                        header. `null` if the header was not present, for example on a network failure.
-                    i_duration_startup:
-                      type: integer
-                      format: int32
-                      description: |-
-                        Only for view entries. Duration of the view startup in milliseconds, mostly waiting for models.
-                        Absent for request entries.
-                    i_duration_total:
-                      type: integer
-                      format: int32
-                      description: 'Total client-perceived duration in milliseconds: of the request, or of the whole view load.'
-                    is_success:
-                      type: boolean
-                      description: '`true` if the request succeeded, `false` otherwise.'
-                    s_component:
-                      type: string
-                      description: 'Component name, as set by the caller in `WlSdk_ModelAbstract::s_timing_component`.'
-                    s_correlation:
-                      type:
-                        - string
-                        - 'null'
-                      description: 'Correlation ID of the timed request, taken from the `X-Correlation-Id` response header.'
-                    s_url:
-                      type: string
-                      description: 'URL of the timed request.'
-                  required:
-                    - a_request
-                    - i_duration_network
-                    - i_duration_render
-                    - i_duration_server
-                    - i_duration_startup
-                    - i_duration_total
-                    - is_success
-                    - s_component
-                    - s_correlation
-                    - s_url
-              required:
-                - a_timing_list
-      x-rate-limit:
-        -
-          limit: 200000
-          period: 3600
-      security: []
   /Social/Microsoft/Login.json:
     delete:
       operationId: Social.Microsoft.Login.delete
@@ -8426,11 +8291,18 @@ paths:
                               type: integer
                               format: int32
                           description: 'Optional. Key of the user the purchase was performed for.  Used only when the purchase was made by a business. `0` or not set if there is no such user.'
+                        uid_money:
+                          type: string
+                          description: |-
+                            Optional. Money owner of the charge. Used only if the purchase was made by a user: the e-mail is sent to
+                            this user. If not set, or the user does not exist, the e-mail is sent to the money owner of the user who
+                            made the purchase.
                       required:
                         - is_send_force
                         - k_business
                         - k_purchase
                         - uid
+                        - uid_money
                     -
                       type: object
                       title: 'pay-transaction-fail (id_mail 181)'
@@ -38757,6 +38629,25 @@ paths:
                         s_promotion:
                           type: string
                           description: 'The description of the type of Purchase Option. This field is deprecated, use the text_ version instead.'
+                        sid_book_background:
+                          type: object
+                          description: |-
+                            The status of background booking for a multi-session block event.
+                            One of the following values:
+                          properties:
+                            none:
+                              type: string
+                              description: 'No background task exists. Either all sessions were booked synchronously, or the background task has completed.'
+                            pending:
+                              type: string
+                              description: 'A background task is queued and waiting to be processed.'
+                            failed:
+                              type: string
+                              description: 'A background task exists but has no scheduled date, indicating a failure.'
+                          required:
+                            - none
+                            - pending
+                            - failed
                         text_expire:
                           type: string
                           description: 'The expiry information for the Purchase Option.'
@@ -38863,6 +38754,7 @@ paths:
                         - s_lastname
                         - s_note
                         - s_promotion
+                        - sid_book_background
                         - text_expire
                         - text_firstname
                         - text_lastname
@@ -39360,6 +39252,25 @@ paths:
                         s_promotion:
                           type: string
                           description: 'The description of the type of Purchase Option. This field is deprecated, use the text_ version instead.'
+                        sid_book_background:
+                          type: object
+                          description: |-
+                            The status of background booking for a multi-session block event.
+                            One of the following values:
+                          properties:
+                            none:
+                              type: string
+                              description: 'No background task exists. Either all sessions were booked synchronously, or the background task has completed.'
+                            pending:
+                              type: string
+                              description: 'A background task is queued and waiting to be processed.'
+                            failed:
+                              type: string
+                              description: 'A background task exists but has no scheduled date, indicating a failure.'
+                          required:
+                            - none
+                            - pending
+                            - failed
                         text_expire:
                           type: string
                           description: 'The expiry information for the Purchase Option.'
@@ -39466,6 +39377,7 @@ paths:
                         - s_lastname
                         - s_note
                         - s_promotion
+                        - sid_book_background
                         - text_expire
                         - text_firstname
                         - text_lastname
@@ -39963,6 +39875,25 @@ paths:
                         s_promotion:
                           type: string
                           description: 'The description of the type of Purchase Option. This field is deprecated, use the text_ version instead.'
+                        sid_book_background:
+                          type: object
+                          description: |-
+                            The status of background booking for a multi-session block event.
+                            One of the following values:
+                          properties:
+                            none:
+                              type: string
+                              description: 'No background task exists. Either all sessions were booked synchronously, or the background task has completed.'
+                            pending:
+                              type: string
+                              description: 'A background task is queued and waiting to be processed.'
+                            failed:
+                              type: string
+                              description: 'A background task exists but has no scheduled date, indicating a failure.'
+                          required:
+                            - none
+                            - pending
+                            - failed
                         text_expire:
                           type: string
                           description: 'The expiry information for the Purchase Option.'
@@ -40069,6 +40000,7 @@ paths:
                         - s_lastname
                         - s_note
                         - s_promotion
+                        - sid_book_background
                         - text_expire
                         - text_firstname
                         - text_lastname
@@ -40675,6 +40607,25 @@ paths:
                         s_promotion:
                           type: string
                           description: 'The description of the type of Purchase Option. This field is deprecated, use the text_ version instead.'
+                        sid_book_background:
+                          type: object
+                          description: |-
+                            The status of background booking for a multi-session block event.
+                            One of the following values:
+                          properties:
+                            none:
+                              type: string
+                              description: 'No background task exists. Either all sessions were booked synchronously, or the background task has completed.'
+                            pending:
+                              type: string
+                              description: 'A background task is queued and waiting to be processed.'
+                            failed:
+                              type: string
+                              description: 'A background task exists but has no scheduled date, indicating a failure.'
+                          required:
+                            - none
+                            - pending
+                            - failed
                         text_expire:
                           type: string
                           description: 'The expiry information for the Purchase Option.'
@@ -40781,6 +40732,7 @@ paths:
                         - s_lastname
                         - s_note
                         - s_promotion
+                        - sid_book_background
                         - text_expire
                         - text_firstname
                         - text_lastname
@@ -41278,6 +41230,25 @@ paths:
                         s_promotion:
                           type: string
                           description: 'The description of the type of Purchase Option. This field is deprecated, use the text_ version instead.'
+                        sid_book_background:
+                          type: object
+                          description: |-
+                            The status of background booking for a multi-session block event.
+                            One of the following values:
+                          properties:
+                            none:
+                              type: string
+                              description: 'No background task exists. Either all sessions were booked synchronously, or the background task has completed.'
+                            pending:
+                              type: string
+                              description: 'A background task is queued and waiting to be processed.'
+                            failed:
+                              type: string
+                              description: 'A background task exists but has no scheduled date, indicating a failure.'
+                          required:
+                            - none
+                            - pending
+                            - failed
                         text_expire:
                           type: string
                           description: 'The expiry information for the Purchase Option.'
@@ -41384,6 +41355,7 @@ paths:
                         - s_lastname
                         - s_note
                         - s_promotion
+                        - sid_book_background
                         - text_expire
                         - text_firstname
                         - text_lastname
@@ -41881,6 +41853,25 @@ paths:
                         s_promotion:
                           type: string
                           description: 'The description of the type of Purchase Option. This field is deprecated, use the text_ version instead.'
+                        sid_book_background:
+                          type: object
+                          description: |-
+                            The status of background booking for a multi-session block event.
+                            One of the following values:
+                          properties:
+                            none:
+                              type: string
+                              description: 'No background task exists. Either all sessions were booked synchronously, or the background task has completed.'
+                            pending:
+                              type: string
+                              description: 'A background task is queued and waiting to be processed.'
+                            failed:
+                              type: string
+                              description: 'A background task exists but has no scheduled date, indicating a failure.'
+                          required:
+                            - none
+                            - pending
+                            - failed
                         text_expire:
                           type: string
                           description: 'The expiry information for the Purchase Option.'
@@ -41987,6 +41978,7 @@ paths:
                         - s_lastname
                         - s_note
                         - s_promotion
+                        - sid_book_background
                         - text_expire
                         - text_firstname
                         - text_lastname
@@ -46468,14 +46460,6 @@ paths:
                     description: |-
                       The title of the converted promotion. This value is used only for promotions that must be converted to another
                       promotion after expiration.
-                  s_promotion_payer:
-                    type:
-                      - string
-                      - 'null'
-                    description: |-
-                      The full name of the user who pays for this purchase option instead of its holder.
-                      `null` if the item is not a purchase option, the purchase option is billed to the default payer,
-                      or the payer cannot be resolved.
                   s_purchase:
                     type: string
                     description: 'The purchase ID number as it appears on the receipt. This value will also include the leading 0s for the ID number.'
@@ -46497,6 +46481,14 @@ paths:
                   text_guest_pass:
                     type: string
                     description: 'Text describing guest passes available for the purchased promotion.'
+                  text_promotion_payer:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The full name of the user who pays for this purchase option instead of the default payer of its holder.
+                      `null` if the item is not a purchase option, the purchase option is billed to the default payer,
+                      or the payer cannot be resolved.
                   uid_payer:
                     type:
                       - string
@@ -46509,8 +46501,8 @@ paths:
                       - string
                       - 'null'
                     description: |-
-                      The key of the user who pays for this purchase option instead of its holder.
-                      `null` under the same conditions as [PurchaseListElementApi::$s_promotion_payer](/Wl/Profile/PurchaseList/PurchaseListElement.json).
+                      The key of the user who pays for this purchase option instead of the default payer of its holder.
+                      `null` under the same conditions as [PurchaseListElementApi::$text_promotion_payer](/Wl/Profile/PurchaseList/PurchaseListElement.json).
                   uid_recipient:
                     type: string
                     description: 'The key of the user who paid for this purchase.'
@@ -92790,8 +92782,10 @@ paths:
                     description: |-
                       A list of sessions that are being booked asynchronously in the background.
 
-                      When a multi-session block event booking is processed, the first session is booked synchronously
-                      and the remaining sessions are queued for background processing.
+                      When a multi-session block event booking is processed, the clicked session is booked synchronously
+                      and the remaining sessions are queued for background processing. The progress of
+                      the background booking can be tracked through the `sid_book_background` field in the
+                      attendance list response.
 
                       `null` if there are no background sessions (single session booking or all sessions were booked synchronously).
 
@@ -92823,6 +92817,9 @@ paths:
                     description: |-
                       The key of the booked visit. This will be set on success.
                       This value will be needed if the session still needs to be paid for.
+
+                      For multi-session block events, this is the visit for the clicked session (the one
+                      matching [AddApi::$dt_date_global](/Wl/Login/Attendance/Add/Add.json)). Remaining sessions are booked in the background.
                   url_store:
                     type: string
                     description: |-
