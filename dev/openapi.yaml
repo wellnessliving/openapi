@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261026160619
+  version: 1.1.20261027140055
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8165,7 +8165,7 @@ paths:
                           description: |-
                             Money owner of the account debit. Used together with `k_login_promotion` or
                             `k_pay_installment`: the email is sent to this user. If not set, the email is sent to the payer of
-                            the purchase option, see PayerMail.
+                            the purchase option.
                       required:
                         - dtu_purchase
                         - k_currency
@@ -8672,17 +8672,10 @@ paths:
                       title: 'promotion-membership-expire (id_mail 77)'
                       properties:
                         a_id:
-                          type: object
-                          description: |-
-                            Optional. List of keys of login promotions (legacy automation). If not set, `i_id` is used instead.
-
-                            Each element is a key of a login promotion:
-                          properties:
-                            k_login_promotion:
-                              type: string
-                              description: 'Login promotion key.'
-                          required:
-                            - k_login_promotion
+                          type: array
+                          description: 'List of keys of login promotions (legacy automation). If not set, `i_id` is used instead.'
+                          items:
+                            type: string
                         dl_end:
                           type: string
                           description: |-
@@ -8716,7 +8709,6 @@ paths:
                           type: string
                           description: 'Optional. User key. Required for new automation.'
                       required:
-                        - a_id
                         - dl_end
                         - dt_end
                         - i_delay
@@ -8757,7 +8749,7 @@ paths:
                           type: string
                           description: |-
                             Money owner of the charge. The e-mail is sent to this user. If not set, the e-mail is sent to the payer of
-                            the purchase option, see PayerMail.
+                            the purchase option.
                       required:
                         - dt_date
                         - f_account_amount
@@ -8797,7 +8789,7 @@ paths:
                           type: string
                           description: |-
                             Optional. Money owner of the charge. The e-mail is sent to this user. If not set, the e-mail is sent to the
-                            payer of the purchase option, see PayerMail.
+                            payer of the purchase option.
                       required:
                         - dt_date
                         - k_login_promotion
@@ -8811,8 +8803,7 @@ paths:
                       title: 'promotion-membership-pay-ok (id_mail 56)'
                       properties:
                         dt_date:
-                          type: integer
-                          format: int32
+                          type: string
                           description: 'Due date.'
                         k_login_promotion:
                           type: string
@@ -8824,7 +8815,7 @@ paths:
                           type: string
                           description: |-
                             Optional. Money owner of the charge. The e-mail is sent to this user. If not set, the e-mail is sent to the
-                            payer of the purchase option, see PayerMail.
+                            payer of the purchase option.
                       required:
                         - dt_date
                         - k_login_promotion
@@ -9405,15 +9396,7 @@ paths:
                           description: 'URL to view the conversation (for SMS).'
                       required:
                         - k_business
-                        - html_view_conversation_button
-                        - text_callback_note
-                        - text_client_mail
-                        - text_client_name
-                        - text_client_phone
-                        - text_location
                         - uid
-                        - url_view_conversation_link
-                        - url_view_conversation_link_sms
                     -
                       type: object
                       title: 'task-assign (id_mail 104)'
@@ -9434,9 +9417,10 @@ paths:
                         dt_agree:
                           type: string
                           description: |-
-                            Optional. Date and time when the user agreed to the contract, in MySQL format. If it is not set or empty,
-                            the current contract text of the business is used and the e-mail is built without an agreement date.
-                            If it is set and the user has no agreement at this date, nothing is sent.
+                            Date and time when the user agreed to the contract, in UTC, in MySQL format. It must exactly match the date
+                            of an agreement of the user. If it is not set or empty, the current contract text of the business is used
+                            and the e-mail is built without an agreement date. If the user has no agreement at exactly this date,
+                            nothing is sent.
                         k_business:
                           type: string
                           description: 'Business ID.'
@@ -9444,7 +9428,6 @@ paths:
                           type: string
                           description: 'User ID.'
                       required:
-                        - dt_agree
                         - k_business
                         - uid
                     -
@@ -15359,6 +15342,17 @@ paths:
           schema:
             type: string
           description: 'Quiz login key.'
+        -
+          name: s_secret
+          in: query
+          required: true
+          schema:
+            type: string
+            maxLength: 40
+          description: |-
+            Secret key of the quiz request given in [QuizElement72Api::$k_quiz_login](/Wl/Quiz/QuizElement72.json).
+
+            Required when the quiz request is opened by a user who is not signed in, empty otherwise.
         -
           name: uid_client
           in: query
@@ -30707,13 +30701,9 @@ paths:
                     type: object
                     properties:
                       i_quantity:
-                        oneOf:
-                          -
-                            type: integer
-                            format: int32
-                          -
-                            type: string
-                        description: 'Quantity, at least `1`. A string of digits is accepted: the values of an API request are strings.'
+                        type: integer
+                        format: int32
+                        description: 'Quantity, at least `1`. An integer, or a string of digits: the values of an API request are strings.'
                       m_amount:
                         type: string
                         description: 'Unit amount. Not negative: a discount is a smaller amount.'
@@ -30946,13 +30936,9 @@ paths:
                     type: object
                     properties:
                       i_quantity:
-                        oneOf:
-                          -
-                            type: integer
-                            format: int32
-                          -
-                            type: string
-                        description: 'Quantity, at least `1`. A string of digits is accepted: the values of an API request are strings.'
+                        type: integer
+                        format: int32
+                        description: 'Quantity, at least `1`. An integer, or a string of digits: the values of an API request are strings.'
                       m_amount:
                         type: string
                         description: 'Unit amount. Not negative: a discount is a smaller amount.'
@@ -38298,7 +38284,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -38897,7 +38887,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -39496,7 +39490,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -40204,7 +40202,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -40803,7 +40805,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -41402,7 +41408,11 @@ paths:
                       properties:
                         a_info:
                           type: object
-                          description: 'Information about member.'
+                          description: |-
+                            Information about member.
+
+                            Fields `text_address`, `text_mail`, `text_phone_cell`, `text_phone_home` and `text_phone_work`
+                            are returned only if the current user has the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
                           properties:
                             a_icon:
                               type: object
@@ -46458,6 +46468,14 @@ paths:
                     description: |-
                       The title of the converted promotion. This value is used only for promotions that must be converted to another
                       promotion after expiration.
+                  s_promotion_payer:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The full name of the user who pays for this purchase option instead of its holder.
+                      `null` if the item is not a purchase option, the purchase option is billed to the default payer,
+                      or the payer cannot be resolved.
                   s_purchase:
                     type: string
                     description: 'The purchase ID number as it appears on the receipt. This value will also include the leading 0s for the ID number.'
@@ -46486,6 +46504,13 @@ paths:
                     description: |-
                       The key of the user who paid for this purchase.
                       `null` in a case when there was no money transaction.
+                  uid_promotion_payer:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The key of the user who pays for this purchase option instead of its holder.
+                      `null` under the same conditions as [PurchaseListElementApi::$s_promotion_payer](/Wl/Profile/PurchaseList/PurchaseListElement.json).
                   uid_recipient:
                     type: string
                     description: 'The key of the user who paid for this purchase.'
@@ -89884,6 +89909,7 @@ paths:
             First digits of a newly-typed card number (at least 6).
 
             Exactly one of [SurchargeTenderApi::$k_pay_bank](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) and [SurchargeTenderApi::$s_bin](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) must be set.
+      x-instance-get-key: 'id_pay_method,k_business,k_currency,k_location,k_pay_bank,s_bin'
       x-rate-limit:
         -
           limit: 200000
