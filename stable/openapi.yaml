@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261026092239
+  version: 1.1.20261027040142
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -33796,7 +33796,7 @@ paths:
                   description: 'Whether to include the pre-configured taxes into the totals.'
                 s_uid:
                   type: string
-                  description: 'List of client user keys to bill joined with comma.'
+                  description: 'List of client user keys to bill joined with comma. Every key must be a client of the business.'
                 text_note:
                   type: string
                   description: 'A note to store with each client purchase and to show on the receipt. Empty string for no note.'
