@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261028034405
+  version: 1.1.20261028071149
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -1077,10 +1077,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -1296,10 +1293,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -2043,10 +2037,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -2173,10 +2164,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -2378,10 +2366,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -2586,10 +2571,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -2689,10 +2671,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -2810,10 +2789,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -27813,6 +27789,7 @@ paths:
             First digits of a newly-typed card number (at least 6).
 
             Exactly one of [SurchargeTenderApi::$k_pay_bank](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) and [SurchargeTenderApi::$s_bin](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) must be set.
+      x-instance-get-key: 'id_pay_method,k_business,k_currency,k_location,k_pay_bank,s_bin'
       x-rate-limit:
         -
           limit: 200000
@@ -80830,10 +80807,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -80946,10 +80920,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -124320,7 +124291,7 @@ components:
 
 
 
-        Last used ID: 21.
+        Last used ID: 23.
 
         Values:
         - 19 (`AI_AGENT`): Ai Agent web-chat.
@@ -124329,6 +124300,7 @@ components:
         - 22 (`APPOINTMENT_FOREIGN`): Appointment booking wizard built by microservice widget team.
         - 21 (`CATALOG_FOREIGN`): Online store widget.
         - 8 (`ENROLLMENT`): Event enrollment wizard widget.
+        - 23 (`EVENT_FOREIGN`): Event widget built by microservice widget team.
         - 17 (`FITBUILDER`): Fitbuilder widget.
         - 9 (`LEAD`): Skin for lead tracking form.
         - 20 (`LEAD_FOREIGN`): Skin for lead tracking form from microservice.
@@ -124351,6 +124323,7 @@ components:
         - 22
         - 21
         - 8
+        - 23
         - 17
         - 9
         - 20
@@ -124370,6 +124343,7 @@ components:
         - APPOINTMENT_FOREIGN
         - CATALOG_FOREIGN
         - ENROLLMENT
+        - EVENT_FOREIGN
         - FITBUILDER
         - LEAD
         - LEAD_FOREIGN
@@ -124389,6 +124363,7 @@ components:
         - 'Appointment booking wizard built by microservice widget team.'
         - 'Online store widget.'
         - 'Event enrollment wizard widget.'
+        - 'Event widget built by microservice widget team.'
         - 'Fitbuilder widget.'
         - 'Skin for lead tracking form.'
         - 'Skin for lead tracking form from microservice.'
