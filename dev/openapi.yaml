@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261028145446
+  version: 1.1.20261028152130
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -57695,6 +57695,25 @@ paths:
                             - i_width
                             - is_empty
                             - text_url
+                        a_ticket_list:
+                          type: object
+                          description: |-
+                            The tickets of the purchase item. Only available if the purchase item is a ticket. Every element has the
+                            following keys:
+                          properties:
+                            text_number:
+                              type: string
+                              description: 'The number of the ticket.'
+                            text_title:
+                              type: string
+                              description: 'The title of the event the ticket is for.'
+                            url_print:
+                              type: string
+                              description: 'The URL of the page to print the ticket. The page works without a login.'
+                          required:
+                            - text_number
+                            - text_title
+                            - url_print
                         a_visit:
                           type: array
                           description: |-
@@ -57749,7 +57768,15 @@ paths:
                           description: 'The description of the purchase item.'
                         url_print:
                           type: string
-                          description: 'The URL to print. Only available if the purchase item is a coupon (gift card).'
+                          description: |-
+                            The URL to print. Only available if the purchase item is a coupon (gift card) or a ticket. For a ticket it
+                            is the page to print all the tickets of the purchase item, one ticket on a page. It is empty if the
+                            purchase item has no tickets.
+                        url_ticket_view:
+                          type: string
+                          description: |-
+                            The URL of the page with the tickets of the order. The page works without a login. Only available if the
+                            purchase item is a ticket. Empty if the purchase item has no tickets.
                       required:
                         - a_logo
                         - i_count
