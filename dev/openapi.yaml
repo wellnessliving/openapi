@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261028120501
+  version: 1.1.20261028145446
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -42757,7 +42757,13 @@ paths:
                     type: array
                     description: |-
                       The values and structure of all fields. Array keys are field IDs (`k_field`).
-                      Array values are the field values. The array has the following structure:
+                      Array values are the field values.
+
+                      By default, only fields matching the current entry point (register source) are returned.
+                      Set [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) to `true` to return every active, non-removed field
+                      regardless of entry-point filtering, with the `id_level_*` values included.
+
+                      The array has the following structure:
                     items:
                       type: object
                       properties:
@@ -42922,6 +42928,18 @@ paths:
             Used only to register new clients.
             * If the client is already authorized, the field value will not be used.
             * If the client is not authorized and no value is set, [RegisterSourceSid::SELF](#/components/schemas/Wl.Profile.RegisterSourceSid) will be used.
+        -
+          name: is_field_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to return all active, non-removed profile fields of the business regardless of entry-point filtering
+            (register source, level `DONT_ASK`, booking-and-purchase, and family-relation applies-to filters are skipped).
+            The `id_level_*` values are still included in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
+
+            `false` (default) to apply the normal entry-point filtering based on [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
         -
           name: is_staff
           in: query
@@ -43556,7 +43574,13 @@ paths:
                     type: array
                     description: |-
                       The values and structure of all fields. Array keys are field IDs (`k_field`).
-                      Array values are the field values. The array has the following structure:
+                      Array values are the field values.
+
+                      By default, only fields matching the current entry point (register source) are returned.
+                      Set [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) to `true` to return every active, non-removed field
+                      regardless of entry-point filtering, with the `id_level_*` values included.
+
+                      The array has the following structure:
                     items:
                       type: object
                       properties:
@@ -43721,6 +43745,18 @@ paths:
             Used only to register new clients.
             * If the client is already authorized, the field value will not be used.
             * If the client is not authorized and no value is set, [RegisterSourceSid::SELF](#/components/schemas/Wl.Profile.RegisterSourceSid) will be used.
+        -
+          name: is_field_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to return all active, non-removed profile fields of the business regardless of entry-point filtering
+            (register source, level `DONT_ASK`, booking-and-purchase, and family-relation applies-to filters are skipped).
+            The `id_level_*` values are still included in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
+
+            `false` (default) to apply the normal entry-point filtering based on [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
         -
           name: is_staff
           in: query
@@ -143785,7 +143821,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 253.
+        Last Used ID: 254.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -143935,6 +143971,10 @@ components:
         - 136 (`NOTIFICATION_SALE_STAFF`): Staff with this role will receive the sale receipts mails.
         - 216 (`NOTIFICATION_STAFF_CALLBACK_REQUEST`): Receive Staff Callback Request notification.
         - 164 (`OVERRIDE_FEE`): Override late cancel and no show fees.
+        - 254 (`OVERRIDE_MAKEUP_PASS`): Override make-up passes.
+
+          Allows a staff member to choose whether a make-up pass is issued when cancelling a visit for a client.
+          Without this privilege the Make-up Passes policy of the business applies as it is set.
         - 94 (`PARTNER_PROGRAM_MANAGE`): Manage partner program.
         - 166 (`PAYMENT_PROCESSING`): Access to Payment Processing.
         - 245 (`PERFORM_BULK_BILLING`): Allows staff to select multiple clients and post a single bulk transaction for a store item.
@@ -144175,6 +144215,7 @@ components:
         - 136
         - 216
         - 164
+        - 254
         - 94
         - 166
         - 245
@@ -144412,6 +144453,7 @@ components:
         - NOTIFICATION_SALE_STAFF
         - NOTIFICATION_STAFF_CALLBACK_REQUEST
         - OVERRIDE_FEE
+        - OVERRIDE_MAKEUP_PASS
         - PARTNER_PROGRAM_MANAGE
         - PAYMENT_PROCESSING
         - PERFORM_BULK_BILLING
@@ -144660,6 +144702,11 @@ components:
         - 'Staff with this role will receive the sale receipts mails.'
         - 'Receive Staff Callback Request notification.'
         - 'Override late cancel and no show fees.'
+        - |-
+          Override make-up passes.
+
+          Allows a staff member to choose whether a make-up pass is issued when cancelling a visit for a client.
+          Without this privilege the Make-up Passes policy of the business applies as it is set.
         - 'Manage partner program.'
         - 'Access to Payment Processing.'
         - 'Allows staff to select multiple clients and post a single bulk transaction for a store item.'
