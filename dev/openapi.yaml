@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261028102755
+  version: 1.1.20261028111854
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -107909,6 +107909,7 @@ paths:
           required: true
           schema:
             type: string
+            maxLength: 2000
           description: |-
             Keys of the selected add-ons of the appointment, in JSON.
 
@@ -110359,6 +110360,7 @@ paths:
           required: true
           schema:
             type: string
+            maxLength: 2000
           description: |-
             Keys of the selected add-ons of the appointment, in JSON.
 
@@ -110682,6 +110684,7 @@ paths:
           required: true
           schema:
             type: string
+            maxLength: 2000
           description: |-
             Keys of the selected add-ons of the appointment, in JSON.
 
@@ -110944,6 +110947,7 @@ paths:
           required: true
           schema:
             type: string
+            maxLength: 2000
           description: |-
             Keys of the selected add-ons of the appointment, in JSON.
 
@@ -116370,6 +116374,7 @@ paths:
           required: true
           schema:
             type: string
+            maxLength: 2000
           description: |-
             Keys of the selected add-ons of the appointment, in JSON.
 
@@ -119467,6 +119472,7 @@ paths:
           required: true
           schema:
             type: string
+            maxLength: 2000
           description: |-
             Keys of the selected add-ons of the appointment, in JSON.
 
