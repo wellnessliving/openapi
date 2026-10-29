@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261029142538
+  version: 1.1.20261029160935
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -112717,6 +112717,736 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Appointment/Book/Purchase/Purchase78.json:
+    get:
+      operationId: Wl.Appointment.Book.Purchase.Purchase78.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_login_prize:
+                    type: object
+                    description: 'Data about the login prize which can be used to pay for service.'
+                    properties:
+                      i_count:
+                        type: integer
+                        format: int32
+                        description: 'Login prize remaining quantity.'
+                      k_login_prize:
+                        type: string
+                        description: 'Key of login prize.'
+                      text_description:
+                        type: string
+                        description: 'User friendly login prize description.'
+                    required:
+                      - i_count
+                      - k_login_prize
+                      - text_description
+                  a_login_promotion:
+                    type: array
+                    description: "A list of the client's login promotions that can be applied to a given service."
+                    items:
+                      type: object
+                      properties:
+                        a_login_promotion_info:
+                          type: object
+                          description: 'Information about the Purchase Option. It contains the following information:'
+                          properties:
+                            i_limit:
+                              type: integer
+                              format: int32
+                              description: 'The count of visits that the Purchase Option allows the client to make.'
+                            i_limit_duration:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'The maximum number of minutes that current Purchase Option can be used for.'
+                            i_remain:
+                              type: integer
+                              format: int32
+                              description: 'The count of the remaining visits.'
+                            i_remain_duration:
+                              type:
+                                - integer
+                                - 'null'
+                              format: int32
+                              description: 'The number of minutes left in this Purchase Option.'
+                          required:
+                            - i_limit
+                            - i_limit_duration
+                            - i_remain
+                            - i_remain_duration
+                        a_visit_limit:
+                          type: array
+                          description: 'The list of calendar restrictions of the Purchase Option. For example, four per week.'
+                          items:
+                            type: string
+                        a_restrict:
+                          type: object
+                          description: 'Data about the shortest restriction period:'
+                          properties:
+                            i_limit:
+                              type: integer
+                              format: int32
+                              description: 'The limit of visits for the shortest restriction period.'
+                            i_remain:
+                              type: integer
+                              format: int32
+                              description: 'The number of remaining visits for the shortest restriction period.'
+                            text_restriction:
+                              type: string
+                              description: 'The description of the shortest restriction period. For example "this week" or "for a four-day period".'
+                          required:
+                            - i_limit
+                            - i_remain
+                            - text_restriction
+                        a_restrict_data:
+                          type: object
+                          description: 'Data about all restriction periods. Given as an array, where each record has the following structure:'
+                          properties:
+                            i_book:
+                              type: integer
+                              format: int32
+                              description: 'The count of future sessions that are paid with this Purchase Option.'
+                            i_limit:
+                              type: integer
+                              format: int32
+                              description: 'The limit of visits for the restriction period.'
+                            i_remain:
+                              type: integer
+                              format: int32
+                              description: 'The number of remaining visits for the restriction period.'
+                            i_use:
+                              type: integer
+                              format: int32
+                              description: 'The usage count of the Purchase Option.'
+                            i_visit_past:
+                              type: integer
+                              format: int32
+                              description: |-
+                                The count of attended sessions before the last renewal.
+                                This will be '0' if no sessions before the last renewal or if the Purchase Option doesn't auto-renew.
+                            text_restriction:
+                              type: string
+                              description: 'The description of restriction period. For example, "this week" or "for a four-day period".'
+                          required:
+                            - i_book
+                            - i_limit
+                            - i_remain
+                            - i_use
+                            - i_visit_past
+                            - text_restriction
+                        i_limit:
+                          type: integer
+                          format: int32
+                          description: 'The count of visits that the Purchase Option allows the client to make.'
+                        i_limit_duration:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: 'The maximum number of minutes that current Purchase Option can be used for.'
+                        i_promotion_priority:
+                          type: integer
+                          format: int32
+                          description: 'Priority of this promotion. Result of [PromotionPrioritySid::priorityGet()](#/components/schemas/Wl.Promotion.Priority.PromotionPrioritySid) method.'
+                        id_program:
+                          $ref: '#/components/schemas/RsProgramSid'
+                          description: 'The program ID for promotions. One of the [RsProgramSid](#/components/schemas/RsProgramSid) constants.'
+                        is_share:
+                          type: boolean
+                          description: |-
+                            `true` if this purchase option is shared from another user.
+                            `false` if this purchase option belongs to the user for whom the request is made.
+                        k_login_promotion:
+                          type: string
+                          description: 'The Purchase Option login key.'
+                        s_class_include:
+                          type: string
+                          description: 'The list of services provided by this Purchase Option.'
+                        s_description:
+                          type: string
+                          description: 'The Purchase Option description.'
+                        s_duration:
+                          type: string
+                          description: 'The Purchase Option duration.'
+                        s_title:
+                          type: string
+                          description: 'The Purchase Option name.'
+                        text_package_item:
+                          type: string
+                          description: 'If this Purchase Option is a package, then this field contains a list of Purchase Options contained in the package.'
+                        uid_owner:
+                          type: string
+                          description: |-
+                            The user key of the owner of the promotion.
+                            Will be different from the user for whom the request is made if the promotion is shared.
+                      required:
+                        - a_login_promotion_info
+                        - a_visit_limit
+                        - a_restrict
+                        - a_restrict_data
+                        - i_limit
+                        - i_limit_duration
+                        - i_promotion_priority
+                        - id_program
+                        - is_share
+                        - k_login_promotion
+                        - s_class_include
+                        - s_description
+                        - s_duration
+                        - s_title
+                        - text_package_item
+                        - uid_owner
+                  a_purchase:
+                    type: array
+                    description: 'An array with information about available Purchase Options.'
+                    items:
+                      type: object
+                      properties:
+                        a_image:
+                          type: object
+                          description: |-
+                            Information describing the logo of the purchase option. This value can be false if there is no logo described.
+                            Image information will have the following fields:
+                          properties:
+                            i_height:
+                              type: integer
+                              format: int32
+                              description: 'Actual height of thumbnail image.'
+                            i_height_src:
+                              type: integer
+                              format: int32
+                              description: 'Height of original image.'
+                            i_rotate:
+                              type: integer
+                              format: int32
+                              description: 'Angle on which image was rotated compared to the original.'
+                            i_width:
+                              type: integer
+                              format: int32
+                              description: 'Actual width of thumbnail image.'
+                            i_width_src:
+                              type: integer
+                              format: int32
+                              description: 'Width of original image.'
+                            is-resize:
+                              type: boolean
+                              description: |-
+                                Whether thumbnail is a resized variant of original image. If set to `false`
+                                value returned in `url-thumbnail` equals value in `url-view`.
+                            url-view:
+                              type: string
+                              description: 'Url to original image in file storage.'
+                            url-thumbnail:
+                              type: string
+                              description: |-
+                                Url to resized and rotated image in file storage. If size of original image is larger than specified by
+                                arguments, image thumbnail as created, and a link to this thumbnail is returned. Otherwise, link to
+                                original image is returned here.
+                          required:
+                            - i_height
+                            - i_height_src
+                            - i_rotate
+                            - i_width
+                            - i_width_src
+                            - is-resize
+                            - url-view
+                            - url-thumbnail
+                        a_payment:
+                          type: object
+                          description: 'The set of calculated values for payment:'
+                          properties:
+                            m_discount:
+                              type: string
+                              description: 'The amount of the whole discount of one purchase item.'
+                            m_discount_login:
+                              type: string
+                              description: 'The discount amount for the client type of one purchase item.'
+                          required:
+                            - m_discount
+                            - m_discount_login
+                        a_visit_limit:
+                          type: array
+                          description: "A list of calendar restrictions of the Purchase Option in a human-readable format, for example: '4 per week'."
+                          items:
+                            type: string
+                        dt_expire:
+                          type: string
+                          description: 'Date, when promotion expires.'
+                        dt_start:
+                          type: string
+                          description: 'Date, when promotion starts.'
+                        f_price:
+                          type: string
+                          description: 'The price of the Purchase Option.'
+                        i:
+                          type: integer
+                          format: int32
+                          description: 'Order number of the purchase option in the list.'
+                        i_limit:
+                          type: integer
+                          format: int32
+                          description: 'Count of visits that purchase option allows to make.'
+                        i_limit_duration:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: 'Maximum number of minutes that current promotion can be used.'
+                        i_payment_period:
+                          type: integer
+                          format: int32
+                          description: 'Count of calendar periods (weeks, months, years) between payment for membership.'
+                        id_duration:
+                          $ref: '#/components/schemas/ADurationSid'
+                          description: 'Duration ID. Constant from [ADurationSid](#/components/schemas/ADurationSid).'
+                        id_program:
+                          $ref: '#/components/schemas/RsProgramSid'
+                          description: 'Program ID for promotions from [RsProgramSid](#/components/schemas/RsProgramSid).'
+                        id_program_type:
+                          $ref: '#/components/schemas/RsProgramTypeSid'
+                          description: 'Program type ID. Constant from [RsProgramTypeSid](#/components/schemas/RsProgramTypeSid).'
+                        id_promotion_price:
+                          $ref: '#/components/schemas/RsProgramTypeSid'
+                          description: 'How the Purchase Item price is specified. One of the [RsProgramTypeSid](#/components/schemas/RsProgramTypeSid) constants.'
+                        id_purchase_item:
+                          $ref: '#/components/schemas/RsPurchaseItemSid'
+                          description: 'ID of the purchase item from [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid)'
+                        is_contract:
+                          type: boolean
+                          description: 'This will be `true` if the Purchase Option is a contract. It will `false` otherwise.'
+                        is_description:
+                          type: boolean
+                          description: '`true` if purchase option has description.'
+                        is_introductory:
+                          type: boolean
+                          description: '`true` if promotion is introductory offer, `false` otherwise.'
+                        is_renew:
+                          type: boolean
+                          description: 'This will be `true` if the Purchase Option will auto-renew. It will be `false` otherwise.'
+                        is_renew_check:
+                          type: boolean
+                          description: 'Whether Purchase Option is renewable and the "auto-renew" option should be turned on by default.'
+                        is_start:
+                          type: boolean
+                          description: 'This will be `true` if the Purchase Option has a duration that begins on purchase. It will be `false` otherwise.'
+                        k_id:
+                          type: string
+                          description: "Primary ID of the element in it's table."
+                        m_price_old:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Price of single session purchase before online discount. `null` if service does not have online discount.
+                            Is set only if this purchase option is purchase of single visit.
+                        s_activation:
+                          type: string
+                          description: 'Activation settings of the promotion.'
+                        s_class:
+                          type: string
+                          description: 'Class for designer to mark purchase options with different icons.'
+                        s_class_include:
+                          type: string
+                          description: 'List of services included in the promotion.'
+                        s_description:
+                          type: string
+                          description: 'Description of the purchase option.'
+                        s_duration:
+                          type: string
+                          description: 'Duration of the promotion.'
+                        s_payment_duration:
+                          type: string
+                          description: 'Period between payments for memberships.'
+                        sid_program_category:
+                          type: string
+                          description: 'Category of the program for promotions from [RsProgramCategorySid](#/components/schemas/RsProgramCategorySid).'
+                        s_title:
+                          type: string
+                          description: 'Name of the purchase option.'
+                        s_value:
+                          type: string
+                          description: 'Key of the purchase option in the format [`purchase_item_id`]::[`k_id`]'
+                        text_package_item:
+                          type: string
+                          description: 'If this promotion is a package. This field contains list of promotions contained in the package.'
+                      required:
+                        - a_image
+                        - a_payment
+                        - a_visit_limit
+                        - dt_expire
+                        - dt_start
+                        - f_price
+                        - i
+                        - i_limit
+                        - i_limit_duration
+                        - i_payment_period
+                        - id_duration
+                        - id_program
+                        - id_program_type
+                        - id_promotion_price
+                        - id_purchase_item
+                        - is_contract
+                        - is_description
+                        - is_introductory
+                        - is_renew
+                        - is_renew_check
+                        - is_start
+                        - k_id
+                        - s_activation
+                        - s_class
+                        - s_class_include
+                        - s_description
+                        - s_duration
+                        - s_payment_duration
+                        - sid_program_category
+                        - s_title
+                        - s_value
+                        - text_package_item
+                  a_reward_prize:
+                    type: object
+                    description: 'List of redeemable prizes which can be used to pay for service.'
+                    properties:
+                      i_score:
+                        type: integer
+                        format: int32
+                        description: 'Prize price in points.'
+                      k_reward_prize:
+                        type: string
+                        description: 'Key of redeemable prize.'
+                      text_description:
+                        type: string
+                        description: 'User friendly prize description.'
+                    required:
+                      - i_score
+                      - k_reward_prize
+                      - text_description
+                  a_session_pass:
+                    type: object
+                    description: 'Session pass information in a case if user books same appointment second time and already has Drop-in.'
+                    properties:
+                      i_remain:
+                        type: integer
+                        format: int32
+                        description: 'Number of remaining visits on session pass.'
+                      k_session_pass:
+                        type: string
+                        description: 'Session pass key.'
+                      id_purchase_item:
+                        $ref: '#/components/schemas/RsPurchaseItemSid'
+                        description: 'Type of the session pass purchase. One of [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.'
+                      s_title:
+                        type: string
+                        description: 'Session pass title.'
+                    required:
+                      - i_remain
+                      - k_session_pass
+                      - id_purchase_item
+                      - s_title
+                  is_single_default:
+                    type: boolean
+                    description: 'Indicates if drop-in rate should be the default purchase option.'
+                  k_location:
+                    type: string
+                    description: 'Location to show available appointment booking schedule.'
+                  k_login_promotion:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The Purchase Option ID used to pay for the appointment.
+                      This will be `null` if the client doesn't have a suitable Purchase Option.
+                  k_promotion_default:
+                    type: string
+                    description: |-
+                      Default promotion key.
+                      Empty if the appointment has no default promotion.
+                  text_login_promotion:
+                    type: string
+                    description: 'Login promotion title suitable to pay for the services.'
+                required:
+                  - a_login_prize
+                  - a_login_promotion
+                  - a_purchase
+                  - a_reward_prize
+                  - a_session_pass
+                  - is_single_default
+                  - k_location
+                  - k_promotion_default
+                  - text_login_promotion
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Retrieves a list of information about available purchase options.'
+      description: |-
+        Extends `get()` to price an appointment that is booked as an add-on of another appointment.
+        The price of such an appointment is Extra cost that the add-on has for its parent appointment. The regular price of
+        the add-on is given as the old price if the add-on shows its discount and Extra cost is lower than the regular price.
+        An add-on is a service only, and it can not require a deposit.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_service
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                a_purchase:
+                  type: object
+                  description: |-
+                    List of purchase options selected for the service.
+                       Should be set if a new purchase option is selected for this service.
+                  properties:
+                    id_purchase_item:
+                      $ref: '#/components/schemas/RsPurchaseItemSid'
+                      description: 'Purchase item ID. Constant from [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid).'
+                    k_id:
+                      type: string
+                      description: 'Purchase item key.'
+                    is_purchase_previous:
+                      type: boolean
+                      description: |-
+                        Should be `true` if this promotion is selected again, i.e. one that has already been applied to another appointment.
+                         This is needed to correctly calculate the remaining quantity of promotions with limited uses.
+                  required:
+                    - id_purchase_item
+                    - k_id
+                dt_date:
+                  type: string
+                  description: 'Local date/time to check purchase options expiration.'
+                k_login_prize:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Login prize key. 
+                       `null` if no login prize used to pay for this service.
+                k_login_promotion:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Login promotion key.
+                       Should be set if login promotion selected for this service.
+                k_service:
+                  type: string
+                  description: 'Service key.'
+                k_timezone:
+                  type: string
+                  description: |-
+                    The timezone key for `dt_date` field.
+
+                       Can be `null` if timezone is not selected.
+                       If not selected, the default client timezone will be used.
+                       
+
+                       In any case, the timezone will be used if the business allows client timezones.
+              required:
+                - a_purchase
+                - dt_date
+                - k_login_prize
+                - k_login_promotion
+                - k_service
+                - k_timezone
+          description: |-
+            List of selected services without current [PurchaseApi::$k_service](/Wl/Appointment/Book/Purchase/Purchase.json).
+
+            The list of these services directly affects the list of selected promotions.
+            Depending on the number and order of services, there may be different results.
+
+            The current [PurchaseApi::$k_service](/Wl/Appointment/Book/Purchase/Purchase.json) will be added to the end of this list.
+            It is worth considering this list as a list of previously selected services.
+
+            Each element has the following structure:
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of user keys to book appointments.
+            There may be empty values in this list, which means that this is a walk-in.
+        -
+          name: dt_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: 'The date to use to check for expiration of Purchase Options.'
+        -
+          name: i_duration
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          description: 'The asset booking duration.'
+        -
+          name: i_height
+          in: query
+          required: false
+          schema:
+            type:
+              - integer
+              - 'null'
+            format: int32
+          description: |-
+            Image height in pixels. Please specify this value if you need image to be returned in specific size.
+            In case this value is not specified returned image will have default thumbnail size.
+        -
+          name: i_width
+          in: query
+          required: false
+          schema:
+            type:
+              - integer
+              - 'null'
+            format: int32
+          description: |-
+            Image width in pixels. Please specify this value if you need image to be returned in specific size.
+            In case this value is not specified returned image will have default thumbnail size.
+        -
+          name: id_mode
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Mode.ModeSid'
+          description: 'The mode type. One of the [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants.'
+        -
+          name: is_backend
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - get all Purchase Options suitable for appointment.
+            `false` - get only Purchase Options available for the client.
+        -
+          name: is_walk_in
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'If `true`, the client is a walk-in. Otherwise, this will be `false`.'
+        -
+          name: k_appointment
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Appointment key. 
+            Not empty in case when we return payment options for rescheduling existing appointment.
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Location to show available appointment booking schedule.'
+        -
+          name: k_login_promotion
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            The Purchase Option ID used to pay for the appointment.
+            This will be `null` if the client doesn't have a suitable Purchase Option.
+        -
+          name: k_resource
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The resource key.'
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The service key used to select available Purchase Options.
+            If multiple services are selected, they should be specified in [PurchaseApi::$a_service](/Wl/Appointment/Book/Purchase/Purchase.json) array.
+        -
+          name: k_service_parent
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Key of the appointment of which the service `k_service` is an add-on.
+
+
+            `null` if the appointment is booked on its own. Otherwise the price of the appointment is Extra cost that the add-on
+            has for this parent appointment, not the price of its service.
+        -
+          name: k_timezone
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            The timezone key for [PurchaseApi::$dt_date](/Wl/Appointment/Book/Purchase/Purchase.json).
+
+            Can be `null` if timezone is not selected.
+            If not selected, the default client timezone will be used.
+
+
+            In any case, the timezone will be used if the business allows client timezones.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The user key.
+
+            This field is used if the client books for himself or for the relative.
+
+            This field is incorrect to use for guest booking since in this case the client will be checked as a relative.
+
+            In case of a group booking or a guest booking, the key of the client who is making the booking is set here.
+      x-instance-get-key: 'dt_date,k_location,k_service,k_resource,i_duration,is_backend,uid,k_timezone,k_appointment,k_service_parent'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Appointment/Book/Service/ServiceList52.json:
     get:
       operationId: Wl.Appointment.Book.Service.ServiceList52.get
@@ -115004,6 +115734,17 @@ paths:
                           description: |-
                             The asset index on the layout.
                             Specify this for separate asset bookings only and for cases when the asset category only has the layout.
+                        i_provider_parent:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Set it if the entry is an appointment add-on of another appointment. It is the index of the entry of the
+                            appointment in this list, counted from `0`. The appointment must be before the add-on in the list and must
+                            not be an add-on itself. The add-ons of an appointment follow it in the list, in the order of the add-ons
+                            of the appointment, and have the same client and the same staff member, and the start time of every
+                            add-on is the end of the entry before it. The add-ons do not work for a recurring booking, an asset, the
+                            back-to-back booking and the wait list.
+                            Specify this for appointment add-ons only.
                         id_gender_staff:
                           $ref: '#/components/schemas/AGenderSid'
                           description: |-
@@ -117440,6 +118181,15 @@ paths:
                   dl_client_prorate:
                     type: string
                     description: 'Client prorate date. Used when the purchased promotion is prorated.'
+                  i_provider_parent:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Set it if the entry is an appointment add-on of another appointment. It is the index of the entry of the
+                      appointment in this list, counted from `0`. The appointment must be before the add-on in the list and must
+                      not be an add-on itself. The price of the add-on is Extra cost of the add-on for the appointment, which is
+                      taken from the settings of the add-ons and is never read from the request.
+                      Specify this for appointment add-ons only.
                   k_resource:
                     type: string
                     description: |-
@@ -117751,6 +118501,15 @@ paths:
                         dl_client_prorate:
                           type: string
                           description: 'Client prorate date. Used when the purchased promotion is prorated.'
+                        i_provider_parent:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Set it if the entry is an appointment add-on of another appointment. It is the index of the entry of the
+                            appointment in this list, counted from `0`. The appointment must be before the add-on in the list and must
+                            not be an add-on itself. The price of the add-on is Extra cost of the add-on for the appointment, which is
+                            taken from the settings of the add-ons and is never read from the request.
+                            Specify this for appointment add-ons only.
                         k_resource:
                           type: string
                           description: |-
@@ -119571,6 +120330,143 @@ paths:
 
             In case of a group booking or a guest booking, the key of the client who is making the booking is set here.
       x-instance-get-key: 'k_location,k_service,json_service_addon,uid,is_staff'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Book/Block/AddonList.json:
+    get:
+      operationId: Wl.Appointment.Book.Block.AddonList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_addon:
+                    type: array
+                    description: |-
+                      The add-ons that can be chosen for the appointment, in the order in which they are shown and run after the
+                      appointment. Empty if the appointment has no add-ons.
+                    items:
+                      type: object
+                      properties:
+                        i_extra_time:
+                          type: integer
+                          format: int32
+                          description: 'Extra time that the add-on adds to the appointment, in minutes. `0` if the add-on takes no time of its own.'
+                        k_service_addon:
+                          type: string
+                          description: 'Key of the add-on service.'
+                        m_extra_cost:
+                          type: string
+                          description: 'Extra cost that the add-on adds to the price of the appointment.'
+                        m_price_regular:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'The regular price of the add-on, shown struck through next to Extra cost. `null` if nothing is struck through.'
+                        text_tagline:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Short line that tells why to add the add-on. `null` if the add-on has none.'
+                        text_title:
+                          type: string
+                          description: 'Title of the add-on.'
+                      required:
+                        - i_extra_time
+                        - k_service_addon
+                        - m_extra_cost
+                        - m_price_regular
+                        - text_tagline
+                        - text_title
+                  k_location:
+                    type: string
+                    description: 'Location to show available appointment booking schedule.'
+                required:
+                  - a_addon
+                  - k_location
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Lists the add-ons that can be chosen for an appointment.'
+      description: |-
+        An add-on is listed if it is linked to the appointment and its service is active and allows to be an add-on. The
+        list is empty if the appointment does not allow add-ons. An add-on that is booked by staff only is not listed for
+        a client. The list does not look at the age, the type and the group of the client: an add-on that the client is
+        not eligible for is found later, when the client is known. The regular price of an add-on is given only if it is
+        struck through, that is, Show Discount is on, the price of the add-on is fixed and Extra cost is lower.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            List of user keys to book appointments.
+            There may be empty values in this list, which means that this is a walk-in.
+        -
+          name: is_staff
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Whether a staff member books for the client. `false` if the client books.'
+        -
+          name: is_walk_in
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'If `true`, the client is a walk-in. Otherwise, this will be `false`.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Location to show available appointment booking schedule.'
+        -
+          name: k_service
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the appointment for which the add-ons are chosen.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The user key.
+
+            This field is used if the client books for himself or for the relative.
+
+            This field is incorrect to use for guest booking since in this case the client will be checked as a relative.
+
+            In case of a group booking or a guest booking, the key of the client who is making the booking is set here.
+      x-instance-get-key: 'k_location,k_service,uid,is_staff'
       x-rate-limit:
         -
           limit: 200000
