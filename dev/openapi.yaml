@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261029160935
+  version: 1.1.20261029164210
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -35817,7 +35817,11 @@ paths:
                         - text_field_title
                   a_empty_fields_required:
                     type: array
-                    description: 'List of profile fields that are required but empty for this user.'
+                    description: |-
+                      List of profile fields that are required at any client entry point but empty for this user.
+
+                      A field appears here when it is required at any of: client edits profile, sign-up, booking, purchase,
+                      guest, or relationship.
                     items:
                       type: object
                       properties:
