@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261030131441
+  version: 1.1.20261030144708
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -61575,6 +61575,93 @@ paths:
                         - url_schedule
                         - url_ticket_card
                         - url_ticket_waiver
+                  a_url_book:
+                    type: array
+                    description: |-
+                      Direct booking URLs of the event, one per Book Now Tab it is shown in.
+
+                      Empty for a new event and for a ticketed event, which has a booking URL per instance instead
+                      ([ClassEditorApi::$a_url_ticket](/Wl/Classes/Editor/ClassEditor.json)). Every element:
+                    items:
+                      type: object
+                      properties:
+                        url_book:
+                          type: string
+                          description: 'URL to book the event.'
+                      required:
+                        - url_book
+                  a_url_catalog:
+                    type: array
+                    description: |-
+                      Direct detail and checkout URLs of the event, one per instance of the event that has not ended.
+
+                      Empty for a new event, for an event outside a block, for an event sold only with purchase options and for an
+                      event with no such instances. Every element:
+                    items:
+                      type: object
+                      properties:
+                        html_end_local:
+                          type: string
+                          description: 'End date of the instance, ready to be shown.'
+                        html_start_local:
+                          type: string
+                          description: 'Start date of the instance, ready to be shown.'
+                        url_catalog:
+                          type: string
+                          description: 'URL of the page of the instance in the store.'
+                        url_checkout:
+                          type: string
+                          description: 'URL of the checkout of the instance.'
+                      required:
+                        - html_end_local
+                        - html_start_local
+                        - url_catalog
+                        - url_checkout
+                  a_url_scan:
+                    type: array
+                    description: |-
+                      Direct scanner URLs of a ticketed event, one per instance in [ClassEditorApi::$a_url_catalog](/Wl/Classes/Editor/ClassEditor.json).
+
+                      Empty for an event that is not ticketed. Every element:
+                    items:
+                      type: object
+                      properties:
+                        html_end_local:
+                          type: string
+                          description: 'End date of the instance, ready to be shown.'
+                        html_start_local:
+                          type: string
+                          description: 'Start date of the instance, ready to be shown.'
+                        url_scan:
+                          type: string
+                          description: 'URL of the page of the ticket scanner for the instance.'
+                      required:
+                        - html_end_local
+                        - html_start_local
+                        - url_scan
+                  a_url_ticket:
+                    type: array
+                    description: |-
+                      Direct booking URLs of a ticketed event, one per instance in [ClassEditorApi::$a_url_catalog](/Wl/Classes/Editor/ClassEditor.json) and per
+                      Book Now Tab the event is shown in.
+
+                      Empty for an event that is not ticketed. Every element:
+                    items:
+                      type: object
+                      properties:
+                        html_end_local:
+                          type: string
+                          description: 'End date of the instance, ready to be shown.'
+                        html_start_local:
+                          type: string
+                          description: 'Start date of the instance, ready to be shown.'
+                        url_book:
+                          type: string
+                          description: 'URL to buy tickets for the instance.'
+                      required:
+                        - html_end_local
+                        - html_start_local
+                        - url_book
                   has_schedule:
                     type: boolean
                     description: |-
@@ -61685,6 +61772,10 @@ paths:
                   - a_search_tag_list
                   - a_shop_category_list
                   - a_url
+                  - a_url_book
+                  - a_url_catalog
+                  - a_url_scan
+                  - a_url_ticket
                   - has_schedule
                   - html_policy
                   - html_prerequisite
