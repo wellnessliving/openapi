@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261030110834
+  version: 1.1.20261030122522
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -61545,9 +61545,17 @@ paths:
                         url_product_manage:
                           type: string
                           description: 'List of products.'
+                        url_remove:
+                          type: string
+                          description: 'Removal of the class. Empty string for a new class, or when the class may not be removed.'
                         url_resource_manage:
                           type: string
                           description: 'List of Book-a-Spot assets.'
+                        url_schedule:
+                          type: string
+                          description: |-
+                            Schedule of the class, where its sessions are added. Empty string for a new class, or when the staff member
+                            may not schedule it.
                         url_ticket_card:
                           type: string
                           description: 'Store settings that require a card at sign-up.'
@@ -61562,9 +61570,16 @@ paths:
                         - url_notification_staff
                         - url_policy_manage
                         - url_product_manage
+                        - url_remove
                         - url_resource_manage
+                        - url_schedule
                         - url_ticket_card
                         - url_ticket_waiver
+                  has_schedule:
+                    type: boolean
+                    description: |-
+                      `true` if the class has a schedule, so it may not be removed until the schedule is cancelled; `false` otherwise
+                      and for a new class.
                   html_policy:
                     type: string
                     description: |-
@@ -61670,6 +61685,7 @@ paths:
                   - a_search_tag_list
                   - a_shop_category_list
                   - a_url
+                  - has_schedule
                   - html_policy
                   - html_prerequisite
                   - html_promotion
@@ -132350,12 +132366,20 @@ components:
       description: |-
         Possible states of the visit: book, attended, cancelled, etc.
 
-        Last used ID: 8.
+        Last used ID: 9.
 
         Values:
         - 3 (`ATTEND`): Client has attended the session.
         - 1 (`BOOK`): Active reservation means that user is going to attend the session.
         - 6 (`CANCEL`): Client has cancelled the reservation in time and without penalty.
+        - 9 (`CANCEL_MAKEUP`): Client has cancelled the reservation early and qualified for a make-up pass under the business's Make-up
+          Passes policy.
+
+          Unlike [VisitSid::CANCEL](#/components/schemas/Wl.Visit.VisitSid), the visit is used and is not returned to the client's pass or membership:
+          the reservation stays on the schedule and on the client's Upcoming Schedule, the same way a
+          [VisitSid::PENALTY](#/components/schemas/Wl.Visit.VisitSid) visit does, and the time slot is open for a new booking. No late-cancel fee is
+          charged. A client-facing or an external (API, SDK, integration) output must show this status as
+          [VisitSid::CANCEL](#/components/schemas/Wl.Visit.VisitSid).
         - 4 (`PENALTY`): Client has cancelled his reservation too late.
         - 7 (`PENDING`): This state means that visit is registered, but it is unknown is it [VisitSid::ATTEND](#/components/schemas/Wl.Visit.VisitSid)
           or [VisitSid::TRUANCY](#/components/schemas/Wl.Visit.VisitSid) or [VisitSid::PENALTY](#/components/schemas/Wl.Visit.VisitSid) but definitely one of these states.
@@ -132370,6 +132394,7 @@ components:
         - 3
         - 1
         - 6
+        - 9
         - 4
         - 7
         - 8
@@ -132379,6 +132404,7 @@ components:
         - ATTEND
         - BOOK
         - CANCEL
+        - CANCEL_MAKEUP
         - PENALTY
         - PENDING
         - REMOVE
@@ -132388,6 +132414,15 @@ components:
         - 'Client has attended the session.'
         - 'Active reservation means that user is going to attend the session.'
         - 'Client has cancelled the reservation in time and without penalty.'
+        - |-
+          Client has cancelled the reservation early and qualified for a make-up pass under the business's Make-up
+          Passes policy.
+
+          Unlike {@link \Wl\Visit\VisitSid::CANCEL}, the visit is used and is not returned to the client's pass or membership:
+          the reservation stays on the schedule and on the client's Upcoming Schedule, the same way a
+          {@link \Wl\Visit\VisitSid::PENALTY} visit does, and the time slot is open for a new booking. No late-cancel fee is
+          charged. A client-facing or an external (API, SDK, integration) output must show this status as
+          {@link \Wl\Visit\VisitSid::CANCEL}.
         - 'Client has cancelled his reservation too late.'
         - |-
           This state means that visit is registered, but it is unknown is it {@link \Wl\Visit\VisitSid::ATTEND}
