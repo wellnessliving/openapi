@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261029164210
+  version: 1.1.20261030073937
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -33352,6 +33352,9 @@ paths:
                           - string
                           - 'null'
                         description: 'ID of custom payment method. `null` if this is a user account based on system payment method.'
+                      m_pending:
+                        type: string
+                        description: "Total amount of pending ACH payments for this account. `'0.00'` when there are no pending payments."
                       m_rest:
                         type: string
                         description: 'Account balance.'
@@ -33365,6 +33368,7 @@ paths:
                       - k_currency
                       - k_pay_account
                       - k_pay_method
+                      - m_pending
                       - m_rest
                       - s_method
                   a_account_nx:
@@ -126172,6 +126176,175 @@ paths:
               required:
                 - a_account
                 - a_field
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/Report/SalesReport/Client/AccountReport/AccountHistoryReportInfo.json:
+    get:
+      operationId: Thoth.Report.SalesReport.Client.AccountReport.AccountHistoryReportInfo.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_payer:
+                    type: boolean
+                    description: |-
+                      Whether the client is currently a payer, i.e. pays for at least one relationship member.
+
+
+
+                      When `true`, the toggle is shown and defaults to on.
+                  is_payer_has_history:
+                    type: boolean
+                    description: |-
+                      Whether the client has at least one past account transaction paid on behalf of a relationship member.
+
+                      Meaningful only when [AccountHistoryReportInfoApi::$is_payer](/Thoth/Report/SalesReport/Client/AccountReport/AccountHistoryReportInfo.json) is `false`.
+                      When `true`, the toggle is shown but defaults to off.
+                  text_payer_name:
+                    type: string
+                    description: |-
+                      Full name of the user who pays for this client.
+
+                      Empty string when the client pays for themselves.
+                  uid_payer:
+                    type: string
+                    description: |-
+                      UID of the user who pays for this client. 
+
+                      Empty string when the client pays for themselves.
+                  url_payer_balance_history:
+                    type: string
+                    description: |-
+                      URL of the payer's Balance History and Statements page.
+
+                      Empty string when the client pays for themselves.
+                  url_payer_statement_history:
+                    type: string
+                    description: |-
+                      URL of the payer's Statement History tab on the Balance History and Statements page.
+
+                      Empty string when the client pays for themselves.
+                required:
+                  - is_payer
+                  - is_payer_has_history
+                  - text_payer_name
+                  - uid_payer
+                  - url_payer_balance_history
+                  - url_payer_statement_history
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the payer information of the client.'
+      description: |-
+        Tells whether the client pays for relationship members and who pays for the client.
+        For a client paid for by another user, gives the name of the payer and the links to the payer's
+        Balance History and Statement History pages.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: 'Business key.'
+        -
+          name: uid_client
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: 'Client user key.'
+      x-instance-get-key: 'k_business,uid_client'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/Report/SalesReport/Client/ClientStatementHistoryReport/ClientStatementHistoryDownload.json:
+    get:
+      operationId: Thoth.Report.SalesReport.Client.ClientStatementHistoryReport.ClientStatementHistoryDownload.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  s_pdf_base64:
+                    type: string
+                    description: |-
+                      Base64-encoded PDF binary content.
+
+                      Decode on the client side and use as a Blob URL for file download.
+                  text_filename:
+                    type: string
+                    description: 'Suggested file name for the downloaded PDF.'
+                required:
+                  - s_pdf_base64
+                  - text_filename
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the PDF of an account statement.'
+      description: |-
+        Checks that the statement belongs to the business and that the caller has access to the profile of the client,
+        then gives the PDF as a Base64 string together with a suggested file name.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: 'Business key.'
+        -
+          name: k_statement
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: 'Statement primary key.'
+      x-instance-get-key: 'k_business,k_statement'
       x-rate-limit:
         -
           limit: 200000
