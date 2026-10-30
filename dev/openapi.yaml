@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261030093403
+  version: 1.1.20261030103043
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -28224,6 +28224,57 @@ paths:
             type: string
           description: 'The filter phrase to filter announcements by name.'
       x-instance-get-key: 'k_business,k_location,is_backend'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Zoom/ZoomUserRelease.json:
+    put:
+      operationId: Wl.Zoom.ZoomUserRelease.put
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Releases a Zoom license used by a business.'
+      description: |-
+        Makes the Zoom license free for other meetings and ends the meeting that runs on this license, if there is one.
+        A license that belongs to the business can be released only by a staff member of this business.
+        A system license can be released by a staff member of the business that uses it or by a system administrator.
+      tags:
+        - 'Virtual Attendance'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business_use
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key which currently use zoom user.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                s_user_id:
+                  type: string
+                  description: 'Zoom user ID.'
+              required:
+                - s_user_id
       x-rate-limit:
         -
           limit: 200000
