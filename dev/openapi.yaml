@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261030164153
+  version: 1.1.20261030173823
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -121777,7 +121777,6 @@ paths:
           schema:
             type: string
           description: 'Visit key.'
-      x-instance-get-key: 'k_business,k_visit'
       x-rate-limit:
         -
           limit: 200000
@@ -121902,7 +121901,6 @@ paths:
                 - s_code_version
                 - text_reason
                 - text_signature
-      x-instance-get-key: 'k_business,k_visit'
       x-rate-limit:
         -
           limit: 200000
