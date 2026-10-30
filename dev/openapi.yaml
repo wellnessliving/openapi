@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261030153427
+  version: 1.1.20261030164153
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -53866,6 +53866,24 @@ paths:
                 text_receipt_note:
                   type: string
                   description: 'The custom receipt note.'
+                uid_payor:
+                  type: string
+                  description: |-
+                    The key of the payor (optional). Primary key in  table.
+
+                    When non-empty, the payor becomes the money owner of the sale and is charged instead of the client. The client
+                    ([PaymentApi::$uid](/Wl/Catalog/Payment/Payment.json)) stays the holder of the purchased items.
+
+                    Empty string (the default) means the client's default payer is charged, which is the normal behaviour.
+
+                    Only staff ([PaymentApi::$is_staff](/Wl/Catalog/Payment/Payment.json) `true`, [PaymentApi::$is_guest](/Wl/Catalog/Payment/Payment.json) `false`) may set this field.
+                    A non-staff caller receives `payor-staff`.
+
+                    Other error codes returned when the payor is not valid:
+                    - `payor-disabled` - the payor feature is not available;
+                    - `payor-invalid` - the payor is not a valid payer for the client;
+                    - `payor-installment` - the sale has a payment plan;
+                    - `payor-holder` - a scheduled-payment item is held by someone other than the client.
               required:
                 - a_answer
                 - a_item
@@ -53879,6 +53897,7 @@ paths:
                 - m_tip
                 - text_discount_code
                 - text_receipt_note
+                - uid_payor
       x-rate-limit:
         -
           limit: 200000
@@ -57688,6 +57707,27 @@ paths:
                       - m_amount
                       - text_currency
                       - text_pay_method
+                  a_payor:
+                    type: object
+                    description: 'Information about the payor (money owner) of the purchase. Empty when the money owner is the client.'
+                    properties:
+                      text_address:
+                        type: string
+                        description: "The payor's address."
+                      text_mail:
+                        type: string
+                        description: "The payor's email address."
+                      text_name:
+                        type: string
+                        description: "The payor's name."
+                      text_phone:
+                        type: string
+                        description: "The payor's phone number."
+                    required:
+                      - text_address
+                      - text_mail
+                      - text_name
+                      - text_phone
                   a_price:
                     type: object
                     description: 'Complete information about price information for the purchase.'
@@ -57867,6 +57907,12 @@ paths:
                   text_receipt:
                     type: string
                     description: 'The receipt text set in the store settings.'
+                  uid_payor:
+                    type: string
+                    description: |-
+                      The key of the payor (money owner) of the purchase. Primary key in  table.
+
+                      Empty when the money owner is the client (the normal case).
                   url_print:
                     type: string
                     description: 'The URL for printing on a normal printer.'
@@ -57879,6 +57925,7 @@ paths:
                   - a_card
                   - a_customer
                   - a_pay_method
+                  - a_payor
                   - a_price
                   - a_purchase_item
                   - dtl_purchase
@@ -57886,6 +57933,7 @@ paths:
                   - html_receipt
                   - text_purchase_id
                   - text_receipt
+                  - uid_payor
                   - url_print
                   - url_print_receipt
         '400':
