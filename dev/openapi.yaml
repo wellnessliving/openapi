@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261031041955
+  version: 1.1.20261031181222
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -37750,6 +37750,13 @@ paths:
                   id_service:
                     $ref: '#/components/schemas/RsServiceSid'
                     description: 'Service type, one of [RsServiceSid](#/components/schemas/RsServiceSid).'
+                  is_phone_call:
+                    type: boolean
+                    description: |-
+                      Whether the booking was made as a Phone Call.
+
+                      This is the type of the service at the time of booking. It stays `true` after the service is switched to another type,
+                      so it can differ from `id_virtual_provider` of the service. `false` otherwise (in-person, virtual, class visits).
                   is_start_virtual_service:
                     type: boolean
                     description: |-
@@ -37777,6 +37784,15 @@ paths:
                   text_location:
                     type: string
                     description: 'Location name.'
+                  text_phone:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Phone number the staff calls for this Phone Call booking.
+
+                      The number in the international E.164 format, for example `+15550101001`.
+                      `null` if the booking is not a Phone Call or has no number.
                   text_time_end:
                     type: string
                     description: 'Time when service starts in format `8:00AM`.'
@@ -37807,6 +37823,7 @@ paths:
                   - i_duration
                   - id_note
                   - id_service
+                  - is_phone_call
                   - is_start_virtual_service
                   - is_ticket
                   - k_class
@@ -38063,6 +38080,13 @@ paths:
                   id_service:
                     $ref: '#/components/schemas/RsServiceSid'
                     description: 'Service type, one of [RsServiceSid](#/components/schemas/RsServiceSid).'
+                  is_phone_call:
+                    type: boolean
+                    description: |-
+                      Whether the booking was made as a Phone Call.
+
+                      This is the type of the service at the time of booking. It stays `true` after the service is switched to another type,
+                      so it can differ from `id_virtual_provider` of the service. `false` otherwise (in-person, virtual, class visits).
                   is_start_virtual_service:
                     type: boolean
                     description: |-
@@ -38090,6 +38114,15 @@ paths:
                   text_location:
                     type: string
                     description: 'Location name.'
+                  text_phone:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Phone number the staff calls for this Phone Call booking.
+
+                      The number in the international E.164 format, for example `+15550101001`.
+                      `null` if the booking is not a Phone Call or has no number.
                   text_time_end:
                     type: string
                     description: 'Time when service starts in format `8:00AM`.'
@@ -38120,6 +38153,7 @@ paths:
                   - i_duration
                   - id_note
                   - id_service
+                  - is_phone_call
                   - is_start_virtual_service
                   - is_ticket
                   - k_class
@@ -38719,6 +38753,16 @@ paths:
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
+                        text_phone:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The phone number the staff calls for a Phone Call booking, in the international E.164 format,
+                            for example `+15550101001`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
+                            staff need it to call the client.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -38818,6 +38862,7 @@ paths:
                         - text_firstname
                         - text_lastname
                         - text_note
+                        - text_phone
                         - text_promotion
                         - text_restrict_title
                         - text_visit_status_class
@@ -39342,6 +39387,16 @@ paths:
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
+                        text_phone:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The phone number the staff calls for a Phone Call booking, in the international E.164 format,
+                            for example `+15550101001`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
+                            staff need it to call the client.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -39441,6 +39496,7 @@ paths:
                         - text_firstname
                         - text_lastname
                         - text_note
+                        - text_phone
                         - text_promotion
                         - text_restrict_title
                         - text_visit_status_class
@@ -39965,6 +40021,16 @@ paths:
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
+                        text_phone:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The phone number the staff calls for a Phone Call booking, in the international E.164 format,
+                            for example `+15550101001`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
+                            staff need it to call the client.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -40064,6 +40130,7 @@ paths:
                         - text_firstname
                         - text_lastname
                         - text_note
+                        - text_phone
                         - text_promotion
                         - text_restrict_title
                         - text_visit_status_class
@@ -40697,6 +40764,16 @@ paths:
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
+                        text_phone:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The phone number the staff calls for a Phone Call booking, in the international E.164 format,
+                            for example `+15550101001`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
+                            staff need it to call the client.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -40796,6 +40873,7 @@ paths:
                         - text_firstname
                         - text_lastname
                         - text_note
+                        - text_phone
                         - text_promotion
                         - text_restrict_title
                         - text_visit_status_class
@@ -41320,6 +41398,16 @@ paths:
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
+                        text_phone:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The phone number the staff calls for a Phone Call booking, in the international E.164 format,
+                            for example `+15550101001`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
+                            staff need it to call the client.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -41419,6 +41507,7 @@ paths:
                         - text_firstname
                         - text_lastname
                         - text_note
+                        - text_phone
                         - text_promotion
                         - text_restrict_title
                         - text_visit_status_class
@@ -41943,6 +42032,16 @@ paths:
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
+                        text_phone:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The phone number the staff calls for a Phone Call booking, in the international E.164 format,
+                            for example `+15550101001`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
+                            staff need it to call the client.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -42042,6 +42141,7 @@ paths:
                         - text_firstname
                         - text_lastname
                         - text_note
+                        - text_phone
                         - text_promotion
                         - text_restrict_title
                         - text_visit_status_class
@@ -67159,6 +67259,13 @@ paths:
                     description: |-
                       `true` if the visit has been paid for (via a purchase option, session pass, or single purchase).
                       `false` if the visit is unpaid.
+                  is_phone_call:
+                    type: boolean
+                    description: |-
+                      Whether the booking was made as a Phone Call.
+
+                      This is the type of the service at the time of booking. It stays `true` after the service is switched to another type,
+                      so it can differ from `id_virtual_provider`. `false` otherwise (in-person, virtual, class visits).
                   is_virtual:
                     type: boolean
                     description: '`true` - service is virtual; `false` - otherwise.'
@@ -67207,6 +67314,15 @@ paths:
                     description: |-
                       Location title. If the visit is assigned a resource whose category is [ResourceCategoryEnum::LOCATION](#/components/schemas/Wl.Resource.ResourceCategoryEnum),
                       this is that resource's title instead of the actual location's title.
+                  text_phone:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Phone number the staff calls for this Phone Call booking.
+
+                      The number in the international E.164 format, for example `+15550101001`.
+                      `null` if the booking is not a Phone Call or has no number.
                   text_room:
                     type: string
                     description: 'Room where session takes place.'
@@ -67240,6 +67356,7 @@ paths:
                   - is_event
                   - is_in_progress
                   - is_paid
+                  - is_phone_call
                   - is_virtual
                   - k_location
                   - s_title
@@ -67320,11 +67437,26 @@ paths:
                         id_visit:
                           $ref: '#/components/schemas/Wl.Visit.VisitSid'
                           description: 'Visit status ID. One of [VisitSid](#/components/schemas/Wl.Visit.VisitSid) constants.'
+                        is_phone_call:
+                          type: boolean
+                          description: |-
+                            `true` if the visit was booked as a Phone Call. This is the type of the service at the time of booking,
+                            so it stays `true` after the service is switched to another type. `false` otherwise (in-person, virtual, class visits).
+                        text_phone:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Phone number the staff calls for a Phone Call visit, in the international E.164 format,
+                            for example `+15550101001`.
+                            `null` if the visit is not a Phone Call or has no number.
                       required:
                         - dtu_date
                         - k_business
                         - k_visit
                         - id_visit
+                        - is_phone_call
+                        - text_phone
                 required:
                   - a_visit
         '400':
@@ -70246,6 +70378,13 @@ paths:
                       Virtual provider ID.
 
                       `null` for non-virtual services.
+                  is_phone_call:
+                    type: boolean
+                    description: |-
+                      Whether the booking was made as a Phone Call.
+
+                      This is the type of the service at the time of booking. It stays `true` after the service is switched to another type,
+                      so it can differ from `id_virtual_provider`. `false` otherwise (in-person, virtual, class visits).
                   is_virtual:
                     type: boolean
                     description: |-
@@ -70294,6 +70433,15 @@ paths:
 
                       Deprecated: returned only for a limited list of third-party apps to keep backward compatibility.
                       Use `uid_staff` instead.
+                  text_phone:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Phone number the staff calls for this Phone Call booking.
+
+                      The number in the international E.164 format, for example `+15550101001`.
+                      `null` if the booking is not a Phone Call or has no number.
                   text_title:
                     type: string
                     description: 'Title of the appointment.'
@@ -70316,6 +70464,7 @@ paths:
                   - i_color_background
                   - i_color_border
                   - id_appointment_pay
+                  - is_phone_call
                   - is_virtual
                   - k_location
                   - text_title
@@ -70424,6 +70573,155 @@ paths:
           schema:
             type: string
           description: 'The key of the user.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Appointment/Phone/Phone.json:
+    get:
+      operationId: Wl.Appointment.Phone.Phone.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text_phone:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The phone number.
+
+                      In a PUT request, the number in any format. In results, the number in the standard form.
+                      `null` if there is no number or the booking is not a Phone Call.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the number of the visit or the default number for a future booking.'
+      description: |-
+        The number of a visit is available to a WellnessLiving admin with the privilege `rs.appointment.edit`,
+        to a non-staff user who is the client of the visit or who booked it, and to an active staff member only for
+        their own appointment and with the privilege to schedule future appointments. Former staff have no access.
+        The default number for a future booking is available to a user with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+        privilege for the client. The number is returned in the international E.164 format.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_visit
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Visit key.
+
+            Empty in a GET request means the default number for a future booking.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the client of a future booking. Used only when `k_visit` is empty.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    put:
+      operationId: Wl.Appointment.Phone.Phone.put
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text_phone:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The phone number.
+
+                      In a PUT request, the number in any format. In results, the number in the standard form.
+                      `null` if there is no number or the booking is not a Phone Call.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Changes the number of the visit.'
+      description: |-
+        The same users have access as for reading the number of a visit. Only staff may change the number after
+        the appointment has started. Returns the saved number in the international E.164 format.
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_visit
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Visit key.
+
+            Empty in a GET request means the default number for a future booking.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                text_phone:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    The phone number.
+
+                    In a PUT request, the number in any format. In results, the number in the standard form.
+                    `null` if there is no number or the booking is not a Phone Call.
       x-rate-limit:
         -
           limit: 200000
@@ -106723,6 +107021,12 @@ paths:
                           description: |-
                             For appointments: `true` if appointment is paid; `false` otherwise.
                             For classes always `null`.
+                        is_phone_call:
+                          type: boolean
+                          description: |-
+                            For appointments: `true` if the appointment was booked as a Phone Call; `false` otherwise.
+                            This is the type of the service at the time of booking, so it stays `true` after the service is switched to another type.
+                            For classes and events always `false`.
                         is_repeat:
                           type: boolean
                           description: |-
@@ -106822,6 +107126,7 @@ paths:
                         - is_arrive
                         - is_class_view
                         - is_pay
+                        - is_phone_call
                         - is_repeat
                         - is_ticket
                         - k_appointment
@@ -107105,6 +107410,12 @@ paths:
                           description: |-
                             For appointments: `true` if appointment is paid; `false` otherwise.
                             For classes always `null`.
+                        is_phone_call:
+                          type: boolean
+                          description: |-
+                            For appointments: `true` if the appointment was booked as a Phone Call; `false` otherwise.
+                            This is the type of the service at the time of booking, so it stays `true` after the service is switched to another type.
+                            For classes and events always `false`.
                         is_repeat:
                           type: boolean
                           description: |-
@@ -107184,6 +107495,7 @@ paths:
                         - id_service
                         - is_arrive
                         - is_pay
+                        - is_phone_call
                         - is_repeat
                         - is_ticket
                         - k_appointment
@@ -116020,6 +116332,14 @@ paths:
                         k_timezone:
                           type: string
                           description: "The time zone key. This will be 'null' if the time zone used matches the time zone of the location."
+                        text_phone:
+                          type: string
+                          description: |-
+                            The number to call the client at, for a Phone Call appointment. Any format is accepted.
+                            Ignored if the service is not a Phone Call.
+                            Required if the user who books is not staff and neither this user nor the client has a valid cell phone
+                            in the profile. Staff members may leave it empty.
+                            Empty string if not provided.
                         uid:
                           type: string
                           description: |-
