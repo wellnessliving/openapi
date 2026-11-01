@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261031181222
+  version: 1.1.20261101073343
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -21991,7 +21991,11 @@ paths:
                       If `null`, the visit isn't from an appointment (for example, the visit is from an asset).
                   s_calendar_file_content:
                     type: string
-                    description: 'The .ics file for adding the service to a phone calendar.'
+                    description: |-
+                      The .ics file for adding the service to a phone calendar.
+
+                      For a Phone Call appointment, the description has the number only if the current user may see it: the client,
+                      the user who booked, or staff with the privilege to see contact details of clients.
                   text_abbr_timezone:
                     type: string
                     description: 'The text abbreviation of the time zone.'
@@ -37792,7 +37796,11 @@ paths:
                       Phone number the staff calls for this Phone Call booking.
 
                       The number in the international E.164 format, for example `+15550101001`.
-                      `null` if the booking is not a Phone Call or has no number.
+                      `null` if the booking is not a Phone Call or has no number, or if the current user may not see the number.
+                      The number is shown like the phone of the client: to the client, to the user who booked and to staff with
+                      the privilege to see contact details of clients.
+                      A caller with a token and no user allowed by this rule gets `null`; [AttendanceInfoApi::$is_phone_call](/Wl/Login/Attendance/AttendanceInfo.json)
+                      is returned anyway.
                   text_time_end:
                     type: string
                     description: 'Time when service starts in format `8:00AM`.'
@@ -38122,7 +38130,11 @@ paths:
                       Phone number the staff calls for this Phone Call booking.
 
                       The number in the international E.164 format, for example `+15550101001`.
-                      `null` if the booking is not a Phone Call or has no number.
+                      `null` if the booking is not a Phone Call or has no number, or if the current user may not see the number.
+                      The number is shown like the phone of the client: to the client, to the user who booked and to staff with
+                      the privilege to see contact details of clients.
+                      A caller with a token and no user allowed by this rule gets `null`; [AttendanceInfoApi::$is_phone_call](/Wl/Login/Attendance/AttendanceInfo.json)
+                      is returned anyway.
                   text_time_end:
                     type: string
                     description: 'Time when service starts in format `8:00AM`.'
@@ -38760,9 +38772,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number.
-                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
-                            staff need it to call the client.
+                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
+                            The number is shown like the phone of the client: to the client, to
+                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege. A caller with a token or a guest application and no such user gets `null`.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -39394,9 +39407,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number.
-                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
-                            staff need it to call the client.
+                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
+                            The number is shown like the phone of the client: to the client, to
+                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege. A caller with a token or a guest application and no such user gets `null`.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -40028,9 +40042,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number.
-                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
-                            staff need it to call the client.
+                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
+                            The number is shown like the phone of the client: to the client, to
+                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege. A caller with a token or a guest application and no such user gets `null`.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -40771,9 +40786,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number.
-                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
-                            staff need it to call the client.
+                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
+                            The number is shown like the phone of the client: to the client, to
+                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege. A caller with a token or a guest application and no such user gets `null`.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -41405,9 +41421,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number.
-                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
-                            staff need it to call the client.
+                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
+                            The number is shown like the phone of the client: to the client, to
+                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege. A caller with a token or a guest application and no such user gets `null`.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -42039,9 +42056,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number.
-                            Returned without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege too: this is the data of the appointment,
-                            staff need it to call the client.
+                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
+                            The number is shown like the phone of the client: to the client, to
+                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege. A caller with a token or a guest application and no such user gets `null`.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -67322,7 +67340,9 @@ paths:
                       Phone number the staff calls for this Phone Call booking.
 
                       The number in the international E.164 format, for example `+15550101001`.
-                      `null` if the booking is not a Phone Call or has no number.
+                      `null` if the booking is not a Phone Call or has no number, or if the current user may not see the number.
+                      The number is shown like the phone of the client: to the client, to the user who booked and to staff with
+                      the privilege to see contact details of clients.
                   text_room:
                     type: string
                     description: 'Room where session takes place.'
@@ -67449,7 +67469,9 @@ paths:
                           description: |-
                             Phone number the staff calls for a Phone Call visit, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number.
+                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
+                            The number is shown like the phone of the client: to the client, to the user who booked and to staff with
+                            the privilege to see contact details of clients.
                       required:
                         - dtu_date
                         - k_business
@@ -70441,7 +70463,9 @@ paths:
                       Phone number the staff calls for this Phone Call booking.
 
                       The number in the international E.164 format, for example `+15550101001`.
-                      `null` if the booking is not a Phone Call or has no number.
+                      `null` if the booking is not a Phone Call or has no number, or if the current user may not see the number.
+                      The number is shown like the phone of the client: to the client, to the user who booked and to staff with
+                      the privilege to see contact details of clients.
                   text_title:
                     type: string
                     description: 'Title of the appointment.'
@@ -70611,9 +70635,9 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Returns the number of the visit or the default number for a future booking.'
       description: |-
-        The number of a visit is available to a WellnessLiving admin with the privilege `rs.appointment.edit`,
-        to a non-staff user who is the client of the visit or who booked it, and to an active staff member only for
-        their own appointment and with the privilege to schedule future appointments. Former staff have no access.
+        The number of a visit is shown like the phone of the client:
+        to the client of the visit, to the user who booked it, to a WellnessLiving admin with the privilege
+        `rs.appointment.edit` and to staff of the business with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
         The default number for a future booking is available to a user with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
         privilege for the client. The number is returned in the international E.164 format.
       tags:
@@ -70682,8 +70706,13 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Changes the number of the visit.'
       description: |-
-        The same users have access as for reading the number of a visit. Only staff may change the number after
-        the appointment has started. Returns the saved number in the international E.164 format.
+        The number may be changed by the client of the visit and by the user who booked it, also if they are staff of the
+        business (active or former), by a WellnessLiving admin with the privilege `rs.appointment.edit`, and by any other
+        active staff member only for their own appointment and with the privilege to schedule future appointments.
+        The number of a cancelled visit may not be changed. After the appointment has started, only a WellnessLiving
+        admin and staff who may change the number as staff may change it; the client and the user who booked may not.
+        The pencil to change the number in the client profile is shown by the same rule.
+        Returns the saved number in the international E.164 format.
       tags:
         - Appointments
       parameters:
@@ -115668,6 +115697,14 @@ paths:
                   The difference between this an `k_staff` is that this value must be set only in cases
                   when you want to add a customer to an appointment that already exists.
                   Specify this for appointment bookings only.
+              text_phone:
+                type: string
+                description: |-
+                  The number to call the client at, for a Phone Call appointment. Any format is accepted.
+                  Ignored if the service is not a Phone Call.
+                  Required if the user who books is not staff and neither this user nor the client has a valid cell phone
+                  in the profile. Staff members may leave it empty.
+                  Empty string if not provided.
             required:
               - dt_date
           description: 'All data from the provider model `Wl_Appointment_Book_ProviderModel`:'
@@ -117022,6 +117059,14 @@ paths:
                         The difference between this an `k_staff` is that this value must be set only in cases
                         when you want to add a customer to an appointment that already exists.
                         Specify this for appointment bookings only.
+                    text_phone:
+                      type: string
+                      description: |-
+                        The number to call the client at, for a Phone Call appointment. Any format is accepted.
+                        Ignored if the service is not a Phone Call.
+                        Required if the user who books is not staff and neither this user nor the client has a valid cell phone
+                        in the profile. Staff members may leave it empty.
+                        Empty string if not provided.
                   required:
                     - dt_date
                 a_notification:
