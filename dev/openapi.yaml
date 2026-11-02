@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261102093119
+  version: 1.1.20261102095212
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -53831,10 +53831,9 @@ paths:
                         $ref: '#/components/schemas/RsSaleSid'
                         description: 'The item type ID. One of the [RsSaleSid](#/components/schemas/RsSaleSid) constants.'
                       id_terms_action:
-                        type: integer
-                        format: int32
+                        $ref: '#/components/schemas/Wl.Catalog.Terms.TermsActionSid'
                         description: |-
-                          The decision on the terms and conditions of the ticket, used only for tickets.
+                          The decision on the terms and conditions of the ticket, used only for tickets. One of [TermsActionSid](#/components/schemas/Wl.Catalog.Terms.TermsActionSid) constants.
                           [TermsActionSid::AGREE](#/components/schemas/Wl.Catalog.Terms.TermsActionSid) if the client agreed to them, [TermsActionSid::SKIP](#/components/schemas/Wl.Catalog.Terms.TermsActionSid) if staff skipped them
                           to let the client agree later. Not set if there is no decision.
                       k_id:
@@ -145255,6 +145254,28 @@ components:
         - |-
           Special status of the debt to indicate that it is currently in update state.
           For example re-activation of the debt can take a time because it is performed by task.
+    Wl.Catalog.Terms.TermsActionSid:
+      type: integer
+      format: int32
+      description: |-
+        Action that a client or staff performs with terms and conditions of cart items.
+
+        Values:
+        - 1 (`AGREE`): Terms and conditions are accepted.
+        - 2 (`DECLINE`): Terms and conditions are declined, so items are removed from the cart.
+        - 3 (`SKIP`): Terms and conditions are skipped by staff in the point of sale.
+      enum:
+        - 1
+        - 2
+        - 3
+      x-enum-varnames:
+        - AGREE
+        - DECLINE
+        - SKIP
+      x-enum-descriptions:
+        - 'Terms and conditions are accepted.'
+        - 'Terms and conditions are declined, so items are removed from the cart.'
+        - 'Terms and conditions are skipped by staff in the point of sale.'
     Wl.Coupon.Edit.ActivationSid:
       type: integer
       format: int32
@@ -145437,28 +145458,6 @@ components:
         - Classes.
         - Resource.
         - Service.
-    Wl.Catalog.Terms.TermsActionSid:
-      type: integer
-      format: int32
-      description: |-
-        Action that a client or staff performs with terms and conditions of cart items.
-
-        Values:
-        - 1 (`AGREE`): Terms and conditions are accepted.
-        - 2 (`DECLINE`): Terms and conditions are declined, so items are removed from the cart.
-        - 3 (`SKIP`): Terms and conditions are skipped by staff in the point of sale.
-      enum:
-        - 1
-        - 2
-        - 3
-      x-enum-varnames:
-        - AGREE
-        - DECLINE
-        - SKIP
-      x-enum-descriptions:
-        - 'Terms and conditions are accepted.'
-        - 'Terms and conditions are declined, so items are removed from the cart.'
-        - 'Terms and conditions are skipped by staff in the point of sale.'
     ASocialSid:
       type: integer
       format: int32
