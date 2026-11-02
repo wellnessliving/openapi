@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261027144744
+  version: 1.1.20261102025226
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -4830,6 +4830,16 @@ paths:
                     items:
                       type: object
                       properties:
+                        a_data:
+                          type: object
+                          description: 'The additional data of the field. Its keys depend on the field type.'
+                          properties:
+                            i_size:
+                              type: integer
+                              format: int32
+                              description: |-
+                                The number of rows of the input of a text field. Always set for text fields:
+                                `1` when the text field has no number of rows set.
                         a_item:
                           type: object
                           description: |-
@@ -4863,6 +4873,7 @@ paths:
                           type: string
                           description: 'The field title.'
                       required:
+                        - a_data
                         - a_item
                         - id_field_general
                         - id_field_type
@@ -21623,6 +21634,57 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Zoom/ZoomUserRelease.json:
+    put:
+      operationId: Wl.Zoom.ZoomUserRelease.put
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Releases a Zoom license used by a business.'
+      description: |-
+        Makes the Zoom license free for other meetings and ends the meeting that runs on this license, if there is one.
+        A license that belongs to the business can be released only by a staff member of this business.
+        A system license can be released by a staff member of the business that uses it or by a system administrator.
+      tags:
+        - 'Virtual Attendance'
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business_use
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key which currently use zoom user.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                s_user_id:
+                  type: string
+                  description: 'Zoom user ID.'
+              required:
+                - s_user_id
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Tax/Tax.json:
     get:
       operationId: Wl.Tax.Tax.get
@@ -26441,10 +26503,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -26562,10 +26621,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -26636,10 +26692,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -26844,10 +26897,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -26900,10 +26950,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -27030,10 +27077,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -27294,10 +27338,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -27513,10 +27554,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -46477,7 +46515,11 @@ paths:
                         - text_field_title
                   a_empty_fields_required:
                     type: array
-                    description: 'List of profile fields that are required but empty for this user.'
+                    description: |-
+                      List of profile fields that are required at any client entry point but empty for this user.
+
+                      A field appears here when it is required at any of: client edits profile, sign-up, booking, purchase,
+                      guest, or relationship.
                     items:
                       type: object
                       properties:
@@ -52902,7 +52944,13 @@ paths:
                     type: array
                     description: |-
                       The values and structure of all fields. Array keys are field IDs (`k_field`).
-                      Array values are the field values. The array has the following structure:
+                      Array values are the field values.
+
+                      By default, only fields matching the current entry point (register source) are returned.
+                      Set [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) to `true` to return every active, non-removed field
+                      regardless of entry-point filtering, with the `id_level_*` values included.
+
+                      The array has the following structure:
                     items:
                       type: object
                       properties:
@@ -53067,6 +53115,18 @@ paths:
             Used only to register new clients.
             * If the client is already authorized, the field value will not be used.
             * If the client is not authorized and no value is set, [RegisterSourceSid::SELF](#/components/schemas/Wl.Profile.RegisterSourceSid) will be used.
+        -
+          name: is_field_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to return all active, non-removed profile fields of the business regardless of entry-point filtering
+            (register source, level `DONT_ASK`, booking-and-purchase, and family-relation applies-to filters are skipped).
+            The `id_level_*` values are still included in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
+
+            `false` (default) to apply the normal entry-point filtering based on [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
         -
           name: is_staff
           in: query
@@ -53701,7 +53761,13 @@ paths:
                     type: array
                     description: |-
                       The values and structure of all fields. Array keys are field IDs (`k_field`).
-                      Array values are the field values. The array has the following structure:
+                      Array values are the field values.
+
+                      By default, only fields matching the current entry point (register source) are returned.
+                      Set [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) to `true` to return every active, non-removed field
+                      regardless of entry-point filtering, with the `id_level_*` values included.
+
+                      The array has the following structure:
                     items:
                       type: object
                       properties:
@@ -53866,6 +53932,18 @@ paths:
             Used only to register new clients.
             * If the client is already authorized, the field value will not be used.
             * If the client is not authorized and no value is set, [RegisterSourceSid::SELF](#/components/schemas/Wl.Profile.RegisterSourceSid) will be used.
+        -
+          name: is_field_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to return all active, non-removed profile fields of the business regardless of entry-point filtering
+            (register source, level `DONT_ASK`, booking-and-purchase, and family-relation applies-to filters are skipped).
+            The `id_level_*` values are still included in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
+
+            `false` (default) to apply the normal entry-point filtering based on [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
         -
           name: is_staff
           in: query
@@ -83665,6 +83743,7 @@ paths:
             First digits of a newly-typed card number (at least 6).
 
             Exactly one of [SurchargeTenderApi::$k_pay_bank](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) and [SurchargeTenderApi::$s_bin](/Thoth/WlPay/Form/Surcharge/SurchargeTender.json) must be set.
+      x-instance-get-key: 'id_pay_method,k_business,k_currency,k_location,k_pay_bank,s_bin'
       x-rate-limit:
         -
           limit: 200000
@@ -97364,7 +97443,7 @@ paths:
                   is_system:
                     type: boolean
                     description: '`true` if the business has the diagnostic codes turned on, `false` otherwise.'
-                  s_version:
+                  s_code_version:
                     type: string
                     maxLength: 32
                     description: |-
@@ -97381,7 +97460,7 @@ paths:
                   - a_history
                   - is_signature
                   - is_system
-                  - s_version
+                  - s_code_version
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -97398,7 +97477,7 @@ paths:
       description: |-
         A staff member who can not assign billing codes gets the custom codes only, without the diagnostic codes and
         without the history. The answer carries the version of the codes, which must be posted back to change them,
-        see [VisitBillingCodeAssignApi::$s_version](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
+        see [VisitBillingCodeAssignApi::$s_code_version](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
       tags:
         - 'Billing Code'
       parameters:
@@ -97433,7 +97512,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  s_version:
+                  s_code_version:
                     type: string
                     maxLength: 32
                     description: |-
@@ -97446,7 +97525,7 @@ paths:
 
                       Empty string if the codes of the visit have never been changed.
                 required:
-                  - s_version
+                  - s_code_version
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -97470,7 +97549,7 @@ paths:
 
         The version of the codes the list is made from is posted together with the list: if another staff member has
         changed the codes in the meantime, the post is rejected with the error `code-version-outdated` instead of
-        overwriting that change, see [VisitBillingCodeAssignApi::$s_version](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
+        overwriting that change, see [VisitBillingCodeAssignApi::$s_code_version](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
       tags:
         - 'Billing Code'
       parameters:
@@ -97509,7 +97588,7 @@ paths:
                     [VisitBillingCodeAssignApi::$a_code](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
                   items:
                     type: string
-                s_version:
+                s_code_version:
                   type: string
                   maxLength: 32
                   description: |-
@@ -97540,7 +97619,7 @@ paths:
                     no signature is given.
               required:
                 - a_text_code
-                - s_version
+                - s_code_version
                 - text_reason
                 - text_signature
       x-instance-get-key: 'k_business,k_visit'
@@ -118495,10 +118574,7 @@ paths:
                     description: |-
                       Payment amount.
 
-                      `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                      (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                      caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                      instead of a rejected request.
+                      `null` in case when not initialized yet.
                   m_surcharge:
                     type:
                       - string
@@ -118611,10 +118687,7 @@ paths:
                   description: |-
                     Payment amount.
 
-                    `null` in case when not initialized yet. A subclass under the SAL-1314 rule
-                    (SurchargeCardTypeRule) may correct this to exclude a surcharge the
-                    caller was not allowed to post, so a stale client that still posts one gets the corrected total back (D7)
-                    instead of a rejected request.
+                    `null` in case when not initialized yet.
                 m_surcharge:
                   type:
                     - string
@@ -119879,7 +119952,7 @@ paths:
                   description: |-
                     The source of the visit change.
                     One of the [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants.
-                    If you're unsure about the value to use, keep the default value.
+                    If you're unsure about the value to use, keep the default value `null`: the source is detected automatically.
                 k_login_promotion:
                   type: string
                   description: |-
@@ -119889,7 +119962,6 @@ paths:
                   type: string
                   description: 'Visit key of the attendee to whom the guest pass is applied.'
               required:
-                - id_mode
                 - k_login_promotion
                 - k_visit
       x-rate-limit:
@@ -129320,7 +129392,7 @@ components:
 
 
 
-        Last used ID: 21.
+        Last used ID: 23.
 
         Values:
         - 19 (`AI_AGENT`): Ai Agent web-chat.
@@ -129329,6 +129401,7 @@ components:
         - 22 (`APPOINTMENT_FOREIGN`): Appointment booking wizard built by microservice widget team.
         - 21 (`CATALOG_FOREIGN`): Online store widget.
         - 8 (`ENROLLMENT`): Event enrollment wizard widget.
+        - 23 (`EVENT_FOREIGN`): Event widget built by microservice widget team.
         - 17 (`FITBUILDER`): Fitbuilder widget.
         - 9 (`LEAD`): Skin for lead tracking form.
         - 20 (`LEAD_FOREIGN`): Skin for lead tracking form from microservice.
@@ -129351,6 +129424,7 @@ components:
         - 22
         - 21
         - 8
+        - 23
         - 17
         - 9
         - 20
@@ -129370,6 +129444,7 @@ components:
         - APPOINTMENT_FOREIGN
         - CATALOG_FOREIGN
         - ENROLLMENT
+        - EVENT_FOREIGN
         - FITBUILDER
         - LEAD
         - LEAD_FOREIGN
@@ -129389,6 +129464,7 @@ components:
         - 'Appointment booking wizard built by microservice widget team.'
         - 'Online store widget.'
         - 'Event enrollment wizard widget.'
+        - 'Event widget built by microservice widget team.'
         - 'Fitbuilder widget.'
         - 'Skin for lead tracking form.'
         - 'Skin for lead tracking form from microservice.'
