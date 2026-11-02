@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261102104845
+  version: 1.1.20261102132628
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -68931,6 +68931,7 @@ paths:
           schema:
             type: string
           description: 'Key of the client of a future booking. Used only when `k_visit` is empty.'
+      x-instance-get-key: 'k_business,k_visit,uid'
       x-rate-limit:
         -
           limit: 200000
@@ -69013,6 +69014,7 @@ paths:
 
                     In a PUT request, the number in any format. In results, the number in the standard form.
                     `null` if there is no number or the booking is not a Phone Call.
+      x-instance-get-key: 'k_business,k_visit,uid'
       x-rate-limit:
         -
           limit: 200000
