@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261103121843
+  version: 1.1.20261103131751
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -53721,8 +53721,8 @@ paths:
 
                       It is returned together with [PaymentApi::$k_purchase](/Wl/Catalog/Payment/Payment.json). Pass it as [PurchaseReceiptApi::$text_token](/Wl/Purchase/Receipt/PurchaseReceipt.json)
                       to `get()`: this lets a guest, who has no access to the purchase, view the receipt. The
-                      token is valid for one hour. An empty string if no purchase was created, or if the token could not be made: the
-                      payment does not fail then.
+                      token is valid for one hour. An empty string if the token could not be made: the payment does not fail then, and
+                      the error is a warning in the error log.
                 required:
                   - k_purchase
                   - text_receipt_token
@@ -58210,11 +58210,11 @@ paths:
                             - i_width
                             - is_empty
                             - text_url
-                        a_ticket_list:
+                        a_ticket_info:
                           type: object
                           description: |-
-                            The tickets of the purchase item. Only available if the purchase item is a ticket. Every element has the
-                            following keys:
+                            The ticket of the purchase item. Only available if the purchase item is a ticket: one purchase item is one
+                            ticket. Empty if the purchase item has no ticket. Has the following keys:
                           properties:
                             text_event_title:
                               type: string
@@ -64749,6 +64749,17 @@ paths:
                             ticketed event (see `is_ticket`).
                             A visit checked in without a ticket is not counted. The same rule is used by the ticket check-in scanner,
                             see [TicketScanChannel::countGet()](#/components/schemas/Core.WebSocket.ChannelBroadcast).
+                        i_ticket_sold:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            Number of the tickets of the session that are sold. `null` if the session is not a session of a ticketed
+                            event (see `is_ticket`).
+                            Every ticket that is not cancelled is sold, including a ticket whose holder has not come. A visit without a
+                            ticket is not counted, so unlike `i_book` this number does not include regular bookings and the
+                            wait list. The same rule is used by [TicketScanChannel::countGet()](#/components/schemas/Core.WebSocket.ChannelBroadcast).
                         i_wait:
                           type: integer
                           format: int32
@@ -64878,6 +64889,7 @@ paths:
                         - i_day
                         - i_duration
                         - i_ticket_attend
+                        - i_ticket_sold
                         - i_wait
                         - i_wait_limit
                         - i_wait_spot
