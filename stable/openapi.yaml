@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261103043416
+  version: 1.1.20261103053306
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -106309,6 +106309,18 @@ paths:
           schema:
             type: boolean
           description: '`true` to show "book for" option in booking wizard. `false` for default behavior.'
+        -
+          name: show_session_overlap
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to include in [InfoApi::$a_session_all](/Wl/Book/Process/Info/Info.json) the sessions of a non-block event that overlap other
+            bookings of the current client, when the business prevents overlapping class and event bookings.
+            Such sessions have `is_select` set to `false`, and their booking is still refused.
+
+            `false` to leave such sessions out of the list.
         -
           name: uid
           in: query
