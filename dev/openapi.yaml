@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261103160723
+  version: 1.1.20261103171540
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -53783,7 +53783,9 @@ paths:
         The checkout endpoint that finalizes a purchase in the client-facing store. Charges the client's
         selected payment method, applies any discounts and tips, and creates the purchase record. Returns
         the resulting purchase key so the frontend can redirect to the confirmation page, and the temporary token of the
-        receipt, which lets an anonymous user, who has no access to the purchase, view the receipt.
+        receipt, which lets an anonymous user, who has no access to the purchase, view the receipt. For an anonymous
+        user ([PaymentApi::$is_guest](/Wl/Catalog/Payment/Payment.json)) the session also remembers the purchase, so that user can ask for the
+        emails of the purchase afterwards.
       tags:
         - Catalog
       parameters:
@@ -58490,6 +58492,14 @@ paths:
       description: |-
         Validates the caller's access to the purchase and sends a receipt email to the appropriate recipient
         (staff member or client), recording the action in the mail history log.
+
+        A guest, who is not signed in, can ask for the receipt of the purchase that the guest has just made: the email
+        goes to the address that the guest gave when buying, at most three emails for one purchase. Then the error
+        `access` means that the session of the guest knows nothing of the purchase (the purchase was made in another
+        session, or more than an hour ago), `access-purchase` that the guest gave no email, and `mail-limit` that the
+        three emails are sent already. [PurchaseMailApi::$is_send_force](/Wl/Purchase/Mail/PurchaseMail.json) does not apply to a guest. The receipt of
+        a guest is not sent, and the call still succeeds and uses one of the three emails, when the receipt email is
+        turned off in the business, when the business has no email address, or when the payment is not confirmed yet.
       tags:
         - Purchases
       parameters:
@@ -82237,7 +82247,9 @@ paths:
         Checks the access to the purchase, finds the order of tickets of the purchase, and sends the email with the
         tickets and their QR codes to the buyer, or to `text_mail` if it is given. The email is not sent if the pattern
         is turned off in the business, or if the buyer has turned it off in the notification settings and no address is
-        given. The codes of the errors are listed in the description of the class.
+        given. A guest, who is not signed in, gets the email at the address of the order.
+         The codes of the errors are listed in the description of
+        the class.
       tags:
         - Tickets
       parameters:
