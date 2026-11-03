@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261102134455
+  version: 1.1.20261103101259
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5434,46 +5434,6 @@ paths:
                     -
                       type: object
                       title: 'book-repeat-add (id_mail 101)'
-                      properties:
-                        a_asset:
-                          type: object
-                          description: 'Optional. Assets used for the reservations. Empty array by default. Each element:'
-                          properties:
-                            i_count:
-                              type: integer
-                              format: int32
-                              description: 'Number of sessions.'
-                            text_name:
-                              type: string
-                              description: |-
-                                Asset title that consists of the asset title itself concatenated with its index
-                                (in case of multiple assets) by `#`.
-                          required:
-                            - i_count
-                            - text_name
-                        a_visit:
-                          type: array
-                          description: |-
-                            List of visit IDs for canceling the reservation. Required if `k_visit` is not set: when both are empty,
-                            the e-mail is not built and `false` is returned. The first element is used as `k_visit`.
-                          items:
-                            type: string
-                        k_business:
-                          type: string
-                          description: 'Key of the business. Required.'
-                        k_visit:
-                          type: string
-                          description: |-
-                            Optional. Key of a visit. Used only when `a_visit` is empty, then the list of visits consists of this
-                            one visit. Required if `a_visit` is not set.
-                      required:
-                        - a_asset
-                        - a_visit
-                        - k_business
-                        - k_visit
-                    -
-                      type: object
-                      title: 'book-repeat-cancel (id_mail 102)'
                       properties:
                         a_asset:
                           type: object
@@ -22317,6 +22277,102 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Visit/VisitRecent.json:
+    get:
+      operationId: Wl.Visit.VisitRecent.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dtu_visit_last:
+                    type: string
+                    format: date-time
+                    description: |-
+                      Date and time of the last attended visit in UTC, excluding today's gym visits.
+
+                      Empty string if there are no qualifying visits.
+                  i_visit_month:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of attended visits in the last 30 days.
+
+                      The 30-day window starts at the beginning of the day 29 days ago on the clock of the location
+                       given in [VisitRecentApi::$k_location](/Wl/Visit/VisitRecent.json) and ends at the end of today on that clock.
+                  i_visit_week:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of attended visits in the last 7 days.
+
+                      The 7-day window starts at the beginning of the day 6 days ago on the clock of the location
+                       given in [VisitRecentApi::$k_location](/Wl/Visit/VisitRecent.json) and ends at the end of today on that clock.
+                  k_location_visit_last:
+                    type: string
+                    description: |-
+                      Location key of the last attended visit, excluding today's gym visits.
+
+                      Empty string if there are no qualifying visits.
+                required:
+                  - dtu_visit_last
+                  - i_visit_month
+                  - i_visit_week
+                  - k_location_visit_last
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns recent visit statistics for the user at the business.'
+      description: |-
+        Counts attended visits in the last 30 and 7 days and finds the last visit that is not a gym check-in
+         of today. The day boundaries are computed in the time zone of the location given in
+         [VisitRecentApi::$k_location](/Wl/Visit/VisitRecent.json).
+      tags:
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Location key.
+
+            Used to determine the time zone for the day boundaries.
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'User key.'
+      x-instance-get-key: 'uid,k_business'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Holiday/BulkBusinessHoliday.json:
     get:
       operationId: Wl.Holiday.BulkBusinessHoliday.get
@@ -29121,8 +29177,16 @@ paths:
                       Whether the "Powered by WellnessLiving" branding and Terms & Conditions links are shown in the footer.
 
                       `true` to show them; `false` for white-label businesses, which must not display WellnessLiving branding.
+                  url_tour:
+                    type: string
+                    description: |-
+                      URL of the tour page of the business type on the site of `WellnessLiving`.
+
+                      The "Powered by" badge of the footer links to this page, for example `https://example.com/crossfit/software/`.
+                      A business whose type has no tour page of its own gets the URL of the default tour page.
                 required:
                   - show_term
+                  - url_tour
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -29139,7 +29203,8 @@ paths:
       description: |-
         Loads the business's white-label status and derives whether the "Powered by WellnessLiving"
         branding and the Terms and Conditions link should be shown in the footer. The result is stored in
-        [FooterApi::$show_term](/Thoth/LayoutBe/Footer/Footer.json).
+        [FooterApi::$show_term](/Thoth/LayoutBe/Footer/Footer.json). The URL of the tour page of the business type, which the badge links to, is
+        loaded into [FooterApi::$url_tour](/Thoth/LayoutBe/Footer/Footer.json).
       tags:
         - Business
       parameters:
@@ -53437,8 +53502,18 @@ paths:
                   k_purchase:
                     type: string
                     description: 'The purchase key created during payment.'
+                  text_receipt_token:
+                    type: string
+                    description: |-
+                      The temporary token that gives access to the receipt of the purchase without a login.
+
+                      It is returned together with [PaymentApi::$k_purchase](/Wl/Catalog/Payment/Payment.json). Pass it as [PurchaseReceiptApi::$text_token](/Wl/Purchase/Receipt/PurchaseReceipt.json)
+                      to `get()`: this lets a guest, who has no access to the purchase, view the receipt. The
+                      token is valid for one hour. An empty string if no purchase was created, or if the token could not be made: the
+                      payment does not fail then.
                 required:
                   - k_purchase
+                  - text_receipt_token
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -53455,7 +53530,8 @@ paths:
       description: |-
         The checkout endpoint that finalizes a purchase in the client-facing store. Charges the client's
         selected payment method, applies any discounts and tips, and creates the purchase record. Returns
-        the resulting purchase key so the frontend can redirect to the confirmation page.
+        the resulting purchase key so the frontend can redirect to the confirmation page, and the temporary token of the
+        receipt, which lets an anonymous user, who has no access to the purchase, view the receipt.
       tags:
         - Catalog
       parameters:
@@ -57928,18 +58004,28 @@ paths:
                             The tickets of the purchase item. Only available if the purchase item is a ticket. Every element has the
                             following keys:
                           properties:
+                            text_event_title:
+                              type: string
+                              description: 'The title of the event the ticket is for.'
                             text_number:
                               type: string
                               description: 'The number of the ticket.'
-                            text_title:
+                            text_ticket_title:
                               type: string
-                              description: 'The title of the event the ticket is for.'
+                              description: 'The title of the ticket type.'
+                            url_download:
+                              type: string
+                              description: |-
+                                The URL to download the PDF file with this ticket. The file works without a login. It does not expire
+                                with [PurchaseReceiptApi::$text_token](/Wl/Purchase/Receipt/PurchaseReceipt.json).
                             url_print:
                               type: string
                               description: 'The URL of the page to print the ticket. The page works without a login.'
                           required:
+                            - text_event_title
                             - text_number
-                            - text_title
+                            - text_ticket_title
+                            - url_download
                             - url_print
                         a_visit:
                           type: array
@@ -58079,7 +58165,8 @@ paths:
       summary: 'Gets purchase information.'
       description: |-
         Returns full receipt data for the specified purchase, including business details, customer information,
-        itemized purchase items, payment methods, pricing summary, and print URLs.
+        itemized purchase items, payment methods, pricing summary, and print URLs. The access is granted to a user who
+        has the rights to the purchase, or to anyone who passes a valid [PurchaseReceiptApi::$text_token](/Wl/Purchase/Receipt/PurchaseReceipt.json).
       tags:
         - Purchases
       parameters:
@@ -58096,6 +58183,9 @@ paths:
 
             If `true`, the URL contains a token that allows temporary access to the page without logging in. If 'false', the
             page requires authentication.
+
+            It makes no difference when the access to the purchase is granted by [PurchaseReceiptApi::$text_token](/Wl/Purchase/Receipt/PurchaseReceipt.json):
+            the URLs then always contain that token.
         -
           name: k_purchase
           in: query
@@ -58105,6 +58195,23 @@ paths:
               - string
               - 'null'
           description: 'The key of the purchase.'
+        -
+          name: text_token
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The temporary token that gives access to the receipt without a login.
+
+            Optional. Pass it when the user has no access to the purchase, for example a guest: the token is returned by
+            [PaymentApi::$text_receipt_token](/Wl/Catalog/Payment/Payment.json) after the payment and is valid for one hour. An empty string
+            means no token. If the user has access to the purchase, the token is not checked. If the token is not valid for
+            the purchase and the user has no access, the API returns the `access` error.
+
+            When the access is granted by the token, [PurchaseReceiptApi::$url_print](/Wl/Purchase/Receipt/PurchaseReceipt.json) and
+            [PurchaseReceiptApi::$url_print_receipt](/Wl/Purchase/Receipt/PurchaseReceipt.json) contain the same token, so they stop working when the token
+            expires.
       x-rate-limit:
         -
           limit: 200000
@@ -99908,6 +100015,18 @@ paths:
             type: boolean
           description: '`true` to show "book for" option in booking wizard. `false` for default behavior.'
         -
+          name: show_session_overlap
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to include in [InfoApi::$a_session_all](/Wl/Book/Process/Info/Info.json) the sessions of a non-block event that overlap other
+            bookings of the current client, when the business prevents overlapping class and event bookings.
+            Such sessions have `is_select` set to `false`, and their booking is still refused.
+
+            `false` to leave such sessions out of the list.
+        -
           name: uid
           in: query
           required: true
@@ -103463,6 +103582,11 @@ paths:
                             k_coupon_amount:
                               type: string
                               description: 'The coupon amount key.'
+                            k_class:
+                              type: string
+                              description: |-
+                                Key of the class the ticket is purchased for. Required for a ticket of an event with several
+                                instances.
                           required:
                             - is_mail
                             - s_recipient
@@ -103802,6 +103926,11 @@ paths:
                     k_coupon_amount:
                       type: string
                       description: 'The coupon amount key.'
+                    k_class:
+                      type: string
+                      description: |-
+                        Key of the class the ticket is purchased for. Required for a ticket of an event with several
+                        instances.
                   required:
                     - is_mail
                     - s_recipient
