@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261103111006
+  version: 1.1.20261103114400
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8219,6 +8219,48 @@ paths:
                         - text_first_name
                         - text_newemail
                         - text_oldemail
+                    -
+                      type: object
+                      title: 'passport-passkey-add (id_mail 226)'
+                      properties:
+                        dtu_event:
+                          type: string
+                          description: 'Date and time when the passkey was added, in UTC, in MySQL format.'
+                        k_business:
+                          type: string
+                          description: 'Business key, where the passkey was added.'
+                        text_device:
+                          type: string
+                          description: 'Name of the passkey at the moment when it was added.'
+                        uid:
+                          type: string
+                          description: 'Key of the staff member, to whose account the passkey was added.'
+                      required:
+                        - dtu_event
+                        - k_business
+                        - text_device
+                        - uid
+                    -
+                      type: object
+                      title: 'passport-passkey-remove (id_mail 227)'
+                      properties:
+                        dtu_event:
+                          type: string
+                          description: 'Date and time when the passkey was removed, in UTC, in MySQL format.'
+                        k_business:
+                          type: string
+                          description: 'Business key, where the passkey was registered.'
+                        text_device:
+                          type: string
+                          description: 'Name of the passkey at the moment when it was removed.'
+                        uid:
+                          type: string
+                          description: 'Key of the staff member, from whose account the passkey was removed.'
+                      required:
+                        - dtu_event
+                        - k_business
+                        - text_device
+                        - uid
                     -
                       type: object
                       title: 'pay-account-invoice (id_mail 85)'
@@ -34434,10 +34476,14 @@ paths:
                     Empty when starting the ceremony.
                 text_device:
                   type: string
+                  maxLength: 50
                   description: |-
-                    User-supplied friendly label of the passkey being registered, for example `"MacBook Touch ID"`.
+                    Friendly label of the passkey being registered, for example `"MacBook Touch ID"`.
 
-                    Only used to finish the ceremony.
+                    Optional and only used to finish the ceremony. When empty, the backend names the passkey itself: after
+                    the browser and the operating system of the request (`Chrome on Windows`), or `Passkey` if they are unknown, with
+                    the lowest unused number added if the user has a passkey with that name already. A label that is sent is saved
+                    as it is, after trimming; it is kept for the clients that still ask the user for a name.
               required:
                 - json_credential
                 - text_device
@@ -34465,13 +34511,26 @@ paths:
           $ref: '#/components/responses/500'
       summary: "Revokes one of the signed-in user's passkey credentials."
       description: |-
-        Marks the credential as revoked rather than deleting the row.  A credential owned by another user can not be
-        revoked.
+        Deletes the row of the credential. The audit of the removal is the entry of the sign-in log written by
+        `PassportPasskey::logWrite()`, not the row. A credential of another user can be revoked only
+        if [PasskeyConfigAbstract::checkManage()](#/components/schemas/Core.Passport.Passkey.PasskeyConfigAbstract) allows it.
       tags:
         - Authentication
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: json_context
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            JSON-encoded structure with any additional information required by the project-specific
+            passkey configuration class, for example `k_business` in `Wl`.
+
+            Needed only to manage passkeys of a user other than the signed-in one; empty if no additional
+            information is required.
         -
           name: k_passkey_credential
           in: query
@@ -34479,9 +34538,9 @@ paths:
           schema:
             type: string
           description: |-
-            Key of the credential to revoke.
+            Key of the credential to revoke or to rename.
 
-            Only used to revoke a credential.
+            Only used to revoke or to rename a credential.
         -
           name: uid
           in: query
@@ -34533,7 +34592,7 @@ paths:
                           description: 'Credential key.'
                         text_device:
                           type: string
-                          description: 'User-supplied friendly label of this credential.'
+                          description: 'Name of this credential, assigned at registration and changed by `put()`.'
                       required:
                         - dtu_create
                         - dtu_last_use
@@ -34557,12 +34616,24 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: "Lists the user's registered passkey credentials."
-      description: 'Includes revoked credentials.'
+      description: 'Includes credentials revoked before revoking started to delete the row.'
       tags:
         - Authentication
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: json_context
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            JSON-encoded structure with any additional information required by the project-specific
+            passkey configuration class, for example `k_business` in `Wl`.
+
+            Needed only to manage passkeys of a user other than the signed-in one; empty if no additional
+            information is required.
         -
           name: uid
           in: query
@@ -34572,6 +34643,65 @@ paths:
           description: |-
             Key of the user whose passkey credentials to manage. `'0'` or empty string to use the
             currently signed-in user.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    put:
+      operationId: Core.Passport.Passkey.PasskeyCredential.put
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: "Renames one of the signed-in user's own passkey credentials."
+      description: |-
+        Saves the new name as it is entered, even if another passkey of the user has the same name, so no number is
+        added. A passkey of another user cannot be renamed, whatever the project configuration allows to manage. The
+        rename is not written to the sign-in log: the log has only the entries of adding and removing a passkey.
+      tags:
+        - Authentication
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_passkey_credential
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the credential to revoke or to rename.
+
+            Only used to revoke or to rename a credential.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                text_device:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+                  description: |-
+                    New name of the credential, 1 to 50 characters, without the spaces at the beginning and at the end.
+
+                    Only used to rename a credential. It is saved as it is entered, even if another passkey of the user has the
+                    same name.
+              required:
+                - text_device
       x-rate-limit:
         -
           limit: 200000
@@ -137247,7 +137377,7 @@ components:
 
         Pay attention that all `\MailPrioritySid` must start with backslash.
 
-        Last used ID: 225.
+        Last used ID: 227.
 
         Values:
         - 220 (`ABANDONED_CHECKOUT`): Sent when a client abandons a checkout (used in automations).
@@ -137542,6 +137672,8 @@ components:
         - 191 (`NOTIFICATION_OTP`): Sent OTP code by sms or email to validate phone number or email address.
         - 187 (`PASSPORT_LOGIN_ENTER`): Sent OTP code by sms and email for the user sign in.
         - 205 (`PASSPORT_LOGIN_MERGE`): Notification about email address is changed due to merge.
+        - 226 (`PASSPORT_PASSKEY_ADD`): Notification to a staff member that a passkey was added to their account.
+        - 227 (`PASSPORT_PASSKEY_REMOVE`): Notification to a staff member that a passkey was removed from their account.
         - 85 (`PAY_ACCOUNT_INVOICE`): E-mail with a list of user's payment account transactions for last `62` days.
 
           <h2>Acceptance test</h2>
@@ -137843,6 +137975,8 @@ components:
         - 191
         - 187
         - 205
+        - 226
+        - 227
         - 85
         - 116
         - 181
@@ -138043,6 +138177,8 @@ components:
         - NOTIFICATION_OTP
         - PASSPORT_LOGIN_ENTER
         - PASSPORT_LOGIN_MERGE
+        - PASSPORT_PASSKEY_ADD
+        - PASSPORT_PASSKEY_REMOVE
         - PAY_ACCOUNT_INVOICE
         - PAY_AUTOMATIC_SUCCESS
         - PAY_TRANSACTION_FAIL
@@ -138451,6 +138587,8 @@ components:
         - 'Sent OTP code by sms or email to validate phone number or email address.'
         - 'Sent OTP code by sms and email for the user sign in.'
         - 'Notification about email address is changed due to merge.'
+        - 'Notification to a staff member that a passkey was added to their account.'
+        - 'Notification to a staff member that a passkey was removed from their account.'
         - |-
           E-mail with a list of user's payment account transactions for last {@link \RsPayAccountMail::DAY} days.
 
@@ -141637,10 +141775,10 @@ components:
 
         Values:
         - 1 (`ACTIVE`): The credential is active and may be used to sign in.
-        - 2 (`REVOKED`): The credential was revoked by its owner and may no longer be used to sign in.
+        - 2 (`REVOKED`): The credential was revoked and may no longer be used to sign in.
 
-          The row is kept (never hard-deleted) so its immutable `s_credential_id`/`s_public_key` remain
-          available for audit purposes.
+          No longer set: revoking a credential deletes its row, and the audit is the sign-in log. Rows revoked
+          earlier keep this status.
       enum:
         - 1
         - 2
@@ -141650,10 +141788,10 @@ components:
       x-enum-descriptions:
         - 'The credential is active and may be used to sign in.'
         - |-
-          The credential was revoked by its owner and may no longer be used to sign in.
+          The credential was revoked and may no longer be used to sign in.
 
-          The row is kept (never hard-deleted) so its immutable `s_credential_id`/`s_public_key` remain
-          available for audit purposes.
+          No longer set: revoking a credential deletes its row, and the audit is the sign-in log. Rows revoked
+          earlier keep this status.
     Core.Drive.DriveTypeSid:
       type: integer
       format: int32
@@ -147738,7 +147876,7 @@ components:
       description: |-
         List of available features in the system that can be shown in owner's header.
 
-        Last used ID: 37.
+        Last used ID: 38.
 
         Values:
         - 34 (`AI_AGENT`): Ai Agent.
@@ -147763,6 +147901,7 @@ components:
         - 21 (`LOG_REPORT`): Log report of staff activity.
         - 12 (`MARKETING`): List of email patterns that are connected to the online marketing.
         - 19 (`PARTNER`): Page with information about partner program.
+        - 38 (`PASSKEY`): Passkeys of the signed-in staff member.
         - 23 (`PRESENCE`): Presence landing page, where staff can get their custom website.
         - 29 (`QUIZ`): Quiz form creator.
         - 16 (`RECEPTION`): Popup window where client can check-in to the upcoming classes.
@@ -147801,6 +147940,7 @@ components:
         - 21
         - 12
         - 19
+        - 38
         - 23
         - 29
         - 16
@@ -147839,6 +147979,7 @@ components:
         - LOG_REPORT
         - MARKETING
         - PARTNER
+        - PASSKEY
         - PRESENCE
         - QUIZ
         - RECEPTION
@@ -147880,6 +148021,7 @@ components:
         - 'Log report of staff activity.'
         - 'List of email patterns that are connected to the online marketing.'
         - 'Page with information about partner program.'
+        - 'Passkeys of the signed-in staff member.'
         - 'Presence landing page, where staff can get their custom website.'
         - 'Quiz form creator.'
         - 'Popup window where client can check-in to the upcoming classes.'
