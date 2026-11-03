@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261103131751
+  version: 1.1.20261103143656
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5434,6 +5434,46 @@ paths:
                     -
                       type: object
                       title: 'book-repeat-add (id_mail 101)'
+                      properties:
+                        a_asset:
+                          type: object
+                          description: 'Optional. Assets used for the reservations. Empty array by default. Each element:'
+                          properties:
+                            i_count:
+                              type: integer
+                              format: int32
+                              description: 'Number of sessions.'
+                            text_name:
+                              type: string
+                              description: |-
+                                Asset title that consists of the asset title itself concatenated with its index
+                                (in case of multiple assets) by `#`.
+                          required:
+                            - i_count
+                            - text_name
+                        a_visit:
+                          type: array
+                          description: |-
+                            List of visit IDs for canceling the reservation. Required if `k_visit` is not set: when both are empty,
+                            the e-mail is not built and `false` is returned. The first element is used as `k_visit`.
+                          items:
+                            type: string
+                        k_business:
+                          type: string
+                          description: 'Key of the business. Required.'
+                        k_visit:
+                          type: string
+                          description: |-
+                            Optional. Key of a visit. Used only when `a_visit` is empty, then the list of visits consists of this
+                            one visit. Required if `a_visit` is not set.
+                      required:
+                        - a_asset
+                        - a_visit
+                        - k_business
+                        - k_visit
+                    -
+                      type: object
+                      title: 'book-repeat-cancel (id_mail 102)'
                       properties:
                         a_asset:
                           type: object
@@ -65046,11 +65086,20 @@ paths:
                 dt_date:
                   type: string
                   format: date-time
-                  description: 'The list start date in MySQL format.'
+                  description: |-
+                    The list start date in MySQL format.
+
+                    May be empty when [ClassList68Api::$a_event](/Wl/Schedule/ClassList/ClassList68.json) is not empty: then the day before the earliest start date of
+                    these events is used, or today if none of them has a start date.
+                    Otherwise, it is required.
                 dt_end:
                   type: string
                   format: date-time
-                  description: 'The list end date in MySQL format.'
+                  description: |-
+                    The list end date in MySQL format.
+
+                    If left empty and [ClassList68Api::$a_event](/Wl/Schedule/ClassList/ClassList68.json) is not empty, the day after the latest end date of these
+                    events is used.
                 id_class_tab:
                   $ref: '#/components/schemas/Wl.Classes.Tab.TabSid'
                   description: |-
