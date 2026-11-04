@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261104142134
+  version: 1.1.20261104143902
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -49246,9 +49246,23 @@ paths:
                           type: integer
                           format: int32
                           description: |-
-                            Number of inactive automations which use this stage. Such an automation still refers the stage, so it
-                            still makes a replacement stage mandatory when the stage is deleted.
+                            Number of inactive automations associated with this stage, including any-stage triggers.
+                            Explicit references are counted separately for deletion.
                             Only set in a case [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
+                        i_automation_replace_active:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of distinct active automations whose explicit stage references need updating when this stage
+                            is deleted. Any-stage triggers alone are excluded.
+                            Only set when [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
+                        i_automation_replace_inactive:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Number of distinct inactive automations whose explicit stage references need updating when this stage
+                            is deleted. Any-stage triggers alone are excluded.
+                            Only set when [LeadStageListApi::$is_statistic](/Wl/Lead/Stage/LeadStageList.json) is `true`.
                         i_member_group:
                           type: integer
                           format: int32
