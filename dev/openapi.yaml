@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261104084003
+  version: 1.1.20261104113359
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -25985,7 +25985,9 @@ paths:
                     description: 'Whether exists form to confirm during registration process.'
                   has_home:
                     type: boolean
-                    description: '`true` if the "home" page is turned on for the current business; `false` otherwise.'
+                    description: |-
+                      `true` if the "home" page is turned on for the current business; `false` otherwise.
+                      The home page is turned on by default; it is off only if a paid Achieve plan explicitly turned it off.
                   has_merchant:
                     type: boolean
                     description: "Whether the merchant is configured for the client's home location or for business [EnvironmentApi::$k_business](/Wl/Session/Environment.json)."
@@ -140280,6 +140282,8 @@ components:
         - 2329 (`Wl\Member\Report\MemberProfileReport`): "Client Data" report generator.
         - 689 (`Wl\Member\Report\MemberAllReport`): "All clients" report generator.
         - 1287 (`Wl\Member\Report\MemberReport`): "All clients" report generator (this report used for the "Clients" link accessed from the top nav or WL menu).
+        - 2495 (`Wl\Attendance\Franchisor\FranchisorAttendanceReport`): External attendance report of a franchisor.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 1777 (`Thoth\MarketingCampaigns\Report\CampaignDetail\CampaignDetailReport`): "Marketing Campaigns" detail report.
         - 1763 (`Thoth\MarketingCampaigns\Report\CampaignList\CampaignListReport`): "Marketing Campaigns" list report.
         - 1255 (`Thoth\Report\SalesReport\Client\TransactionAllPaymentClientReport`): Report about user's transactions.
@@ -140419,6 +140423,7 @@ components:
         - 2329
         - 689
         - 1287
+        - 2495
         - 1777
         - 1763
         - 1255
@@ -140507,6 +140512,7 @@ components:
         - Wl\Member\Report\MemberProfileReport
         - Wl\Member\Report\MemberAllReport
         - Wl\Member\Report\MemberReport
+        - Wl\Attendance\Franchisor\FranchisorAttendanceReport
         - Thoth\MarketingCampaigns\Report\CampaignDetail\CampaignDetailReport
         - Thoth\MarketingCampaigns\Report\CampaignList\CampaignListReport
         - Thoth\Report\SalesReport\Client\TransactionAllPaymentClientReport
@@ -140603,6 +140609,9 @@ components:
         - '"Client Data" report generator.'
         - '"All clients" report generator.'
         - '"All clients" report generator (this report used for the "Clients" link accessed from the top nav or WL menu).'
+        - |-
+          External attendance report of a franchisor.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - '"Marketing Campaigns" detail report.'
         - '"Marketing Campaigns" list report.'
         - "Report about user's transactions."
@@ -146210,6 +146219,8 @@ components:
         - 754 (`Wl\Member\Report\MemberAllReportController`): "All clients" report controller. Table representation.
         - 1288 (`Wl\Member\Report\MemberReportController`): "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
           Table representation.
+        - 2496 (`Wl\Attendance\Franchisor\FranchisorAttendanceReportController`): External attendance report of a franchisor.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - 1778 (`Thoth\MarketingCampaigns\Report\CampaignDetail\CampaignDetailReportController`): "Marketing Campaigns" detail report controller.
         - 1762 (`Thoth\MarketingCampaigns\Report\CampaignList\CampaignListReportController`): "Marketing Campaigns" list report controller.
         - 1322 (`Thoth\Report\SalesReport\Client\TransactionAllItemStaffClientReportController`): Controller of  client's 'Purchases' report.
@@ -146325,6 +146336,7 @@ components:
         - 2330
         - 754
         - 1288
+        - 2496
         - 1778
         - 1762
         - 1322
@@ -146435,6 +146447,7 @@ components:
         - Wl\Member\Report\MemberProfileReportController
         - Wl\Member\Report\MemberAllReportController
         - Wl\Member\Report\MemberReportController
+        - Wl\Attendance\Franchisor\FranchisorAttendanceReportController
         - Thoth\MarketingCampaigns\Report\CampaignDetail\CampaignDetailReportController
         - Thoth\MarketingCampaigns\Report\CampaignList\CampaignListReportController
         - Thoth\Report\SalesReport\Client\TransactionAllItemStaffClientReportController
@@ -146553,6 +146566,9 @@ components:
         - |-
           "All clients" report controller (this report used for the "Clients" link accessed from the top nav or WL menu).
           Table representation.
+        - |-
+          External attendance report of a franchisor.
+          Is developed as microservice. This class only provides access validation and URL generation.
         - '"Marketing Campaigns" detail report controller.'
         - '"Marketing Campaigns" list report controller.'
         - "Controller of  client's 'Purchases' report."
