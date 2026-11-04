@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261103202523
+  version: 1.1.20261104044535
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -60389,6 +60389,98 @@ paths:
           schema:
             type: string
           description: 'The key of the business to show information for.'
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Staff/Passkey/PasskeyList.json:
+    get:
+      operationId: Wl.Staff.Passkey.PasskeyList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_staff:
+                    type: array
+                    description: 'Active staff members of the business who have at least one active passkey, sorted by name.'
+                    items:
+                      type: object
+                      properties:
+                        a_passkey:
+                          type: object
+                          description: 'Active passkeys of the staff member, in the order of creation:'
+                          properties:
+                            dtu_create:
+                              type: string
+                              description: 'Date and time when the passkey was registered.'
+                            dtu_last_use:
+                              type:
+                                - string
+                                - 'null'
+                              description: 'Date and time when the passkey was last used to sign in, or `null` if it was never used.'
+                            k_passkey_credential:
+                              type: string
+                              description: 'Passkey key.'
+                            text_device:
+                              type: string
+                              description: 'Name of the passkey.'
+                          required:
+                            - dtu_create
+                            - dtu_last_use
+                            - k_passkey_credential
+                            - text_device
+                        can_remove:
+                          type: boolean
+                          description: |-
+                            Whether the signed-in user may remove the passkeys of this staff member.
+                            The same rule is applied by the removal itself.
+                        text_name:
+                          type: string
+                          description: 'Full name of the staff member.'
+                        uid:
+                          type: string
+                          description: 'Staff member key.'
+                      required:
+                        - a_passkey
+                        - can_remove
+                        - text_name
+                        - uid
+                required:
+                  - a_staff
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Lists the passkeys of the active staff members of the business.'
+      description: |-
+        Only staff members who have passkeys are listed. The staff members whose passkeys the signed-in user may not
+        remove are listed too, with `can_remove` set to `false`: the user sees that they exist, and the removal stays
+        refused by `delete()`.
+      tags:
+        - Staff
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business whose staff passkeys to list.'
       x-instance-get-key: k_business
       x-rate-limit:
         -
@@ -147974,7 +148066,7 @@ components:
         - 21 (`LOG_REPORT`): Log report of staff activity.
         - 12 (`MARKETING`): List of email patterns that are connected to the online marketing.
         - 19 (`PARTNER`): Page with information about partner program.
-        - 38 (`PASSKEY`): Passkeys of the signed-in staff member.
+        - 38 (`PASSKEY`): Passkeys of the staff members.
         - 23 (`PRESENCE`): Presence landing page, where staff can get their custom website.
         - 29 (`QUIZ`): Quiz form creator.
         - 16 (`RECEPTION`): Popup window where client can check-in to the upcoming classes.
@@ -148094,7 +148186,7 @@ components:
         - 'Log report of staff activity.'
         - 'List of email patterns that are connected to the online marketing.'
         - 'Page with information about partner program.'
-        - 'Passkeys of the signed-in staff member.'
+        - 'Passkeys of the staff members.'
         - 'Presence landing page, where staff can get their custom website.'
         - 'Quiz form creator.'
         - 'Popup window where client can check-in to the upcoming classes.'
