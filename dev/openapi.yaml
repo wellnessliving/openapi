@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261104123156
+  version: 1.1.20261104125412
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -57060,7 +57060,9 @@ paths:
                                      option will be used automatically.
                         a_config:
                           type: object
-                          description: 'Additional configuration. Used only for `id_sale` = [RsSaleSid::TUITION](#/components/schemas/RsSaleSid).'
+                          description: |-
+                            Additional configuration. Used only for `id_sale` = [RsSaleSid::TUITION](#/components/schemas/RsSaleSid)
+                            and `id_sale` = [RsSaleSid::TICKET](#/components/schemas/RsSaleSid).
                           properties:
                             a_event_list:
                               type: object
@@ -57089,6 +57091,13 @@ paths:
                                   description: 'Registration fee amount for the tuition participant.'
                               required:
                                 - m_amount
+                            k_class:
+                              type: string
+                              description: |-
+                                Used only for `id_sale` = [RsSaleSid::TICKET](#/components/schemas/RsSaleSid).
+                                Key of the event instance the ticket is purchased for. 
+                                Required for a ticket of an event with several instances. The class must belong to the event of the
+                                ticket, otherwise the user error `ticket-nx` or `ticket-class-settings-mismatch` is returned.
                             m_checkout:
                               type: string
                               description: 'The total amount that will be charged for the tuition item when during purchase.'
@@ -57312,7 +57321,9 @@ paths:
                              option will be used automatically.
                 a_config:
                   type: object
-                  description: 'Additional configuration. Used only for `id_sale` = [RsSaleSid::TUITION](#/components/schemas/RsSaleSid).'
+                  description: |-
+                    Additional configuration. Used only for `id_sale` = [RsSaleSid::TUITION](#/components/schemas/RsSaleSid)
+                    and `id_sale` = [RsSaleSid::TICKET](#/components/schemas/RsSaleSid).
                   properties:
                     a_event_list:
                       type: object
@@ -57341,6 +57352,13 @@ paths:
                           description: 'Registration fee amount for the tuition participant.'
                       required:
                         - m_amount
+                    k_class:
+                      type: string
+                      description: |-
+                        Used only for `id_sale` = [RsSaleSid::TICKET](#/components/schemas/RsSaleSid).
+                        Key of the event instance the ticket is purchased for. 
+                        Required for a ticket of an event with several instances. The class must belong to the event of the
+                        ticket, otherwise the user error `ticket-nx` or `ticket-class-settings-mismatch` is returned.
                     m_checkout:
                       type: string
                       description: 'The total amount that will be charged for the tuition item when during purchase.'
@@ -103964,8 +103982,11 @@ paths:
                             k_class:
                               type: string
                               description: |-
+                                Used only for `id_sale` = [RsSaleSid::TICKET](#/components/schemas/RsSaleSid).
                                 Key of the class the ticket is purchased for. Required for a ticket of an event with several
-                                instances.
+                                instances. 
+                                The class must belong to the event of the ticket, otherwise the user error `ticket-nx` or
+                                `ticket-class-settings-mismatch` is returned.
                           required:
                             - is_mail
                             - s_recipient
@@ -104308,8 +104329,11 @@ paths:
                     k_class:
                       type: string
                       description: |-
+                        Used only for `id_sale` = [RsSaleSid::TICKET](#/components/schemas/RsSaleSid).
                         Key of the class the ticket is purchased for. Required for a ticket of an event with several
-                        instances.
+                        instances. 
+                        The class must belong to the event of the ticket, otherwise the user error `ticket-nx` or
+                        `ticket-class-settings-mismatch` is returned.
                   required:
                     - is_mail
                     - s_recipient
