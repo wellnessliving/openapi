@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261105090809
+  version: 1.1.20261105103513
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -51430,6 +51430,8 @@ paths:
                       By default, only fields matching the current entry point (register source) are returned.
                       Set [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) to `true` to return every active, non-removed field
                       regardless of entry-point filtering, with the `id_level_*` values included.
+                      Set [EditApi::$is_level_all](/Wl/Profile/Edit/Edit.json) to `true` to also return the fields hidden for the entry point while keeping
+                      the audience filter.
 
                       The array has the following structure:
                     items:
@@ -51608,6 +51610,25 @@ paths:
             The `id_level_*` values are still included in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
 
             `false` (default) to apply the normal entry-point filtering based on [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+        -
+          name: is_level_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to also return the profile fields that are hidden for the entry point given by
+            [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json): the fields with the level `DONT_ASK` for this entry point, and, for the
+            booking-and-purchase entry point, the fields without the booking-and-purchase flag. Their `id_level_*` values
+            are returned in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
+
+            The audience (applies-to) filter still applies: it is based on the relations of the profile, or on
+            [EditApi::$id_family_relation](/Wl/Profile/Edit/Edit.json) for a new profile. The active, removed, visibility, SPA, vaccination and
+            removed-login filters still apply too. `is_require` is still resolved from the level of the entry point.
+
+            Has no effect when [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) is `true`.
+
+            `false` (default) to apply the normal entry-point filtering.
         -
           name: is_staff
           in: query
@@ -52247,6 +52268,8 @@ paths:
                       By default, only fields matching the current entry point (register source) are returned.
                       Set [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) to `true` to return every active, non-removed field
                       regardless of entry-point filtering, with the `id_level_*` values included.
+                      Set [EditApi::$is_level_all](/Wl/Profile/Edit/Edit.json) to `true` to also return the fields hidden for the entry point while keeping
+                      the audience filter.
 
                       The array has the following structure:
                     items:
@@ -52425,6 +52448,25 @@ paths:
             The `id_level_*` values are still included in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
 
             `false` (default) to apply the normal entry-point filtering based on [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+        -
+          name: is_level_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to also return the profile fields that are hidden for the entry point given by
+            [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json): the fields with the level `DONT_ASK` for this entry point, and, for the
+            booking-and-purchase entry point, the fields without the booking-and-purchase flag. Their `id_level_*` values
+            are returned in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
+
+            The audience (applies-to) filter still applies: it is based on the relations of the profile, or on
+            [EditApi::$id_family_relation](/Wl/Profile/Edit/Edit.json) for a new profile. The active, removed, visibility, SPA, vaccination and
+            removed-login filters still apply too. `is_require` is still resolved from the level of the entry point.
+
+            Has no effect when [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) is `true`.
+
+            `false` (default) to apply the normal entry-point filtering.
         -
           name: is_staff
           in: query
