@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261105014742
+  version: 1.1.20261105104454
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -93876,6 +93876,9 @@ paths:
         No access check - the terms a business picked (e.g. "Session" instead of "Class") are not sensitive, and
         public-facing pages (the booking widget, for example) need them to render their own wording for a client
         who is not signed in.
+
+        Also returns [CustomTermsApi::$a_rule](/Wl/Business/Custom/Terms/CustomTerms.json), the ready rules that apply the terms to the English texts of a
+        client of the API. The rules are as public as the terms they are built from.
       tags:
         - 'Custom Terms'
       parameters:
