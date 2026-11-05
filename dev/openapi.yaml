@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261105132840
+  version: 1.1.20261105154125
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8356,6 +8356,72 @@ paths:
                         - k_purchase
                         - uid
                         - uid_money
+                    -
+                      type: object
+                      title: 'pay-dispute-funds-fail (id_mail 228)'
+                      properties:
+                        k_business:
+                          type: string
+                          description: 'Business key.'
+                        s_dispute:
+                          type: string
+                          description: 'Identifier of the dispute at `stripe.com`.'
+                        s_mail:
+                          type: string
+                          description: 'Email address to send the mail to.'
+                        text_error:
+                          type: string
+                          description: 'Text of the error. Empty if there is none.'
+                        text_status:
+                          type: string
+                          description: 'Status of the dispute as `stripe.com` gives it.'
+                        text_title:
+                          type: string
+                          description: 'What was not done and why.'
+                      required:
+                        - k_business
+                        - s_dispute
+                        - s_mail
+                        - text_error
+                        - text_status
+                        - text_title
+                    -
+                      type: object
+                      title: 'pay-dispute-studio (id_mail 229)'
+                      properties:
+                        k_business:
+                          type: string
+                          description: 'Business key.'
+                        s_submission_method:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Who submits the evidence, `intended_submission_method` of the dispute. `null` if `stripe.com` has not
+                            reported it.
+                        text_amount:
+                          type: string
+                          description: 'The disputed amount with the currency.'
+                        text_client:
+                          type: string
+                          description: 'Name of the client who disputed the payment. Empty if it is not known.'
+                        text_date_payment:
+                          type: string
+                          description: 'Date of the disputed payment in the time zone of the business. Empty if it is not known.'
+                        text_date_withdrawn:
+                          type: string
+                          description: 'Date when the amount was withdrawn from the Stripe balance, in the time zone of the business.'
+                        uid:
+                          type: string
+                          description: 'Key of the user who receives the mail.'
+                      required:
+                        - k_business
+                        - s_submission_method
+                        - text_amount
+                        - text_client
+                        - text_date_payment
+                        - text_date_withdrawn
+                        - uid
                     -
                       type: object
                       title: 'pay-transaction-fail (id_mail 181)'
@@ -43296,6 +43362,8 @@ paths:
                       By default, only fields matching the current entry point (register source) are returned.
                       Set [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) to `true` to return every active, non-removed field
                       regardless of entry-point filtering, with the `id_level_*` values included.
+                      Set [EditApi::$is_level_all](/Wl/Profile/Edit/Edit.json) to `true` to also return the fields hidden for the entry point while keeping
+                      the audience filter.
 
                       The array has the following structure:
                     items:
@@ -43474,6 +43542,25 @@ paths:
             The `id_level_*` values are still included in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
 
             `false` (default) to apply the normal entry-point filtering based on [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+        -
+          name: is_level_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to also return the profile fields that are hidden for the entry point given by
+            [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json): the fields with the level `DONT_ASK` for this entry point, and, for the
+            booking-and-purchase entry point, the fields without the booking-and-purchase flag. Their `id_level_*` values
+            are returned in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
+
+            The audience (applies-to) filter still applies: it is based on the relations of the profile, or on
+            [EditApi::$id_family_relation](/Wl/Profile/Edit/Edit.json) for a new profile. The active, removed, visibility, SPA, vaccination and
+            removed-login filters still apply too. `is_require` is still resolved from the level of the entry point.
+
+            Has no effect when [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) is `true`.
+
+            `false` (default) to apply the normal entry-point filtering.
         -
           name: is_staff
           in: query
@@ -44113,6 +44200,8 @@ paths:
                       By default, only fields matching the current entry point (register source) are returned.
                       Set [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) to `true` to return every active, non-removed field
                       regardless of entry-point filtering, with the `id_level_*` values included.
+                      Set [EditApi::$is_level_all](/Wl/Profile/Edit/Edit.json) to `true` to also return the fields hidden for the entry point while keeping
+                      the audience filter.
 
                       The array has the following structure:
                     items:
@@ -44291,6 +44380,25 @@ paths:
             The `id_level_*` values are still included in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
 
             `false` (default) to apply the normal entry-point filtering based on [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+        -
+          name: is_level_all
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` to also return the profile fields that are hidden for the entry point given by
+            [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json): the fields with the level `DONT_ASK` for this entry point, and, for the
+            booking-and-purchase entry point, the fields without the booking-and-purchase flag. Their `id_level_*` values
+            are returned in each field element of [EditApi::$a_structure](/Wl/Profile/Edit/Edit.json).
+
+            The audience (applies-to) filter still applies: it is based on the relations of the profile, or on
+            [EditApi::$id_family_relation](/Wl/Profile/Edit/Edit.json) for a new profile. The active, removed, visibility, SPA, vaccination and
+            removed-login filters still apply too. `is_require` is still resolved from the level of the entry point.
+
+            Has no effect when [EditApi::$is_field_all](/Wl/Profile/Edit/Edit.json) is `true`.
+
+            `false` (default) to apply the normal entry-point filtering.
         -
           name: is_staff
           in: query
@@ -102473,6 +102581,18 @@ paths:
                               type: integer
                               format: int32
                               description: 'The asset number. Actual for assets with a quantity more than `1`.'
+                            i_padding_after:
+                              type: integer
+                              format: int32
+                              description: |-
+                                Padding after each booking of the asset, in minutes. `0` if the asset has no padding after.
+                                Classes are not padded; the value only tells the client about the asset setting.
+                            i_padding_before:
+                              type: integer
+                              format: int32
+                              description: |-
+                                Padding before each booking of the asset, in minutes. `0` if the asset has no padding before.
+                                Classes are not padded; the value only tells the client about the asset setting.
                             i_quantity:
                               type: integer
                               format: int32
@@ -102506,6 +102626,8 @@ paths:
                             - a_class_period
                             - a_image
                             - i_index
+                            - i_padding_after
+                            - i_padding_before
                             - i_quantity
                             - i_use
                             - is_current
@@ -103053,6 +103175,18 @@ paths:
                               type: integer
                               format: int32
                               description: 'The asset number. Actual for assets with a quantity more than `1`.'
+                            i_padding_after:
+                              type: integer
+                              format: int32
+                              description: |-
+                                Padding after each booking of the asset, in minutes. `0` if the asset has no padding after.
+                                Classes are not padded; the value only tells the client about the asset setting.
+                            i_padding_before:
+                              type: integer
+                              format: int32
+                              description: |-
+                                Padding before each booking of the asset, in minutes. `0` if the asset has no padding before.
+                                Classes are not padded; the value only tells the client about the asset setting.
                             i_quantity:
                               type: integer
                               format: int32
@@ -103086,6 +103220,8 @@ paths:
                             - a_class_period
                             - a_image
                             - i_index
+                            - i_padding_after
+                            - i_padding_before
                             - i_quantity
                             - i_use
                             - is_current
@@ -105909,6 +106045,23 @@ paths:
                           description: 'A list of assets involved in the session.'
                           items:
                             type: string
+                        a_resource_padding:
+                          type: object
+                          description: |-
+                            Padding of the assets of `a_resource`. Keys are asset keys, values are:
+                            Classes are not padded. Whether to show the padding is up to the application.
+                          properties:
+                            i_padding_after:
+                              type: integer
+                              format: int32
+                              description: 'Padding after each booking of the asset, in minutes. `0` if the asset has no padding after.'
+                            i_padding_before:
+                              type: integer
+                              format: int32
+                              description: 'Padding before each booking of the asset, in minutes. `0` if the asset has no padding before.'
+                          required:
+                            - i_padding_after
+                            - i_padding_before
                         a_resource_removed:
                           type: array
                           description: 'List of removed assets involved in the session.'
@@ -106122,6 +106275,7 @@ paths:
                         - a_quiz
                         - a_appointment_visit_info
                         - a_resource
+                        - a_resource_padding
                         - a_resource_removed
                         - a_staff
                         - a_uid_staff
@@ -107977,6 +108131,9 @@ paths:
         Returns each day in the requested month marked as available or unavailable for booking the given
          service at the given location. Availability is determined by the business schedule, holidays,
          and staff availability for the selected date range.
+
+        On a client request (`uid` set, `is_staff` false), time slots that overlap the client's own bookings of the
+         same service are excluded, including the future occurrences of the client's never-ending recurring bookings.
       tags:
         - Appointments
       parameters:
@@ -108295,6 +108452,9 @@ paths:
         Returns available time slots for the specified service, location, staff member, and date range.
          Each slot includes the start time, duration, available capacity, and staff information. Supports
          both frontend and backend modes, as well as asset bookings and back-to-back scheduling.
+
+        On a client request (`uid` set, `is_staff` false), time slots that overlap the client's own bookings of the
+         same service are excluded, including the future occurrences of the client's never-ending recurring bookings.
       tags:
         - Appointments
       parameters:
@@ -108605,6 +108765,9 @@ paths:
         Returns available time slots for the specified service, location, staff member, and date range.
          Each slot includes the start time, duration, available capacity, and staff information. Supports
          both frontend and backend modes, as well as asset bookings and back-to-back scheduling.
+
+        On a client request (`uid` set, `is_staff` false), time slots that overlap the client's own bookings of the
+         same service are excluded, including the future occurrences of the client's never-ending recurring bookings.
       tags:
         - Appointments
       parameters:
@@ -109153,6 +109316,9 @@ paths:
         Returns each day in the requested month marked as available or unavailable for booking the given
          service at the given location. Availability is determined by the business schedule, holidays,
          and staff availability for the selected date range.
+
+        On a client request (`uid` set, `is_staff` false), time slots that overlap the client's own bookings of the
+         same service are excluded, including the future occurrences of the client's never-ending recurring bookings.
       tags:
         - Appointments
       parameters:
@@ -109434,6 +109600,9 @@ paths:
          time slot for the given service, location, and optional staff member. Returns the first available
          date so the client side can pre-select it in the booking calendar. This request may take longer
          than usual on production and uses an extended execution time limit.
+
+        On a client request (`uid` set, `is_staff` false), time slots that overlap the client's own bookings of the
+         same service are excluded, including the future occurrences of the client's never-ending recurring bookings.
       tags:
         - Appointments
       parameters:
@@ -109859,6 +110028,9 @@ paths:
         Returns each day in the requested month marked as available or unavailable for booking the given
          service at the given location. Availability is determined by the business schedule, holidays,
          and staff availability for the selected date range.
+
+        On a client request (`uid` set, `is_staff` false), time slots that overlap the client's own bookings of the
+         same service are excluded, including the future occurrences of the client's never-ending recurring bookings.
       tags:
         - Appointments
       parameters:
@@ -110191,6 +110363,9 @@ paths:
         Returns available time slots for the specified service, location, staff member, and date range.
          Each slot includes the start time, duration, available capacity, and staff information. Supports
          both frontend and backend modes, as well as asset bookings and back-to-back scheduling.
+
+        On a client request (`uid` set, `is_staff` false), time slots that overlap the client's own bookings of the
+         same service are excluded, including the future occurrences of the client's never-ending recurring bookings.
       tags:
         - Appointments
       parameters:
@@ -110463,6 +110638,9 @@ paths:
          time slot for the given service, location, and optional staff member. Returns the first available
          date so the client side can pre-select it in the booking calendar. This request may take longer
          than usual on production and uses an extended execution time limit.
+
+        On a client request (`uid` set, `is_staff` false), time slots that overlap the client's own bookings of the
+         same service are excluded, including the future occurrences of the client's never-ending recurring bookings.
       tags:
         - Appointments
       parameters:
@@ -119157,6 +119335,18 @@ paths:
                         html_title:
                           type: string
                           description: 'The resource name.'
+                        i_padding_after:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Padding after each booking of the asset, in minutes. `0` if the asset has no padding after.
+                            The asset is blocked for this time after each booking. Whether to show it is up to the client.
+                        i_padding_before:
+                          type: integer
+                          format: int32
+                          description: |-
+                            Padding before each booking of the asset, in minutes. `0` if the asset has no padding before.
+                            The asset is blocked for this time before each booking. Whether to show it is up to the client.
                         id_deny_reason:
                           $ref: '#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid'
                           description: |-
@@ -119200,6 +119390,8 @@ paths:
                         - html_age_restriction
                         - html_deny_reason
                         - html_title
+                        - i_padding_after
+                        - i_padding_before
                         - id_deny_reason
                         - id_service_require
                         - is_age_restricted
@@ -137698,7 +137890,7 @@ components:
 
         Pay attention that all `\MailPrioritySid` must start with backslash.
 
-        Last used ID: 227.
+        Last used ID: 229.
 
         Values:
         - 220 (`ABANDONED_CHECKOUT`): Sent when a client abandons a checkout (used in automations).
@@ -138017,6 +138209,13 @@ components:
           * When status of a recurrently paid transaction is changed to [RsPayTransactionStatusSid::PURCHASE_OK](#/components/schemas/RsPayTransactionStatusSid).
 
           Should be disabled by default according to the task (see link below).
+        - 228 (`PAY_DISPUTE_FUNDS_FAIL`): Funds of a Stripe dispute must be moved by hand.
+
+          Sent to Finance when the recovery of the amount from the studio (the transfer reversal) or the repayment to the
+          studio after a won dispute failed.
+        - 229 (`PAY_DISPUTE_STUDIO`): A client disputed a payment to the studio.
+
+          Sent to the owners of the studio when a client's bank takes back a payment (a chargeback).
         - 181 (`PAY_TRANSACTION_FAIL`): Transaction failed.
 
           Sent to support whenever transaction fails.
@@ -138300,6 +138499,8 @@ components:
         - 227
         - 85
         - 116
+        - 228
+        - 229
         - 181
         - 222
         - 137
@@ -138502,6 +138703,8 @@ components:
         - PASSPORT_PASSKEY_REMOVE
         - PAY_ACCOUNT_INVOICE
         - PAY_AUTOMATIC_SUCCESS
+        - PAY_DISPUTE_FUNDS_FAIL
+        - PAY_DISPUTE_STUDIO
         - PAY_TRANSACTION_FAIL
         - PHONE_AGENT_CALL_RECEIVED
         - PRESENCE_ACTIVATE
@@ -138934,6 +139137,15 @@ components:
           * When status of a recurrently paid transaction is changed to {@link \RsPayTransactionStatusSid::PURCHASE_OK}.
 
           Should be disabled by default according to the task (see link below).
+        - |-
+          Funds of a Stripe dispute must be moved by hand.
+
+          Sent to Finance when the recovery of the amount from the studio (the transfer reversal) or the repayment to the
+          studio after a won dispute failed.
+        - |-
+          A client disputed a payment to the studio.
+
+          Sent to the owners of the studio when a client's bank takes back a payment (a chargeback).
         - |-
           Transaction failed.
 
