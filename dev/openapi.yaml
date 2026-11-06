@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261106102326
+  version: 1.1.20261106142442
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -60623,6 +60623,9 @@ paths:
                         text_name:
                           type: string
                           description: 'Full name of the staff member.'
+                        text_role:
+                          type: string
+                          description: 'Business role of the staff member, or an empty string if no role is assigned.'
                         uid:
                           type: string
                           description: 'Staff member key.'
@@ -60630,6 +60633,7 @@ paths:
                         - a_passkey
                         - can_remove
                         - text_name
+                        - text_role
                         - uid
                 required:
                   - a_staff
@@ -116367,6 +116371,387 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Appointment/Book/Finish/ClientChange.json:
+    post:
+      operationId: Wl.Appointment.Book.Finish.ClientChange.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_appointment:
+                    type: array
+                    description: 'The booked appointments. Every element has the key:'
+                    items:
+                      type: object
+                      properties:
+                        k_appointment:
+                          type: string
+                          description: 'The appointment key.'
+                      required:
+                        - k_appointment
+                  a_login_activity_visit:
+                    type: array
+                    description: 'The activity IDs of bookings that have been made.'
+                    items:
+                      type: string
+                  a_visit:
+                    type: array
+                    description: 'The visit IDs of the newly booked appointments.'
+                    items:
+                      type: string
+                  a_visit_provider:
+                    type: array
+                    description: |-
+                      Keys of booked visits.
+
+                      Structured into a two-dimensional array.
+                      1st dimension - providers; 2nd dimension - visit keys inside a provider.
+                    items:
+                      type: array
+                      items:
+                        type: string
+                required:
+                  - a_appointment
+                  - a_login_activity_visit
+                  - a_visit
+                  - a_visit_provider
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Changes the client of an appointment in one atomic transaction.'
+      description: |-
+        Ends the original client's visit (an early cancel without a fee, or the denial of the request), then books
+        the new client. If the booking fails, the whole transaction is rolled back: neither the ending of the visit
+        nor the booking is committed.
+
+        Returns the newly booked appointment data in [ClientChangeApi::$a_appointment](/Wl/Appointment/Book/Finish/ClientChange.json),
+        [ClientChangeApi::$a_login_activity_visit](/Wl/Appointment/Book/Finish/ClientChange.json), [ClientChangeApi::$a_visit](/Wl/Appointment/Book/Finish/ClientChange.json)
+        and [ClientChangeApi::$a_visit_provider](/Wl/Appointment/Book/Finish/ClientChange.json).
+      tags:
+        - Appointments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_walk_in
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` if the new client is a walk-in: a client without a profile, who has no key. [ClientChangeApi::$uid_new](/Wl/Appointment/Book/Finish/ClientChange.json)
+            is ignored then. `false` if the new client is the user [ClientChangeApi::$uid_new](/Wl/Appointment/Book/Finish/ClientChange.json).
+        -
+          name: k_appointment
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The appointment key of the original appointment whose client is being changed.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The location of the original appointment and of the new booking.'
+        -
+          name: k_visit
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The visit key of the original visit being cancelled.'
+        -
+          name: uid_new
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The user key of the new client to book.'
+        -
+          name: uid_original
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The user key of the original client whose visit is being cancelled.
+            For walk-in appointments, this should be empty.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_answer:
+                  type: array
+                  description: |-
+                    A list of answers for the questions from [QuestionApi::$a_question](/Wl/Appointment/Book/Question/Question.json).
+
+                    Keys refer to hashes of the questions. Values refer to answers for the questions.
+                  items:
+                    type: string
+                a_book_data:
+                  type: object
+                  description: |-
+                    All data required to book the new appointment for the replacement client.
+
+                    Uses the same format as a single element of the `a_provider` array within
+                    [FinishMultipleApi::$a_book_data](/Wl/Appointment/Book/Finish/FinishMultiple.json).
+                  properties:
+                    a_product:
+                      type: object
+                      description: 'Add-ons to the appointment. Each element:'
+                      properties:
+                        i_count:
+                          type: integer
+                          format: int32
+                          description: 'The add-on buy count.'
+                        i_count_use:
+                          type: integer
+                          format: int32
+                          description: 'The add-on use count. Defaults to buy count.'
+                        k_shop_product_option:
+                          type: string
+                          description: 'The add-on key.'
+                      required:
+                        - i_count
+                        - k_shop_product_option
+                    a_resource:
+                      type: object
+                      description: |-
+                        The list of assets for the appointment booking.
+                        Keys refer to asset categories. Values are arrays with the next keys:
+                      properties:
+                        i_index:
+                          type: integer
+                          format: int32
+                          description: 'The asset index on the layout.'
+                        k_resource:
+                          type: string
+                          description: 'The asset.'
+                      required:
+                        - k_resource
+                    dt_date:
+                      type: string
+                      description: "The date/time for the booking in MySQL format in the location's time zone."
+                    i_duration:
+                      type: integer
+                      format: int32
+                      description: 'The duration for the asset booking in minutes. For separate asset bookings only.'
+                    i_index:
+                      type: integer
+                      format: int32
+                      description: 'The asset index on the layout. For separate asset bookings only.'
+                    id_gender_staff:
+                      $ref: '#/components/schemas/AGenderSid'
+                      description: 'The gender of the staff member. One of the [AGenderSid](#/components/schemas/AGenderSid) constants.'
+                    id_purchase_item:
+                      $ref: '#/components/schemas/RsPurchaseItemSid'
+                      description: 'Type of the purchase item. One of the [RsPurchaseItemSid](#/components/schemas/RsPurchaseItemSid) constants.'
+                    is_unpaid_force:
+                      type: boolean
+                      description: '`true` to book the appointment as unpaid.'
+                    is_wait_list_unpaid:
+                      type: boolean
+                      description: '`true` if appointment waits unpaid.'
+                    k_login_prize:
+                      type: string
+                      description: "The user's prize."
+                    k_login_promotion:
+                      type: string
+                      description: "The user's Purchase Option."
+                    k_resource:
+                      type: string
+                      description: 'The asset. For separate asset bookings only.'
+                    k_service:
+                      type: string
+                      description: 'The appointment service.'
+                    k_session_pass:
+                      type: string
+                      description: "The user's pass."
+                    k_timezone:
+                      type: string
+                      description: 'The time zone key.'
+                    uid_staff:
+                      type: string
+                      description: 'The staff member conducting the appointment.'
+                    uid_staff_date:
+                      type: string
+                      description: |-
+                        The staff member conducting the appointment. Set only when adding a customer
+                        to an existing appointment.
+                    url_virtual:
+                      type: string
+                      description: 'The meeting link for a non-integrated virtual service.'
+                  required:
+                    - dt_date
+                    - k_service
+                a_notification:
+                  type: object
+                  description: 'Information for sending an appointment notification to the new client.'
+                  properties:
+                    is_attach:
+                      type: boolean
+                      description: '`true` to attach calendar file, `false` to not attach calendar file.'
+                    is_campaign:
+                      type: boolean
+                      description: 'Whether mail should track as a part of campaign. `true` if yes, `false` if no.'
+                    is_mail:
+                      type: boolean
+                      description: '`true` to send mail; `false` to not send.'
+                    is_push:
+                      type: boolean
+                      description: '`true` to send push notification; `false` to not send.'
+                    is_sms:
+                      type: boolean
+                      description: '`true` to send SMS; `false` to not send.'
+                    text_business_name:
+                      type: string
+                      description: 'Business name.'
+                    text_business_reply:
+                      type: string
+                      description: 'Reply email address.'
+                    text_campaign:
+                      type: string
+                      description: 'Campaign name.'
+                    text_content_mail:
+                      type: string
+                      description: 'Email content.'
+                    text_push:
+                      type: string
+                      description: 'Push notification content.'
+                    text_sms:
+                      type: string
+                      description: 'SMS content.'
+                    text_subject:
+                      type: string
+                      description: 'Email subject.'
+                a_notification_cancel:
+                  type: object
+                  description: |-
+                    Edited content of the cancellation notification for the original client.
+                    Used only when the visit is cancelled. A denial of a request sends the standard denial mail and ignores this field.
+                  properties:
+                    is_attach:
+                      type: boolean
+                      description: '`true` to attach calendar file, `false` to not attach calendar file.'
+                    is_campaign:
+                      type: boolean
+                      description: 'Whether mail should track as a part of campaign. `true` if yes, `false` if no.'
+                    text_business_name:
+                      type: string
+                      description: 'Business name.'
+                    text_business_reply:
+                      type: string
+                      description: 'Reply email address.'
+                    text_campaign:
+                      type: string
+                      description: 'Campaign name.'
+                    text_content_mail:
+                      type: string
+                      description: 'Email content.'
+                    text_push:
+                      type: string
+                      description: 'Push notification content.'
+                    text_sms:
+                      type: string
+                      description: 'SMS content.'
+                    text_subject:
+                      type: string
+                      description: 'Email subject.'
+                a_quiz_response:
+                  type: array
+                  description: |-
+                    The list of quiz response keys.
+                    Key is quiz key.
+                    Value is quiz response key.
+                  items:
+                    type: string
+                id_class_tab:
+                  $ref: '#/components/schemas/Wl.Classes.Tab.TabSid'
+                  description: 'The booking service type. One of the [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.'
+                id_mode:
+                  $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                  description: 'The mode type. One of the [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants.'
+                id_visit:
+                  $ref: '#/components/schemas/Wl.Visit.VisitSid'
+                  description: |-
+                    The status of the original visit that the staff member saw. One of the [VisitSid](#/components/schemas/Wl.Visit.VisitSid) constants.
+
+                    When the visit has another status when the request is processed, the request is refused.
+                is_deny:
+                  type: boolean
+                  description: |-
+                    `true` if the staff member confirmed the denial of an unanswered booking request (the original visit is
+                    ended as the denial of a request in the back office does it, the denial mail is always sent).
+                    `false` if the staff member confirmed the early cancel of the visit.
+                is_inform_mail:
+                  type: boolean
+                  description: |-
+                    `true` to send cancellation mail to the original client.
+                    `false` to suppress cancellation mail.
+                  default: true
+                is_inform_push:
+                  type: boolean
+                  description: |-
+                    `true` to send cancellation push notification to the original client.
+                    `false` to suppress push notification.
+                  default: true
+                is_inform_sms:
+                  type: boolean
+                  description: |-
+                    `true` to send cancellation SMS to the original client.
+                    `false` to suppress SMS notification.
+                  default: true
+                s_id:
+                  type: string
+                  description: 'Unique identifier of the wizard.'
+                text_reason:
+                  type: string
+                  maxLength: 128
+                  description: 'The reason of the cancellation. Ignored when the request is denied.'
+              required:
+                - a_answer
+                - a_book_data
+                - a_notification
+                - a_notification_cancel
+                - a_quiz_response
+                - id_class_tab
+                - id_mode
+                - id_visit
+                - is_deny
+                - is_inform_mail
+                - is_inform_push
+                - is_inform_sms
+                - s_id
+                - text_reason
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Appointment/Book/Staff/List.json:
     get:
       operationId: Wl.Appointment.Book.Staff.List.get
@@ -135666,7 +136051,7 @@ components:
       description: |-
         The source of a visit.
 
-        Last used ID: 33.
+        Last used ID: 34.
 
         Values:
         - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
@@ -135696,6 +136081,7 @@ components:
         - 3 (`SPA_FRONTEND`): Client booked session from spa frontend.
         - 10 (`SYSTEM`): Created by system.
         - 6 (`UNDEFINED`): Means that we did not define mode.
+        - 34 (`WAIT_LIST_PROMOTION`): Sale made automatically on wait list promotion.
         - 16 (`WEB_APP_ATTENDANCE`): Client booked session from Attendance Web App.
         - 15 (`WEB_APP_CHECK_IN`): Client checked-in for the session through Check-In Web App.
         - 2 (`WEB_BACKEND`): Staff booked session for client from website backend.
@@ -135728,6 +136114,7 @@ components:
         - 3
         - 10
         - 6
+        - 34
         - 16
         - 15
         - 2
@@ -135760,6 +136147,7 @@ components:
         - SPA_FRONTEND
         - SYSTEM
         - UNDEFINED
+        - WAIT_LIST_PROMOTION
         - WEB_APP_ATTENDANCE
         - WEB_APP_CHECK_IN
         - WEB_BACKEND
@@ -135795,6 +136183,7 @@ components:
         - 'Client booked session from spa frontend.'
         - 'Created by system.'
         - 'Means that we did not define mode.'
+        - 'Sale made automatically on wait list promotion.'
         - 'Client booked session from Attendance Web App.'
         - 'Client checked-in for the session through Check-In Web App.'
         - 'Staff booked session for client from website backend.'
