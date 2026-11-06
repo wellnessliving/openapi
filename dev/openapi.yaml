@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261105162213
+  version: 1.1.20261105235444
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -34664,8 +34664,8 @@ paths:
             JSON-encoded structure with any additional information required by the project-specific
             passkey configuration class, for example `k_business` in `Wl`.
 
-            Needed only to manage passkeys of a user other than the signed-in one; empty if no additional
-            information is required.
+            Needed to list, to rename and to revoke passkeys, the own ones included, because the project configuration decides who may
+            manage them; empty only if the project configuration requires no additional information.
         -
           name: k_passkey_credential
           in: query
@@ -34767,8 +34767,8 @@ paths:
             JSON-encoded structure with any additional information required by the project-specific
             passkey configuration class, for example `k_business` in `Wl`.
 
-            Needed only to manage passkeys of a user other than the signed-in one; empty if no additional
-            information is required.
+            Needed to list, to rename and to revoke passkeys, the own ones included, because the project configuration decides who may
+            manage them; empty only if the project configuration requires no additional information.
         -
           name: uid
           in: query
@@ -34809,6 +34809,18 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: json_context
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            JSON-encoded structure with any additional information required by the project-specific
+            passkey configuration class, for example `k_business` in `Wl`.
+
+            Needed to list, to rename and to revoke passkeys, the own ones included, because the project configuration decides who may
+            manage them; empty only if the project configuration requires no additional information.
         -
           name: k_passkey_credential
           in: query
