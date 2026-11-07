@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261107024915
+  version: 1.1.20261107033601
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
