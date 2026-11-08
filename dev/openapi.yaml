@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261108140330
+  version: 1.1.20261108204038
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -31431,8 +31431,16 @@ paths:
               properties:
                 a_device_info:
                   type: object
-                  description: 'User device info:'
+                  description: |-
+                    User device info: 
+
+                    The optional fields go to Cybersource only when the device data collection did not complete. A value that does not
+                    suit them is not sent to Cybersource, and does not fail the request.
                   properties:
+                    i_browser_color_depth:
+                      type: integer
+                      format: int32
+                      description: 'Color depth of the screen in bits per pixel.'
                     i_browser_screen_height:
                       type: integer
                       format: int32
@@ -31441,12 +31449,31 @@ paths:
                       type: integer
                       format: int32
                       description: 'User browser screen width.'
+                    i_browser_time_difference:
+                      type: integer
+                      format: int32
+                      description: 'Time difference between UTC and the local time of the browser in minutes, as `getTimezoneOffset()` gives.'
+                    s_browser_language:
+                      type: string
+                      description: 'Language of the browser, an IETF BCP47 tag.'
                   required:
                     - i_browser_screen_height
                     - i_browser_screen_width
                 k_pay_transaction:
                   type: string
                   description: 'Key of payment transaction that was previously created with [CsPaSetupApi](/Thoth/PayProcessor/CyberSource/CsPaSetup.json).'
+                s_collection:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    How the device data collection ended: the message of its frame as it was received, or `timeout` if the frame did
+                    not answer in the time that the page waits for it.
+
+                    The check of the enrollment goes on in any case. It has no validators: a value of this field can not stop a
+                    payment.
+
+                    `null` if the client does not report it: a widget, or a page opened before this field appeared.
               required:
                 - a_device_info
                 - k_pay_transaction
@@ -34725,6 +34752,17 @@ paths:
                         k_passkey_credential:
                           type: string
                           description: 'Credential key.'
+                        s_credential_id:
+                          type: string
+                          description: |-
+                            `WebAuthn` credential ID, base64url encoded without padding. Clients pass it to the signal methods of
+                             `WebAuthn` (for example `PublicKeyCredential.signalUnknownCredential()`) after the credential is revoked,
+                             so the device deletes its copy of the passkey.
+                        s_user_handle:
+                          type: string
+                          description: |-
+                            `WebAuthn` user handle (`user.id`) stored with the passkey on the device, base64url encoded without padding.
+                             The same for every credential of the user.
                         text_device:
                           type: string
                           description: 'Name of this credential, assigned at registration and changed by `put()`.'
@@ -34735,9 +34773,18 @@ paths:
                         - id_status
                         - is_backed_up
                         - k_passkey_credential
+                        - s_credential_id
+                        - s_user_handle
                         - text_device
+                  s_rp_id:
+                    type: string
+                    description: |-
+                      Relying Party ID of the passkeys, the `rpId` the `WebAuthn` signal methods need.
+
+                      Filled when listing the credentials. The same for every credential and for every client of the environment.
                 required:
                   - a_credential
+                  - s_rp_id
         '400':
           $ref: '#/components/responses/400'
         '401':
