@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261109203429
+  version: 1.1.20261109224336
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -34788,7 +34788,7 @@ paths:
                           type: string
                           description: |-
                             `WebAuthn` user handle (`user.id`) stored with the passkey on the device, base64url encoded without padding.
-                             The same for every credential of the user.
+                             The same for every credential of the user, and equal to [PasskeyCredentialApi::$s_user_handle](/Core/Passport/Passkey/PasskeyCredential.json).
                         text_device:
                           type: string
                           description: 'Name of this credential, assigned at registration and changed by `put()`.'
@@ -34808,9 +34808,17 @@ paths:
                       Relying Party ID of the passkeys, the `rpId` the `WebAuthn` signal methods need.
 
                       Filled when listing the credentials. The same for every credential and for every client of the environment.
+                  s_user_handle:
+                    type: string
+                    description: |-
+                      `WebAuthn` user handle (`user.id`) of the listed user, base64url encoded without padding.
+
+                      Filled when listing the credentials, even if the list is empty, so a client can find and delete the passkeys it
+                      stores for this user that were revoked elsewhere (by another staff member, on another device).
                 required:
                   - a_credential
                   - s_rp_id
+                  - s_user_handle
         '400':
           $ref: '#/components/responses/400'
         '401':
