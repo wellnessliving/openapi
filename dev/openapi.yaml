@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261109140932
+  version: 1.1.20261109203429
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8392,7 +8392,7 @@ paths:
                           description: 'What was not done and why.'
                         url_transaction:
                           type: string
-                          description: 'Address of the page of the disputed transaction, see Mail::transactionUrl(). Empty if none.'
+                          description: 'Address of the page of the disputed transaction for the staff. Empty if the transaction is not found.'
                       required:
                         - k_business
                         - s_dispute
@@ -26079,7 +26079,8 @@ paths:
                     type: boolean
                     description: |-
                       `true` if the "home" page is turned on for the current business; `false` otherwise.
-                      The home page is turned on by default; it is off only if a paid Achieve plan explicitly turned it off.
+                      The home page is turned on by default for a business without an active paid Achieve plan (free Achieve).
+                      With a paid plan it is turned off by default, and it is turned on only by a saved navigation.
                   has_merchant:
                     type: boolean
                     description: "Whether the merchant is configured for the client's home location or for business [EnvironmentApi::$k_business](/Wl/Session/Environment.json)."
@@ -60802,9 +60803,27 @@ paths:
                         k_class:
                           type: string
                           description: 'Class/event identifier.'
+                        k_classes_category:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Key of the category of the class or event. Classes and events have separate lists of categories, see
+                            [CategoryListApi](/Wl/Classes/Category/CategoryList.json).
+                            A class or event that has no category yet is given in the category "Uncategorized" of its business and kind.
+                            `null` only for such a class or event while its business has no category "Uncategorized" of that kind yet.
                         k_enrollment_block:
                           type: string
                           description: 'Event Block ID.'
+                        text_category:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Name of the category of the class or event, in the language of the request, or in the nearest language
+                            that has a name. The translated name "Uncategorized" when `k_classes_category` is `null`. `null` if the
+                            category has no name in any language: a category always gets a name when it is created, so this is broken
+                            data.
                         text_title:
                           type: string
                           description: 'Class/event name.'
@@ -60817,7 +60836,9 @@ paths:
                         - is_event
                         - is_remove
                         - k_class
+                        - k_classes_category
                         - k_enrollment_block
+                        - text_category
                         - text_title
                 required:
                   - a_class
@@ -61017,12 +61038,30 @@ paths:
                         k_class:
                           type: string
                           description: 'The class key.'
+                        k_classes_category:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The key of the category of the class or event, as [ListApi::$a_class](/Wl/Classes/ClassList/List.json) gives it: a class or event that
+                            has no category yet is given in the category "Uncategorized" of its business and kind, and `null` only while
+                            the business has no such category. A removed class or event that still has a session at the location is
+                            given as a class without a category, like its `is_event`.
                         k_enrollment_block:
                           type: string
                           description: 'The enrollment block key.'
                         m_price_total:
                           type: string
                           description: 'The total price for an event.'
+                        text_category:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The name of the category of the class or event in the language of the request, or in the nearest language
+                            that has a name. The translated name "Uncategorized" when `k_classes_category` is `null`. `null` if the
+                            category has no name in any language: a category always gets a name when it is created, so this is broken
+                            data.
                         text_description:
                           type: string
                           description: 'The class description.'
@@ -61041,8 +61080,10 @@ paths:
                         - is_event
                         - is_online_private
                         - k_class
+                        - k_classes_category
                         - k_enrollment_block
                         - m_price_total
+                        - text_category
                         - text_description
                         - text_title
                 required:
@@ -61655,6 +61696,79 @@ paths:
 
             This refers to the class or event with which you want to connect the promotions. This will be `null` or `0` if you
             need to return a list of promotions for an uncreated class or event.
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Classes/Category/CategoryList.json:
+    get:
+      operationId: Wl.Classes.Category.CategoryList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_category:
+                    type: array
+                    description: |-
+                      The categories of the business: first the categories of classes, then the categories of events, each kind in the
+                      order that the business set. Each element:
+                    items:
+                      type: object
+                      properties:
+                        i_order:
+                          type: integer
+                          format: int32
+                          description: 'Position of the category in the list of its kind, from `1`.'
+                        is_event:
+                          type: boolean
+                          description: '`true` for a category of events, `false` for a category of classes.'
+                        k_classes_category:
+                          type: string
+                          description: 'Key of the category.'
+                        text_title:
+                          type: string
+                          description: 'Name of the category in the language of the request, or in the nearest language that has one.'
+                      required:
+                        - i_order
+                        - is_event
+                        - k_classes_category
+                        - text_title
+                required:
+                  - a_category
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the categories of classes and of events of a business.'
+      description: |-
+        Every class and every event of a business belongs to one of its categories. Classes and events have separate
+        lists of categories: `is_event` tells the kind of each category. The list has no counts and no other settings
+        of the setup page.
+      tags:
+        - Classes
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business.'
+      x-instance-get-key: k_business
       x-rate-limit:
         -
           limit: 200000
