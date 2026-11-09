@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261109094809
+  version: 1.1.20261109140932
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8366,9 +8366,21 @@ paths:
                         s_dispute:
                           type: string
                           description: 'Identifier of the dispute at `stripe.com`.'
+                        s_fail:
+                          type: string
+                          description: 'Step that failed, one of the `Mail::FAIL_*` constants.'
                         s_mail:
                           type: string
                           description: 'Email address to send the mail to.'
+                        text_amount:
+                          type: string
+                          description: 'The disputed amount with the currency.'
+                        text_business_name:
+                          type: string
+                          description: 'Name of the studio.'
+                        is_cross_border:
+                          type: boolean
+                          description: '`true` if the merchant account of the studio is outside the country of the platform.'
                         text_error:
                           type: string
                           description: 'Text of the error. Empty if there is none.'
@@ -8378,13 +8390,21 @@ paths:
                         text_title:
                           type: string
                           description: 'What was not done and why.'
+                        url_transaction:
+                          type: string
+                          description: 'Address of the page of the disputed transaction, see Mail::transactionUrl(). Empty if none.'
                       required:
                         - k_business
                         - s_dispute
+                        - s_fail
                         - s_mail
+                        - text_amount
+                        - text_business_name
+                        - is_cross_border
                         - text_error
                         - text_status
                         - text_title
+                        - url_transaction
                     -
                       type: object
                       title: 'pay-dispute-studio (id_mail 229)'
@@ -8405,6 +8425,11 @@ paths:
                         text_client:
                           type: string
                           description: 'Name of the client who disputed the payment. Empty if it is not known.'
+                        text_date_evidence:
+                          type: string
+                          description: |-
+                            The day by which the studio sends the evidence to Support, in the time zone of the business. Empty if the
+                            dispute has no deadline.
                         text_date_payment:
                           type: string
                           description: 'Date of the disputed payment in the time zone of the business. Empty if it is not known.'
@@ -8419,6 +8444,7 @@ paths:
                         - s_submission_method
                         - text_amount
                         - text_client
+                        - text_date_evidence
                         - text_date_payment
                         - text_date_withdrawn
                         - uid
@@ -120558,6 +120584,11 @@ paths:
                     items:
                       type: object
                       properties:
+                        html_description:
+                          type: string
+                          description: |-
+                            Description of the add-on service, as HTML that is ready to be shown, in the language of the current user. An
+                            empty string if the add-on has no description.
                         i_extra_time:
                           type: integer
                           format: int32
@@ -120573,20 +120604,15 @@ paths:
                             - string
                             - 'null'
                           description: 'The regular price of the add-on, shown struck through next to Extra cost. `null` if nothing is struck through.'
-                        text_tagline:
-                          type:
-                            - string
-                            - 'null'
-                          description: 'Short line that tells why to add the add-on. `null` if the add-on has none.'
                         text_title:
                           type: string
                           description: 'Title of the add-on.'
                       required:
+                        - html_description
                         - i_extra_time
                         - k_service_addon
                         - m_extra_cost
                         - m_price_regular
-                        - text_tagline
                         - text_title
                   k_location:
                     type: string
