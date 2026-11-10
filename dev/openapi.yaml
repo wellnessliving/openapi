@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261110132527
+  version: 1.1.20261110151902
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -22169,11 +22169,7 @@ paths:
                       If `null`, the visit isn't from an appointment (for example, the visit is from an asset).
                   s_calendar_file_content:
                     type: string
-                    description: |-
-                      The .ics file for adding the service to a phone calendar.
-
-                      For a Phone Call appointment, the description has the number only if the current user may see it: the client,
-                      the user who booked, or staff with the privilege to see contact details of clients.
+                    description: 'The .ics file for adding the service to a phone calendar.'
                   text_abbr_timezone:
                     type: string
                     description: 'The text abbreviation of the time zone.'
@@ -23000,10 +22996,17 @@ paths:
                           description: '`true` if the buyer has an email address on file. `false` for a guest.'
                         is_guest:
                           type: boolean
-                          description: '`true` if the order was bought by a guest, who has no profile. In this case `text_name` is empty.'
+                          description: |-
+                            `true` if the order was bought by a guest, who has no profile. In this case `text_name` is the name the
+                            guest gave with the order.
                         k_purchase:
                           type: string
                           description: 'Number of the order: key of the purchase the tickets were bought with. Key of the purchase.'
+                        m_discount:
+                          type: string
+                          description: |-
+                            Discounts applied to the tickets of the order, with the currency [TicketListApi::$k_currency](/Wl/Ticket/TicketList.json).
+                            `0` if there are none. Decimal string.
                         m_refund:
                           type: string
                           description: |-
@@ -23012,8 +23015,12 @@ paths:
                         m_subtotal:
                           type: string
                           description: |-
-                            Amount of the tickets of the order after discounts and before taxes, with the currency
-                            [TicketListApi::$k_currency](/Wl/Ticket/TicketList.json). Decimal string.
+                            Amount of the tickets of the order before discounts, with the currency
+                            [TicketListApi::$k_currency](/Wl/Ticket/TicketList.json). It is counted the same way as the subtotal of the cart
+                            ([CartApi::$m_subtotal](/Wl/Catalog/Cart/Cart.json)): it does not include the taxes in a locale where taxes are
+                            added to the prices, and includes them in a locale where taxes are included in the prices. Not net of
+                            refunds. Decimal string. Always `m_subtotal - m_discount + m_tax = m_total + m_refund` where taxes are added
+                            to the prices, and `m_subtotal - m_discount = m_total + m_refund` where taxes are included in the prices.
                         m_surcharge:
                           type: string
                           description: 'Surcharge taken for the purchase of the order. `0` if there is none. Decimal string.'
@@ -23023,11 +23030,13 @@ paths:
                         m_total:
                           type: string
                           description: |-
-                            Total paid for the tickets of the order, net of refunds, with the currency
+                            Total paid for the tickets of the order after discounts and with taxes, net of refunds, with the currency
                             [TicketListApi::$k_currency](/Wl/Ticket/TicketList.json). Decimal string.
                         text_name:
                           type: string
-                          description: 'Full name of the buyer. Empty for a guest.'
+                          description: |-
+                            Full name of the buyer. For a guest, the name given at the time of the order. Empty if a guest gave
+                            none.
                         uid:
                           type:
                             - string
@@ -23045,6 +23054,7 @@ paths:
                         - is_email
                         - is_guest
                         - k_purchase
+                        - m_discount
                         - m_refund
                         - m_subtotal
                         - m_surcharge
@@ -38383,11 +38393,9 @@ paths:
                       Phone number the staff calls for this Phone Call booking.
 
                       The number in the international E.164 format, for example `+15550101001`.
-                      `null` if the booking is not a Phone Call or has no number, or if the current user may not see the number.
-                      The number is shown like the phone of the client: to the client, to the user who booked and to staff with
-                      the privilege to see contact details of clients.
-                      A caller with a token and no user allowed by this rule gets `null`; [AttendanceInfoApi::$is_phone_call](/Wl/Login/Attendance/AttendanceInfo.json)
-                      is returned anyway.
+                      `null` if the booking is not a Phone Call or has no number.
+                      The number is returned wherever the appointment is returned, like the meeting link of a virtual appointment,
+                      also to a caller with a token.
                   text_time_end:
                     type: string
                     description: 'Time when service starts in format `8:00AM`.'
@@ -38717,11 +38725,9 @@ paths:
                       Phone number the staff calls for this Phone Call booking.
 
                       The number in the international E.164 format, for example `+15550101001`.
-                      `null` if the booking is not a Phone Call or has no number, or if the current user may not see the number.
-                      The number is shown like the phone of the client: to the client, to the user who booked and to staff with
-                      the privilege to see contact details of clients.
-                      A caller with a token and no user allowed by this rule gets `null`; [AttendanceInfoApi::$is_phone_call](/Wl/Login/Attendance/AttendanceInfo.json)
-                      is returned anyway.
+                      `null` if the booking is not a Phone Call or has no number.
+                      The number is returned wherever the appointment is returned, like the meeting link of a virtual appointment,
+                      also to a caller with a token.
                   text_time_end:
                     type: string
                     description: 'Time when service starts in format `8:00AM`.'
@@ -39359,10 +39365,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
-                            The number is shown like the phone of the client: to the client, to
-                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
-                            privilege. A caller with a token or a guest application and no such user gets `null`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            The number is returned wherever the visit is returned, like the meeting link of a virtual appointment,
+                            also to a caller with a token or a guest application and without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -39994,10 +40000,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
-                            The number is shown like the phone of the client: to the client, to
-                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
-                            privilege. A caller with a token or a guest application and no such user gets `null`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            The number is returned wherever the visit is returned, like the meeting link of a virtual appointment,
+                            also to a caller with a token or a guest application and without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -40629,10 +40635,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
-                            The number is shown like the phone of the client: to the client, to
-                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
-                            privilege. A caller with a token or a guest application and no such user gets `null`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            The number is returned wherever the visit is returned, like the meeting link of a virtual appointment,
+                            also to a caller with a token or a guest application and without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -41373,10 +41379,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
-                            The number is shown like the phone of the client: to the client, to
-                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
-                            privilege. A caller with a token or a guest application and no such user gets `null`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            The number is returned wherever the visit is returned, like the meeting link of a virtual appointment,
+                            also to a caller with a token or a guest application and without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -42008,10 +42014,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
-                            The number is shown like the phone of the client: to the client, to
-                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
-                            privilege. A caller with a token or a guest application and no such user gets `null`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            The number is returned wherever the visit is returned, like the meeting link of a virtual appointment,
+                            also to a caller with a token or a guest application and without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -42643,10 +42649,10 @@ paths:
                           description: |-
                             The phone number the staff calls for a Phone Call booking, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
-                            The number is shown like the phone of the client: to the client, to
-                            the user who booked, to a WellnessLiving admin and to staff with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
-                            privilege. A caller with a token or a guest application and no such user gets `null`.
+                            `null` if the visit is not a Phone Call or has no number.
+                            The number is returned wherever the visit is returned, like the meeting link of a virtual appointment,
+                            also to a caller with a token or a guest application and without the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
+                            privilege.
                         text_promotion_return:
                           type: string
                           description: 'Title of purchase option usages of that was returned to user.'
@@ -66590,9 +66596,8 @@ paths:
                       Phone number the staff calls for this Phone Call booking.
 
                       The number in the international E.164 format, for example `+15550101001`.
-                      `null` if the booking is not a Phone Call or has no number, or if the current user may not see the number.
-                      The number is shown like the phone of the client: to the client, to the user who booked and to staff with
-                      the privilege to see contact details of clients.
+                      `null` if the booking is not a Phone Call or has no number.
+                      The number is returned wherever the appointment is returned, like the meeting link of a virtual appointment.
                   text_room:
                     type: string
                     description: 'Room where session takes place.'
@@ -66719,9 +66724,8 @@ paths:
                           description: |-
                             Phone number the staff calls for a Phone Call visit, in the international E.164 format,
                             for example `+15550101001`.
-                            `null` if the visit is not a Phone Call or has no number, or if the current user may not see the number.
-                            The number is shown like the phone of the client: to the client, to the user who booked and to staff with
-                            the privilege to see contact details of clients.
+                            `null` if the visit is not a Phone Call or has no number.
+                            The number is returned wherever the visit is returned, like the meeting link of a virtual appointment.
                       required:
                         - dtu_date
                         - k_business
@@ -69713,9 +69717,8 @@ paths:
                       Phone number the staff calls for this Phone Call booking.
 
                       The number in the international E.164 format, for example `+15550101001`.
-                      `null` if the booking is not a Phone Call or has no number, or if the current user may not see the number.
-                      The number is shown like the phone of the client: to the client, to the user who booked and to staff with
-                      the privilege to see contact details of clients.
+                      `null` if the booking is not a Phone Call or has no number.
+                      The number is returned wherever the appointment is returned, like the meeting link of a virtual appointment.
                   text_title:
                     type: string
                     description: 'Title of the appointment.'
@@ -69885,9 +69888,9 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Returns the number of the visit or the default number for a future booking.'
       description: |-
-        The number of a visit is shown like the phone of the client:
-        to the client of the visit, to the user who booked it, to a WellnessLiving admin with the privilege
-        `rs.appointment.edit` and to staff of the business with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid) privilege.
+        The number of a visit is returned wherever the appointment is returned, like the meeting link of a virtual
+        appointment: to the client of the visit, to the user who booked it, to a WellnessLiving admin with the privilege
+        `rs.appointment.edit` and to active staff of the business.
         The default number for a future booking is available to a user with the [PrivilegeSid::PROFILE_DETAIL](#/components/schemas/Wl.Privilege.PrivilegeSid)
         privilege for the client. The number is returned in the international E.164 format.
       tags:
@@ -82579,6 +82582,7 @@ paths:
                     description: |-
                       Additional member data or `null` if any data can be shown.
                       Will be filled if [InfoApi::$is_full](/Wl/Member/Info/Info.json) flag is set.
+                      Besides the keys below, it has the keys of the member information:
                     properties:
                       a_icon:
                         type: object
@@ -82723,6 +82727,86 @@ paths:
                       url_waiver:
                         type: string
                         description: "Link to user's waiver page."
+                      a_task_list:
+                        type: object
+                        description: |-
+                          The client's tasks in the business, ordered by due date, keyed by task key
+                            .
+                          Filled only when [InfoApi::$is_backend](/Wl/Member/Info/Info.json) is `true` and [InfoApi::$k_business](/Wl/Member/Info/Info.json) is set.
+                          Empty when the business's account is below Standard and the current user is not an admin.
+                          Which tasks it holds depends on the privileges of the current staff member.
+                          Each task has the following structure:
+                        additionalProperties:
+                          type: object
+                          properties:
+                            a_staff:
+                              type: object
+                              description: |-
+                                Staff assigned to the task, keyed by staff key
+                                  .
+                                Each staff member has the following structure:
+                              additionalProperties:
+                                type: object
+                                properties:
+                                  text_family:
+                                    type:
+                                      - string
+                                      - 'null'
+                                    description: |-
+                                      Staff family name.
+                                      `null` when the staff member has no record in the business.
+                                  text_name:
+                                    type:
+                                      - string
+                                      - 'null'
+                                    description: |-
+                                      Staff first name.
+                                      `null` when the staff member has no record in the business.
+                                  uid:
+                                    type: string
+                                    description: 'Staff user key.'
+                                required:
+                                  - text_family
+                                  - text_name
+                                  - uid
+                            dt_add:
+                              type: string
+                              description: 'Date and time the task was added, in UTC.'
+                            dt_due:
+                              type: string
+                              description: 'Due date and time in UTC.'
+                            dtl_due:
+                              type: string
+                              description: "Due date and time on the business's time zone."
+                            hide_edit:
+                              type: boolean
+                              description: '`true` unless the client whose tasks these are is an admin or has the privilege to edit tasks.'
+                            id_task_status:
+                              $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                              description: 'Task status. One of {@link \Wl\Task\TaskStatusSid} constants.'
+                            k_task:
+                              type: string
+                              description: 'Task key.'
+                            s_description:
+                              type: string
+                              description: 'Task description.'
+                            s_title:
+                              type: string
+                              description: 'Task title.'
+                            text_task_status:
+                              type: string
+                              description: 'Title of the task status.'
+                          required:
+                            - a_staff
+                            - dt_add
+                            - dt_due
+                            - dtl_due
+                            - hide_edit
+                            - id_task_status
+                            - k_task
+                            - s_description
+                            - s_title
+                            - text_task_status
                     required:
                       - a_icon
                       - a_vaccination_status
@@ -82755,6 +82839,7 @@ paths:
                       - url_overview
                       - url_profile
                       - url_waiver
+                      - a_task_list
                   a_result_list:
                     type:
                       - object
@@ -82767,7 +82852,9 @@ paths:
                     properties:
                       a_info:
                         type: object
-                        description: "Additional user's information."
+                        description: |-
+                          Additional user's information.
+                          Besides the keys below, it has the keys of the member information:
                         properties:
                           a_icon:
                             type: object
@@ -82912,6 +82999,72 @@ paths:
                           url_waiver:
                             type: string
                             description: "Link to user's waiver page."
+                          a_task_list:
+                            type: object
+                            description: |-
+                              The client's tasks in the business, ordered by due date, keyed by task key
+                                .
+                              Filled only when [InfoApi::$is_backend](/Wl/Member/Info/Info.json) is `true` and [InfoApi::$k_business](/Wl/Member/Info/Info.json) is set.
+                              Empty when the business's account is below Standard and the current user is not an admin.
+                              Which tasks it holds depends on the privileges of the current staff member.
+                              Each task has the following structure:
+                            additionalProperties:
+                              type: object
+                              properties:
+                                a_staff:
+                                  type: object
+                                  description: |-
+                                    Staff assigned to the task, keyed by staff key
+                                      .
+                                    Each staff member has the following structure:
+                                  additionalProperties:
+                                    type: object
+                                    properties:
+                                      text_family: { type: [string, 'null'], description: "Staff family name.\n`null` when the staff member has no record in the business." }
+                                      text_name: { type: [string, 'null'], description: "Staff first name.\n`null` when the staff member has no record in the business." }
+                                      uid: { type: string, description: 'Staff user key.' }
+                                    required:
+                                      - text_family
+                                      - text_name
+                                      - uid
+                                dt_add:
+                                  type: string
+                                  description: 'Date and time the task was added, in UTC.'
+                                dt_due:
+                                  type: string
+                                  description: 'Due date and time in UTC.'
+                                dtl_due:
+                                  type: string
+                                  description: "Due date and time on the business's time zone."
+                                hide_edit:
+                                  type: boolean
+                                  description: '`true` unless the client whose tasks these are is an admin or has the privilege to edit tasks.'
+                                id_task_status:
+                                  $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                                  description: 'Task status. One of {@link \Wl\Task\TaskStatusSid} constants.'
+                                k_task:
+                                  type: string
+                                  description: 'Task key.'
+                                s_description:
+                                  type: string
+                                  description: 'Task description.'
+                                s_title:
+                                  type: string
+                                  description: 'Task title.'
+                                text_task_status:
+                                  type: string
+                                  description: 'Title of the task status.'
+                              required:
+                                - a_staff
+                                - dt_add
+                                - dt_due
+                                - dtl_due
+                                - hide_edit
+                                - id_task_status
+                                - k_task
+                                - s_description
+                                - s_title
+                                - text_task_status
                         required:
                           - a_icon
                           - a_vaccination_status
@@ -82944,6 +83097,7 @@ paths:
                           - url_overview
                           - url_profile
                           - url_waiver
+                          - a_task_list
                       is_traveller:
                         type: boolean
                         description: '`true` - user is traveller; `false` - not traveller.'
@@ -85974,6 +86128,7 @@ paths:
                     description: |-
                       Additional member data or `null` if any data can be shown.
                       Will be filled if [InfoApi::$is_full](/Wl/Member/Info/Info.json) flag is set.
+                      Besides the keys below, it has the keys of the member information:
                     properties:
                       a_icon:
                         type: object
@@ -86118,6 +86273,86 @@ paths:
                       url_waiver:
                         type: string
                         description: "Link to user's waiver page."
+                      a_task_list:
+                        type: object
+                        description: |-
+                          The client's tasks in the business, ordered by due date, keyed by task key
+                            .
+                          Filled only when [InfoApi::$is_backend](/Wl/Member/Info/Info.json) is `true` and [InfoApi::$k_business](/Wl/Member/Info/Info.json) is set.
+                          Empty when the business's account is below Standard and the current user is not an admin.
+                          Which tasks it holds depends on the privileges of the current staff member.
+                          Each task has the following structure:
+                        additionalProperties:
+                          type: object
+                          properties:
+                            a_staff:
+                              type: object
+                              description: |-
+                                Staff assigned to the task, keyed by staff key
+                                  .
+                                Each staff member has the following structure:
+                              additionalProperties:
+                                type: object
+                                properties:
+                                  text_family:
+                                    type:
+                                      - string
+                                      - 'null'
+                                    description: |-
+                                      Staff family name.
+                                      `null` when the staff member has no record in the business.
+                                  text_name:
+                                    type:
+                                      - string
+                                      - 'null'
+                                    description: |-
+                                      Staff first name.
+                                      `null` when the staff member has no record in the business.
+                                  uid:
+                                    type: string
+                                    description: 'Staff user key.'
+                                required:
+                                  - text_family
+                                  - text_name
+                                  - uid
+                            dt_add:
+                              type: string
+                              description: 'Date and time the task was added, in UTC.'
+                            dt_due:
+                              type: string
+                              description: 'Due date and time in UTC.'
+                            dtl_due:
+                              type: string
+                              description: "Due date and time on the business's time zone."
+                            hide_edit:
+                              type: boolean
+                              description: '`true` unless the client whose tasks these are is an admin or has the privilege to edit tasks.'
+                            id_task_status:
+                              $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                              description: 'Task status. One of {@link \Wl\Task\TaskStatusSid} constants.'
+                            k_task:
+                              type: string
+                              description: 'Task key.'
+                            s_description:
+                              type: string
+                              description: 'Task description.'
+                            s_title:
+                              type: string
+                              description: 'Task title.'
+                            text_task_status:
+                              type: string
+                              description: 'Title of the task status.'
+                          required:
+                            - a_staff
+                            - dt_add
+                            - dt_due
+                            - dtl_due
+                            - hide_edit
+                            - id_task_status
+                            - k_task
+                            - s_description
+                            - s_title
+                            - text_task_status
                     required:
                       - a_icon
                       - a_vaccination_status
@@ -86150,6 +86385,7 @@ paths:
                       - url_overview
                       - url_profile
                       - url_waiver
+                      - a_task_list
                   a_items:
                     type: array
                     description: |-
@@ -86196,7 +86432,9 @@ paths:
                     properties:
                       a_info:
                         type: object
-                        description: "Additional user's information."
+                        description: |-
+                          Additional user's information.
+                          Besides the keys below, it has the keys of the member information:
                         properties:
                           a_icon:
                             type: object
@@ -86341,6 +86579,72 @@ paths:
                           url_waiver:
                             type: string
                             description: "Link to user's waiver page."
+                          a_task_list:
+                            type: object
+                            description: |-
+                              The client's tasks in the business, ordered by due date, keyed by task key
+                                .
+                              Filled only when [InfoApi::$is_backend](/Wl/Member/Info/Info.json) is `true` and [InfoApi::$k_business](/Wl/Member/Info/Info.json) is set.
+                              Empty when the business's account is below Standard and the current user is not an admin.
+                              Which tasks it holds depends on the privileges of the current staff member.
+                              Each task has the following structure:
+                            additionalProperties:
+                              type: object
+                              properties:
+                                a_staff:
+                                  type: object
+                                  description: |-
+                                    Staff assigned to the task, keyed by staff key
+                                      .
+                                    Each staff member has the following structure:
+                                  additionalProperties:
+                                    type: object
+                                    properties:
+                                      text_family: { type: [string, 'null'], description: "Staff family name.\n`null` when the staff member has no record in the business." }
+                                      text_name: { type: [string, 'null'], description: "Staff first name.\n`null` when the staff member has no record in the business." }
+                                      uid: { type: string, description: 'Staff user key.' }
+                                    required:
+                                      - text_family
+                                      - text_name
+                                      - uid
+                                dt_add:
+                                  type: string
+                                  description: 'Date and time the task was added, in UTC.'
+                                dt_due:
+                                  type: string
+                                  description: 'Due date and time in UTC.'
+                                dtl_due:
+                                  type: string
+                                  description: "Due date and time on the business's time zone."
+                                hide_edit:
+                                  type: boolean
+                                  description: '`true` unless the client whose tasks these are is an admin or has the privilege to edit tasks.'
+                                id_task_status:
+                                  $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                                  description: 'Task status. One of {@link \Wl\Task\TaskStatusSid} constants.'
+                                k_task:
+                                  type: string
+                                  description: 'Task key.'
+                                s_description:
+                                  type: string
+                                  description: 'Task description.'
+                                s_title:
+                                  type: string
+                                  description: 'Task title.'
+                                text_task_status:
+                                  type: string
+                                  description: 'Title of the task status.'
+                              required:
+                                - a_staff
+                                - dt_add
+                                - dt_due
+                                - dtl_due
+                                - hide_edit
+                                - id_task_status
+                                - k_task
+                                - s_description
+                                - s_title
+                                - text_task_status
                         required:
                           - a_icon
                           - a_vaccination_status
@@ -86373,6 +86677,7 @@ paths:
                           - url_overview
                           - url_profile
                           - url_waiver
+                          - a_task_list
                       is_traveller:
                         type: boolean
                         description: '`true` - user is traveller; `false` - not traveller.'
