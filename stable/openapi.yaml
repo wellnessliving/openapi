@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261110024623
+  version: 1.1.20261110063123
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -30447,6 +30447,61 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Business/Service/Service.json:
+    get:
+      operationId: Wl.Business.Service.Service.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_services_enabled:
+                    type: object
+                    description: |-
+                      Business service availability.
+
+                      Array where keys are service IDs 
+                          and values are `true` if the service is available for the business and `false` otherwise.
+                    additionalProperties:
+                      type: boolean
+                required:
+                  - a_services_enabled
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns which services are available for the business.'
+      description: |-
+        The gym visits (drop-ins) are reported as available when the business allows them.
+        The current user must be a staff member with access to the business.
+      tags:
+        - Business
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Business/Config/BusinessConfig.json:
     get:
       operationId: Wl.Business.Config.BusinessConfig.get
@@ -36393,6 +36448,741 @@ paths:
               required:
                 - text_key
       x-instance-get-key: 'k_business,k_visit,uid'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Visit/Kiosk/AttemptList.json:
+    get:
+      operationId: Wl.Visit.Kiosk.AttemptList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_attempt:
+                    type: array
+                    description: 'The attempts of the page, the newest first:'
+                    items:
+                      type: object
+                      properties:
+                        dtu_attempt:
+                          type: string
+                          description: |-
+                            Time of the attempt (of the check-in for a visit), in UTC and MySQL format, for example
+                            `2026-11-05 14:30:00`.
+                        id_deny_reason:
+                          $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
+                          description: 'Reason of the failure. One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` for a visit.'
+                        id_mode:
+                          $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                          description: |-
+                            Source of the attempt. One of [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants. `null` if a visit was checked in before the
+                            source was recorded.
+                        is_fail:
+                          type: boolean
+                          description: '`true` for a failed attempt, `false` for a checked-in visit.'
+                        k_location:
+                          type: string
+                          description: 'Location of the attempt.'
+                        k_login_promotion:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Pass that pays for the visit. `null` for a failed attempt or a visit that no pass pays for.'
+                        k_visit:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'The checked-in visit. `null` for a failed attempt.'
+                        s_attempt:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Key of the failed attempt, the same as the check-in of the kiosk gives ([AttendApi](/Wl/Visit/Kiosk/Attend.json)). `null` for a
+                            visit.
+                        text_actor_name:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Full name of the user who made the attempt. `null` if nobody was signed in.'
+                        text_name_first:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'First name of the client. `null` for a walk-in.'
+                        text_name_last:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Last name of the client. `null` for a walk-in.'
+                        text_pass:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Title of the pass that pays for the visit. `null` when `k_login_promotion` is `null`.'
+                        uid_actor:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'User who made the attempt. `null` if nobody was signed in.'
+                        uid_attend:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'The client. `null` for a walk-in.'
+                        url_photo:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Address of the photo of the client, for example `https://example.com/photo.jpg`. `null` for a
+                            walk-in.
+                      required:
+                        - dtu_attempt
+                        - id_deny_reason
+                        - id_mode
+                        - is_fail
+                        - k_location
+                        - k_login_promotion
+                        - k_visit
+                        - s_attempt
+                        - text_actor_name
+                        - text_name_first
+                        - text_name_last
+                        - text_pass
+                        - uid_actor
+                        - uid_attend
+                        - url_photo
+                  i_count_all:
+                    type: integer
+                    format: int32
+                    description: 'Number of the gym check-ins and the failed attempts of the whole day.'
+                  i_count_fail:
+                    type: integer
+                    format: int32
+                    description: 'Number of the failed attempts of the whole day.'
+                  i_count_success:
+                    type: integer
+                    format: int32
+                    description: 'Number of the gym check-ins of the whole day.'
+                  is_page_last:
+                    type: boolean
+                    description: 'Whether the page is the last one.'
+                    default: true
+                required:
+                  - a_attempt
+                  - i_count_all
+                  - i_count_fail
+                  - i_count_success
+                  - is_page_last
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the gym check-ins and the failed gym check-in attempts of a local day at the location.'
+      description: |-
+        The list holds the checked-in gym visits of the location and the failed gym check-in attempts at the location,
+        made from every source (the kiosk, the backend, the self check-in and the others); the visits and the attempts
+        of the classes and of the appointments are not listed. The newest attempt goes first, 100 attempts a page.
+        The totals count the whole day. The attempts of the clients whom the staff member may not see (the scope of the
+        clients of the staff member) are neither listed nor counted. Works in the session of a staff member with access
+        to the location and the privilege to see the profiles of the clients; no key of a kiosk is needed.
+      tags:
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dl_date
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            format: date
+          description: |-
+            Local day at the location, in MySQL format, for example `2026-11-05`.
+
+            `null` for the current day at the location.
+        -
+          name: dtu_since
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            format: date-time
+          description: |-
+            Time in UTC and MySQL format, for example `2026-11-05 14:30:00`: only the attempts made at this time or later
+            are listed.
+
+            `null` to list the whole day. The totals always count the whole day.
+        -
+          name: i_page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+          description: 'Page of the list, from `0`. A page holds 100 attempts.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the location of the kiosk.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Visit/Kiosk/Attend.json:
+    post:
+      operationId: Wl.Visit.Kiosk.Attend.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dtu_attend:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: |-
+                      Time of the check-in of the gym visit that the client already has on the day, in UTC and MySQL format, for
+                      example `2026-11-05 14:30:00`.
+
+                      `null` unless the check-in is refused because the client is already checked in on the day.
+                  dtu_register:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: |-
+                      Time of the check-in in UTC and MySQL format, for example `2026-11-05 14:30:00`.
+
+                      `null` if the check-in has been refused.
+                  i_attend_quick_close_fail:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of seconds after which the kiosk closes the message of a failed check-in.
+
+                      `0` if the business does not close this message automatically. A setting of the business.
+                  i_attend_quick_close_success:
+                    type: integer
+                    format: int32
+                    description: |-
+                      Number of seconds after which the kiosk closes the message of a successful check-in.
+
+                      `0` if the business does not close this message automatically. A setting of the business.
+                  id_deny_reason:
+                    $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
+                    description: |-
+                      Reason why the check-in has been refused.
+
+                      One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` if the check-in has been made.
+                  id_unpaid_reason:
+                    $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
+                    description: |-
+                      Reason why no pass pays for the visit.
+
+                      One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` if the visit is paid or the check-in has been refused. `0`
+                      also if the check-in has taken the booked visit of the day that has no payment while the client has a valid
+                      pass, and the business does not reconcile that visit with the pass at the check-in.
+                  id_visit:
+                    $ref: '#/components/schemas/Wl.Visit.VisitSid'
+                    description: |-
+                      Status of the visit after the check-in.
+
+                      One of [VisitSid](#/components/schemas/Wl.Visit.VisitSid) constants. `0` if the check-in has been refused.
+                  is_attend_quick_navigate:
+                    type: boolean
+                    description: 'Whether the kiosk opens the profile of the client after a successful check-in. A setting of the business.'
+                  is_paid:
+                    type: boolean
+                    description: |-
+                      Whether the visit is paid.
+
+                      A visit may be paid without a pass, by a purchase item or by a partner system: then it is `true`, while
+                      [AttendApi::$k_login_promotion](/Wl/Visit/Kiosk/Attend.json) and [AttendApi::$text_pass](/Wl/Visit/Kiosk/Attend.json) are `null`. `false` also if the
+                      check-in has been refused.
+                  k_location_visit:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Location of the gym visit that the client already has on the day, when the check-in is refused for it.
+
+                      `null` in all other cases.
+                  k_login_promotion:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Pass that pays for the visit.
+
+                      `null` if no pass pays for the visit or the check-in has been refused. `null` also for a visit paid without a
+                      pass, by a purchase item or by a partner system, while [AttendApi::$is_paid](/Wl/Visit/Kiosk/Attend.json) is `true`.
+                  k_visit:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      The checked-in visit; when the check-in is refused because the client is already checked in on the day, the
+                      visit that the client has.
+
+                      `null` if the check-in has been refused for another reason.
+                  s_attempt:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Key of the failed attempt of the check-in, the same as in the list of the attempts of the location
+                      ([AttemptListApi](/Wl/Visit/Kiosk/AttemptList.json)).
+
+                      `null` if the check-in has been made, or has been refused without a record of a failed attempt (the client is
+                      already checked in on the day).
+                  text_message:
+                    type: string
+                    description: |-
+                      Message of the refusal for the staff member.
+
+                      Empty string if the check-in has been made.
+                  text_pass:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Title of the pass that pays for the visit.
+
+                      `null` if no pass pays for the visit or the check-in has been refused. `null` also for a visit paid without a
+                      pass, by a purchase item or by a partner system, while [AttendApi::$is_paid](/Wl/Visit/Kiosk/Attend.json) is `true`.
+                  url_store:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Address of the store where the client may buy a pass, for example `https://example.com/catalog-list.html`.
+
+                      `null` if the visit is paid or the check-in has been refused.
+                required:
+                  - i_attend_quick_close_fail
+                  - i_attend_quick_close_success
+                  - id_deny_reason
+                  - id_unpaid_reason
+                  - id_visit
+                  - is_attend_quick_navigate
+                  - is_paid
+                  - text_message
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Checks the client in for a gym visit at the staff check-in kiosk.'
+      description: |-
+        Works in the session of a staff member with access to the location and the privilege to see the profile of the
+        client; no key of a kiosk is needed. The visit is checked in from the source "Kiosk". A client is checked in for
+        a gym visit once a day: a second check-in on the same local day, at any location of the business, is refused
+        and nothing is written. A booked gym visit of the day at the location of the kiosk is checked in. A refusal
+        gives its reason, its message and the key of the failed attempt; a refusal for a negative balance does not
+        show the amount to a staff member who may not see the balances of the clients.
+      tags:
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_location:
+                  type: string
+                  description: 'Key of the location of the kiosk.'
+                uid:
+                  type: string
+                  description: 'Key of the client.'
+              required:
+                - k_business
+                - k_location
+                - uid
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Visit/Kiosk/Scan.json:
+    post:
+      operationId: Wl.Visit.Kiosk.Scan.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_scan_result:
+                    $ref: '#/components/schemas/Wl.Visit.Kiosk.ScanResultSid'
+                    description: |-
+                      Result of the scan.
+
+                      One of [ScanResultSid](#/components/schemas/Wl.Visit.Kiosk.ScanResultSid) constants.
+                  text_name_first:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      First name of the client.
+
+                      `null` if no client is found.
+                  text_name_last:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Last name of the client.
+
+                      `null` if no client is found.
+                  uid:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Key of the client.
+
+                      `null` if no client is found.
+                  url_photo:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Address of the photo of the client, for example `https://example.com/photo.jpg`.
+
+                      `null` if no client is found.
+                required:
+                  - id_scan_result
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Finds the client by a scanned value.'
+      description: |-
+        The result is one of:
+        <ul>
+          <li>the client is found: the key, the name and the photo of the client;</li>
+          <li>no client that the staff member may see matches the value;</li>
+          <li>the member ID of the client is inactive;</li>
+          <li>the dynamic barcode has expired;</li>
+          <li>the business uses QR codes, which the kiosk does not read: every scan gives this result.</li>
+        </ul>
+        Only one client is returned: there is no list of the candidates.
+      tags:
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_location:
+                  type: string
+                  description: 'Key of the location of the kiosk.'
+                text_scan:
+                  type: string
+                  maxLength: 255
+                  description: |-
+                    The scanned value: a member ID or a dynamic barcode, for example `100245`.
+
+                    The symbols that are not letters or digits are cut from both ends.
+              required:
+                - k_business
+                - k_location
+                - text_scan
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Visit/Kiosk/Evaluate.json:
+    get:
+      operationId: Wl.Visit.Kiosk.Evaluate.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_login_promotion:
+                    type: array
+                    description: |-
+                      Passes of the client that may pay for a gym visit.
+
+                      The pass that the check-in would take is marked with `is_use`. No pass is marked when the check-in would take
+                      the booked visit of the day at the location of the kiosk.
+                    items:
+                      type: object
+                      properties:
+                        dl_expire:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Last day of the pass, local date in MySQL format. `null` if the pass does not expire.'
+                        i_limit:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: 'Number of the visits that the pass gives, `null` if the pass does not limit them.'
+                        i_remain:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: 'Number of the visits left before the check-in. `null` if the pass is unlimited.'
+                        is_last:
+                          type: boolean
+                          description: '`true` if the pass is limited and has 2 or fewer visits left before the check-in.'
+                        is_unlimited:
+                          type: boolean
+                          description: '`true` if the pass does not limit the visits.'
+                        is_use:
+                          type: boolean
+                          description: '`true` if the check-in would take this pass.'
+                        k_login_promotion:
+                          type: string
+                          description: 'Key of the pass; for a pass inside a package, the key of the package.'
+                        text_title:
+                          type: string
+                          description: 'Title of the pass.'
+                      required:
+                        - dl_expire
+                        - i_limit
+                        - i_remain
+                        - is_last
+                        - is_unlimited
+                        - is_use
+                        - k_login_promotion
+                        - text_title
+                  dtu_attend:
+                    type:
+                      - string
+                      - 'null'
+                    format: date-time
+                    description: |-
+                      Time of the check-in of the gym visit of the day, in UTC and MySQL format, for example `2026-11-05 14:30:00`.
+
+                      The time of the visit when the visit has not been checked in. `null` if the client has no gym visit on the day.
+                  id_deny_reason:
+                    $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
+                    description: |-
+                      The first reason why the check-in would be refused.
+
+                      One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` if no reason is found; the check-in still may be refused by
+                      the rules of the booking.
+                  id_unpaid_reason:
+                    $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
+                    description: |-
+                      Reason why the pass of the client does not pay for the visit.
+
+                      One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` if a pass pays for the visit.
+                  is_attend:
+                    type: boolean
+                    description: |-
+                      Whether the gym visit of the day is checked in.
+
+                      `false` also when the client has no gym visit on the day.
+                  is_balance_owing:
+                    type: boolean
+                    description: 'Whether the balance of the account of the client (or of the payer of the client) is negative.'
+                  is_card_expired:
+                    type: boolean
+                    description: 'Whether the client has only expired credit cards.'
+                  is_card_expiring:
+                    type: boolean
+                    description: 'Whether a credit card of the client expires in less than a month.'
+                  is_contract:
+                    type: boolean
+                    description: 'Whether the client has a purchase whose contract is not signed.'
+                  is_flag:
+                    type: boolean
+                    description: 'Whether the client is flagged for booking at the location.'
+                  is_form_mandatory:
+                    type: boolean
+                    description: 'Whether the client has a required form that is not completed.'
+                  is_pass_last_visit:
+                    type: boolean
+                    description: |-
+                      Whether the pass that the check-in would take has 2 or fewer visits left.
+
+                      `false` when no pass would be taken or the pass is unlimited.
+                  is_promotion_expired:
+                    type: boolean
+                    description: 'Whether a pass of the client has expired.'
+                  is_promotion_hold:
+                    type: boolean
+                    description: 'Whether a pass of the client is on hold.'
+                  is_unpaid_visit:
+                    type: boolean
+                    description: 'Whether the client has unpaid visits.'
+                  is_waiver:
+                    type: boolean
+                    description: 'Whether the business requires a waiver that the client has not signed.'
+                  k_location_visit:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Location of the gym visit of the day; it may be another location of the business.
+
+                      `null` if the client has no gym visit on the day.
+                  k_visit:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Gym visit of the client on the local day of the location.
+
+                      `null` if the client has no gym visit on the day.
+                  m_balance:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      Balance of the account of the client (or of the payer of the client), for example `-25.00`.
+
+                      `null` if the staff member may not see the balances of the clients.
+                required:
+                  - a_login_promotion
+                  - id_deny_reason
+                  - id_unpaid_reason
+                  - is_attend
+                  - is_balance_owing
+                  - is_card_expired
+                  - is_card_expiring
+                  - is_contract
+                  - is_flag
+                  - is_form_mandatory
+                  - is_pass_last_visit
+                  - is_promotion_expired
+                  - is_promotion_hold
+                  - is_unpaid_visit
+                  - is_waiver
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Evaluates a gym check-in of the client.'
+      description: |-
+        Finds the gym visit of the client on the local day of the location (at any location of the business), the
+        first reason why the check-in would be refused, in the order of the check-in, and the reason why the pass of
+        the client would not pay for the visit. Fills the state of the profile: the balance, the unpaid visits, the
+        waiver, the contract, the required forms, the credit cards, the flag, the passes on hold and expired, and the
+        passes that may pay for the visit. Only the first reason is given. Nothing is written: no visit and no failed
+        attempt.
+      tags:
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: dtl_date
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            format: date-time
+          description: |-
+            Local date and time of the check-in at the location, in MySQL format, for example `2026-11-05 09:30:00`.
+
+            `null` for the current time.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_location
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the location of the kiosk.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the client.'
       x-rate-limit:
         -
           limit: 200000
@@ -125984,7 +126774,7 @@ components:
       description: |-
         The source of a visit.
 
-        Last used ID: 33.
+        Last used ID: 34.
 
         Values:
         - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
@@ -126012,6 +126802,7 @@ components:
         - 17 (`SMS`): Action made via SMS.
         - 4 (`SPA_BACKEND`): Staff booked session from spa backend.
         - 3 (`SPA_FRONTEND`): Client booked session from spa frontend.
+        - 34 (`STAFF_KIOSK`): Staff member checked the client in at the staff check-in kiosk.
         - 10 (`SYSTEM`): Created by system.
         - 6 (`UNDEFINED`): Means that we did not define mode.
         - 16 (`WEB_APP_ATTENDANCE`): Client booked session from Attendance Web App.
@@ -126044,6 +126835,7 @@ components:
         - 17
         - 4
         - 3
+        - 34
         - 10
         - 6
         - 16
@@ -126076,6 +126868,7 @@ components:
         - SMS
         - SPA_BACKEND
         - SPA_FRONTEND
+        - STAFF_KIOSK
         - SYSTEM
         - UNDEFINED
         - WEB_APP_ATTENDANCE
@@ -126111,6 +126904,7 @@ components:
         - 'Action made via SMS.'
         - 'Staff booked session from spa backend.'
         - 'Client booked session from spa frontend.'
+        - 'Staff member checked the client in at the staff check-in kiosk.'
         - 'Created by system.'
         - 'Means that we did not define mode.'
         - 'Client booked session from Attendance Web App.'
@@ -129550,6 +130344,202 @@ components:
       x-enum-descriptions:
         - 'The usual quick accompanying note for the customer visit.'
         - 'Accompanying medical note for the customer visit.'
+    Wl.Visit.VisitDenyReasonSid:
+      type: integer
+      format: int32
+      description: |-
+        Reasons of failed book or check-in.
+
+        Last used ID: 38
+
+        Values:
+        - 1 (`ACCESS_DENIED`): The business can not take one more client.
+        - 2 (`ACCESS_LIMITED`): Access is limited.
+        - 3 (`ACCOUNT_LIMIT`): The business can not take one more client.
+        - 4 (`AGE_RESTRICTION`): Class is not available for certain age.
+        - 5 (`AGREE_NX`): Liability Release needs to be agreed.
+        - 25 (`APPOINTMENT_DENY`): Service approval denied
+        - 26 (`APPOINTMENT_REQUEST`): Service requires staff approval
+        - 23 (`ATTEND_GYM_DISABLE`): Business Policy restricts Gym Visits
+        - 38 (`ATTEND_ONCE`): The client already has a checked-in gym visit on the same local day, at any location of the business.
+        - 22 (`ATTEND_SELF_DISABLE`): Self check-in not available for this service
+        - 28 (`ATTEND_UNPAID`): Business policy prevents unpaid check-ins
+        - 27 (`ATTEND_WAIT`): Client is on the Wait List
+        - 37 (`BALANCE_NEGATIVE`): Client has a negative account balance
+        - 7 (`BOOK_EARLY`): It's too early to book a class.
+        - 8 (`BOOK_LATE`): It's too late to book a class.
+        - 24 (`BOOK_NX`): Visit must be booked before check-in
+        - 9 (`BOOK_RESTRICT`): Cannot book to this class anymore.
+        - 6 (`BOOKED_ALREADY`): Client is already booked for this session.
+        - 10 (`BUSINESS_INACTIVE`): Business is inactive.
+        - 11 (`CLASS_CANCELED`): Class is canceled.
+        - 14 (`CLASS_FULL`): Class is full.
+        - 15 (`CLASS_NOT_AVAILABLE_ANYMORE`): Class does not exist anymore.
+        - 12 (`CLIENT_FLAGGED`): Client is flagged at location.
+        - 13 (`CREDIT_CARD_REQUIRE`): Credit card is required for booking services.
+        - 16 (`HOLIDAY`): Business is closed.
+        - 17 (`LOGIN_REQUIRED`): Login is required.
+        - 18 (`NOT_BOOKABLE`): Online booking is disabled for the class.
+        - 35 (`PAYMENT_CONTRACT`): Contract not signed
+        - 36 (`PAYMENT_EXPIRE`): Purchase Option expired
+        - 34 (`PAYMENT_HOLD`): Purchase Option on hold
+        - 30 (`PAYMENT_NX`): No valid Purchase Option
+        - 33 (`PAYMENT_REMAIN`): Purchase Option has no visits left
+        - 32 (`PAYMENT_START`): Purchase Option not active yet
+        - 31 (`SCHEDULE_RESTRICT`): Attendance limit on Purchase Option reached
+        - 29 (`UNKNOWN`): Check-in could not be completed
+        - 19 (`USER_INFO_MISSING`): Required personal details missing.
+        - 20 (`VISIT_BEFORE`): Visit to another class is required first.
+        - 21 (`WAIT_LIST_LIMIT_MAX`): The wait list is full.
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 25
+        - 26
+        - 23
+        - 38
+        - 22
+        - 28
+        - 27
+        - 37
+        - 7
+        - 8
+        - 24
+        - 9
+        - 6
+        - 10
+        - 11
+        - 14
+        - 15
+        - 12
+        - 13
+        - 16
+        - 17
+        - 18
+        - 35
+        - 36
+        - 34
+        - 30
+        - 33
+        - 32
+        - 31
+        - 29
+        - 19
+        - 20
+        - 21
+      x-enum-varnames:
+        - ACCESS_DENIED
+        - ACCESS_LIMITED
+        - ACCOUNT_LIMIT
+        - AGE_RESTRICTION
+        - AGREE_NX
+        - APPOINTMENT_DENY
+        - APPOINTMENT_REQUEST
+        - ATTEND_GYM_DISABLE
+        - ATTEND_ONCE
+        - ATTEND_SELF_DISABLE
+        - ATTEND_UNPAID
+        - ATTEND_WAIT
+        - BALANCE_NEGATIVE
+        - BOOK_EARLY
+        - BOOK_LATE
+        - BOOK_NX
+        - BOOK_RESTRICT
+        - BOOKED_ALREADY
+        - BUSINESS_INACTIVE
+        - CLASS_CANCELED
+        - CLASS_FULL
+        - CLASS_NOT_AVAILABLE_ANYMORE
+        - CLIENT_FLAGGED
+        - CREDIT_CARD_REQUIRE
+        - HOLIDAY
+        - LOGIN_REQUIRED
+        - NOT_BOOKABLE
+        - PAYMENT_CONTRACT
+        - PAYMENT_EXPIRE
+        - PAYMENT_HOLD
+        - PAYMENT_NX
+        - PAYMENT_REMAIN
+        - PAYMENT_START
+        - SCHEDULE_RESTRICT
+        - UNKNOWN
+        - USER_INFO_MISSING
+        - VISIT_BEFORE
+        - WAIT_LIST_LIMIT_MAX
+      x-enum-descriptions:
+        - 'The business can not take one more client.'
+        - 'Access is limited.'
+        - 'The business can not take one more client.'
+        - 'Class is not available for certain age.'
+        - 'Liability Release needs to be agreed.'
+        - 'Service approval denied'
+        - 'Service requires staff approval'
+        - 'Business Policy restricts Gym Visits'
+        - 'The client already has a checked-in gym visit on the same local day, at any location of the business.'
+        - 'Self check-in not available for this service'
+        - 'Business policy prevents unpaid check-ins'
+        - 'Client is on the Wait List'
+        - 'Client has a negative account balance'
+        - "It's too early to book a class."
+        - "It's too late to book a class."
+        - 'Visit must be booked before check-in'
+        - 'Cannot book to this class anymore.'
+        - 'Client is already booked for this session.'
+        - 'Business is inactive.'
+        - 'Class is canceled.'
+        - 'Class is full.'
+        - 'Class does not exist anymore.'
+        - 'Client is flagged at location.'
+        - 'Credit card is required for booking services.'
+        - 'Business is closed.'
+        - 'Login is required.'
+        - 'Online booking is disabled for the class.'
+        - 'Contract not signed'
+        - 'Purchase Option expired'
+        - 'Purchase Option on hold'
+        - 'No valid Purchase Option'
+        - 'Purchase Option has no visits left'
+        - 'Purchase Option not active yet'
+        - 'Attendance limit on Purchase Option reached'
+        - 'Check-in could not be completed'
+        - 'Required personal details missing.'
+        - 'Visit to another class is required first.'
+        - 'The wait list is full.'
+    Wl.Visit.Kiosk.ScanResultSid:
+      type: integer
+      format: int32
+      description: |-
+        Results of a scan at the staff check-in kiosk.
+
+        Last used ID: 5
+
+        Values:
+        - 4 (`DYNAMIC_EXPIRED`): The scanned value is a dynamic barcode of a client that has expired.
+        - 5 (`FORMAT_UNSUPPORTED`): The business uses QR codes for the member IDs, and the kiosk does not read them.
+        - 1 (`FOUND`): The scanned value identifies an active client that the staff member may see.
+        - 3 (`MEMBER_INACTIVE`): The scanned value identifies a client whose member ID is inactive.
+        - 2 (`NOT_FOUND`): No client that the staff member may see matches the scanned value.
+      enum:
+        - 4
+        - 5
+        - 1
+        - 3
+        - 2
+      x-enum-varnames:
+        - DYNAMIC_EXPIRED
+        - FORMAT_UNSUPPORTED
+        - FOUND
+        - MEMBER_INACTIVE
+        - NOT_FOUND
+      x-enum-descriptions:
+        - 'The scanned value is a dynamic barcode of a client that has expired.'
+        - 'The business uses QR codes for the member IDs, and the kiosk does not read them.'
+        - 'The scanned value identifies an active client that the staff member may see.'
+        - 'The scanned value identifies a client whose member ID is inactive.'
+        - 'No client that the staff member may see matches the scanned value.'
     Wl.Catalog.Terms.TermsActionSid:
       type: integer
       format: int32
