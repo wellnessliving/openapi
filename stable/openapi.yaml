@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261110074648
+  version: 1.1.20261110124551
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -48868,6 +48868,7 @@ paths:
                     description: |-
                       Additional member data or `null` if any data can be shown.
                       Will be filled if [InfoApi::$is_full](/Wl/Member/Info/Info.json) flag is set.
+                      Besides the keys below, it has the keys of the member information:
                     properties:
                       a_icon:
                         type: object
@@ -49012,6 +49013,86 @@ paths:
                       url_waiver:
                         type: string
                         description: "Link to user's waiver page."
+                      a_task_list:
+                        type: object
+                        description: |-
+                          The client's tasks in the business, ordered by due date, keyed by task key
+                            .
+                          Filled only when [InfoApi::$is_backend](/Wl/Member/Info/Info.json) is `true` and [InfoApi::$k_business](/Wl/Member/Info/Info.json) is set.
+                          Empty when the business's account is below Standard and the current user is not an admin.
+                          Which tasks it holds depends on the privileges of the current staff member.
+                          Each task has the following structure:
+                        additionalProperties:
+                          type: object
+                          properties:
+                            a_staff:
+                              type: object
+                              description: |-
+                                Staff assigned to the task, keyed by staff key
+                                  .
+                                Each staff member has the following structure:
+                              additionalProperties:
+                                type: object
+                                properties:
+                                  text_family:
+                                    type:
+                                      - string
+                                      - 'null'
+                                    description: |-
+                                      Staff family name.
+                                      `null` when the staff member has no record in the business.
+                                  text_name:
+                                    type:
+                                      - string
+                                      - 'null'
+                                    description: |-
+                                      Staff first name.
+                                      `null` when the staff member has no record in the business.
+                                  uid:
+                                    type: string
+                                    description: 'Staff user key.'
+                                required:
+                                  - text_family
+                                  - text_name
+                                  - uid
+                            dt_add:
+                              type: string
+                              description: 'Date and time the task was added, in UTC.'
+                            dt_due:
+                              type: string
+                              description: 'Due date and time in UTC.'
+                            dtl_due:
+                              type: string
+                              description: "Due date and time on the business's time zone."
+                            hide_edit:
+                              type: boolean
+                              description: '`true` unless the client whose tasks these are is an admin or has the privilege to edit tasks.'
+                            id_task_status:
+                              $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                              description: 'Task status. One of {@link \Wl\Task\TaskStatusSid} constants.'
+                            k_task:
+                              type: string
+                              description: 'Task key.'
+                            s_description:
+                              type: string
+                              description: 'Task description.'
+                            s_title:
+                              type: string
+                              description: 'Task title.'
+                            text_task_status:
+                              type: string
+                              description: 'Title of the task status.'
+                          required:
+                            - a_staff
+                            - dt_add
+                            - dt_due
+                            - dtl_due
+                            - hide_edit
+                            - id_task_status
+                            - k_task
+                            - s_description
+                            - s_title
+                            - text_task_status
                     required:
                       - a_icon
                       - a_vaccination_status
@@ -49044,6 +49125,7 @@ paths:
                       - url_overview
                       - url_profile
                       - url_waiver
+                      - a_task_list
                   a_result_list:
                     type:
                       - object
@@ -49056,7 +49138,9 @@ paths:
                     properties:
                       a_info:
                         type: object
-                        description: "Additional user's information."
+                        description: |-
+                          Additional user's information.
+                          Besides the keys below, it has the keys of the member information:
                         properties:
                           a_icon:
                             type: object
@@ -49201,6 +49285,72 @@ paths:
                           url_waiver:
                             type: string
                             description: "Link to user's waiver page."
+                          a_task_list:
+                            type: object
+                            description: |-
+                              The client's tasks in the business, ordered by due date, keyed by task key
+                                .
+                              Filled only when [InfoApi::$is_backend](/Wl/Member/Info/Info.json) is `true` and [InfoApi::$k_business](/Wl/Member/Info/Info.json) is set.
+                              Empty when the business's account is below Standard and the current user is not an admin.
+                              Which tasks it holds depends on the privileges of the current staff member.
+                              Each task has the following structure:
+                            additionalProperties:
+                              type: object
+                              properties:
+                                a_staff:
+                                  type: object
+                                  description: |-
+                                    Staff assigned to the task, keyed by staff key
+                                      .
+                                    Each staff member has the following structure:
+                                  additionalProperties:
+                                    type: object
+                                    properties:
+                                      text_family: { type: [string, 'null'], description: "Staff family name.\n`null` when the staff member has no record in the business." }
+                                      text_name: { type: [string, 'null'], description: "Staff first name.\n`null` when the staff member has no record in the business." }
+                                      uid: { type: string, description: 'Staff user key.' }
+                                    required:
+                                      - text_family
+                                      - text_name
+                                      - uid
+                                dt_add:
+                                  type: string
+                                  description: 'Date and time the task was added, in UTC.'
+                                dt_due:
+                                  type: string
+                                  description: 'Due date and time in UTC.'
+                                dtl_due:
+                                  type: string
+                                  description: "Due date and time on the business's time zone."
+                                hide_edit:
+                                  type: boolean
+                                  description: '`true` unless the client whose tasks these are is an admin or has the privilege to edit tasks.'
+                                id_task_status:
+                                  $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                                  description: 'Task status. One of {@link \Wl\Task\TaskStatusSid} constants.'
+                                k_task:
+                                  type: string
+                                  description: 'Task key.'
+                                s_description:
+                                  type: string
+                                  description: 'Task description.'
+                                s_title:
+                                  type: string
+                                  description: 'Task title.'
+                                text_task_status:
+                                  type: string
+                                  description: 'Title of the task status.'
+                              required:
+                                - a_staff
+                                - dt_add
+                                - dt_due
+                                - dtl_due
+                                - hide_edit
+                                - id_task_status
+                                - k_task
+                                - s_description
+                                - s_title
+                                - text_task_status
                         required:
                           - a_icon
                           - a_vaccination_status
@@ -49233,6 +49383,7 @@ paths:
                           - url_overview
                           - url_profile
                           - url_waiver
+                          - a_task_list
                       is_traveller:
                         type: boolean
                         description: '`true` - user is traveller; `false` - not traveller.'
@@ -77057,6 +77208,7 @@ paths:
                     description: |-
                       Additional member data or `null` if any data can be shown.
                       Will be filled if [InfoApi::$is_full](/Wl/Member/Info/Info.json) flag is set.
+                      Besides the keys below, it has the keys of the member information:
                     properties:
                       a_icon:
                         type: object
@@ -77201,6 +77353,86 @@ paths:
                       url_waiver:
                         type: string
                         description: "Link to user's waiver page."
+                      a_task_list:
+                        type: object
+                        description: |-
+                          The client's tasks in the business, ordered by due date, keyed by task key
+                            .
+                          Filled only when [InfoApi::$is_backend](/Wl/Member/Info/Info.json) is `true` and [InfoApi::$k_business](/Wl/Member/Info/Info.json) is set.
+                          Empty when the business's account is below Standard and the current user is not an admin.
+                          Which tasks it holds depends on the privileges of the current staff member.
+                          Each task has the following structure:
+                        additionalProperties:
+                          type: object
+                          properties:
+                            a_staff:
+                              type: object
+                              description: |-
+                                Staff assigned to the task, keyed by staff key
+                                  .
+                                Each staff member has the following structure:
+                              additionalProperties:
+                                type: object
+                                properties:
+                                  text_family:
+                                    type:
+                                      - string
+                                      - 'null'
+                                    description: |-
+                                      Staff family name.
+                                      `null` when the staff member has no record in the business.
+                                  text_name:
+                                    type:
+                                      - string
+                                      - 'null'
+                                    description: |-
+                                      Staff first name.
+                                      `null` when the staff member has no record in the business.
+                                  uid:
+                                    type: string
+                                    description: 'Staff user key.'
+                                required:
+                                  - text_family
+                                  - text_name
+                                  - uid
+                            dt_add:
+                              type: string
+                              description: 'Date and time the task was added, in UTC.'
+                            dt_due:
+                              type: string
+                              description: 'Due date and time in UTC.'
+                            dtl_due:
+                              type: string
+                              description: "Due date and time on the business's time zone."
+                            hide_edit:
+                              type: boolean
+                              description: '`true` unless the client whose tasks these are is an admin or has the privilege to edit tasks.'
+                            id_task_status:
+                              $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                              description: 'Task status. One of {@link \Wl\Task\TaskStatusSid} constants.'
+                            k_task:
+                              type: string
+                              description: 'Task key.'
+                            s_description:
+                              type: string
+                              description: 'Task description.'
+                            s_title:
+                              type: string
+                              description: 'Task title.'
+                            text_task_status:
+                              type: string
+                              description: 'Title of the task status.'
+                          required:
+                            - a_staff
+                            - dt_add
+                            - dt_due
+                            - dtl_due
+                            - hide_edit
+                            - id_task_status
+                            - k_task
+                            - s_description
+                            - s_title
+                            - text_task_status
                     required:
                       - a_icon
                       - a_vaccination_status
@@ -77233,6 +77465,7 @@ paths:
                       - url_overview
                       - url_profile
                       - url_waiver
+                      - a_task_list
                   a_items:
                     type: array
                     description: |-
@@ -77279,7 +77512,9 @@ paths:
                     properties:
                       a_info:
                         type: object
-                        description: "Additional user's information."
+                        description: |-
+                          Additional user's information.
+                          Besides the keys below, it has the keys of the member information:
                         properties:
                           a_icon:
                             type: object
@@ -77424,6 +77659,72 @@ paths:
                           url_waiver:
                             type: string
                             description: "Link to user's waiver page."
+                          a_task_list:
+                            type: object
+                            description: |-
+                              The client's tasks in the business, ordered by due date, keyed by task key
+                                .
+                              Filled only when [InfoApi::$is_backend](/Wl/Member/Info/Info.json) is `true` and [InfoApi::$k_business](/Wl/Member/Info/Info.json) is set.
+                              Empty when the business's account is below Standard and the current user is not an admin.
+                              Which tasks it holds depends on the privileges of the current staff member.
+                              Each task has the following structure:
+                            additionalProperties:
+                              type: object
+                              properties:
+                                a_staff:
+                                  type: object
+                                  description: |-
+                                    Staff assigned to the task, keyed by staff key
+                                      .
+                                    Each staff member has the following structure:
+                                  additionalProperties:
+                                    type: object
+                                    properties:
+                                      text_family: { type: [string, 'null'], description: "Staff family name.\n`null` when the staff member has no record in the business." }
+                                      text_name: { type: [string, 'null'], description: "Staff first name.\n`null` when the staff member has no record in the business." }
+                                      uid: { type: string, description: 'Staff user key.' }
+                                    required:
+                                      - text_family
+                                      - text_name
+                                      - uid
+                                dt_add:
+                                  type: string
+                                  description: 'Date and time the task was added, in UTC.'
+                                dt_due:
+                                  type: string
+                                  description: 'Due date and time in UTC.'
+                                dtl_due:
+                                  type: string
+                                  description: "Due date and time on the business's time zone."
+                                hide_edit:
+                                  type: boolean
+                                  description: '`true` unless the client whose tasks these are is an admin or has the privilege to edit tasks.'
+                                id_task_status:
+                                  $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                                  description: 'Task status. One of {@link \Wl\Task\TaskStatusSid} constants.'
+                                k_task:
+                                  type: string
+                                  description: 'Task key.'
+                                s_description:
+                                  type: string
+                                  description: 'Task description.'
+                                s_title:
+                                  type: string
+                                  description: 'Task title.'
+                                text_task_status:
+                                  type: string
+                                  description: 'Title of the task status.'
+                              required:
+                                - a_staff
+                                - dt_add
+                                - dt_due
+                                - dtl_due
+                                - hide_edit
+                                - id_task_status
+                                - k_task
+                                - s_description
+                                - s_title
+                                - text_task_status
                         required:
                           - a_icon
                           - a_vaccination_status
@@ -77456,6 +77757,7 @@ paths:
                           - url_overview
                           - url_profile
                           - url_waiver
+                          - a_task_list
                       is_traveller:
                         type: boolean
                         description: '`true` - user is traveller; `false` - not traveller.'
