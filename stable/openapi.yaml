@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261110063123
+  version: 1.1.20261110074648
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -126774,7 +126774,7 @@ components:
       description: |-
         The source of a visit.
 
-        Last used ID: 34.
+        Last used ID: 35.
 
         Values:
         - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
@@ -126802,7 +126802,7 @@ components:
         - 17 (`SMS`): Action made via SMS.
         - 4 (`SPA_BACKEND`): Staff booked session from spa backend.
         - 3 (`SPA_FRONTEND`): Client booked session from spa frontend.
-        - 34 (`STAFF_KIOSK`): Staff member checked the client in at the staff check-in kiosk.
+        - 35 (`STAFF_KIOSK`): Staff member checked the client in at the staff check-in kiosk.
         - 10 (`SYSTEM`): Created by system.
         - 6 (`UNDEFINED`): Means that we did not define mode.
         - 16 (`WEB_APP_ATTENDANCE`): Client booked session from Attendance Web App.
@@ -126835,7 +126835,7 @@ components:
         - 17
         - 4
         - 3
-        - 34
+        - 35
         - 10
         - 6
         - 16
