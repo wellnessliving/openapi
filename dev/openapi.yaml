@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261110170543
+  version: 1.1.20261110172639
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -54547,7 +54547,11 @@ paths:
                         description: 'The item key.'
                       k_login_prize:
                         type: string
-                        description: 'The key of the login prize to apply a login prize discount.'
+                        description: |-
+                          The key of the login prize to apply a login prize discount.
+                          When `i_quantity` is more than 1, the discount of the prize applies to one unit of the item only, as in
+                            the cart (`get()`). A prize of a free item is the exception: it applies to
+                            every unit.
                       k_shop_product_option:
                         type: string
                         description: 'The product option key, required only for products.'
