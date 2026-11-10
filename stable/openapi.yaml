@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261109114116
+  version: 1.1.20261110024623
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5852,6 +5852,43 @@ paths:
                           required:
                             - k_search_tag
                             - text_title
+                        a_session_user:
+                          type: object
+                          description: |-
+                            Future sessions of this event that [EventListApi::$uid](/Wl/Event/EventList.json) holds, booked or on the wait list, ordered by
+                             date.
+
+                            Only the own visits of the user (the user is the attendee) are listed, never the visits of the related
+                             profiles of the user. Empty when [EventListApi::$uid](/Wl/Event/EventList.json) is not passed.
+
+                            Sessions that can no longer be booked (the event is closed, the limit of the wait list is reached) are listed
+                             too.
+
+                            Every session is a separate entry, also when `a_schedule` merges several
+                             schedules into one item.
+
+                            A session is future by the same rule as in `i_session_future`.
+                            This list may hold more entries than `i_session_future`: that count is capped at
+                             250 sessions, and it skips the dates that a schedule no longer produces (for example a holiday added after
+                             the booking). So compare the count of this list with `i_session_future` by `>=`,
+                             not by `==`.
+                          properties:
+                            dtu_date:
+                              type: string
+                              description: 'Date and time of the session in UTC, in `MySQL` format (for example `2026-11-05 13:00:00`).'
+                            is_user_wait:
+                              type: boolean
+                              description: |-
+                                `true` if the user is on the wait list of the session ([VisitSid::WAIT](#/components/schemas/Wl.Visit.VisitSid)).
+                                `false` if the user holds an active visit of the session ([VisitSid::ATTEND](#/components/schemas/Wl.Visit.VisitSid), [VisitSid::BOOK](#/components/schemas/Wl.Visit.VisitSid) or
+                                 [VisitSid::PENDING](#/components/schemas/Wl.Visit.VisitSid)).
+                            k_class_period:
+                              type: string
+                              description: 'Key of the class period of the session.'
+                          required:
+                            - dtu_date
+                            - is_user_wait
+                            - k_class_period
                         a_ticket_inventory:
                           type:
                             - object
@@ -6159,6 +6196,7 @@ paths:
                         - a_logo
                         - a_schedule
                         - a_search_tag
+                        - a_session_user
                         - a_tickets
                         - can_book
                         - can_cancel
