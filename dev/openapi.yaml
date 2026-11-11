@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261111112907
+  version: 1.1.20261111120912
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -118349,6 +118349,17 @@ paths:
                     items:
                       type: object
                       properties:
+                        dt_next:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The first time from [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) to the end of the booking window when the staff member can be
+                              booked without the wait list. Local date and time in the time zone of [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json), in MySQL
+                              format, for example `2026-11-12 13:00:00`.
+                            `null` when the staff member is available at [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json), or has no such time in the booking
+                              window.
+                            <p>Returned only when [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed.</p>
                         id_gender:
                           $ref: '#/components/schemas/AGenderSid'
                           description: "Staff member's gender. One of [AGenderSid](#/components/schemas/AGenderSid) constants."
@@ -118367,12 +118378,20 @@ paths:
                             Whether staff member is available for booking. Note, if staff member reached daily limits, this field
                             will be different for client and staff booking flows. If client books, such staff member is not available and
                             this field is `false`. If staff member books, such staff member is available.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, this field is `true` exactly when the first time found for
+                              `dt_next` is [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) itself, whoever books.</p>
                         is_daily_limit:
                           type: boolean
-                          description: 'Whether staff member reached daily limits on number or total duration of the appointments for one day.'
+                          description: |-
+                            Whether staff member reached daily limits on number or total duration of the appointments for one day.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json) count in the
+                              duration.</p>
                         is_wait_list:
                           type: boolean
-                          description: 'Whether staff member available only for wait list booking.'
+                          description: |-
+                            Whether staff member available only for wait list booking.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json) count in the
+                              duration.</p>
                         k_staff:
                           type: string
                           description: '**DEPRECATED** Legacy staff key.  Returned only for allow-listed apps.'
@@ -118434,6 +118453,12 @@ paths:
         Returns the list of staff members who can perform the specified service at the given location
          on the specified date and time. Each entry includes the staff member's name, image, gender,
          and availability. An 'any staff' option is included when the service allows random staff assignment.
+
+        When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed, the list holds the staff
+         members who can perform the service at the location, whatever [ListApi::$is_unavailable](/Wl/Appointment/Book/Staff/List.json) says, and no
+         staff member is left out for being unavailable. Each entry then gets `dt_next`, the next time when the staff
+         member can be booked, found with the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json). That search ignores
+         [ListApi::$i_duration_custom](/Wl/Appointment/Book/Staff/List.json) and [ListApi::$k_appointment_ignore](/Wl/Appointment/Book/Staff/List.json).
       tags:
         - Appointments
       parameters:
@@ -118469,6 +118494,19 @@ paths:
           description: |-
             User role by whom this api called.
             For different roles different results might be generated.
+        -
+          name: is_dt_next
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Whether to find the next time when every staff member can be booked.
+
+            `true` together with a non-empty [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) turns the search on. Then the list holds every staff
+              member who can conduct the service at the location, whatever [ListApi::$is_unavailable](/Wl/Appointment/Book/Staff/List.json) says, no staff
+              member is left out for being unavailable, and every element of [ListApi::$a_staff](/Wl/Appointment/Book/Staff/List.json) gets `dt_next`.
+            `false` to return the list without this search. Without [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) this field changes nothing.
         -
           name: is_unavailable
           in: query
@@ -118511,6 +118549,19 @@ paths:
             User's timezone.
 
             `null` until initialized or to use location timezone.
+        -
+          name: s_product
+          in: query
+          required: true
+          schema:
+            type: string
+            maxLength: 1000
+          description: |-
+            Add-ons of the service, as a JSON array of the keys of the add-on options, for example `["15","27"]`.
+
+            Read only when [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed: then the duration
+              of these add-ons counts in `dt_next`, `is_available`, `is_daily_limit` and `is_wait_list` of
+              [ListApi::$a_staff](/Wl/Appointment/Book/Staff/List.json). An empty string means no add-ons. At most 1000 characters.
         -
           name: uid
           in: query
@@ -118547,6 +118598,17 @@ paths:
                     items:
                       type: object
                       properties:
+                        dt_next:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The first time from [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) to the end of the booking window when the staff member can be
+                              booked without the wait list. Local date and time in the time zone of [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json), in MySQL
+                              format, for example `2026-11-12 13:00:00`.
+                            `null` when the staff member is available at [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json), or has no such time in the booking
+                              window.
+                            <p>Returned only when [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed.</p>
                         id_gender:
                           $ref: '#/components/schemas/AGenderSid'
                           description: "Staff member's gender. One of [AGenderSid](#/components/schemas/AGenderSid) constants."
@@ -118565,12 +118627,20 @@ paths:
                             Whether staff member is available for booking. Note, if staff member reached daily limits, this field
                             will be different for client and staff booking flows. If client books, such staff member is not available and
                             this field is `false`. If staff member books, such staff member is available.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, this field is `true` exactly when the first time found for
+                              `dt_next` is [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) itself, whoever books.</p>
                         is_daily_limit:
                           type: boolean
-                          description: 'Whether staff member reached daily limits on number or total duration of the appointments for one day.'
+                          description: |-
+                            Whether staff member reached daily limits on number or total duration of the appointments for one day.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json) count in the
+                              duration.</p>
                         is_wait_list:
                           type: boolean
-                          description: 'Whether staff member available only for wait list booking.'
+                          description: |-
+                            Whether staff member available only for wait list booking.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json) count in the
+                              duration.</p>
                         k_staff:
                           type: string
                           description: '**DEPRECATED** Legacy staff key.  Returned only for allow-listed apps.'
@@ -118632,6 +118702,12 @@ paths:
         Returns the list of staff members who can perform the specified service at the given location
          on the specified date and time. Each entry includes the staff member's name, image, gender,
          and availability. An 'any staff' option is included when the service allows random staff assignment.
+
+        When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed, the list holds the staff
+         members who can perform the service at the location, whatever [ListApi::$is_unavailable](/Wl/Appointment/Book/Staff/List.json) says, and no
+         staff member is left out for being unavailable. Each entry then gets `dt_next`, the next time when the staff
+         member can be booked, found with the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json). That search ignores
+         [ListApi::$i_duration_custom](/Wl/Appointment/Book/Staff/List.json) and [ListApi::$k_appointment_ignore](/Wl/Appointment/Book/Staff/List.json).
       tags:
         - Appointments
       parameters:
@@ -118679,6 +118755,19 @@ paths:
           description: |-
             User role by whom this api called.
             For different roles different results might be generated.
+        -
+          name: is_dt_next
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Whether to find the next time when every staff member can be booked.
+
+            `true` together with a non-empty [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) turns the search on. Then the list holds every staff
+              member who can conduct the service at the location, whatever [ListApi::$is_unavailable](/Wl/Appointment/Book/Staff/List.json) says, no staff
+              member is left out for being unavailable, and every element of [ListApi::$a_staff](/Wl/Appointment/Book/Staff/List.json) gets `dt_next`.
+            `false` to return the list without this search. Without [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) this field changes nothing.
         -
           name: is_unavailable
           in: query
@@ -118722,6 +118811,19 @@ paths:
 
             `null` until initialized or to use location timezone.
         -
+          name: s_product
+          in: query
+          required: true
+          schema:
+            type: string
+            maxLength: 1000
+          description: |-
+            Add-ons of the service, as a JSON array of the keys of the add-on options, for example `["15","27"]`.
+
+            Read only when [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed: then the duration
+              of these add-ons counts in `dt_next`, `is_available`, `is_daily_limit` and `is_wait_list` of
+              [ListApi::$a_staff](/Wl/Appointment/Book/Staff/List.json). An empty string means no add-ons. At most 1000 characters.
+        -
           name: uid
           in: query
           required: false
@@ -118755,6 +118857,17 @@ paths:
                     items:
                       type: object
                       properties:
+                        dt_next:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            The first time from [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) to the end of the booking window when the staff member can be
+                              booked without the wait list. Local date and time in the time zone of [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json), in MySQL
+                              format, for example `2026-11-12 13:00:00`.
+                            `null` when the staff member is available at [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json), or has no such time in the booking
+                              window.
+                            <p>Returned only when [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed.</p>
                         id_gender:
                           $ref: '#/components/schemas/AGenderSid'
                           description: "Staff member's gender. One of [AGenderSid](#/components/schemas/AGenderSid) constants."
@@ -118773,12 +118886,20 @@ paths:
                             Whether staff member is available for booking. Note, if staff member reached daily limits, this field
                             will be different for client and staff booking flows. If client books, such staff member is not available and
                             this field is `false`. If staff member books, such staff member is available.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, this field is `true` exactly when the first time found for
+                              `dt_next` is [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) itself, whoever books.</p>
                         is_daily_limit:
                           type: boolean
-                          description: 'Whether staff member reached daily limits on number or total duration of the appointments for one day.'
+                          description: |-
+                            Whether staff member reached daily limits on number or total duration of the appointments for one day.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json) count in the
+                              duration.</p>
                         is_wait_list:
                           type: boolean
-                          description: 'Whether staff member available only for wait list booking.'
+                          description: |-
+                            Whether staff member available only for wait list booking.
+                            <p>When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true`, the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json) count in the
+                              duration.</p>
                         k_staff:
                           type: string
                           description: '**DEPRECATED** Legacy staff key.  Returned only for allow-listed apps.'
@@ -118840,6 +118961,12 @@ paths:
         Returns the list of staff members who can perform the specified service at the given location
          on the specified date and time. Each entry includes the staff member's name, image, gender,
          and availability. An 'any staff' option is included when the service allows random staff assignment.
+
+        When [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed, the list holds the staff
+         members who can perform the service at the location, whatever [ListApi::$is_unavailable](/Wl/Appointment/Book/Staff/List.json) says, and no
+         staff member is left out for being unavailable. Each entry then gets `dt_next`, the next time when the staff
+         member can be booked, found with the add-ons of [ListApi::$s_product](/Wl/Appointment/Book/Staff/List.json). That search ignores
+         [ListApi::$i_duration_custom](/Wl/Appointment/Book/Staff/List.json) and [ListApi::$k_appointment_ignore](/Wl/Appointment/Book/Staff/List.json).
       tags:
         - Appointments
       parameters:
@@ -118887,6 +119014,19 @@ paths:
           description: |-
             User role by whom this api called.
             For different roles different results might be generated.
+        -
+          name: is_dt_next
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Whether to find the next time when every staff member can be booked.
+
+            `true` together with a non-empty [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) turns the search on. Then the list holds every staff
+              member who can conduct the service at the location, whatever [ListApi::$is_unavailable](/Wl/Appointment/Book/Staff/List.json) says, no staff
+              member is left out for being unavailable, and every element of [ListApi::$a_staff](/Wl/Appointment/Book/Staff/List.json) gets `dt_next`.
+            `false` to return the list without this search. Without [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) this field changes nothing.
         -
           name: is_unavailable
           in: query
@@ -118942,6 +119082,19 @@ paths:
             User's timezone.
 
             `null` until initialized or to use location timezone.
+        -
+          name: s_product
+          in: query
+          required: true
+          schema:
+            type: string
+            maxLength: 1000
+          description: |-
+            Add-ons of the service, as a JSON array of the keys of the add-on options, for example `["15","27"]`.
+
+            Read only when [ListApi::$is_dt_next](/Wl/Appointment/Book/Staff/List.json) is `true` and [ListApi::$dt_date](/Wl/Appointment/Book/Staff/List.json) is passed: then the duration
+              of these add-ons counts in `dt_next`, `is_available`, `is_daily_limit` and `is_wait_list` of
+              [ListApi::$a_staff](/Wl/Appointment/Book/Staff/List.json). An empty string means no add-ons. At most 1000 characters.
         -
           name: uid
           in: query
