@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261111002726
+  version: 1.1.20261111074822
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -56869,7 +56869,9 @@ paths:
                 properties:
                   a_product:
                     type: array
-                    description: 'The list of all sale items (de-duplicated). Each element has the following keys:'
+                    description: |-
+                      The list of all sale items (de-duplicated). In the paged mode, only the items of the page or the found
+                        items, see [ListApi::$i_last](/Wl/Catalog/CatalogList/List.json) and [ListApi::$a_item](/Wl/Catalog/CatalogList/List.json). Each element has the following keys:
                     items:
                       type: object
                       properties:
@@ -56995,6 +56997,7 @@ paths:
 
                       Products have their own order within every shop category, and they can be related to several categories.
                       As a design decision, products are sorted in the backend using duplicates for every category.
+                      Empty in the paged mode, see [ListApi::$i_last](/Wl/Catalog/CatalogList/List.json) and [ListApi::$a_item](/Wl/Catalog/CatalogList/List.json).
                     properties:
                       a_location:
                         type: array
@@ -57111,9 +57114,57 @@ paths:
                       - s_key
                       - s_title
                       - url_catalog
+                  a_shop_category:
+                    type: array
+                    description: |-
+                      Categories of the sidebar of the paged mode, sorted by their order. Only the categories that have items
+                        after the filters `a_sale_id`, `a_schema`, `a_settings`, `is_application_hide` and `k_location` of
+                        [ListApi::$a_filter](/Wl/Catalog/CatalogList/List.json), with the category `0` when there are items without a category. Returned only
+                        when [ListApi::$i_last](/Wl/Catalog/CatalogList/List.json) is `0`, empty otherwise.
+
+                        Each element has the following keys:
+                    items:
+                      type: object
+                      properties:
+                        i_order:
+                          type: integer
+                          format: int32
+                          description: 'Order of the category in the sidebar.'
+                        is_default:
+                          type: boolean
+                          description: '`true` if the category is selected by default, `false` otherwise.'
+                        k_shop_category:
+                          type: string
+                          description: 'Key of the category. `0` for the system category of the items without a category.'
+                        text_title:
+                          type: string
+                          description: 'Title of the category.'
+                      required:
+                        - i_order
+                        - is_default
+                        - k_shop_category
+                        - text_title
+                  is_catalog_empty:
+                    type: boolean
+                    description: |-
+                      Whether the catalog of the paged mode has no items at all.
+
+                      `true` if no item is left after the filters `a_sale_id`, `a_schema`, `a_settings` and `is_application_hide`
+                        of [ListApi::$a_filter](/Wl/Catalog/CatalogList/List.json), `false` otherwise. The category, the search and `k_location` of the filter
+                        do not change it. Always `false` when the paged mode is not used.
+                  is_load_more:
+                    type: boolean
+                    description: |-
+                      Whether there are more items after the page of the paged mode.
+
+                      `true` if more items follow the page, `false` if the page is the last one, if the items were looked up by
+                        [ListApi::$a_item](/Wl/Catalog/CatalogList/List.json) or if the paged mode is not used.
                 required:
                   - a_product
                   - a_product_duplicate
+                  - a_shop_category
+                  - is_catalog_empty
+                  - is_load_more
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -57131,6 +57182,10 @@ paths:
         Used to render the full client-facing store catalog for a business. Returns all purchasable items -
         promotions, products, events, and coupons - merged across the business's categories. The separate
         de-duplicated list and category list support both the flat and category-tabbed views.
+
+        In the paged mode, when `i_last` is set or `a_item` is not empty, the items are read from a list cached for
+        10 minutes, filtered and sorted by `a_filter`, and one page of them is returned with the categories of the
+        sidebar; or the items of `a_item` are looked up.
       tags:
         - Catalog
       parameters:
@@ -57161,6 +57216,166 @@ paths:
           description: |-
             Arguments from direct purchase link, which can give additional access to products, which are available
               only by such link.
+        -
+          name: a_filter
+          in: query
+          required: true
+          schema:
+            type: object
+            properties:
+              a_sale_id:
+                type: array
+                description: |-
+                  Sale types to show. One of [RsSaleSid](#/components/schemas/RsSaleSid) constants each. Empty to show all the types.
+                  The catalog is considered empty when this filter leaves nothing, see [ListApi::$is_catalog_empty](/Wl/Catalog/CatalogList/List.json).
+                items:
+                  type: integer
+                  format: int32
+              a_schema:
+                type: object
+                description: |-
+                  The categories and the items a widget is configured to show. Empty to show everything. An item is shown
+                  when one of its categories is listed here with `is_all` set, or with the item in its `a_item`. The
+                  sidebar of [ListApi::$a_shop_category](/Wl/Catalog/CatalogList/List.json) lists only these categories. Each element has the following
+                  keys:
+                properties:
+                  a_item:
+                    type: object
+                    description: 'The items of the category to show. Each element has the following keys:'
+                    properties:
+                      id_sale:
+                        $ref: '#/components/schemas/RsSaleSid'
+                        description: |-
+                          Sale type of the item. One of [RsSaleSid](#/components/schemas/RsSaleSid) constants. Any type of a purchase option matches
+                          any other type of a purchase option.
+                      k_id:
+                        type: string
+                        description: 'Key of the item, as `k_id` of [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json).'
+                    required:
+                      - id_sale
+                      - k_id
+                  is_all:
+                    type: boolean
+                    description: '`true` to show all the items of the category, `false` to show only the items of `a_item`.'
+                  k_shop_category:
+                    type: string
+                    description: 'Key of the category. `0` for the items without a category.'
+                required:
+                  - k_shop_category
+              a_settings:
+                type: object
+                description: |-
+                  The items a widget is configured to show, by their types. When at least one of the keys below is set,
+                  an item is shown only when the key of its type is set and holds its `k_id`; a type whose key is not set
+                  or is empty is not shown at all. The keys:
+                properties:
+                  a_coupon:
+                    type: array
+                    description: 'Keys of the gift cards to show, as `k_id` of [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json).'
+                    items:
+                      type: string
+                  a_event:
+                    type: array
+                    description: 'Keys of the events to show, as `k_id` of [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json).'
+                    items:
+                      type: string
+                  a_product:
+                    type: array
+                    description: 'Keys of the products to show, as `k_id` of [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json).'
+                    items:
+                      type: string
+                  a_promotion:
+                    type: array
+                    description: 'Keys of the purchase options to show, as `k_id` of [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json).'
+                    items:
+                      type: string
+              a_shop_category:
+                type: array
+                description: |-
+                  Categories to show the items of. `0` for the items without a category. Empty to not filter by category.
+                  Not used when `is_category_default` is `true`.
+                items:
+                  type: string
+              id_order:
+                $ref: '#/components/schemas/Core.Sid.SortOrderSid'
+                description: |-
+                  Sort order. One of [SortOrderSid](#/components/schemas/Core.Sid.SortOrderSid) constants. Empty for the default order of the sort: ascending for
+                  the name and the price, descending for the date. Not used by the custom sort.
+              id_sort:
+                $ref: '#/components/schemas/Wl.Shop.Category.ShopCategorySortSid'
+                description: |-
+                  Sort of the items. One of [ShopCategorySortSid](#/components/schemas/Wl.Shop.Category.ShopCategorySortSid) constants. Empty for the custom sort, the order of
+                  the catalog. Equal items are ordered by `k_id`, then by `id_sale`.
+              is_application_hide:
+                type: boolean
+                description: '`true` to leave out the items hidden from the application, `false` to show them.'
+              is_category_default:
+                type: boolean
+                description: |-
+                  `true` to show only the items of the default categories of the sidebar, or all the items when the
+                  sidebar has no default category. `false` to use `a_shop_category`.
+              k_location:
+                type: string
+                description: 'Location to show the items of. Empty to show the items of all the locations.'
+              text_search:
+                type: string
+                description: 'Text to search in the titles of the items. Empty to not search.'
+          description: |-
+            Filter and sort of the paged mode. Read only when [ListApi::$i_last](/Wl/Catalog/CatalogList/List.json) is set or [ListApi::$a_item](/Wl/Catalog/CatalogList/List.json)
+              is not empty. Every key is optional:
+        -
+          name: a_item
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id_sale:
+                  $ref: '#/components/schemas/RsSaleSid'
+                  description: 'Sale type of the item. One of [RsSaleSid](#/components/schemas/RsSaleSid) constants. Not needed for a product option.'
+                is_promotion:
+                  type: boolean
+                  description: '`true` to find a purchase option by `k_id` whatever its sale type is, `false` otherwise.'
+                k_id:
+                  type: string
+                  description: 'Key of the item, as `k_id` of [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json). Not needed for a product option.'
+                k_shop_product_option:
+                  type: string
+                  description: 'Key of a product option. When set, the product of this option is found, and the other keys are not used.'
+          description: |-
+            Items to look up by their keys. When not empty, [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json) holds the found items in the order
+              of this list, without paging, search, category filter and sort. Items that are not found are left out.
+
+              Each element has the following keys:
+        -
+          name: i_last
+          in: query
+          required: false
+          schema:
+            type:
+              - integer
+              - 'null'
+            format: int32
+            minimum: 0
+          description: |-
+            Offset of the page: the number of the items shown before it. `0` for the first page.
+
+            `null` to return all the items at once in [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json) and [ListApi::$a_product_duplicate](/Wl/Catalog/CatalogList/List.json),
+              unless [ListApi::$a_item](/Wl/Catalog/CatalogList/List.json) is not empty. When set, [ListApi::$a_product](/Wl/Catalog/CatalogList/List.json) holds one page of the
+              items, filtered and sorted by [ListApi::$a_filter](/Wl/Catalog/CatalogList/List.json).
+        -
+          name: i_limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 50
+            default: 20
+          description: 'Number of the items in a page of the paged mode. See [ListApi::$i_last](/Wl/Catalog/CatalogList/List.json).'
         -
           name: is_credit_card_check
           in: query
