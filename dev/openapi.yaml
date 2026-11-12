@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261112095815
+  version: 1.1.20261112131622
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -54289,22 +54289,28 @@ paths:
                                   - m_discount
                                   - text_discount
                               a_tax:
-                                type: array
+                                type: object
                                 description: |-
                                   List of taxes to be applied to the event price.
                                   Keys are tax keys. 
                                   Values are tax amounts. If not specified, taxes are calculated based on class setup.
                                   Staff-only: ignored when sent by a client.
+                                additionalProperties:
+                                  type: string
                               k_class:
                                 type: string
                                 description: 'Key of the event class.'
-                              m_checkout:
+                              m_checkout_subtotal:
                                 type: string
                                 description: |-
-                                  The amount charged for this event at checkout. Staff-only: ignored when sent by a client.
+                                  The price of the event charged at checkout, before discount and before tax. Staff-only: ignored
+                                  when sent by a client. The discounts and the tax are taken from it, and the amount charged for the
+                                  event is calculated. It can not exceed the price of the event.
                                   When provided for all events in the list, per-event amounts are used as-is without
                                   aggregate redistribution, allowing a non-uniform distribution across events (Mode 2).
                                   If omitted for any event, falls back to item-level `m_checkout` redistribution.
+                                  A value of `m_checkout` of an event is ignored: the amount of the event is changed through this
+                                  field only.
                               m_price:
                                 type: string
                                 description: |-
@@ -57663,9 +57669,57 @@ paths:
                                 List of tuition events.
                                 Each entry has the next structure:
                               properties:
+                                a_checkout_tax:
+                                  type: array
+                                  description: 'Output only. The taxes charged right now for this event, keyed by tax key.  `a_tax` is the tax of the full event price.'
+                                  items:
+                                    type: string
+                                a_discount:
+                                  type: object
+                                  description: 'Output only. Discounts applied to the event price:'
+                                  properties:
+                                    m_discount:
+                                      type: string
+                                      description: 'Discount amount of the full event price.'
+                                    m_discount_checkout:
+                                      type: string
+                                      description: |-
+                                        The part of this discount that is taken from `m_checkout_subtotal`. A percentage discount takes
+                                        its percent of `m_checkout_subtotal` (it is not stacked with the other discounts), a flat
+                                        discount is taken in full.
+                                  required:
+                                    - m_discount
+                                    - m_discount_checkout
+                                a_tax:
+                                  type: object
+                                  description: 'Output only. The taxes of the full event price. Keys are tax keys.'
+                                  additionalProperties:
+                                    type: string
                                 k_class:
                                   type: string
                                   description: 'Key of the event class.'
+                                m_checkout:
+                                  type: string
+                                  description: |-
+                                    Output only. The amount that will be charged for this event when the tuition is purchased, including
+                                    tax: `m_checkout_subtotal` minus `m_discount_checkout` plus `m_checkout_tax`. It is the prorated part
+                                    of the event when the first payment is prorated.
+                                m_checkout_subtotal:
+                                  type: string
+                                  description: |-
+                                    Output only. The price of the event that is charged when the tuition is purchased, before discount
+                                    and before tax: the prorated price when the first payment is prorated, the full price when it is not.
+                                m_checkout_tax:
+                                  type: string
+                                  description: 'Output only. The sum of `a_checkout_tax`.'
+                                m_discount:
+                                  type: string
+                                  description: 'Output only. The discount of the full event price.'
+                                m_discount_checkout:
+                                  type: string
+                                  description: |-
+                                    Output only. The sum of `m_discount_checkout` of `a_discount`: the discount taken from
+                                    `m_checkout_subtotal`.
                                 uid:
                                   type: string
                                   description: 'Key of the tuition participant.'
@@ -57924,9 +57978,57 @@ paths:
                         List of tuition events.
                         Each entry has the next structure:
                       properties:
+                        a_checkout_tax:
+                          type: array
+                          description: 'Output only. The taxes charged right now for this event, keyed by tax key.  `a_tax` is the tax of the full event price.'
+                          items:
+                            type: string
+                        a_discount:
+                          type: object
+                          description: 'Output only. Discounts applied to the event price:'
+                          properties:
+                            m_discount:
+                              type: string
+                              description: 'Discount amount of the full event price.'
+                            m_discount_checkout:
+                              type: string
+                              description: |-
+                                The part of this discount that is taken from `m_checkout_subtotal`. A percentage discount takes
+                                its percent of `m_checkout_subtotal` (it is not stacked with the other discounts), a flat
+                                discount is taken in full.
+                          required:
+                            - m_discount
+                            - m_discount_checkout
+                        a_tax:
+                          type: object
+                          description: 'Output only. The taxes of the full event price. Keys are tax keys.'
+                          additionalProperties:
+                            type: string
                         k_class:
                           type: string
                           description: 'Key of the event class.'
+                        m_checkout:
+                          type: string
+                          description: |-
+                            Output only. The amount that will be charged for this event when the tuition is purchased, including
+                            tax: `m_checkout_subtotal` minus `m_discount_checkout` plus `m_checkout_tax`. It is the prorated part
+                            of the event when the first payment is prorated.
+                        m_checkout_subtotal:
+                          type: string
+                          description: |-
+                            Output only. The price of the event that is charged when the tuition is purchased, before discount
+                            and before tax: the prorated price when the first payment is prorated, the full price when it is not.
+                        m_checkout_tax:
+                          type: string
+                          description: 'Output only. The sum of `a_checkout_tax`.'
+                        m_discount:
+                          type: string
+                          description: 'Output only. The discount of the full event price.'
+                        m_discount_checkout:
+                          type: string
+                          description: |-
+                            Output only. The sum of `m_discount_checkout` of `a_discount`: the discount taken from
+                            `m_checkout_subtotal`.
                         uid:
                           type: string
                           description: 'Key of the tuition participant.'
@@ -98452,6 +98554,24 @@ paths:
                                   description: |-
                                     The amount charged for this event right now, including tax. `0.00` when every
                                          installment payment is still ahead. `null` when it is not calculated yet.
+                                a_checkout_tax:
+                                  type: array
+                                  description: |-
+                                    The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the
+                                         full price.
+                                  items:
+                                    type: string
+                                m_checkout_subtotal:
+                                  type: string
+                                  description: 'The price charged for this event right now, before discount and tax.'
+                                m_checkout_tax:
+                                  type: string
+                                  description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                                m_discount_checkout:
+                                  type: string
+                                  description: |-
+                                    The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full
+                                         price. Every row of `a_discount` has its part of it in `m_discount_checkout`.
                                 m_deferred:
                                   type: string
                                   description: |-
@@ -98474,6 +98594,10 @@ paths:
                                 - a_tax
                                 - k_class
                                 - m_checkout
+                                - a_checkout_tax
+                                - m_checkout_subtotal
+                                - m_checkout_tax
+                                - m_discount_checkout
                                 - m_deferred
                                 - m_discount
                                 - m_price
@@ -98738,6 +98862,24 @@ paths:
                           description: |-
                             The amount charged for this event right now, including tax. `0.00` when every
                                  installment payment is still ahead. `null` when it is not calculated yet.
+                        a_checkout_tax:
+                          type: array
+                          description: |-
+                            The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the
+                                 full price.
+                          items:
+                            type: string
+                        m_checkout_subtotal:
+                          type: string
+                          description: 'The price charged for this event right now, before discount and tax.'
+                        m_checkout_tax:
+                          type: string
+                          description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                        m_discount_checkout:
+                          type: string
+                          description: |-
+                            The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full
+                                 price. Every row of `a_discount` has its part of it in `m_discount_checkout`.
                         m_deferred:
                           type: string
                           description: |-
@@ -98760,6 +98902,10 @@ paths:
                         - a_tax
                         - k_class
                         - m_checkout
+                        - a_checkout_tax
+                        - m_checkout_subtotal
+                        - m_checkout_tax
+                        - m_discount_checkout
                         - m_deferred
                         - m_discount
                         - m_price
@@ -98982,6 +99128,22 @@ paths:
                               description: |-
                                 The amount charged for this event right now, including tax. `0.00` when every
                                 installment payment is still ahead. `null` when the amount is not calculated yet.
+                            a_checkout_tax:
+                              type: array
+                              description: 'The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the full price.'
+                              items:
+                                type: string
+                            m_checkout_subtotal:
+                              type: string
+                              description: 'The price charged for this event right now, before discount and tax.'
+                            m_checkout_tax:
+                              type: string
+                              description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                            m_discount_checkout:
+                              type: string
+                              description: |-
+                                The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full price.
+                                Every row of `a_discount` has its part of it in `m_discount_checkout`.
                             m_deferred:
                               type: string
                               description: |-
@@ -99003,6 +99165,10 @@ paths:
                             - a_tax
                             - k_class
                             - m_checkout
+                            - a_checkout_tax
+                            - m_checkout_subtotal
+                            - m_checkout_tax
+                            - m_discount_checkout
                             - m_deferred
                             - m_discount
                             - m_price
@@ -99280,6 +99446,22 @@ paths:
                             description: |-
                               The amount charged for this event right now, including tax. `0.00` when every
                               installment payment is still ahead. `null` when the amount is not calculated yet.
+                          a_checkout_tax:
+                            type: array
+                            description: 'The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the full price.'
+                            items:
+                              type: string
+                          m_checkout_subtotal:
+                            type: string
+                            description: 'The price charged for this event right now, before discount and tax.'
+                          m_checkout_tax:
+                            type: string
+                            description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                          m_discount_checkout:
+                            type: string
+                            description: |-
+                              The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full price.
+                              Every row of `a_discount` has its part of it in `m_discount_checkout`.
                           m_deferred:
                             type: string
                             description: |-
@@ -99301,6 +99483,10 @@ paths:
                           - a_tax
                           - k_class
                           - m_checkout
+                          - a_checkout_tax
+                          - m_checkout_subtotal
+                          - m_checkout_tax
+                          - m_discount_checkout
                           - m_deferred
                           - m_discount
                           - m_price
@@ -99501,6 +99687,22 @@ paths:
                     description: |-
                       The amount charged for this event right now, including tax. `0.00` when every
                       installment payment is still ahead. `null` when the amount is not calculated yet.
+                  a_checkout_tax:
+                    type: array
+                    description: 'The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the full price.'
+                    items:
+                      type: string
+                  m_checkout_subtotal:
+                    type: string
+                    description: 'The price charged for this event right now, before discount and tax.'
+                  m_checkout_tax:
+                    type: string
+                    description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                  m_discount_checkout:
+                    type: string
+                    description: |-
+                      The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full price.
+                      Every row of `a_discount` has its part of it in `m_discount_checkout`.
                   m_deferred:
                     type: string
                     description: |-
@@ -99522,6 +99724,10 @@ paths:
                   - a_tax
                   - k_class
                   - m_checkout
+                  - a_checkout_tax
+                  - m_checkout_subtotal
+                  - m_checkout_tax
+                  - m_discount_checkout
                   - m_deferred
                   - m_discount
                   - m_price
@@ -105698,20 +105904,36 @@ paths:
                                       description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
                                     m_calculated:
                                       type: string
-                                      description: 'Prorated amount as calculated by the system, before any manual override of `m_checkout`.'
+                                      description: |-
+                                        Prorated price as calculated by the system, before discount and tax and before any manual
+                                             override of `m_checkout_subtotal`.
                                   required:
                                     - i_days_prorate
                                     - i_days_total
                                     - i_sessions_prorate
                                     - i_sessions_total
                                     - m_calculated
+                                a_checkout_tax:
+                                  type: array
+                                  description: |-
+                                    Output only. The taxes charged right now for this event, calculated from `m_checkout_subtotal`
+                                         after the discounts. Keys are internal system tax keys. 
+                                         `a_tax` is the tax of the full event price.
+                                  items:
+                                    type: string
                                 a_discount:
                                   type: object
                                   description: 'Discount applied to the event price:'
                                   properties:
                                     m_discount:
                                       type: string
-                                      description: 'Discount amount.'
+                                      description: 'Discount amount of the full event price.'
+                                    m_discount_checkout:
+                                      type: string
+                                      description: |-
+                                        Output only. The part of this discount that is taken from `m_checkout_subtotal`. A
+                                             percentage discount takes its percent of `m_checkout_subtotal` (it is not stacked with the
+                                             other discounts), a flat discount is taken in full.
                                     text_discount:
                                       type: string
                                       description: 'Discount title.'
@@ -105733,10 +105955,25 @@ paths:
                                 m_checkout:
                                   type: string
                                   description: |-
-                                    The amount that will be charged for this event when the tuition is purchased.
-                                         Calculated based on the payment schedule (full amount or the prorated part due now).
-                                         Can be overridden manually. If not specified or `null`, the amount will be calculated
-                                         automatically.
+                                    Output only. The amount that will be charged for this event when the tuition is purchased,
+                                         including tax: `m_checkout_subtotal` minus `m_discount_checkout` plus `m_checkout_tax`.
+                                         A value in the request is ignored, use `m_checkout_subtotal` to change the amount.
+                                m_checkout_subtotal:
+                                  type: string
+                                  description: |-
+                                    The price of the event that is charged when the tuition is purchased, before discount and
+                                         before tax: the prorated price when the first payment is prorated, the full price when it
+                                         is not. This is the only amount that can be changed manually: the discounts and the tax are
+                                         taken from it and `m_checkout` is calculated. It can not exceed the price of the event.
+                                         If not specified or `null`, the amount will be calculated automatically.
+                                m_checkout_tax:
+                                  type: string
+                                  description: 'Output only. The sum of `a_checkout_tax`.'
+                                m_discount_checkout:
+                                  type: string
+                                  description: |-
+                                    Output only. The sum of `m_discount_checkout` of `a_discount`: the discount taken from
+                                         `m_checkout_subtotal`. `m_discount` is the discount of the full event price.
                                 m_price:
                                   type: string
                                   description: |-
@@ -106045,20 +106282,36 @@ paths:
                               description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
                             m_calculated:
                               type: string
-                              description: 'Prorated amount as calculated by the system, before any manual override of `m_checkout`.'
+                              description: |-
+                                Prorated price as calculated by the system, before discount and tax and before any manual
+                                     override of `m_checkout_subtotal`.
                           required:
                             - i_days_prorate
                             - i_days_total
                             - i_sessions_prorate
                             - i_sessions_total
                             - m_calculated
+                        a_checkout_tax:
+                          type: array
+                          description: |-
+                            Output only. The taxes charged right now for this event, calculated from `m_checkout_subtotal`
+                                 after the discounts. Keys are internal system tax keys. 
+                                 `a_tax` is the tax of the full event price.
+                          items:
+                            type: string
                         a_discount:
                           type: object
                           description: 'Discount applied to the event price:'
                           properties:
                             m_discount:
                               type: string
-                              description: 'Discount amount.'
+                              description: 'Discount amount of the full event price.'
+                            m_discount_checkout:
+                              type: string
+                              description: |-
+                                Output only. The part of this discount that is taken from `m_checkout_subtotal`. A
+                                     percentage discount takes its percent of `m_checkout_subtotal` (it is not stacked with the
+                                     other discounts), a flat discount is taken in full.
                             text_discount:
                               type: string
                               description: 'Discount title.'
@@ -106080,10 +106333,25 @@ paths:
                         m_checkout:
                           type: string
                           description: |-
-                            The amount that will be charged for this event when the tuition is purchased.
-                                 Calculated based on the payment schedule (full amount or the prorated part due now).
-                                 Can be overridden manually. If not specified or `null`, the amount will be calculated
-                                 automatically.
+                            Output only. The amount that will be charged for this event when the tuition is purchased,
+                                 including tax: `m_checkout_subtotal` minus `m_discount_checkout` plus `m_checkout_tax`.
+                                 A value in the request is ignored, use `m_checkout_subtotal` to change the amount.
+                        m_checkout_subtotal:
+                          type: string
+                          description: |-
+                            The price of the event that is charged when the tuition is purchased, before discount and
+                                 before tax: the prorated price when the first payment is prorated, the full price when it
+                                 is not. This is the only amount that can be changed manually: the discounts and the tax are
+                                 taken from it and `m_checkout` is calculated. It can not exceed the price of the event.
+                                 If not specified or `null`, the amount will be calculated automatically.
+                        m_checkout_tax:
+                          type: string
+                          description: 'Output only. The sum of `a_checkout_tax`.'
+                        m_discount_checkout:
+                          type: string
+                          description: |-
+                            Output only. The sum of `m_discount_checkout` of `a_discount`: the discount taken from
+                                 `m_checkout_subtotal`. `m_discount` is the discount of the full event price.
                         m_price:
                           type: string
                           description: |-
