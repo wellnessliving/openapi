@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261112084234
+  version: 1.1.20261112095815
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -150768,7 +150768,7 @@ components:
       description: |-
         List of available features in the system that can be shown in owner's header.
 
-        Last used ID: 38.
+        Last used ID: 39.
 
         Values:
         - 34 (`AI_AGENT`): Ai Agent.
@@ -150804,6 +150804,7 @@ components:
         - 6 (`SCHEDULE`): Business schedule.
         - 15 (`SELF_SIGNUP`): Popup window where new clients can sign up themselves to the classes.
         - 13 (`SKIN_APP`): Page to config custom client's app.
+        - 39 (`STAFF_RECEPTION`): Staff check-in kiosk of gym visits: the staff member stays signed in.
         - 10 (`SUPPORT`): Link to the page of the support page.
         - 8 (`TASK_MANAGEMENT`): Creation of the user.
         - 24 (`TOAST_MESSAGE`): Toast notifications.
@@ -150843,6 +150844,7 @@ components:
         - 6
         - 15
         - 13
+        - 39
         - 10
         - 8
         - 24
@@ -150882,6 +150884,7 @@ components:
         - SCHEDULE
         - SELF_SIGNUP
         - SKIN_APP
+        - STAFF_RECEPTION
         - SUPPORT
         - TASK_MANAGEMENT
         - TOAST_MESSAGE
@@ -150924,6 +150927,7 @@ components:
         - 'Business schedule.'
         - 'Popup window where new clients can sign up themselves to the classes.'
         - "Page to config custom client's app."
+        - 'Staff check-in kiosk of gym visits: the staff member stays signed in.'
         - 'Link to the page of the support page.'
         - 'Creation of the user.'
         - 'Toast notifications.'
