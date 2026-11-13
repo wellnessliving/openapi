@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261112112011
+  version: 1.1.20261113104852
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -86642,7 +86642,6 @@ paths:
         Each service and category includes an array of location keys where it is available.
         All active services are returned: unlike the location-scoped list, the result is not filtered by class tab
         or by online bookability, and removed locations are skipped.
-        The caller must be a staff member or admin of the business.
       tags:
         - Appointments
       parameters:
