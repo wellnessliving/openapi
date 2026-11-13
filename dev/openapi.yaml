@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261112135510
+  version: 1.1.20261113062830
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -3392,6 +3392,9 @@ paths:
         Creates a new user account from the submitted lead capture form data, optionally signs in the new user,
         and associates the lead with a lead source. Returns an error code in `text_sign_in_error` if sign-in was
         requested but could not be completed.
+
+        When the lead is added from the backend ([LeadApi::$is_backend](/Wl/Lead/Lead.json)), the staff member needs the privilege to
+        add leads ([PrivilegeSid::LEAD_ADD](#/components/schemas/Wl.Privilege.PrivilegeSid)).
       tags:
         - Leads
       parameters:
@@ -8363,9 +8366,9 @@ paths:
                         s_dispute:
                           type: string
                           description: 'Identifier of the dispute at `stripe.com`.'
-                        s_fail:
-                          type: string
-                          description: 'Step that failed, one of the `Mail::FAIL_*` constants.'
+                        id_fail:
+                          $ref: '#/components/schemas/Thoth.WlPay.Dispute.Finance.MailFailEnum'
+                          description: 'Step that failed, the value of one of [MailFailEnum](#/components/schemas/Thoth.WlPay.Dispute.Finance.MailFailEnum) cases.'
                         s_mail:
                           type: string
                           description: 'Email address to send the mail to.'
@@ -8395,7 +8398,7 @@ paths:
                           description: 'Address of the page of the disputed transaction for the staff. Empty if the transaction is not found.'
                       required:
                         - s_dispute
-                        - s_fail
+                        - id_fail
                         - s_mail
                         - text_amount
                         - text_business_id
@@ -49696,7 +49699,11 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       summary: 'Sets the lead stage of the client.'
-      description: 'If the client is already in this stage, nothing is changed.'
+      description: |-
+        If the client is already in this stage, nothing is changed.
+
+        The staff member needs the privilege to change the lead stage ([PrivilegeSid::LEAD_STAGE_CHANGE](#/components/schemas/Wl.Privilege.PrivilegeSid)). The
+        privilege to manage client profiles does not give it.
       tags:
         - Leads
       parameters:
@@ -138724,6 +138731,34 @@ components:
       x-enum-descriptions:
         - 'Blind carbon copy.'
         - 'Carbon copy.'
+    Thoth.WlPay.Dispute.Finance.MailFailEnum:
+      type: integer
+      format: int32
+      description: |-
+        The step of the funds of a Stripe dispute that failed, and that Finance must do by hand.
+
+        Stored in the column `id_fail` of StripeDisputeSql and given to
+        Mail::send(). The code does not repeat a failed step, see
+        StripeDisputeFunds.
+
+        Last used ID: 3
+
+        Values:
+        - 3 (`REINSTATED`): The funds came back to the platform, but the code did not recover them from the studio.
+        - 2 (`REPAY`): The studio was not repaid after a won dispute.
+        - 1 (`REVERSE`): The transfer of the disputed payment was not reversed.
+      enum:
+        - 3
+        - 2
+        - 1
+      x-enum-varnames:
+        - REINSTATED
+        - REPAY
+        - REVERSE
+      x-enum-descriptions:
+        - 'The funds came back to the platform, but the code did not recover them from the studio.'
+        - 'The studio was not repaid after a won dispute.'
+        - 'The transfer of the disputed payment was not reversed.'
     Thoth.WlPay.PayExceptionSid:
       type: integer
       format: int32
@@ -140619,13 +140654,24 @@ components:
 
           Sent to Finance when the recovery of the amount from the studio (the transfer reversal) or the repayment to the
           studio after a won dispute failed.
+
+          The class of the email is `Thoth\WlPay\Dispute\Finance\Mail` of SAL, see [RsMailSid::SAL_CLASS](#/components/schemas/RsMailSid). It is a
+          text here and not a `@see` link: SAL is released after the monolith, and a link to a class that does not exist yet
+          fails the documentation check of this class. TODO WL-96921: replace the text with the links to this class and to
+          its methods that load the data and the information of the email when SAL is on every production.
         - 229 (`PAY_DISPUTE_STUDIO`): A client disputed a payment to the studio.
 
           Sent to the owners of the studio when a client's bank takes back a payment (a chargeback).
+
+          The class of the email is `Thoth\WlPay\Dispute\Studio\Mail` of SAL, see [RsMailSid::SAL_CLASS](#/components/schemas/RsMailSid). TODO WL-96921:
+          replace the text with the links when SAL is on every production, as in [RsMailSid::PAY_DISPUTE_FUNDS_FAIL](#/components/schemas/RsMailSid).
         - 230 (`PAY_DISPUTE_SUPPORT`): A chargeback that Smart Disputes does not take must be contested by Support.
 
           Sent to the group mailbox of Support when a client's bank takes back a payment and Stripe does not submit the
           evidence itself, with the response deadline. The mail to the studio says that Support contests such a dispute.
+
+          The class of the email is `Thoth\WlPay\Dispute\Support\Mail` of SAL, see [RsMailSid::SAL_CLASS](#/components/schemas/RsMailSid). TODO WL-96921:
+          replace the text with the links when SAL is on every production, as in [RsMailSid::PAY_DISPUTE_FUNDS_FAIL](#/components/schemas/RsMailSid).
         - 181 (`PAY_TRANSACTION_FAIL`): Transaction failed.
 
           Sent to support whenever transaction fails.
@@ -141554,15 +141600,26 @@ components:
 
           Sent to Finance when the recovery of the amount from the studio (the transfer reversal) or the repayment to the
           studio after a won dispute failed.
+
+          The class of the email is `Thoth\WlPay\Dispute\Finance\Mail` of SAL, see {@link \RsMailSid::SAL_CLASS}. It is a
+          text here and not a `@see` link: SAL is released after the monolith, and a link to a class that does not exist yet
+          fails the documentation check of this class. TODO WL-96921: replace the text with the links to this class and to
+          its methods that load the data and the information of the email when SAL is on every production.
         - |-
           A client disputed a payment to the studio.
 
           Sent to the owners of the studio when a client's bank takes back a payment (a chargeback).
+
+          The class of the email is `Thoth\WlPay\Dispute\Studio\Mail` of SAL, see {@link \RsMailSid::SAL_CLASS}. TODO WL-96921:
+          replace the text with the links when SAL is on every production, as in {@link \RsMailSid::PAY_DISPUTE_FUNDS_FAIL}.
         - |-
           A chargeback that Smart Disputes does not take must be contested by Support.
 
           Sent to the group mailbox of Support when a client's bank takes back a payment and Stripe does not submit the
           evidence itself, with the response deadline. The mail to the studio says that Support contests such a dispute.
+
+          The class of the email is `Thoth\WlPay\Dispute\Support\Mail` of SAL, see {@link \RsMailSid::SAL_CLASS}. TODO WL-96921:
+          replace the text with the links when SAL is on every production, as in {@link \RsMailSid::PAY_DISPUTE_FUNDS_FAIL}.
         - |-
           Transaction failed.
 
@@ -147147,7 +147204,7 @@ components:
       description: |-
         Wellnessliving-wide privileges.
 
-        Last Used ID: 254.
+        Last Used ID: 259.
 
         Values:
         - 225 (`AI_AGENT_KNOWLEDGE_BASE`): Allows user to view, create or edit knowledge base entries, or conversational flows used by the AI Agent.
@@ -147248,6 +147305,26 @@ components:
         - 39 (`INTERFACE_WIDGET_EDIT`): Modify the look and functionality business’s widgets. These settings are located within Setup > Widgets.
         - 110 (`INTERFACE_WIDGET_VIEW`): View the look and functionality business’s widgets. These settings are located within Setup > Widgets.
         - 157 (`INVENTORY_UPDATE`): Permission to Receive or Adjust quantity from the Inventory On Hand Report.
+        - 255 (`LEAD_ADD`): Add leads.
+
+          Allows a staff member to add a lead from the App Drawer. Without this privilege the Add Lead button is hidden.
+          Leads that come from lead capture widgets, the API and integrations are not affected.
+        - 257 (`LEAD_CREATION_SETTINGS_MANAGE`): Manage lead creation settings.
+
+          Allows a staff member to change what happens when a staff member adds a lead, in Setup > Leads > Lead Creation.
+          Without this privilege the page is view only.
+        - 258 (`LEAD_SOURCE_MANAGE`): Manage lead sources and fields.
+
+          Allows a staff member to edit the list of lead sources and the fields shown when adding a lead, in
+          Setup > Leads > Lead Sources and Lead Fields. Without this privilege these pages are view only.
+        - 256 (`LEAD_STAGE_CHANGE`): Change lead stage.
+
+          Allows a staff member to move leads and clients between lead stages. Without this privilege the stage is shown
+          as read-only text. Automations still move leads on their own.
+        - 259 (`LEAD_STAGE_MANAGE`): Manage lead stages.
+
+          Allows a staff member to add, edit, reorder and delete lead stages, in Setup > Leads > Lead Stages. Without this
+          privilege the page is view only.
         - 9 (`LOCATION_EDIT`): Manage my locations except General information.
         - 126 (`LOCATION_EDIT_GENERAL`): Manage tab Location -> General.
         - 8 (`LOCATION_FOREIGN`): Manage all locations.
@@ -147492,6 +147569,11 @@ components:
         - 39
         - 110
         - 157
+        - 255
+        - 257
+        - 258
+        - 256
+        - 259
         - 9
         - 126
         - 8
@@ -147730,6 +147812,11 @@ components:
         - INTERFACE_WIDGET_EDIT
         - INTERFACE_WIDGET_VIEW
         - INVENTORY_UPDATE
+        - LEAD_ADD
+        - LEAD_CREATION_SETTINGS_MANAGE
+        - LEAD_SOURCE_MANAGE
+        - LEAD_STAGE_CHANGE
+        - LEAD_STAGE_MANAGE
         - LOCATION_EDIT
         - LOCATION_EDIT_GENERAL
         - LOCATION_FOREIGN
@@ -147979,6 +148066,31 @@ components:
         - 'Modify the look and functionality business’s widgets. These settings are located within Setup > Widgets.'
         - 'View the look and functionality business’s widgets. These settings are located within Setup > Widgets.'
         - 'Permission to Receive or Adjust quantity from the Inventory On Hand Report.'
+        - |-
+          Add leads.
+
+          Allows a staff member to add a lead from the App Drawer. Without this privilege the Add Lead button is hidden.
+          Leads that come from lead capture widgets, the API and integrations are not affected.
+        - |-
+          Manage lead creation settings.
+
+          Allows a staff member to change what happens when a staff member adds a lead, in Setup > Leads > Lead Creation.
+          Without this privilege the page is view only.
+        - |-
+          Manage lead sources and fields.
+
+          Allows a staff member to edit the list of lead sources and the fields shown when adding a lead, in
+          Setup > Leads > Lead Sources and Lead Fields. Without this privilege these pages are view only.
+        - |-
+          Change lead stage.
+
+          Allows a staff member to move leads and clients between lead stages. Without this privilege the stage is shown
+          as read-only text. Automations still move leads on their own.
+        - |-
+          Manage lead stages.
+
+          Allows a staff member to add, edit, reorder and delete lead stages, in Setup > Leads > Lead Stages. Without this
+          privilege the page is view only.
         - 'Manage my locations except General information.'
         - 'Manage tab Location -> General.'
         - 'Manage all locations.'
