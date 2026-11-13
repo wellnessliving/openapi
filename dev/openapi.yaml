@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261113163506
+  version: 1.1.20261113194513
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -6869,6 +6869,14 @@ paths:
                           description: 'A list of canceled class period keys. Each value is class period key.'
                           items:
                             type: string
+                        a_reason:
+                          type:
+                            - array
+                            - 'null'
+                          description: |-
+                            The reason of a cancel that the system made by itself, the result of CancelReason::toArray(); it
+                            gives the variable `[CancelReason]`. Not given or `null` for a cancel by staff, which has no reason: then the
+                            variable is empty.
                         dl_end:
                           type:
                             - string
@@ -23058,6 +23066,9 @@ paths:
                             - string
                             - 'null'
                           description: 'Key of the buyer, for the link to the profile. `null` for a guest.'
+                        url_pdf:
+                          type: string
+                          description: 'Link to the PDF file with all tickets of the order. .'
                         url_viewer:
                           type: string
                           description: 'Link to the page with all tickets of the order, to view and print them. .'
@@ -23078,6 +23089,7 @@ paths:
                         - m_total
                         - text_name
                         - uid
+                        - url_pdf
                         - url_viewer
                   a_staff:
                     type: array
@@ -50558,6 +50570,16 @@ paths:
                         type: integer
                         format: int32
                         description: 'Minimum hours|days|months before class should be canceled without penalty.'
+                      i_cancel_attendance:
+                        type: integer
+                        format: int32
+                        description: 'The low attendance cancellation: a session is cancelled if fewer clients than this are booked.'
+                      i_cancel_attendance_check:
+                        type: integer
+                        format: int32
+                        description: |-
+                          The low attendance cancellation: how long before the session starts the bookings are counted, in the unit of
+                            `id_cancel_attendance_check`.
                       i_promote:
                         type: integer
                         format: int32
@@ -50583,6 +50605,10 @@ paths:
                       id_cancel:
                         $ref: '#/components/schemas/ADurationSid'
                         description: 'Hours|days|months from [ADurationSid](#/components/schemas/ADurationSid).'
+                      id_cancel_attendance_check:
+                        type: integer
+                        format: int32
+                        description: 'The unit of `i_cancel_attendance_check`: [ADurationSid::HOUR](#/components/schemas/ADurationSid) or [ADurationSid::DAY](#/components/schemas/ADurationSid).'
                       id_promote:
                         $ref: '#/components/schemas/ADurationSid'
                         description: 'Hours|days|months from [ADurationSid](#/components/schemas/ADurationSid).'
@@ -50597,6 +50623,9 @@ paths:
                         description: |-
                           if `true` - clients with purchase options are only allowed
                           to book sessions within their current paid period, `false` - during purchase option's duration.
+                      is_cancel_attendance:
+                        type: boolean
+                        description: '`true` if class sessions are cancelled automatically when too few clients are booked, `false` otherwise.'
                       is_disable_promotion:
                         type: boolean
                         description: |-
@@ -50629,6 +50658,11 @@ paths:
                       m_payment_penalty:
                         type: string
                         description: 'Penalty amount to charge after final auto-payment attempt.'
+                      show_cancel_attendance:
+                        type: boolean
+                        description: |-
+                          Only for `business`. `true` if a session cancelled for low attendance shows as Cancelled on the client schedule,
+                            `false` if clients no longer see it.
                       url_custom:
                         type: string
                         description: 'Custom Url of a business'
@@ -50654,6 +50688,8 @@ paths:
                       - i_book_before
                       - i_book_future
                       - i_cancel
+                      - i_cancel_attendance
+                      - i_cancel_attendance_check
                       - i_promote
                       - i_promote_fastest_response
                       - i_promote_require_confirm
@@ -50661,10 +50697,12 @@ paths:
                       - id_book_before
                       - id_book_future
                       - id_cancel
+                      - id_cancel_attendance_check
                       - id_promote
                       - id_promote_fastest_response
                       - id_promote_require_confirm
                       - is_book_inside_active_pay_period
+                      - is_cancel_attendance
                       - is_disable_promotion
                       - is_enable_payment_penalty
                       - is_enable_payment_reattempt
@@ -50675,6 +50713,7 @@ paths:
                       - k_currency
                       - k_timezone
                       - m_payment_penalty
+                      - show_cancel_attendance
                       - url_custom
                       - a_family_relation
                       - a_family_relation_login_allow
@@ -105696,6 +105735,9 @@ paths:
               is_prorate_only:
                 type: boolean
                 description: '`true` to use only the prorated amount as the taxable amount.'
+              k_class:
+                type: string
+                description: 'Class the ticket is bought for. Used for a ticket only. Primary key in RsClassSql.'
               m_prorate_custom:
                 type: string
                 description: 'Custom prorated amount that overrides the automatically calculated one.'
@@ -125414,6 +125456,16 @@ paths:
                         type: integer
                         format: int32
                         description: 'Minimum hours|days|months before class should be canceled without penalty.'
+                      i_cancel_attendance:
+                        type: integer
+                        format: int32
+                        description: 'The low attendance cancellation: a session is cancelled if fewer clients than this are booked.'
+                      i_cancel_attendance_check:
+                        type: integer
+                        format: int32
+                        description: |-
+                          The low attendance cancellation: how long before the session starts the bookings are counted, in the unit of
+                            `id_cancel_attendance_check`.
                       i_promote:
                         type: integer
                         format: int32
@@ -125439,6 +125491,10 @@ paths:
                       id_cancel:
                         $ref: '#/components/schemas/ADurationSid'
                         description: 'Hours|days|months from [ADurationSid](#/components/schemas/ADurationSid).'
+                      id_cancel_attendance_check:
+                        type: integer
+                        format: int32
+                        description: 'The unit of `i_cancel_attendance_check`: [ADurationSid::HOUR](#/components/schemas/ADurationSid) or [ADurationSid::DAY](#/components/schemas/ADurationSid).'
                       id_promote:
                         $ref: '#/components/schemas/ADurationSid'
                         description: 'Hours|days|months from [ADurationSid](#/components/schemas/ADurationSid).'
@@ -125453,6 +125509,9 @@ paths:
                         description: |-
                           if `true` - clients with purchase options are only allowed
                           to book sessions within their current paid period, `false` - during purchase option's duration.
+                      is_cancel_attendance:
+                        type: boolean
+                        description: '`true` if class sessions are cancelled automatically when too few clients are booked, `false` otherwise.'
                       is_disable_promotion:
                         type: boolean
                         description: |-
@@ -125485,6 +125544,11 @@ paths:
                       m_payment_penalty:
                         type: string
                         description: 'Penalty amount to charge after final auto-payment attempt.'
+                      show_cancel_attendance:
+                        type: boolean
+                        description: |-
+                          Only for `business`. `true` if a session cancelled for low attendance shows as Cancelled on the client schedule,
+                            `false` if clients no longer see it.
                       url_custom:
                         type: string
                         description: 'Custom Url of a business'
@@ -125494,6 +125558,8 @@ paths:
                       - i_book_before
                       - i_book_future
                       - i_cancel
+                      - i_cancel_attendance
+                      - i_cancel_attendance_check
                       - i_promote
                       - i_promote_fastest_response
                       - i_promote_require_confirm
@@ -125501,10 +125567,12 @@ paths:
                       - id_book_before
                       - id_book_future
                       - id_cancel
+                      - id_cancel_attendance_check
                       - id_promote
                       - id_promote_fastest_response
                       - id_promote_require_confirm
                       - is_book_inside_active_pay_period
+                      - is_cancel_attendance
                       - is_disable_promotion
                       - is_enable_payment_penalty
                       - is_enable_payment_reattempt
@@ -125515,6 +125583,7 @@ paths:
                       - k_currency
                       - k_timezone
                       - m_payment_penalty
+                      - show_cancel_attendance
                       - url_custom
                   a_class_logo:
                     type: object
