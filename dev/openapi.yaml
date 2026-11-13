@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261113140100
+  version: 1.1.20261113163506
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -7674,6 +7674,19 @@ paths:
                         - uid
                         - url_view_conversation_link
                         - url_view_conversation_link_sms
+                    -
+                      type: object
+                      title: 'lead-stage-no-activity (id_mail 231)'
+                      properties:
+                        k_business:
+                          type: string
+                          description: 'Optional. Key of the business.'
+                        k_lead_stage:
+                          type: string
+                          description: 'Optional. Key of the lead stage the client is in.  It is used by the global variable of the lead stage.'
+                      required:
+                        - k_business
+                        - k_lead_stage
                     -
                       type: object
                       title: 'lead-stage-updated (id_mail 224)'
@@ -90850,7 +90863,13 @@ paths:
                   description: 'Business key.'
                 uid:
                   type: string
-                  description: 'User key.'
+                  deprecated: true
+                  x-deprecated: 'Do not pass, the current user is used.'
+                  description: |-
+                    User key.
+
+                    Deprecated, the share is always recorded for the current user.
+                    Optional, but if passed, it must match the current user, otherwise the request is rejected.
               required:
                 - a_key
                 - id_share_destination
@@ -123098,10 +123117,10 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Saves new time interval.'
       description: |-
-        Validates the business, location, and resource, checks that the resource is active,
-         belongs to the given location, and that the current login has edit access, then creates
-         the working or non-working schedule for each selected day and returns the created
-         resource period keys.
+        Validates the business, location, and resource, checks that the location and the resource belong
+         to the business, that the resource is active and belongs to the given location, and that the current
+         login has edit access, then creates the working or non-working schedule for each selected day
+         and returns the created resource period keys.
       tags:
         - Resources
       parameters:
@@ -140331,7 +140350,7 @@ components:
 
         Pay attention that all `\MailPrioritySid` must start with backslash.
 
-        Last used ID: 229.
+        Last used ID: 231.
 
         Values:
         - 220 (`ABANDONED_CHECKOUT`): Sent when a client abandons a checkout (used in automations).
@@ -140589,6 +140608,8 @@ components:
         - 87 (`LEAD_CAPTURE`): Sent to the client after they fill out a Lead Capture Form on the website of a business.
         - 197 (`LEAD_CAPTURE_AI`): Sent to staff when CAASI captures a new lead from a conversation,
           including contact details and any provided inquiry notes.
+        - 231 (`LEAD_STAGE_NO_ACTIVITY`): Sent to a client when they have stayed in a lead stage for a set time without any activity of their own
+          (used in automations).
         - 224 (`LEAD_STAGE_UPDATED`): Sent to staff when a lead's stage is updated in the Lead Capture Form.
         - 96 (`LOGIN_ANNIVERSARY`): Sent to client on annual anniversary of the Member Since date.
         - 42 (`LOGIN_ATTENDANCE`): Attendance List.
@@ -140929,6 +140950,7 @@ components:
         - 163
         - 87
         - 197
+        - 231
         - 224
         - 96
         - 42
@@ -141134,6 +141156,7 @@ components:
         - LEAD_ADDED_STAFF
         - LEAD_CAPTURE
         - LEAD_CAPTURE_AI
+        - LEAD_STAGE_NO_ACTIVITY
         - LEAD_STAGE_UPDATED
         - LOGIN_ANNIVERSARY
         - LOGIN_ATTENDANCE
@@ -141523,6 +141546,9 @@ components:
         - |-
           Sent to staff when CAASI captures a new lead from a conversation,
           including contact details and any provided inquiry notes.
+        - |-
+          Sent to a client when they have stayed in a lead stage for a set time without any activity of their own
+          (used in automations).
         - "Sent to staff when a lead's stage is updated in the Lead Capture Form."
         - 'Sent to client on annual anniversary of the Member Since date.'
         - |-
