@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261113211558
+  version: 1.1.20261113215019
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -105742,7 +105742,7 @@ paths:
                 description: '`true` to use only the prorated amount as the taxable amount.'
               k_class:
                 type: string
-                description: 'Class the ticket is bought for. Used for a ticket only. Primary key in RsClassSql.'
+                description: 'Class the ticket is bought for. Used for a ticket only.'
               m_prorate_custom:
                 type: string
                 description: 'Custom prorated amount that overrides the automatically calculated one.'
