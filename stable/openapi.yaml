@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261113104852
+  version: 1.1.20261116062346
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -90551,6 +90551,26 @@ paths:
                               description: 'The asset.'
                           required:
                             - k_resource
+                        a_week:
+                          type: array
+                          description: |-
+                            New days of the week for a weekly `FORWARD` reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                            Omitted or empty to keep the current weekdays. Ignored for other scopes.
+                          items:
+                            type: integer
+                            format: int32
+                        dl_edit_from:
+                          type: string
+                          description: |-
+                            The start of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                            Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                            only the visits of the recurring series on or after this date are rescheduled.
+                        dl_edit_to:
+                          type: string
+                          description: |-
+                            The end of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                            Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                            only the visits of the recurring series on or before this date are rescheduled.
                         dt_date:
                           type: string
                           description: "The date/time for the booking in MySQL format in the location's time zone."
@@ -90564,6 +90584,16 @@ paths:
                           description: |-
                             The asset index on the layout.
                             Specify this for separate asset bookings only and for cases when the asset category only has the layout.
+                        id_edit_range:
+                          $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+                          description: |-
+                            The scope of a recurring reschedule. One of the [EditRangeSid](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) constants:
+                            `ONCE` (default) reschedules this visit only; `FORWARD` reschedules this visit and all the following
+                            visits of the recurring series (new weekly days are supplied in `a_week`); `RANGE`
+                            reschedules only the visits inside the `dl_edit_from` / `dl_edit_to` range.
+                            Applied in backend mode only, while rescheduling (the top-level `k_appointment` is set).
+                            A wider-than-`ONCE` scope requires exactly one provider. Its `dt_date` keeps the opened session's
+                            original local date; only the time changes. The repeat frequency and end remain unchanged.
                         id_gender_staff:
                           $ref: '#/components/schemas/AGenderSid'
                           description: |-
@@ -91131,6 +91161,26 @@ paths:
                     description: 'The asset.'
                 required:
                   - k_resource
+              a_week:
+                type: array
+                description: |-
+                  New weekdays for a weekly `FORWARD` reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                  Omitted or empty to keep the current weekdays. Ignored for other scopes.
+                items:
+                  type: integer
+                  format: int32
+              dl_edit_from:
+                type: string
+                description: |-
+                  The start of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                  Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                  only the visits of the recurring series on or after this date are rescheduled.
+              dl_edit_to:
+                type: string
+                description: |-
+                  The end of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                  Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                  only the visits of the recurring series on or before this date are rescheduled.
               dt_date:
                 type: string
                 description: "The date/time for the booking in MySQL format in the location's time zone."
@@ -91147,6 +91197,16 @@ paths:
               id_class_tab:
                 $ref: '#/components/schemas/Wl.Classes.Tab.TabSid'
                 description: 'The booking service type. One of the [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.'
+              id_edit_range:
+                $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+                description: |-
+                  The scope of a recurring reschedule. One of the [EditRangeSid](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) constants:
+                  `ONCE` (default) reschedules this visit only; `FORWARD` reschedules this visit and all the following
+                  visits of the recurring series (new weekly days are supplied in `a_week`); `RANGE`
+                  reschedules only the visits inside the `dl_edit_from` / `dl_edit_to` range.
+                  Applied in backend mode only, while rescheduling (`k_appointment` is set).
+                  For a wider-than-`ONCE` scope, `dt_date` keeps the opened session's original local date; only the time
+                  changes. The repeat frequency and end remain unchanged.
               id_gender_staff:
                 $ref: '#/components/schemas/AGenderSid'
                 description: |-
@@ -91912,6 +91972,26 @@ paths:
                           description: 'The asset.'
                       required:
                         - k_resource
+                    a_week:
+                      type: array
+                      description: |-
+                        New weekdays for a weekly `FORWARD` reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                        Omitted or empty to keep the current weekdays. Ignored for other scopes.
+                      items:
+                        type: integer
+                        format: int32
+                    dl_edit_from:
+                      type: string
+                      description: |-
+                        The start of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                        Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                        only the visits of the recurring series on or after this date are rescheduled.
+                    dl_edit_to:
+                      type: string
+                      description: |-
+                        The end of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                        Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                        only the visits of the recurring series on or before this date are rescheduled.
                     dt_date:
                       type: string
                       description: "The date/time for the booking in MySQL format in the location's time zone."
@@ -91928,6 +92008,16 @@ paths:
                     id_class_tab:
                       $ref: '#/components/schemas/Wl.Classes.Tab.TabSid'
                       description: 'The booking service type. One of the [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.'
+                    id_edit_range:
+                      $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+                      description: |-
+                        The scope of a recurring reschedule. One of the [EditRangeSid](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) constants:
+                        `ONCE` (default) reschedules this visit only; `FORWARD` reschedules this visit and all the following
+                        visits of the recurring series (new weekly days are supplied in `a_week`); `RANGE`
+                        reschedules only the visits inside the `dl_edit_from` / `dl_edit_to` range.
+                        Applied in backend mode only, while rescheduling (`k_appointment` is set).
+                        For a wider-than-`ONCE` scope, `dt_date` keeps the opened session's original local date; only the time
+                        changes. The repeat frequency and end remain unchanged.
                     id_gender_staff:
                       $ref: '#/components/schemas/AGenderSid'
                       description: |-
@@ -92256,6 +92346,37 @@ paths:
             List of user keys to book appointments.
             There may be empty values in this list, which means that this is a walk-in.
         -
+          name: a_week
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ADateWeekSid'
+          description: |-
+            New weekdays for a weekly forward reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+            Empty to keep the current weekdays.
+        -
+          name: dl_edit_from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: |-
+            First local date of the bounded reschedule range, in MySQL format.
+            Required for [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid); empty otherwise.
+        -
+          name: dl_edit_to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: |-
+            Last local date of the bounded reschedule range, in MySQL format.
+            Required for [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid); empty otherwise.
+        -
           name: dt_date
           in: query
           required: true
@@ -92273,6 +92394,18 @@ paths:
           description: |-
             Appointment duration.
             Must be specified for asset booking only.
+        -
+          name: id_edit_range
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+          description: |-
+            Scope of a staff reschedule of a recurring appointment.
+
+            Omitted or [EditRangeSid::ONCE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) keeps the existing single-session behavior.
+            A wider scope keeps each session's calendar date and checks its new time in the destination location.
+            Each returned `dt_date_global` is the key of that session's conflict solution on the write.
         -
           name: is_walk_in
           in: query
@@ -92338,7 +92471,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Staff member user ID.'
+          description: 'Staff member user key.'
       x-rate-limit:
         -
           limit: 200000
@@ -92514,6 +92647,37 @@ paths:
             List of user keys to book appointments.
             There may be empty values in this list, which means that this is a walk-in.
         -
+          name: a_week
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ADateWeekSid'
+          description: |-
+            New weekdays for a weekly forward reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+            Empty to keep the current weekdays.
+        -
+          name: dl_edit_from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: |-
+            First local date of the bounded reschedule range, in MySQL format.
+            Required for [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid); empty otherwise.
+        -
+          name: dl_edit_to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: |-
+            Last local date of the bounded reschedule range, in MySQL format.
+            Required for [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid); empty otherwise.
+        -
           name: dt_date
           in: query
           required: true
@@ -92531,6 +92695,18 @@ paths:
           description: |-
             Appointment duration.
             Must be specified for asset booking only.
+        -
+          name: id_edit_range
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+          description: |-
+            Scope of a staff reschedule of a recurring appointment.
+
+            Omitted or [EditRangeSid::ONCE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) keeps the existing single-session behavior.
+            A wider scope keeps each session's calendar date and checks its new time in the destination location.
+            Each returned `dt_date_global` is the key of that session's conflict solution on the write.
         -
           name: is_walk_in
           in: query
@@ -92596,7 +92772,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Staff member user ID.'
+          description: 'Staff member user key.'
       deprecated: true
       x-deprecated: 'New version {@link \Wl\Appointment\Book\Conflict\Conflict56Api} should be used instead.'
       x-rate-limit:
@@ -138206,6 +138382,29 @@ components:
         - 'Create an event with other staff, date or time.'
         - 'Ignore this conflict and create event as it is.'
         - 'Do not create conflicted event.'
+    Wl.Appointment.Edit.EditRangeSid:
+      type: integer
+      format: int32
+      description: |-
+        Different types of range to apply rescheduling. Important for recurring appointments that
+        can be changed only once, per date range or forward from current date.
+
+        Values:
+        - 2 (`FORWARD`): Change all appointment from current one until the end of the recurring appointments.
+        - 1 (`ONCE`): Change only one appointment.
+        - 3 (`RANGE`): Change all appointments withing the given date range.
+      enum:
+        - 2
+        - 1
+        - 3
+      x-enum-varnames:
+        - FORWARD
+        - ONCE
+        - RANGE
+      x-enum-descriptions:
+        - 'Change all appointment from current one until the end of the recurring appointments.'
+        - 'Change only one appointment.'
+        - 'Change all appointments withing the given date range.'
     RsServicePriceSid:
       type: integer
       format: int32
