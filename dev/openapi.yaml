@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261116141747
+  version: 1.1.20261116180711
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -22444,6 +22444,8 @@ paths:
                 - is_mail
                 - is_push
                 - is_sms
+      x-error-fields:
+        - id_visit_from
       x-instance-get-key: 'k_visit,k_business'
       x-rate-limit:
         -
@@ -22951,6 +22953,13 @@ paths:
                 - k_business
                 - k_class_period
                 - text_ticket
+      x-error-fields:
+        - dtu_attend
+        - dtu_cancel
+        - dtu_session_start
+        - k_class_period
+        - k_class_period_ticket
+        - text_title
       x-instance-get-key: 'dtu_start,k_business,k_class_period'
       x-rate-limit:
         -
@@ -31189,6 +31198,15 @@ paths:
                     Key of the business merchant that should be used to perform the request.
 
                     `null` in case when not initialized yet.
+                k_pay_bank:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the saved bank account of the payer to pay with a pre-authorized debit.
+
+                    `null` if the payer enters a new bank account in the modal of Stripe. Used only if the payment method is
+                    [RsPayMethodSid::ACH](#/components/schemas/RsPayMethodSid). The payer confirms the mandate in the modal of Stripe for every payment.
                 k_pay_method:
                   type:
                     - string
@@ -43801,6 +43819,8 @@ paths:
             The key of the user to edit.
 
             If empty, an empty form will be displayed to add a new user.
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -44125,6 +44145,8 @@ paths:
                 - is_sms_subscription_presented
                 - is_sms_subscription_transactional
                 - text_password
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -44646,6 +44668,8 @@ paths:
             The key of the user to edit.
 
             If empty, an empty form will be displayed to add a new user.
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -44970,6 +44994,8 @@ paths:
                 - is_sms_subscription_presented
                 - is_sms_subscription_transactional
                 - text_password
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -50140,6 +50166,8 @@ paths:
                 - s_key
                 - text_sms_body
                 - uid
+      x-error-fields:
+        - dtl_send
       x-rate-limit:
         -
           limit: 200000
@@ -54233,7 +54261,7 @@ paths:
         the resulting purchase key so the frontend can redirect to the confirmation page, and the temporary token of the
         receipt, which lets an anonymous user, who has no access to the purchase, view the receipt. For an anonymous
         user ([PaymentApi::$is_guest](/Wl/Catalog/Payment/Payment.json)) the session also remembers the purchase, so that user can ask for the
-        emails of the purchase afterwards.
+        emails of the purchase afterwards, and the receipt goes to the email of the order.
       tags:
         - Catalog
       parameters:
@@ -59284,9 +59312,13 @@ paths:
         goes to the address that the guest gave when buying, at most three emails for one purchase. Then the error
         `access` means that the session of the guest knows nothing of the purchase (the purchase was made in another
         session, or more than an hour ago), `access-purchase` that the guest gave no email, and `mail-limit` that the
-        three emails are sent already. [PurchaseMailApi::$is_send_force](/Wl/Purchase/Mail/PurchaseMail.json) does not apply to a guest. The receipt of
-        a guest is not sent, and the call still succeeds and uses one of the three emails, when the receipt email is
-        turned off in the business, when the business has no email address, or when the payment is not confirmed yet.
+        three emails are sent already. [PurchaseMailApi::$is_send_force](/Wl/Purchase/Mail/PurchaseMail.json) does not apply to the anonymous visitor.
+        The receipt of a guest is not sent, and the call still succeeds and uses one of the three emails, when the
+        receipt email is turned off in the business, when the business has no email address, or when the payment is not
+        confirmed yet.
+
+        A signed-in user who can sell in the business where a purchase of a guest was made can ask for its receipt too,
+        with no limit of emails. Another signed-in user gets `access-purchase`.
       tags:
         - Purchases
       parameters:
@@ -81569,6 +81601,16 @@ paths:
                 - k_business
                 - k_location
                 - uid
+      x-error-fields:
+        - dtu_attend
+        - i_attend_quick_close_fail
+        - i_attend_quick_close_success
+        - id_deny_reason
+        - is_attend_quick_navigate
+        - k_location_visit
+        - k_visit
+        - s_attempt
+        - text_message
       x-rate-limit:
         -
           limit: 200000
@@ -92231,6 +92273,8 @@ paths:
                 - s_password
                 - s_remember
                 - url_return
+      x-error-fields:
+        - url_captcha
       x-rate-limit:
         -
           limit: 200000
@@ -109944,6 +109988,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -110087,6 +110132,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -110339,6 +110402,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -110408,6 +110472,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -110652,6 +110734,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -110721,6 +110804,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -111129,6 +111230,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -111272,6 +111374,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -111557,6 +111677,24 @@ paths:
         -
           $ref: '#/components/parameters/X-Error-Rules'
         -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
+        -
           name: a_uid
           in: query
           required: true
@@ -111841,6 +111979,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -111984,6 +112123,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -112250,6 +112407,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -112319,6 +112477,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -112594,6 +112770,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
