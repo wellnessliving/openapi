@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261116122147
+  version: 1.1.20261116124711
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -4685,6 +4685,8 @@ paths:
                 - is_mail
                 - is_push
                 - is_sms
+      x-error-fields:
+        - id_visit_from
       x-instance-get-key: 'k_visit,k_business'
       x-rate-limit:
         -
@@ -7453,6 +7455,13 @@ paths:
                 - k_business
                 - k_class_period
                 - text_ticket
+      x-error-fields:
+        - dtu_attend
+        - dtu_cancel
+        - dtu_session_start
+        - k_class_period
+        - k_class_period_ticket
+        - text_title
       x-instance-get-key: 'dtu_start,k_business,k_class_period'
       x-rate-limit:
         -
@@ -30395,6 +30404,8 @@ paths:
                 - s_key
                 - text_sms_body
                 - uid
+      x-error-fields:
+        - dtl_send
       x-rate-limit:
         -
           limit: 200000
@@ -36847,6 +36858,16 @@ paths:
                 - k_business
                 - k_location
                 - uid
+      x-error-fields:
+        - dtu_attend
+        - i_attend_quick_close_fail
+        - i_attend_quick_close_success
+        - id_deny_reason
+        - is_attend_quick_navigate
+        - k_location_visit
+        - k_visit
+        - s_attempt
+        - text_message
       x-rate-limit:
         -
           limit: 200000
@@ -52739,6 +52760,8 @@ paths:
             The key of the user to edit.
 
             If empty, an empty form will be displayed to add a new user.
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -53063,6 +53086,8 @@ paths:
                 - is_sms_subscription_presented
                 - is_sms_subscription_transactional
                 - text_password
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -53584,6 +53609,8 @@ paths:
             The key of the user to edit.
 
             If empty, an empty form will be displayed to add a new user.
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -53908,6 +53935,8 @@ paths:
                 - is_sms_subscription_presented
                 - is_sms_subscription_transactional
                 - text_password
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -84693,6 +84722,8 @@ paths:
                 - s_password
                 - s_remember
                 - url_return
+      x-error-fields:
+        - url_captcha
       x-rate-limit:
         -
           limit: 200000
