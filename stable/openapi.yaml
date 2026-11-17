@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261116210921
+  version: 1.1.20261117054921
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -640,6 +640,36 @@ paths:
                               description: 'New title of the business.'
                           required:
                             - text_title
+                        -
+                          type: object
+                          title: 'Parameters for `2461`'
+                          properties:
+                            dtu_attempt:
+                              type: string
+                              description: |-
+                                Time of the attempt (of the check-in for a visit), in UTC and MySQL format, for example `2026-11-05 14:30:00`.
+
+                                The same value as `dtu_attempt` of the row of the attempt in [AttemptListApi::$a_attempt](/Wl/Visit/Kiosk/AttemptList.json).
+                            id_deny_reason:
+                              $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
+                              description: 'Reason of the failure. One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` for a check-in.'
+                            id_mode:
+                              $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                              description: 'Source of the attempt. One of [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants. `null` if the source of the check-in is not recorded.'
+                            is_fail:
+                              type: boolean
+                              description: '`true` for a failed attempt, `false` for a check-in.'
+                            k_visit:
+                              type:
+                                - string
+                                - 'null'
+                              description: 'Key of the checked-in visit. `null` for a failed attempt.'
+                          required:
+                            - dtu_attempt
+                            - id_deny_reason
+                            - id_mode
+                            - is_fail
+                            - k_visit
                         -
                           type: object
                           title: 'Parameters for `1850`'
@@ -1630,6 +1660,19 @@ paths:
                           description: 'Business key.'
                       required:
                         - k_business
+                    -
+                      type: object
+                      title: 'Parameters for `2461`'
+                      properties:
+                        k_business:
+                          type: string
+                          description: 'Business key.'
+                        k_location:
+                          type: string
+                          description: 'Key of the location of the kiosk.'
+                      required:
+                        - k_business
+                        - k_location
                     -
                       type: object
                       title: 'Parameters for `1850`'
@@ -39867,7 +39910,9 @@ paths:
                               description: 'The product option key.'
                             m_price:
                               type: string
-                              description: 'The regular price of the option.'
+                              description: |-
+                                The price of the option: the discount price when the discount of the option is enabled, the regular
+                                price otherwise.
                             text_title:
                               type: string
                               description: 'The product option title.'
@@ -43655,6 +43700,77 @@ paths:
           schema:
             type: string
           description: 'Key of the client.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Visit/Kiosk/SignSend.json:
+    post:
+      operationId: Wl.Visit.Kiosk.SignSend.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Sends the client an email with the waiver or the contract that the client has not signed.'
+      description: |-
+        Without [SignSendApi::$k_purchase_item](/Wl/Visit/Kiosk/SignSend.json) the waiver of the business is sent, if the business requires a
+        waiver and the client has not signed it. With it, the contract of that purchase item is sent, if it is a
+        contract of the business that the client has not signed. The email is the copy of the document that the
+        profile of the client sends, without a date of signing. A normal answer means that the email is queued; the
+        email address is not returned.
+
+        The checks go in this order, and the code of a refusal tells which of them has failed:
+        <ul>
+          <li>`access-backend`: no session of a staff member, or no access to the business;</li>
+          <li>`access`: no access to the location or to the client;</li>
+          <li>`sign-none`: the client has no such document to sign;</li>
+          <li>`mail-nx`: the client has no email address.</li>
+        </ul>
+      tags:
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_location:
+                  type: string
+                  description: 'Key of the location of the kiosk.'
+                k_purchase_item:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the purchase item whose contract is sent: the `k_purchase_item` of a contract alert of the client
+                    ([AlertApi::$a_alert](/Wl/Profile/Alert/Alert.json)).
+
+                    `null` to send the waiver of the business.
+                uid:
+                  type: string
+                  description: 'Key of the client.'
+              required:
+                - k_business
+                - k_location
+                - uid
       x-rate-limit:
         -
           limit: 200000
@@ -134730,6 +134846,321 @@ components:
           * `READY` => `DELETING` when a background tasks identifies that this report is old and starts deleting it.
             
           * `READY` => `QUEUED` when user clicks to regenerate this report
+    Wl.Visit.VisitDenyReasonSid:
+      type: integer
+      format: int32
+      description: |-
+        Reasons of failed book or check-in.
+
+        Last used ID: 38
+
+        Values:
+        - 1 (`ACCESS_DENIED`): The business can not take one more client.
+        - 2 (`ACCESS_LIMITED`): Access is limited.
+        - 3 (`ACCOUNT_LIMIT`): The business can not take one more client.
+        - 4 (`AGE_RESTRICTION`): Class is not available for certain age.
+        - 5 (`AGREE_NX`): Liability Release needs to be agreed.
+        - 25 (`APPOINTMENT_DENY`): Service approval denied
+        - 26 (`APPOINTMENT_REQUEST`): Service requires staff approval
+        - 23 (`ATTEND_GYM_DISABLE`): Business Policy restricts Gym Visits
+        - 38 (`ATTEND_ONCE`): The client already has a checked-in gym visit on the same local day, at any location of the business.
+        - 22 (`ATTEND_SELF_DISABLE`): Self check-in not available for this service
+        - 28 (`ATTEND_UNPAID`): Business policy prevents unpaid check-ins
+        - 27 (`ATTEND_WAIT`): Client is on the Wait List
+        - 37 (`BALANCE_NEGATIVE`): Client has a negative account balance
+        - 7 (`BOOK_EARLY`): It's too early to book a class.
+        - 8 (`BOOK_LATE`): It's too late to book a class.
+        - 24 (`BOOK_NX`): Visit must be booked before check-in
+        - 9 (`BOOK_RESTRICT`): Cannot book to this class anymore.
+        - 6 (`BOOKED_ALREADY`): Client is already booked for this session.
+        - 10 (`BUSINESS_INACTIVE`): Business is inactive.
+        - 11 (`CLASS_CANCELED`): Class is canceled.
+        - 14 (`CLASS_FULL`): Class is full.
+        - 15 (`CLASS_NOT_AVAILABLE_ANYMORE`): Class does not exist anymore.
+        - 12 (`CLIENT_FLAGGED`): Client is flagged at location.
+        - 13 (`CREDIT_CARD_REQUIRE`): Credit card is required for booking services.
+        - 16 (`HOLIDAY`): Business is closed.
+        - 17 (`LOGIN_REQUIRED`): Login is required.
+        - 18 (`NOT_BOOKABLE`): Online booking is disabled for the class.
+        - 35 (`PAYMENT_CONTRACT`): Contract not signed
+        - 36 (`PAYMENT_EXPIRE`): Purchase Option expired
+        - 34 (`PAYMENT_HOLD`): Purchase Option on hold
+        - 30 (`PAYMENT_NX`): No valid Purchase Option
+        - 33 (`PAYMENT_REMAIN`): Purchase Option has no visits left
+        - 32 (`PAYMENT_START`): Purchase Option not active yet
+        - 31 (`SCHEDULE_RESTRICT`): Attendance limit on Purchase Option reached
+        - 29 (`UNKNOWN`): Check-in could not be completed
+        - 19 (`USER_INFO_MISSING`): Required personal details missing.
+        - 20 (`VISIT_BEFORE`): Visit to another class is required first.
+        - 21 (`WAIT_LIST_LIMIT_MAX`): The wait list is full.
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 25
+        - 26
+        - 23
+        - 38
+        - 22
+        - 28
+        - 27
+        - 37
+        - 7
+        - 8
+        - 24
+        - 9
+        - 6
+        - 10
+        - 11
+        - 14
+        - 15
+        - 12
+        - 13
+        - 16
+        - 17
+        - 18
+        - 35
+        - 36
+        - 34
+        - 30
+        - 33
+        - 32
+        - 31
+        - 29
+        - 19
+        - 20
+        - 21
+      x-enum-varnames:
+        - ACCESS_DENIED
+        - ACCESS_LIMITED
+        - ACCOUNT_LIMIT
+        - AGE_RESTRICTION
+        - AGREE_NX
+        - APPOINTMENT_DENY
+        - APPOINTMENT_REQUEST
+        - ATTEND_GYM_DISABLE
+        - ATTEND_ONCE
+        - ATTEND_SELF_DISABLE
+        - ATTEND_UNPAID
+        - ATTEND_WAIT
+        - BALANCE_NEGATIVE
+        - BOOK_EARLY
+        - BOOK_LATE
+        - BOOK_NX
+        - BOOK_RESTRICT
+        - BOOKED_ALREADY
+        - BUSINESS_INACTIVE
+        - CLASS_CANCELED
+        - CLASS_FULL
+        - CLASS_NOT_AVAILABLE_ANYMORE
+        - CLIENT_FLAGGED
+        - CREDIT_CARD_REQUIRE
+        - HOLIDAY
+        - LOGIN_REQUIRED
+        - NOT_BOOKABLE
+        - PAYMENT_CONTRACT
+        - PAYMENT_EXPIRE
+        - PAYMENT_HOLD
+        - PAYMENT_NX
+        - PAYMENT_REMAIN
+        - PAYMENT_START
+        - SCHEDULE_RESTRICT
+        - UNKNOWN
+        - USER_INFO_MISSING
+        - VISIT_BEFORE
+        - WAIT_LIST_LIMIT_MAX
+      x-enum-descriptions:
+        - 'The business can not take one more client.'
+        - 'Access is limited.'
+        - 'The business can not take one more client.'
+        - 'Class is not available for certain age.'
+        - 'Liability Release needs to be agreed.'
+        - 'Service approval denied'
+        - 'Service requires staff approval'
+        - 'Business Policy restricts Gym Visits'
+        - 'The client already has a checked-in gym visit on the same local day, at any location of the business.'
+        - 'Self check-in not available for this service'
+        - 'Business policy prevents unpaid check-ins'
+        - 'Client is on the Wait List'
+        - 'Client has a negative account balance'
+        - "It's too early to book a class."
+        - "It's too late to book a class."
+        - 'Visit must be booked before check-in'
+        - 'Cannot book to this class anymore.'
+        - 'Client is already booked for this session.'
+        - 'Business is inactive.'
+        - 'Class is canceled.'
+        - 'Class is full.'
+        - 'Class does not exist anymore.'
+        - 'Client is flagged at location.'
+        - 'Credit card is required for booking services.'
+        - 'Business is closed.'
+        - 'Login is required.'
+        - 'Online booking is disabled for the class.'
+        - 'Contract not signed'
+        - 'Purchase Option expired'
+        - 'Purchase Option on hold'
+        - 'No valid Purchase Option'
+        - 'Purchase Option has no visits left'
+        - 'Purchase Option not active yet'
+        - 'Attendance limit on Purchase Option reached'
+        - 'Check-in could not be completed'
+        - 'Required personal details missing.'
+        - 'Visit to another class is required first.'
+        - 'The wait list is full.'
+    Wl.Mode.ModeSid:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        The source of a visit.
+
+        Last used ID: 35.
+
+        Values:
+        - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
+        - 21 (`AZURE`): Registered through `Azure`.
+        - 31 (`BRIVO_DOOR_ACCESS`): Visit has been checked-in by Brivo Door Access.
+        - 33 (`BULK_BILLING`): Purchase created by a bulk billing batch charge.
+        - 23 (`CENTRED`): Visit has been created by `CENTRED`.
+        - 8 (`CLASSPASS_BOOKING`): Visit has been created by `ClassPass`.
+        - 22 (`COLLECTIONS`): Debt paid via collections.
+        - 26 (`COLLECTIONS_FUTURE`): Debt paid via collections.
+        - 27 (`CONCERTO`): Action from Concerto.
+        - 18 (`EMAIL`): Action made via email.
+        - 20 (`FACEBOOK`): Indicating that the source is Facebook.
+        - 30 (`GO_HIGH_LEVEL`): Action from Go High Level.
+        - 19 (`GOOGLE`): Indicating that the source is Google.
+        - 7 (`GOOGLE_BOOKING`): Visit has been created by Google Booking Service.
+        - 14 (`GYMPASS_BOOKING`): Visit has been created by `GymPass`.
+        - 5 (`IMPORT`): Visit was created during import.
+        - 12 (`MICROSITE`): Action made via microsite.
+
+          It is also names as directory listing.
+        - 24 (`MICROSOFT`): Indicating that the source is Microsoft.
+        - 13 (`MY_PRESENCE_SITE`): Client booked session on My Presence Site.
+        - 32 (`PASSPORT_DOOR_ACCESS`): Visit has been created by `Passport Door Access`.
+        - 17 (`SMS`): Action made via SMS.
+        - 4 (`SPA_BACKEND`): Staff booked session from spa backend.
+        - 3 (`SPA_FRONTEND`): Client booked session from spa frontend.
+        - 35 (`STAFF_KIOSK`): Staff member checked the client in at the staff check-in kiosk.
+        - 10 (`SYSTEM`): Created by system.
+        - 6 (`UNDEFINED`): Means that we did not define mode.
+        - 34 (`WAIT_LIST_PROMOTION`): Sale made automatically on wait list promotion.
+        - 16 (`WEB_APP_ATTENDANCE`): Client booked session from Attendance Web App.
+        - 15 (`WEB_APP_CHECK_IN`): Client checked-in for the session through Check-In Web App.
+        - 2 (`WEB_BACKEND`): Staff booked session for client from website backend.
+        - 1 (`WEB_FRONTEND`): Client booked session from website frontend.
+        - 11 (`WIDGET`): Action made via widget (purchase, book etc).
+        - 25 (`ZAPIER`): Action from Zapier.
+      enum:
+        - 28
+        - 21
+        - 31
+        - 33
+        - 23
+        - 8
+        - 22
+        - 26
+        - 27
+        - 18
+        - 20
+        - 30
+        - 19
+        - 7
+        - 14
+        - 5
+        - 12
+        - 24
+        - 13
+        - 32
+        - 17
+        - 4
+        - 3
+        - 35
+        - 10
+        - 6
+        - 34
+        - 16
+        - 15
+        - 2
+        - 1
+        - 11
+        - 25
+      x-enum-varnames:
+        - API
+        - AZURE
+        - BRIVO_DOOR_ACCESS
+        - BULK_BILLING
+        - CENTRED
+        - CLASSPASS_BOOKING
+        - COLLECTIONS
+        - COLLECTIONS_FUTURE
+        - CONCERTO
+        - EMAIL
+        - FACEBOOK
+        - GO_HIGH_LEVEL
+        - GOOGLE
+        - GOOGLE_BOOKING
+        - GYMPASS_BOOKING
+        - IMPORT
+        - MICROSITE
+        - MICROSOFT
+        - MY_PRESENCE_SITE
+        - PASSPORT_DOOR_ACCESS
+        - SMS
+        - SPA_BACKEND
+        - SPA_FRONTEND
+        - STAFF_KIOSK
+        - SYSTEM
+        - UNDEFINED
+        - WAIT_LIST_PROMOTION
+        - WEB_APP_ATTENDANCE
+        - WEB_APP_CHECK_IN
+        - WEB_BACKEND
+        - WEB_FRONTEND
+        - WIDGET
+        - ZAPIER
+      x-enum-descriptions:
+        - 'Action made via Api Endpoint. Default for leads created via API, unless overridden.'
+        - 'Registered through `Azure`.'
+        - 'Visit has been checked-in by Brivo Door Access.'
+        - 'Purchase created by a bulk billing batch charge.'
+        - 'Visit has been created by `CENTRED`.'
+        - 'Visit has been created by `ClassPass`.'
+        - 'Debt paid via collections.'
+        - 'Debt paid via collections.'
+        - 'Action from Concerto.'
+        - 'Action made via email.'
+        - 'Indicating that the source is Facebook.'
+        - 'Action from Go High Level.'
+        - 'Indicating that the source is Google.'
+        - 'Visit has been created by Google Booking Service.'
+        - 'Visit has been created by `GymPass`.'
+        - 'Visit was created during import.'
+        - |-
+          Action made via microsite.
+
+          It is also names as directory listing.
+        - 'Indicating that the source is Microsoft.'
+        - 'Client booked session on My Presence Site.'
+        - 'Visit has been created by `Passport Door Access`.'
+        - 'Action made via SMS.'
+        - 'Staff booked session from spa backend.'
+        - 'Client booked session from spa frontend.'
+        - 'Staff member checked the client in at the staff check-in kiosk.'
+        - 'Created by system.'
+        - 'Means that we did not define mode.'
+        - 'Sale made automatically on wait list promotion.'
+        - 'Client booked session from Attendance Web App.'
+        - 'Client checked-in for the session through Check-In Web App.'
+        - 'Staff booked session for client from website backend.'
+        - 'Client booked session from website frontend.'
+        - 'Action made via widget (purchase, book etc).'
+        - 'Action from Zapier.'
     Wl.Mail.Domain.DomainVerifyStatusSid:
       type: integer
       format: int32
@@ -137771,6 +138202,16 @@ components:
         - 19 (`Core\WebSocket\Example\ExampleFunctionChannel`): Example channel to test how asynchronous function calls work.
         - 977 (`Wl\Business\Sms\SmsSendErrorChannel`): Channel to pass over error message when failed sent SMS.
         - 16 (`Wl\Business\Edit\TitleChangeChannel`): When title of a business is changed, new title is sent over this channel.
+        - 2461 (`Wl\Visit\Kiosk\AttemptChannel`): Channel to notify the staff at the check-in kiosk of a location about every gym check-in and every failed gym
+          check-in attempt at that location, from any source.
+
+          A check-in to a class, an event or an appointment and a failed attempt of it send nothing, and neither does an undo
+          of a check-in.
+
+          The message carries no data of the client, of the user who made the attempt or of the pass: a broadcast reaches
+          every subscriber of the keys, so it cannot be limited to the clients that one staff member may see. On each message
+          the kiosk reads [AttemptListApi](/Wl/Visit/Kiosk/AttemptList.json) with [AttemptListApi::$dtu_since](/Wl/Visit/Kiosk/AttemptList.json) equal to
+          [AttemptChannel::$dtu_attempt](#/components/schemas/Core.WebSocket.ChannelBroadcast) to get the full row of the attempt with its `s_attempt`.
         - 1850 (`Wl\Import\Progress\ProgressChannel`): Channel to pass over information about business import progress.
         - 1834 (`Wl\Mail\Domain\DomainVerifyStatusChannel`): Domain verification status verification channel.
         - 677 (`Wl\Mail\Verify\MailVerifyStatusChangeChannel`): When mail verify status was changed new value is sent over this channel.
@@ -137807,6 +138248,7 @@ components:
         - 19
         - 977
         - 16
+        - 2461
         - 1850
         - 1834
         - 677
@@ -137843,6 +138285,7 @@ components:
         - Core\WebSocket\Example\ExampleFunctionChannel
         - Wl\Business\Sms\SmsSendErrorChannel
         - Wl\Business\Edit\TitleChangeChannel
+        - Wl\Visit\Kiosk\AttemptChannel
         - Wl\Import\Progress\ProgressChannel
         - Wl\Mail\Domain\DomainVerifyStatusChannel
         - Wl\Mail\Verify\MailVerifyStatusChangeChannel
@@ -137891,6 +138334,17 @@ components:
         - 'Example channel to test how asynchronous function calls work.'
         - 'Channel to pass over error message when failed sent SMS.'
         - 'When title of a business is changed, new title is sent over this channel.'
+        - |-
+          Channel to notify the staff at the check-in kiosk of a location about every gym check-in and every failed gym
+          check-in attempt at that location, from any source.
+
+          A check-in to a class, an event or an appointment and a failed attempt of it send nothing, and neither does an undo
+          of a check-in.
+
+          The message carries no data of the client, of the user who made the attempt or of the pass: a broadcast reaches
+          every subscriber of the keys, so it cannot be limited to the clients that one staff member may see. On each message
+          the kiosk reads {@link \Wl\Visit\Kiosk\AttemptListApi} with {@link \Wl\Visit\Kiosk\AttemptListApi::$dtu_since} equal to
+          {@link \Wl\Visit\Kiosk\AttemptChannel::$dtu_attempt} to get the full row of the attempt with its `s_attempt`.
         - 'Channel to pass over information about business import progress.'
         - 'Domain verification status verification channel.'
         - 'When mail verify status was changed new value is sent over this channel.'
@@ -138663,155 +139117,6 @@ components:
 
           Such passes cannot be bought, they can be only components of the special system packages,
           packages with `k_business` = `null`.
-    Wl.Mode.ModeSid:
-      type: integer
-      format: int32
-      description: |-
-        The source of a visit.
-
-        Last used ID: 35.
-
-        Values:
-        - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
-        - 21 (`AZURE`): Registered through `Azure`.
-        - 31 (`BRIVO_DOOR_ACCESS`): Visit has been checked-in by Brivo Door Access.
-        - 33 (`BULK_BILLING`): Purchase created by a bulk billing batch charge.
-        - 23 (`CENTRED`): Visit has been created by `CENTRED`.
-        - 8 (`CLASSPASS_BOOKING`): Visit has been created by `ClassPass`.
-        - 22 (`COLLECTIONS`): Debt paid via collections.
-        - 26 (`COLLECTIONS_FUTURE`): Debt paid via collections.
-        - 27 (`CONCERTO`): Action from Concerto.
-        - 18 (`EMAIL`): Action made via email.
-        - 20 (`FACEBOOK`): Indicating that the source is Facebook.
-        - 30 (`GO_HIGH_LEVEL`): Action from Go High Level.
-        - 19 (`GOOGLE`): Indicating that the source is Google.
-        - 7 (`GOOGLE_BOOKING`): Visit has been created by Google Booking Service.
-        - 14 (`GYMPASS_BOOKING`): Visit has been created by `GymPass`.
-        - 5 (`IMPORT`): Visit was created during import.
-        - 12 (`MICROSITE`): Action made via microsite.
-
-          It is also names as directory listing.
-        - 24 (`MICROSOFT`): Indicating that the source is Microsoft.
-        - 13 (`MY_PRESENCE_SITE`): Client booked session on My Presence Site.
-        - 32 (`PASSPORT_DOOR_ACCESS`): Visit has been created by `Passport Door Access`.
-        - 17 (`SMS`): Action made via SMS.
-        - 4 (`SPA_BACKEND`): Staff booked session from spa backend.
-        - 3 (`SPA_FRONTEND`): Client booked session from spa frontend.
-        - 35 (`STAFF_KIOSK`): Staff member checked the client in at the staff check-in kiosk.
-        - 10 (`SYSTEM`): Created by system.
-        - 6 (`UNDEFINED`): Means that we did not define mode.
-        - 34 (`WAIT_LIST_PROMOTION`): Sale made automatically on wait list promotion.
-        - 16 (`WEB_APP_ATTENDANCE`): Client booked session from Attendance Web App.
-        - 15 (`WEB_APP_CHECK_IN`): Client checked-in for the session through Check-In Web App.
-        - 2 (`WEB_BACKEND`): Staff booked session for client from website backend.
-        - 1 (`WEB_FRONTEND`): Client booked session from website frontend.
-        - 11 (`WIDGET`): Action made via widget (purchase, book etc).
-        - 25 (`ZAPIER`): Action from Zapier.
-      enum:
-        - 28
-        - 21
-        - 31
-        - 33
-        - 23
-        - 8
-        - 22
-        - 26
-        - 27
-        - 18
-        - 20
-        - 30
-        - 19
-        - 7
-        - 14
-        - 5
-        - 12
-        - 24
-        - 13
-        - 32
-        - 17
-        - 4
-        - 3
-        - 35
-        - 10
-        - 6
-        - 34
-        - 16
-        - 15
-        - 2
-        - 1
-        - 11
-        - 25
-      x-enum-varnames:
-        - API
-        - AZURE
-        - BRIVO_DOOR_ACCESS
-        - BULK_BILLING
-        - CENTRED
-        - CLASSPASS_BOOKING
-        - COLLECTIONS
-        - COLLECTIONS_FUTURE
-        - CONCERTO
-        - EMAIL
-        - FACEBOOK
-        - GO_HIGH_LEVEL
-        - GOOGLE
-        - GOOGLE_BOOKING
-        - GYMPASS_BOOKING
-        - IMPORT
-        - MICROSITE
-        - MICROSOFT
-        - MY_PRESENCE_SITE
-        - PASSPORT_DOOR_ACCESS
-        - SMS
-        - SPA_BACKEND
-        - SPA_FRONTEND
-        - STAFF_KIOSK
-        - SYSTEM
-        - UNDEFINED
-        - WAIT_LIST_PROMOTION
-        - WEB_APP_ATTENDANCE
-        - WEB_APP_CHECK_IN
-        - WEB_BACKEND
-        - WEB_FRONTEND
-        - WIDGET
-        - ZAPIER
-      x-enum-descriptions:
-        - 'Action made via Api Endpoint. Default for leads created via API, unless overridden.'
-        - 'Registered through `Azure`.'
-        - 'Visit has been checked-in by Brivo Door Access.'
-        - 'Purchase created by a bulk billing batch charge.'
-        - 'Visit has been created by `CENTRED`.'
-        - 'Visit has been created by `ClassPass`.'
-        - 'Debt paid via collections.'
-        - 'Debt paid via collections.'
-        - 'Action from Concerto.'
-        - 'Action made via email.'
-        - 'Indicating that the source is Facebook.'
-        - 'Action from Go High Level.'
-        - 'Indicating that the source is Google.'
-        - 'Visit has been created by Google Booking Service.'
-        - 'Visit has been created by `GymPass`.'
-        - 'Visit was created during import.'
-        - |-
-          Action made via microsite.
-
-          It is also names as directory listing.
-        - 'Indicating that the source is Microsoft.'
-        - 'Client booked session on My Presence Site.'
-        - 'Visit has been created by `Passport Door Access`.'
-        - 'Action made via SMS.'
-        - 'Staff booked session from spa backend.'
-        - 'Client booked session from spa frontend.'
-        - 'Staff member checked the client in at the staff check-in kiosk.'
-        - 'Created by system.'
-        - 'Means that we did not define mode.'
-        - 'Sale made automatically on wait list promotion.'
-        - 'Client booked session from Attendance Web App.'
-        - 'Client checked-in for the session through Check-In Web App.'
-        - 'Staff booked session for client from website backend.'
-        - 'Client booked session from website frontend.'
-        - 'Action made via widget (purchase, book etc).'
-        - 'Action from Zapier.'
     RsFieldGeneralSid:
       type: integer
       format: int32
@@ -145415,170 +145720,6 @@ components:
       x-enum-descriptions:
         - 'The usual quick accompanying note for the customer visit.'
         - 'Accompanying medical note for the customer visit.'
-    Wl.Visit.VisitDenyReasonSid:
-      type: integer
-      format: int32
-      description: |-
-        Reasons of failed book or check-in.
-
-        Last used ID: 38
-
-        Values:
-        - 1 (`ACCESS_DENIED`): The business can not take one more client.
-        - 2 (`ACCESS_LIMITED`): Access is limited.
-        - 3 (`ACCOUNT_LIMIT`): The business can not take one more client.
-        - 4 (`AGE_RESTRICTION`): Class is not available for certain age.
-        - 5 (`AGREE_NX`): Liability Release needs to be agreed.
-        - 25 (`APPOINTMENT_DENY`): Service approval denied
-        - 26 (`APPOINTMENT_REQUEST`): Service requires staff approval
-        - 23 (`ATTEND_GYM_DISABLE`): Business Policy restricts Gym Visits
-        - 38 (`ATTEND_ONCE`): The client already has a checked-in gym visit on the same local day, at any location of the business.
-        - 22 (`ATTEND_SELF_DISABLE`): Self check-in not available for this service
-        - 28 (`ATTEND_UNPAID`): Business policy prevents unpaid check-ins
-        - 27 (`ATTEND_WAIT`): Client is on the Wait List
-        - 37 (`BALANCE_NEGATIVE`): Client has a negative account balance
-        - 7 (`BOOK_EARLY`): It's too early to book a class.
-        - 8 (`BOOK_LATE`): It's too late to book a class.
-        - 24 (`BOOK_NX`): Visit must be booked before check-in
-        - 9 (`BOOK_RESTRICT`): Cannot book to this class anymore.
-        - 6 (`BOOKED_ALREADY`): Client is already booked for this session.
-        - 10 (`BUSINESS_INACTIVE`): Business is inactive.
-        - 11 (`CLASS_CANCELED`): Class is canceled.
-        - 14 (`CLASS_FULL`): Class is full.
-        - 15 (`CLASS_NOT_AVAILABLE_ANYMORE`): Class does not exist anymore.
-        - 12 (`CLIENT_FLAGGED`): Client is flagged at location.
-        - 13 (`CREDIT_CARD_REQUIRE`): Credit card is required for booking services.
-        - 16 (`HOLIDAY`): Business is closed.
-        - 17 (`LOGIN_REQUIRED`): Login is required.
-        - 18 (`NOT_BOOKABLE`): Online booking is disabled for the class.
-        - 35 (`PAYMENT_CONTRACT`): Contract not signed
-        - 36 (`PAYMENT_EXPIRE`): Purchase Option expired
-        - 34 (`PAYMENT_HOLD`): Purchase Option on hold
-        - 30 (`PAYMENT_NX`): No valid Purchase Option
-        - 33 (`PAYMENT_REMAIN`): Purchase Option has no visits left
-        - 32 (`PAYMENT_START`): Purchase Option not active yet
-        - 31 (`SCHEDULE_RESTRICT`): Attendance limit on Purchase Option reached
-        - 29 (`UNKNOWN`): Check-in could not be completed
-        - 19 (`USER_INFO_MISSING`): Required personal details missing.
-        - 20 (`VISIT_BEFORE`): Visit to another class is required first.
-        - 21 (`WAIT_LIST_LIMIT_MAX`): The wait list is full.
-      enum:
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 25
-        - 26
-        - 23
-        - 38
-        - 22
-        - 28
-        - 27
-        - 37
-        - 7
-        - 8
-        - 24
-        - 9
-        - 6
-        - 10
-        - 11
-        - 14
-        - 15
-        - 12
-        - 13
-        - 16
-        - 17
-        - 18
-        - 35
-        - 36
-        - 34
-        - 30
-        - 33
-        - 32
-        - 31
-        - 29
-        - 19
-        - 20
-        - 21
-      x-enum-varnames:
-        - ACCESS_DENIED
-        - ACCESS_LIMITED
-        - ACCOUNT_LIMIT
-        - AGE_RESTRICTION
-        - AGREE_NX
-        - APPOINTMENT_DENY
-        - APPOINTMENT_REQUEST
-        - ATTEND_GYM_DISABLE
-        - ATTEND_ONCE
-        - ATTEND_SELF_DISABLE
-        - ATTEND_UNPAID
-        - ATTEND_WAIT
-        - BALANCE_NEGATIVE
-        - BOOK_EARLY
-        - BOOK_LATE
-        - BOOK_NX
-        - BOOK_RESTRICT
-        - BOOKED_ALREADY
-        - BUSINESS_INACTIVE
-        - CLASS_CANCELED
-        - CLASS_FULL
-        - CLASS_NOT_AVAILABLE_ANYMORE
-        - CLIENT_FLAGGED
-        - CREDIT_CARD_REQUIRE
-        - HOLIDAY
-        - LOGIN_REQUIRED
-        - NOT_BOOKABLE
-        - PAYMENT_CONTRACT
-        - PAYMENT_EXPIRE
-        - PAYMENT_HOLD
-        - PAYMENT_NX
-        - PAYMENT_REMAIN
-        - PAYMENT_START
-        - SCHEDULE_RESTRICT
-        - UNKNOWN
-        - USER_INFO_MISSING
-        - VISIT_BEFORE
-        - WAIT_LIST_LIMIT_MAX
-      x-enum-descriptions:
-        - 'The business can not take one more client.'
-        - 'Access is limited.'
-        - 'The business can not take one more client.'
-        - 'Class is not available for certain age.'
-        - 'Liability Release needs to be agreed.'
-        - 'Service approval denied'
-        - 'Service requires staff approval'
-        - 'Business Policy restricts Gym Visits'
-        - 'The client already has a checked-in gym visit on the same local day, at any location of the business.'
-        - 'Self check-in not available for this service'
-        - 'Business policy prevents unpaid check-ins'
-        - 'Client is on the Wait List'
-        - 'Client has a negative account balance'
-        - "It's too early to book a class."
-        - "It's too late to book a class."
-        - 'Visit must be booked before check-in'
-        - 'Cannot book to this class anymore.'
-        - 'Client is already booked for this session.'
-        - 'Business is inactive.'
-        - 'Class is canceled.'
-        - 'Class is full.'
-        - 'Class does not exist anymore.'
-        - 'Client is flagged at location.'
-        - 'Credit card is required for booking services.'
-        - 'Business is closed.'
-        - 'Login is required.'
-        - 'Online booking is disabled for the class.'
-        - 'Contract not signed'
-        - 'Purchase Option expired'
-        - 'Purchase Option on hold'
-        - 'No valid Purchase Option'
-        - 'Purchase Option has no visits left'
-        - 'Purchase Option not active yet'
-        - 'Attendance limit on Purchase Option reached'
-        - 'Check-in could not be completed'
-        - 'Required personal details missing.'
-        - 'Visit to another class is required first.'
-        - 'The wait list is full.'
     Wl.Visit.Kiosk.ScanResultSid:
       type: integer
       format: int32
