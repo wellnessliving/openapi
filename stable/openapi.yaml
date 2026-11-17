@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261117095854
+  version: 1.1.20261117132503
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -583,6 +583,15 @@ paths:
                             - i_overdue
                             - id_task_status
                             - k_task
+                        -
+                          type: object
+                          title: 'Parameters for `2528`'
+                          properties:
+                            dtu_add:
+                              type: string
+                              description: 'Time when the device was registered for the pass, in UTC and MySQL format.'
+                          required:
+                            - dtu_add
                         -
                           type: object
                           title: 'Parameters for `735`'
@@ -1611,6 +1620,23 @@ paths:
                       required:
                         - k_business
                         - uid_receiver
+                    -
+                      type: object
+                      title: 'Parameters for `2528`'
+                      properties:
+                        k_business:
+                          type: string
+                          description: 'Business key.'
+                        k_ticket_item:
+                          type: string
+                          description: 'Key of the ticket the pass is made for.'
+                        s_sign:
+                          type: string
+                          description: 'Signature of the ticket, see [WalletAddChannel::signGet()](#/components/schemas/Core.WebSocket.ChannelBroadcast).'
+                      required:
+                        - k_business
+                        - k_ticket_item
+                        - s_sign
                     -
                       type: object
                       title: 'Parameters for `735`'
@@ -38684,6 +38710,61 @@ paths:
                       - m_total
                       - text_currency
                       - text_discount_code
+                  a_purchase_detail:
+                    type: object
+                    description: |-
+                      The details of the purchase that belong to the whole purchase and not to one purchase item. The links work
+                      without a login and do not expire, but the receipt is given to a guest only while
+                      [PurchaseReceiptApi::$text_token](/Wl/Purchase/Receipt/PurchaseReceipt.json) is valid, so a client keeps the links it got. Has the following keys:
+                    properties:
+                      a_ticket_event:
+                        type: object
+                        description: |-
+                          The tickets of the purchase grouped by the event: one element for every instance of an event that has a valid
+                          ticket in the purchase, in the order of its first ticket. A ticket that is voided or refunded is not in the
+                          links of the wallets and not in the PDF file, the page for print shows it as void, and an event whose tickets
+                          are all void is not given. Empty if the purchase has no valid tickets. Every element has the following
+                          keys:
+                        properties:
+                          k_class:
+                            type: string
+                            description: 'The key of the instance of the event.'
+                          text_event_title:
+                            type: string
+                            description: 'The title of the event.'
+                          url_download:
+                            type: string
+                            description: 'The URL to download the PDF file with all the tickets of the event. The file works without a login.'
+                          url_phone:
+                            type: string
+                            description: |-
+                              The image of a QR code, as a `data:` URI of a PNG file. A phone that scans the code adds all the tickets
+                              of the event to its own wallet: Apple Wallet on an `iPhone`, Google Wallet on any other device. It is
+                              empty while one of the wallets is not set up, because a phone of the wallet that is off would get an
+                              error.
+                          url_print:
+                            type: string
+                            description: 'The URL of the page to print all the tickets of the event. The page works without a login.'
+                          url_wallet_apple:
+                            type: string
+                            description: |-
+                              The link that adds all the tickets of the event to Apple Wallet at once. It is empty if Apple Wallet is
+                              not set up.
+                          url_wallet_google:
+                            type: string
+                            description: |-
+                              The link that adds all the tickets of the event to Google Wallet at once. It is empty if Google Wallet
+                              is not set up.
+                        required:
+                          - k_class
+                          - text_event_title
+                          - url_download
+                          - url_phone
+                          - url_print
+                          - url_wallet_apple
+                          - url_wallet_google
+                    required:
+                      - a_ticket_event
                   a_purchase_item:
                     type: array
                     description: 'A list of purchase items. Every element has the following keys:'
@@ -38856,6 +38937,7 @@ paths:
                   - a_pay_method
                   - a_payor
                   - a_price
+                  - a_purchase_detail
                   - a_purchase_item
                   - dtl_purchase
                   - has_signature
@@ -138222,6 +138304,15 @@ components:
         - 733 (`Wl\Virtual\AccountUpdateChannel`): Channel to pass over information about virtual account release.
         - 688 (`Wl\Virtual\MeetingScheduleChannel`): Channel to pass over information about meeting creation.
         - 1869 (`Wl\Task\TaskChangeChannel`): A message is sent through this channel every time a task created or edited.
+        - 2528 (`Wl\Wallet\WalletAddChannel`): Channel to tell the page that adds a pass to Apple Wallet that the pass is in the wallet.
+
+          The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
+          see [AppleRegistrationApi](/Wl/Wallet/Apple/AppleRegistration.json), and the web service notifies this channel. The page of
+          WalletAddController is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
+
+          The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
+          checked the link of the wallet gets, see [WalletAddChannel::signGet()](#/components/schemas/Core.WebSocket.ChannelBroadcast).
         - 735 (`Thoth\ReportCore\Generator\UpdateChannel`): A message is sent through this channel every time a report gets updated.
         - 19 (`Core\WebSocket\Example\ExampleFunctionChannel`): Example channel to test how asynchronous function calls work.
         - 977 (`Wl\Business\Sms\SmsSendErrorChannel`): Channel to pass over error message when failed sent SMS.
@@ -138268,6 +138359,7 @@ components:
         - 733
         - 688
         - 1869
+        - 2528
         - 735
         - 19
         - 977
@@ -138305,6 +138397,7 @@ components:
         - Wl\Virtual\AccountUpdateChannel
         - Wl\Virtual\MeetingScheduleChannel
         - Wl\Task\TaskChangeChannel
+        - Wl\Wallet\WalletAddChannel
         - Thoth\ReportCore\Generator\UpdateChannel
         - Core\WebSocket\Example\ExampleFunctionChannel
         - Wl\Business\Sms\SmsSendErrorChannel
@@ -138354,6 +138447,16 @@ components:
         - 'Channel to pass over information about virtual account release.'
         - 'Channel to pass over information about meeting creation.'
         - 'A message is sent through this channel every time a task created or edited.'
+        - |-
+          Channel to tell the page that adds a pass to Apple Wallet that the pass is in the wallet.
+
+          The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
+          see {@link \Wl\Wallet\Apple\AppleRegistrationApi}, and the web service notifies this channel. The page of
+          {@link \Wl\Wallet\WalletAddController} is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
+
+          The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
+          checked the link of the wallet gets, see {@link \Wl\Wallet\WalletAddChannel::signGet()}.
         - 'A message is sent through this channel every time a report gets updated.'
         - 'Example channel to test how asynchronous function calls work.'
         - 'Channel to pass over error message when failed sent SMS.'
