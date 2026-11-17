@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261117130440
+  version: 1.1.20261117144654
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -23338,7 +23338,7 @@ paths:
                     description: 'Name of the event, with no date in it.'
                   url_booking:
                     type: string
-                    description: 'Link to book the session directly. Empty: the link is not provided yet.'
+                    description: 'Link to book the event of the session directly. Empty: the event is not shown on any tab.'
                 required:
                   - a_location
                   - a_order
