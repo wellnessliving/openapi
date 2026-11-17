@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261117054921
+  version: 1.1.20261117070139
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -44562,8 +44562,14 @@ paths:
                           - text_family
                           - text_staff
                       dl_expire:
-                        type: string
-                        description: 'Date of expiration of coupon, local date in MySQL format.'
+                        type:
+                          - string
+                          - 'null'
+                        description: |-
+                          Expiration date, local date in MySQL format. Example: `2027-02-01`.
+                          For a coupon: the expiration date of the coupon, `null` if the coupon has no expiration date.
+                          For a purchase option: the fixed expiration date. Set only when the duration type is a fixed date
+                          (`sid_duration_type` is `date`, see [RsDurationTypeSid::DATE](#/components/schemas/RsDurationTypeSid)), `null` otherwise.
                       dl_now:
                         type: string
                         description: 'Current date, local date in MySQL format.'
@@ -44852,8 +44858,14 @@ paths:
                                 - text_family
                                 - text_staff
                             dl_expire:
-                              type: string
-                              description: 'Date of expiration of coupon, local date in MySQL format.'
+                              type:
+                                - string
+                                - 'null'
+                              description: |-
+                                Expiration date, local date in MySQL format. Example: `2027-02-01`.
+                                For a coupon: the expiration date of the coupon, `null` if the coupon has no expiration date.
+                                For a purchase option: the fixed expiration date. Set only when the duration type is a fixed date
+                                (`sid_duration_type` is `date`, see [RsDurationTypeSid::DATE](#/components/schemas/RsDurationTypeSid)), `null` otherwise.
                             dl_now:
                               type: string
                               description: 'Current date, local date in MySQL format.'
@@ -45621,8 +45633,14 @@ paths:
                           - text_family
                           - text_staff
                       dl_expire:
-                        type: string
-                        description: 'Date of expiration of coupon, local date in MySQL format.'
+                        type:
+                          - string
+                          - 'null'
+                        description: |-
+                          Expiration date, local date in MySQL format. Example: `2027-02-01`.
+                          For a coupon: the expiration date of the coupon, `null` if the coupon has no expiration date.
+                          For a purchase option: the fixed expiration date. Set only when the duration type is a fixed date
+                          (`sid_duration_type` is `date`, see [RsDurationTypeSid::DATE](#/components/schemas/RsDurationTypeSid)), `null` otherwise.
                       dl_now:
                         type: string
                         description: 'Current date, local date in MySQL format.'
@@ -45911,8 +45929,14 @@ paths:
                                 - text_family
                                 - text_staff
                             dl_expire:
-                              type: string
-                              description: 'Date of expiration of coupon, local date in MySQL format.'
+                              type:
+                                - string
+                                - 'null'
+                              description: |-
+                                Expiration date, local date in MySQL format. Example: `2027-02-01`.
+                                For a coupon: the expiration date of the coupon, `null` if the coupon has no expiration date.
+                                For a purchase option: the fixed expiration date. Set only when the duration type is a fixed date
+                                (`sid_duration_type` is `date`, see [RsDurationTypeSid::DATE](#/components/schemas/RsDurationTypeSid)), `null` otherwise.
                             dl_now:
                               type: string
                               description: 'Current date, local date in MySQL format.'
