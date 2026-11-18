@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261117144654
+  version: 1.1.20261118103951
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -944,6 +944,15 @@ paths:
                               description: 'Url link to redirect to join virtual meeting.'
                           required:
                             - url_redirect
+                        -
+                          type: object
+                          title: 'Parameters for `2528`'
+                          properties:
+                            dtu_add:
+                              type: string
+                              description: 'Time when the device was registered for the pass, in UTC and MySQL format.'
+                          required:
+                            - dtu_add
                         -
                           type: object
                           title: 'Parameters for `735`'
@@ -1972,6 +1981,23 @@ paths:
                         - k_class_period
                         - k_visit
                         - s_secret
+                    -
+                      type: object
+                      title: 'Parameters for `2528`'
+                      properties:
+                        k_business:
+                          type: string
+                          description: 'Business key.'
+                        k_ticket_item:
+                          type: string
+                          description: 'Key of the ticket the pass is made for.'
+                        s_sign:
+                          type: string
+                          description: 'Signature of the ticket, see [WalletAddChannel::signGet()](#/components/schemas/Core.WebSocket.ChannelBroadcast).'
+                      required:
+                        - k_business
+                        - k_ticket_item
+                        - s_sign
                     -
                       type: object
                       title: 'Parameters for `735`'
@@ -39457,6 +39483,12 @@ paths:
                         text_lastname:
                           type: string
                           description: 'The client last name.'
+                        text_left:
+                          type: string
+                          description: |-
+                            The time left on the Purchase Option, in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the Purchase Option is not of type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid), or if it has no
+                            time limit.
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
@@ -39569,6 +39601,7 @@ paths:
                         - text_expire
                         - text_firstname
                         - text_lastname
+                        - text_left
                         - text_note
                         - text_phone
                         - text_promotion
@@ -40092,6 +40125,12 @@ paths:
                         text_lastname:
                           type: string
                           description: 'The client last name.'
+                        text_left:
+                          type: string
+                          description: |-
+                            The time left on the Purchase Option, in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the Purchase Option is not of type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid), or if it has no
+                            time limit.
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
@@ -40204,6 +40243,7 @@ paths:
                         - text_expire
                         - text_firstname
                         - text_lastname
+                        - text_left
                         - text_note
                         - text_phone
                         - text_promotion
@@ -40727,6 +40767,12 @@ paths:
                         text_lastname:
                           type: string
                           description: 'The client last name.'
+                        text_left:
+                          type: string
+                          description: |-
+                            The time left on the Purchase Option, in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the Purchase Option is not of type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid), or if it has no
+                            time limit.
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
@@ -40839,6 +40885,7 @@ paths:
                         - text_expire
                         - text_firstname
                         - text_lastname
+                        - text_left
                         - text_note
                         - text_phone
                         - text_promotion
@@ -41471,6 +41518,12 @@ paths:
                         text_lastname:
                           type: string
                           description: 'The client last name.'
+                        text_left:
+                          type: string
+                          description: |-
+                            The time left on the Purchase Option, in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the Purchase Option is not of type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid), or if it has no
+                            time limit.
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
@@ -41583,6 +41636,7 @@ paths:
                         - text_expire
                         - text_firstname
                         - text_lastname
+                        - text_left
                         - text_note
                         - text_phone
                         - text_promotion
@@ -42106,6 +42160,12 @@ paths:
                         text_lastname:
                           type: string
                           description: 'The client last name.'
+                        text_left:
+                          type: string
+                          description: |-
+                            The time left on the Purchase Option, in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the Purchase Option is not of type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid), or if it has no
+                            time limit.
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
@@ -42218,6 +42278,7 @@ paths:
                         - text_expire
                         - text_firstname
                         - text_lastname
+                        - text_left
                         - text_note
                         - text_phone
                         - text_promotion
@@ -42741,6 +42802,12 @@ paths:
                         text_lastname:
                           type: string
                           description: 'The client last name.'
+                        text_left:
+                          type: string
+                          description: |-
+                            The time left on the Purchase Option, in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the Purchase Option is not of type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid), or if it has no
+                            time limit.
                         text_note:
                           type: string
                           description: 'Any notes tied to the client.'
@@ -42853,6 +42920,7 @@ paths:
                         - text_expire
                         - text_firstname
                         - text_lastname
+                        - text_left
                         - text_note
                         - text_phone
                         - text_promotion
@@ -45618,6 +45686,12 @@ paths:
                     description: |-
                       The number of sessions remaining for a promotion. This is used only for promotions.
                       This will be `0` if the purchased item isn't a promotion or if there are no remaining sessions.
+                  i_book_duration:
+                    $ref: '#/components/schemas/RsProgramTypeSid'
+                    description: |-
+                      Displays the number of minutes of sessions that were booked by this promotion.
+                      `0` if the purchase is not a time-based promotion, that is, a promotion whose program is of the
+                      [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid) type.
                   i_buy:
                     type: integer
                     format: int32
@@ -45662,6 +45736,12 @@ paths:
                     type: integer
                     format: int32
                     description: 'This is used only for promotions. This is the number of visits that were attended for the promotion.'
+                  i_use_duration:
+                    $ref: '#/components/schemas/RsProgramTypeSid'
+                    description: |-
+                      The number of minutes the user has already used with this purchase of this promotion.
+                      `0` if the purchase is not a time-based promotion, that is, a promotion whose program is of the
+                      [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid) type.
                   id_activation:
                     $ref: '#/components/schemas/RsActivationSid'
                     description: 'Activation mode. One on [RsActivationSid](#/components/schemas/RsActivationSid) constants. This field is only added for promotions.'
@@ -45864,6 +45944,7 @@ paths:
                   - f_discount_login_type_percent
                   - html_description
                   - i_book
+                  - i_book_duration
                   - i_buy
                   - i_discount_count
                   - i_duration
@@ -45874,6 +45955,7 @@ paths:
                   - i_remain_duration
                   - i_renew
                   - i_use
+                  - i_use_duration
                   - id_activation
                   - id_discount_commission_type
                   - id_duration
@@ -49842,6 +49924,113 @@ paths:
                   description: 'Key of the lead stage to move the client into.'
               required:
                 - k_lead_stage
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Lead/Stage/LeadStageManager.json:
+    get:
+      operationId: Wl.Lead.Stage.LeadStageManager.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_lead_stage_manager:
+                    $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid'
+                    description: |-
+                      Who manages the lead stages of the locations of the Enterprise. One of [LeadStageManagerSid](#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid) constants.
+
+                      [LeadStageManagerSid::EACH_LOCATION](#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid) by default.
+                required:
+                  - id_lead_stage_manager
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the setting "Lead stages are managed by".'
+      description: |-
+        The setting tells who manages the lead stages of the locations of the Enterprise that received a push of the
+        lead stages: each location or the Enterprise Headquarters. It is visible to every staff member who can open the
+        Leads settings and to every staff member who can manage the business.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the Enterprise Headquarters business.'
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Lead.Stage.LeadStageManager.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves the setting "Lead stages are managed by".'
+      description: |-
+        Changing the setting takes effect at every location that received a push of the lead stages, and no new push is
+        needed. The change is written to the Edit Log of the business. Only a staff member who can manage the business
+        settings can change the setting.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the Enterprise Headquarters business.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_lead_stage_manager:
+                  $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid'
+                  description: |-
+                    Who manages the lead stages of the locations of the Enterprise. One of [LeadStageManagerSid](#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid) constants.
+
+                    [LeadStageManagerSid::EACH_LOCATION](#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid) by default.
+              required:
+                - id_lead_stage_manager
+      x-instance-get-key: k_business
       x-rate-limit:
         -
           limit: 200000
@@ -59105,6 +59294,61 @@ paths:
                       - m_total
                       - text_currency
                       - text_discount_code
+                  a_purchase_detail:
+                    type: object
+                    description: |-
+                      The details of the purchase that belong to the whole purchase and not to one purchase item. The links work
+                      without a login and do not expire, but the receipt is given to a guest only while
+                      [PurchaseReceiptApi::$text_token](/Wl/Purchase/Receipt/PurchaseReceipt.json) is valid, so a client keeps the links it got. Has the following keys:
+                    properties:
+                      a_ticket_event:
+                        type: object
+                        description: |-
+                          The tickets of the purchase grouped by the event: one element for every instance of an event that has a valid
+                          ticket in the purchase, in the order of its first ticket. A ticket that is voided or refunded is not in the
+                          links of the wallets and not in the PDF file, the page for print shows it as void, and an event whose tickets
+                          are all void is not given. Empty if the purchase has no valid tickets. Every element has the following
+                          keys:
+                        properties:
+                          k_class:
+                            type: string
+                            description: 'The key of the instance of the event.'
+                          text_event_title:
+                            type: string
+                            description: 'The title of the event.'
+                          url_download:
+                            type: string
+                            description: 'The URL to download the PDF file with all the tickets of the event. The file works without a login.'
+                          url_phone:
+                            type: string
+                            description: |-
+                              The image of a QR code, as a `data:` URI of a PNG file. A phone that scans the code adds all the tickets
+                              of the event to its own wallet: Apple Wallet on an `iPhone`, Google Wallet on any other device. It is
+                              empty while one of the wallets is not set up, because a phone of the wallet that is off would get an
+                              error.
+                          url_print:
+                            type: string
+                            description: 'The URL of the page to print all the tickets of the event. The page works without a login.'
+                          url_wallet_apple:
+                            type: string
+                            description: |-
+                              The link that adds all the tickets of the event to Apple Wallet at once. It is empty if Apple Wallet is
+                              not set up.
+                          url_wallet_google:
+                            type: string
+                            description: |-
+                              The link that adds all the tickets of the event to Google Wallet at once. It is empty if Google Wallet
+                              is not set up.
+                        required:
+                          - k_class
+                          - text_event_title
+                          - url_download
+                          - url_phone
+                          - url_print
+                          - url_wallet_apple
+                          - url_wallet_google
+                    required:
+                      - a_ticket_event
                   a_purchase_item:
                     type: array
                     description: 'A list of purchase items. Every element has the following keys:'
@@ -59140,6 +59384,12 @@ paths:
                             The ticket of the purchase item. Only available if the purchase item is a ticket: one purchase item is one
                             ticket. Empty if the purchase item has no ticket. Has the following keys:
                           properties:
+                            k_class:
+                              type: string
+                              description: |-
+                                The key of the instance of the event the ticket is for. It is the same as `k_class` of `a_ticket_event`
+                                in [PurchaseReceiptApi::$a_purchase_detail](/Wl/Purchase/Receipt/PurchaseReceipt.json), so the ticket matches the links of its event. The
+                                instances of one event have the same ticket types, so this key tells the tickets of two instances apart.
                             text_event_title:
                               type: string
                               description: 'The title of the event the ticket is for.'
@@ -59158,6 +59408,7 @@ paths:
                               type: string
                               description: 'The URL of the page to print the ticket. The page works without a login.'
                           required:
+                            - k_class
                             - text_event_title
                             - text_number
                             - text_ticket_title
@@ -59277,6 +59528,7 @@ paths:
                   - a_pay_method
                   - a_payor
                   - a_price
+                  - a_purchase_detail
                   - a_purchase_item
                   - dtl_purchase
                   - has_signature
@@ -86547,13 +86799,51 @@ paths:
                             description: 'The login promotion key.'
                           s_remain_measure:
                             type: string
-                            description: 'The formatted remaining duration on the promotion.'
+                            description: |-
+                              The time left on a time-based pass, in hours and minutes, for example `2 h 25 min`.
+                                An empty string for other passes.
                           show_remain:
                             type: boolean
                             description: "If `true`, there's a rollover on the pass with calendar restrictions. Otherwise, this will be `false`."
                           sid_program_type:
                             type: string
                             description: "The promotion's program type SID."
+                          text_book_duration:
+                            type: string
+                            description: |-
+                              Minutes of the upcoming visits, as a text: `2 h 25 min`.
+                                Empty for promotions of other program types than [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid).
+                          text_book_duration_aria:
+                            type: string
+                            description: |-
+                              Minutes of the upcoming visits, as a text for screen readers: `2 hours 25 minutes`.
+                                Empty for promotions of other program types than [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid).
+                          text_remain_duration_aria:
+                            type: string
+                            description: |-
+                              Minutes left in this promotion, as a text for screen readers: `2 hours 25 minutes`.
+                                Empty for promotions of other program types than [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid).
+                          text_unused_duration:
+                            type: string
+                            description: |-
+                              Minutes left and minutes of the upcoming visits together, as a text: `2 h 25 min`.
+                                Empty for promotions of other program types than [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid).
+                          text_unused_duration_aria:
+                            type: string
+                            description: |-
+                              Minutes left and minutes of the upcoming visits together, as a text for screen readers:
+                                `2 hours 25 minutes`.
+                                Empty for promotions of other program types than [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid).
+                          text_use_duration:
+                            type: string
+                            description: |-
+                              Minutes used for past visits, as a text: `2 h 25 min`.
+                                Empty for promotions of other program types than [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid).
+                          text_use_duration_aria:
+                            type: string
+                            description: |-
+                              Minutes used for past visits, as a text for screen readers: `2 hours 25 minutes`.
+                                Empty for promotions of other program types than [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid).
                         required:
                           - a_restrict
                           - has_visit_past
@@ -86574,6 +86864,13 @@ paths:
                           - s_remain_measure
                           - show_remain
                           - sid_program_type
+                          - text_book_duration
+                          - text_book_duration_aria
+                          - text_remain_duration_aria
+                          - text_unused_duration
+                          - text_unused_duration_aria
+                          - text_use_duration
+                          - text_use_duration_aria
                       a_resources_not_shared:
                         type: object
                         description: 'The list of assets reserved individually at the time of booking containing:'
@@ -94159,11 +94456,18 @@ paths:
                         k_login_promotion:
                           type: string
                           description: 'The login promotion key, available to pay for the session.'
+                        text_remain_duration:
+                          type: string
+                          description: |-
+                            The time left on the login promotion in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the program of the promotion is not of the type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid),
+                            or if the promotion has no limit of time.
                         text_title:
                           type: string
                           description: 'The title of the login promotion.'
                       required:
                         - k_login_promotion
+                        - text_remain_duration
                         - text_title
                   a_session_pass:
                     type: array
@@ -95943,6 +96247,295 @@ paths:
             type: string
           description: 'The key of the user to show information for.'
       x-instance-get-key: 'uid,k_business'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Profile/Setting/Delete/Delete.json:
+    get:
+      operationId: Wl.Profile.Setting.Delete.Delete.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_error_info:
+                    type: object
+                    description: |-
+                      The reasons why the account cannot be deleted, for every user.
+
+                      The key is a user key.  The value is:
+                    additionalProperties:
+                      type: object
+                      properties:
+                        a_reason:
+                          type: object
+                          description: |-
+                            The list of the reasons why the client cannot be deleted. Empty if the client can be deleted. Every element
+                            is:
+                          properties:
+                            html_data:
+                              type: string
+                              description: 'Additional data for the text of the reason.'
+                            text_reason:
+                              type: string
+                              description: 'The reason why the client profile cannot be deleted.'
+                          required:
+                            - html_data
+                            - text_reason
+                        is_reason_single:
+                          type: boolean
+                          description: '`true` if there is exactly one reason, `false` otherwise.'
+                        text_client:
+                          type: string
+                          description: 'The full name of the client.'
+                        url_profile:
+                          type: string
+                          description: 'The link to the client profile.'
+                      required:
+                        - a_reason
+                        - is_reason_single
+                        - text_client
+                        - url_profile
+                  a_uid_valid:
+                    type: array
+                    description: 'The keys of the users from [DeleteApi::$a_uid](/Wl/Profile/Setting/Delete/Delete.json) that can be deleted.'
+                    items:
+                      type: string
+                required:
+                  - a_error_info
+                  - a_uid_valid
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Checks whether the users can be deleted from the businesses.'
+      description: |-
+        Checks the users of [DeleteApi::$a_uid](/Wl/Profile/Setting/Delete/Delete.json) in the businesses of [DeleteApi::$a_business](/Wl/Profile/Setting/Delete/Delete.json), and returns
+        the users that can be deleted in [DeleteApi::$a_uid_valid](/Wl/Profile/Setting/Delete/Delete.json) and the reasons for every user in
+        [DeleteApi::$a_error_info](/Wl/Profile/Setting/Delete/Delete.json). When a client checks their own account and it cannot be deleted, the request
+        fails with the reason in [DeleteApi::$text_reason](/Wl/Profile/Setting/Delete/Delete.json).
+      tags:
+        - Profile
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_business
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The keys of the businesses to delete the account from.
+
+            Send one business key to delete the account from that business only. Send all the businesses of the client,
+            except the franchisor businesses, to delete the account everywhere. A franchisor business is rejected here; it is
+            removed automatically when the account is deleted from all the other businesses.
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The keys of the users to delete.
+
+            When empty, the signed-in user is used. Keys other than the signed-in user are accepted only when
+            [DeleteApi::$is_backend](/Wl/Profile/Setting/Delete/Delete.json) is `true`.
+        -
+          name: is_backend
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` when a staff member deletes clients, `false` when the client deletes their own account.
+
+            When `true`, the signed-in staff member must have the privilege to delete client profiles in every business of
+            [DeleteApi::$a_business](/Wl/Profile/Setting/Delete/Delete.json).
+        -
+          name: text_application
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The application ID.
+
+            When set, the Apple Sign-in tokens of the user are revoked when the account is deleted from all the businesses.
+      x-error-fields:
+        - text_reason
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Profile.Setting.Delete.Delete.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_delete_result:
+                    type: object
+                    description: |-
+                      The result of the deletion for every user.
+
+                      The key is a user key.  The value is:
+                    additionalProperties:
+                      type: object
+                      properties:
+                        is_full_delete:
+                          type: boolean
+                          description: |-
+                            `true` if the client was deleted from all their businesses, so that the sign-in credentials of the account
+                            were removed; `false` otherwise.
+                        k_business_left:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'The key of a business where the client is still a member. `null` if no business is left.'
+                      required:
+                        - is_full_delete
+                        - k_business_left
+                  a_error_info:
+                    type: object
+                    description: |-
+                      The reasons why the account cannot be deleted, for every user.
+
+                      The key is a user key.  The value is:
+                    additionalProperties:
+                      type: object
+                      properties:
+                        a_reason:
+                          type: object
+                          description: |-
+                            The list of the reasons why the client cannot be deleted. Empty if the client can be deleted. Every element
+                            is:
+                          properties:
+                            html_data:
+                              type: string
+                              description: 'Additional data for the text of the reason.'
+                            text_reason:
+                              type: string
+                              description: 'The reason why the client profile cannot be deleted.'
+                          required:
+                            - html_data
+                            - text_reason
+                        is_reason_single:
+                          type: boolean
+                          description: '`true` if there is exactly one reason, `false` otherwise.'
+                        text_client:
+                          type: string
+                          description: 'The full name of the client.'
+                        url_profile:
+                          type: string
+                          description: 'The link to the client profile.'
+                      required:
+                        - a_reason
+                        - is_reason_single
+                        - text_client
+                        - url_profile
+                  a_uid_valid:
+                    type: array
+                    description: 'The keys of the users from [DeleteApi::$a_uid](/Wl/Profile/Setting/Delete/Delete.json) that can be deleted.'
+                    items:
+                      type: string
+                required:
+                  - a_delete_result
+                  - a_error_info
+                  - a_uid_valid
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Deletes the account of the users from the businesses.'
+      description: |-
+        Makes the same checks as `get()`, then anonymizes the profiles of the users in the businesses
+        of [DeleteApi::$a_business](/Wl/Profile/Setting/Delete/Delete.json) and returns the result for every user in [DeleteApi::$a_delete_result](/Wl/Profile/Setting/Delete/Delete.json).
+        A request of a client may require a captcha, as the description of the endpoint says.
+      tags:
+        - Profile
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_business
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The keys of the businesses to delete the account from.
+
+            Send one business key to delete the account from that business only. Send all the businesses of the client,
+            except the franchisor businesses, to delete the account everywhere. A franchisor business is rejected here; it is
+            removed automatically when the account is deleted from all the other businesses.
+        -
+          name: a_uid
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The keys of the users to delete.
+
+            When empty, the signed-in user is used. Keys other than the signed-in user are accepted only when
+            [DeleteApi::$is_backend](/Wl/Profile/Setting/Delete/Delete.json) is `true`.
+        -
+          name: is_backend
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` when a staff member deletes clients, `false` when the client deletes their own account.
+
+            When `true`, the signed-in staff member must have the privilege to delete client profiles in every business of
+            [DeleteApi::$a_business](/Wl/Profile/Setting/Delete/Delete.json).
+        -
+          name: text_application
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            The application ID.
+
+            When set, the Apple Sign-in tokens of the user are revoked when the account is deleted from all the businesses.
+      x-error-fields:
+        - text_reason
       x-rate-limit:
         -
           limit: 200000
@@ -120071,11 +120664,18 @@ paths:
                         s_title:
                           type: string
                           description: 'The title of the Purchase Option.'
+                        text_remain_duration:
+                          type: string
+                          description: |-
+                            The time left on the Purchase Option in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the program of the Purchase Option is not of the type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid),
+                            or if the Purchase Option has no limit of time.
                       required:
                         - i_limit
                         - i_remain
                         - s_expire
                         - s_title
+                        - text_remain_duration
                   a_purchase:
                     type: array
                     description: |-
@@ -121507,11 +122107,18 @@ paths:
                         s_title:
                           type: string
                           description: 'The title of the Purchase Option.'
+                        text_remain_duration:
+                          type: string
+                          description: |-
+                            The time left on the Purchase Option in hours and minutes, for example `2 h 25 min`.
+                            An empty string if the program of the Purchase Option is not of the type [RsProgramTypeSid::DURATION](#/components/schemas/RsProgramTypeSid),
+                            or if the Purchase Option has no limit of time.
                       required:
                         - i_limit
                         - i_remain
                         - s_expire
                         - s_title
+                        - text_remain_duration
                   a_purchase:
                     type: array
                     description: |-
@@ -138712,6 +139319,15 @@ components:
         - 1583 (`Wl\Fitbuilder\MessageChannel`): Channel to inform Fitbuilder messenger about new information.
         - 733 (`Wl\Virtual\AccountUpdateChannel`): Channel to pass over information about virtual account release.
         - 688 (`Wl\Virtual\MeetingScheduleChannel`): Channel to pass over information about meeting creation.
+        - 2528 (`Wl\Wallet\WalletAddChannel`): Channel to tell the page that adds a pass to Apple Wallet that the pass is in the wallet.
+
+          The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
+          see [AppleRegistrationApi](/Wl/Wallet/Apple/AppleRegistration.json), and the web service notifies this channel. The page of
+          WalletAddController is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
+
+          The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
+          checked the link of the wallet gets, see [WalletAddChannel::signGet()](#/components/schemas/Core.WebSocket.ChannelBroadcast).
         - 735 (`Thoth\ReportCore\Generator\UpdateChannel`): A message is sent through this channel every time a report gets updated.
         - 19 (`Core\WebSocket\Example\ExampleFunctionChannel`): Example channel to test how asynchronous function calls work.
         - 1660 (`Wl\Profile\Contract\ContractChannel`): Channel to notify user about new unsigned documents.
@@ -138758,6 +139374,7 @@ components:
         - 1583
         - 733
         - 688
+        - 2528
         - 735
         - 19
         - 1660
@@ -138795,6 +139412,7 @@ components:
         - Wl\Fitbuilder\MessageChannel
         - Wl\Virtual\AccountUpdateChannel
         - Wl\Virtual\MeetingScheduleChannel
+        - Wl\Wallet\WalletAddChannel
         - Thoth\ReportCore\Generator\UpdateChannel
         - Core\WebSocket\Example\ExampleFunctionChannel
         - Wl\Profile\Contract\ContractChannel
@@ -138844,6 +139462,16 @@ components:
         - 'Channel to inform Fitbuilder messenger about new information.'
         - 'Channel to pass over information about virtual account release.'
         - 'Channel to pass over information about meeting creation.'
+        - |-
+          Channel to tell the page that adds a pass to Apple Wallet that the pass is in the wallet.
+
+          The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
+          see {@link \Wl\Wallet\Apple\AppleRegistrationApi}, and the web service notifies this channel. The page of
+          {@link \Wl\Wallet\WalletAddController} is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
+
+          The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
+          checked the link of the wallet gets, see {@link \Wl\Wallet\WalletAddChannel::signGet()}.
         - 'A message is sent through this channel every time a report gets updated.'
         - 'Example channel to test how asynchronous function calls work.'
         - 'Channel to notify user about new unsigned documents.'
@@ -143199,13 +143827,14 @@ components:
 
         Usually type includes type and category.
 
-        Last used ID: 25.
+        Last used ID: 26.
 
         Values:
         - 21 (`ACCOUNT_MEMBERSHIP`): Special Membership that does not allow client to visit anything but fill client's account after purchase
           and after renew.
         - 20 (`ACCOUNT_PASS`): Special Time-Based pass that does not allow client to visit anything but fill client's account after purchase
           and after renew.
+        - 26 (`CLASS_DURATION`): Class Duration Pass.
         - 25 (`CLASS_GUEST`): Class Guest pass.
         - 1 (`CLASS_LIMIT`): Class Pass.
         - 5 (`CLASS_MEMBERSHIP`): Class Membership.
@@ -143231,6 +143860,7 @@ components:
       enum:
         - 21
         - 20
+        - 26
         - 25
         - 1
         - 5
@@ -143256,6 +143886,7 @@ components:
       x-enum-varnames:
         - ACCOUNT_MEMBERSHIP
         - ACCOUNT_PASS
+        - CLASS_DURATION
         - CLASS_GUEST
         - CLASS_LIMIT
         - CLASS_MEMBERSHIP
@@ -143285,6 +143916,7 @@ components:
         - |-
           Special Time-Based pass that does not allow client to visit anything but fill client's account after purchase
           and after renew.
+        - 'Class Duration Pass.'
         - 'Class Guest pass.'
         - 'Class Pass.'
         - 'Class Membership.'
@@ -147054,6 +147686,33 @@ components:
 
           Replaces {@link \Wl\Lead\Conversion\LeadConversionTypeSid::WON}.
           Type of the stage is {@link \Wl\Lead\Stage\LeadStageTypeSid::WON}.
+    Wl.Lead.Stage.LeadStageManagerSid:
+      type: integer
+      format: int32
+      description: |-
+        Who manages the lead stages of the locations of an Enterprise.
+
+        The value is chosen by the Enterprise Headquarters in the setting "Lead stages are managed by" and is stored as
+        [LeadStageManagerOption](#/components/schemas/Wl.Business.Config.Option.OptionSidAbstract).
+
+        Last used ID: 2.
+
+        Values:
+        - 1 (`EACH_LOCATION`): Each location manages its own lead stages, also after the Enterprise Headquarters pushed its stages to it.
+        - 2 (`HEADQUARTERS`): The Enterprise Headquarters manages the lead stages. A location that received a push can view its stages, but
+          its staff can not add, rename, reorder or delete them.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - EACH_LOCATION
+        - HEADQUARTERS
+      x-enum-descriptions:
+        - 'Each location manages its own lead stages, also after the Enterprise Headquarters pushed its stages to it.'
+        - |-
+          The Enterprise Headquarters manages the lead stages. A location that received a push can view its stages, but
+          its staff can not add, rename, reorder or delete them.
+      default: 1
     Wl.Business.Policy.BlameSid:
       type: integer
       format: int32
@@ -149210,6 +149869,7 @@ components:
           </ul>
         - 1 (`CLASSES`): Purchase options to pay for classes, events and enrollments:
           <ul>
+            <li>[RsProgramSid::CLASS_DURATION](#/components/schemas/RsProgramSid)</li>
             <li>[RsProgramSid::CLASS_LIMIT](#/components/schemas/RsProgramSid)</li>
             <li>[RsProgramSid::CLASS_MEMBERSHIP](#/components/schemas/RsProgramSid)</li>
             <li>[RsProgramSid::CLASS_PASS](#/components/schemas/RsProgramSid)</li>
@@ -149268,6 +149928,7 @@ components:
         - |-
           Purchase options to pay for classes, events and enrollments:
           <ul>
+            <li>{@link \RsProgramSid::CLASS_DURATION}</li>
             <li>{@link \RsProgramSid::CLASS_LIMIT}</li>
             <li>{@link \RsProgramSid::CLASS_MEMBERSHIP}</li>
             <li>{@link \RsProgramSid::CLASS_PASS}</li>
