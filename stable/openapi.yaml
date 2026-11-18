@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261118085140
+  version: 1.1.20261118105010
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -4203,6 +4203,9 @@ paths:
                     description: |-
                       Information about whether the given user can cancel an online booking and what
                       consequences the cancellation would have:
+                       
+                      A client that has come only by [VisitStatusApi::$s_status_secret](/Wl/Visit/VisitStatus.json), with no login or with no access of its
+                      own to the visit, cannot cancel the visit: it gets `can_cancel` as `false` and the other values as empty.
                     properties:
                       a_penalty:
                         type:
@@ -4457,7 +4460,9 @@ paths:
         Returns full details for the specified visit, including date, duration, staff, location,
         virtual service join URL, assigned resources, downloadable calendar data, and whether
         the visit can still be cancelled. Handles class, appointment, and gym visit types. Used
-        to render the visit detail view and action buttons in the client portal.
+        to render the visit detail view and action buttons in the client portal. A visit of a class can also be read
+        without a login and without the access of the user by its temporary secret,
+        [VisitStatusApi::$s_status_secret](/Wl/Visit/VisitStatus.json). Such a visit cannot be virtual.
       tags:
         - Visits
       parameters:
@@ -4489,6 +4494,23 @@ paths:
           schema:
             type: string
           description: 'The visit key.'
+        -
+          name: s_status_secret
+          in: query
+          required: true
+          schema:
+            type: string
+            maxLength: 76
+          description: |-
+            The temporary secret of the visit, which gives its status to a client that has no login or has no access of its
+            own to the visit. It is given with the visit by the receipt of the purchase, see
+            [PurchaseReceiptApi::$a_purchase_item](/Wl/Purchase/Receipt/PurchaseReceipt.json), and expires in one hour. An empty value, a
+            secret that has expired or a secret of another visit gives nothing: the access is checked as without it. Only
+            the status is given by it, the visit cannot be changed, and the link to join a virtual visit is never given.
+            It is not the permanent secret of the visit, `rs_visit.s_secret`.
+
+            Example: `1767225600-0f3a...`, where the number is the time of the expiration in UTC, and the rest is the
+            signature in 64 hexadecimal digits.
       x-instance-get-key: 'k_visit,k_business'
       x-rate-limit:
         -
@@ -39092,8 +39114,19 @@ paths:
                           type: array
                           description: |-
                             List of visit keys. Only available if the purchase item is a class period,
-                            enrollment, enrollment deposit, or enrollment discount. Each element is a string visit key.
+                            enrollment, enrollment deposit, enrollment discount, or a ticket (a visit for every session of the event
+                            that the ticket is for). Each element is a string visit key.
                           items:
+                            type: string
+                        a_visit_secret:
+                          type: object
+                          description: |-
+                            The temporary secrets of the visits of `a_visit`, by the key of the visit. Only available if the purchase item
+                            is a ticket. A client passes the secret of a visit as
+                            [VisitStatusApi::$s_status_secret](/Wl/Visit/VisitStatus.json), and gets the status of that visit without a login: the
+                            buyer of a ticket may be a guest who has only the token of the receipt. The secret expires in one hour after
+                            the receipt is read.
+                          additionalProperties:
                             type: string
                         i_count:
                           type: integer
@@ -47898,7 +47931,9 @@ paths:
                               description: 'The total amount that will be charged for the tuition item when during purchase.'
                             m_deferred:
                               type: string
-                              description: 'The part of the tuition cost that is not charged during purchase.'
+                              description: |-
+                                The part of the tuition cost that is not charged during purchase. Always `0.00` for a tuition
+                                  billed as memberships: the days of the period that are gone are not billed at all.
                         k_login_prize:
                           type: string
                           description: 'Key of login prize used on item.'
@@ -48012,9 +48047,10 @@ paths:
                       The amount that has to be charged right now for the cart.
 
                       Equals [CartApi::$m_total](/Wl/Catalog/Cart/Cart.json) for everything that is paid for in full at once. A tuition
-                      defers a part of its cost to an installment plan or to a membership schedule, and `m_total`
-                      covers the full cost regardless, so this is the amount to put into the payment form. It is
-                      `m_total` minus `a_config.m_deferred` of every tuition item in [CartApi::$a_item](/Wl/Catalog/Cart/Cart.json).
+                      defers a part of its cost to an installment plan, and `m_total` covers the full cost
+                      regardless, so this is the amount to put into the payment form. A tuition billed as memberships
+                      defers nothing: its part of `m_total` is the prorated first payment. It is `m_total` minus
+                      `a_config.m_deferred` of every tuition item in [CartApi::$a_item](/Wl/Catalog/Cart/Cart.json).
                     default: '0.00'
                   m_discount:
                     type:
@@ -48207,7 +48243,9 @@ paths:
                       description: 'The total amount that will be charged for the tuition item when during purchase.'
                     m_deferred:
                       type: string
-                      description: 'The part of the tuition cost that is not charged during purchase.'
+                      description: |-
+                        The part of the tuition cost that is not charged during purchase. Always `0.00` for a tuition
+                          billed as memberships: the days of the period that are gone are not billed at all.
                 k_login_prize:
                   type: string
                   description: 'Key of login prize used on item.'
@@ -99865,7 +99903,10 @@ paths:
                       properties:
                         a_conflict:
                           type: object
-                          description: 'Information about booking conflicts. Keys are bookings dates/times in MySQL format in UTC. Values are arrays with next keys:'
+                          description: |-
+                            Information about booking conflicts. Keys are bookings dates/times in MySQL format in UTC. Values are arrays with next keys:
+
+                            For a long recurring series, send the same information in `json_conflict` instead.
                           properties:
                             dt_date_local:
                               type: string
@@ -100047,6 +100088,18 @@ paths:
                         is_wait_list_unpaid:
                           type: boolean
                           description: 'If `true`, appointment waits unpaid.'
+                        json_conflict:
+                          type: string
+                          description: |-
+                            The same information about booking conflicts as `a_conflict`, encoded as one JSON object: keys are
+                            booking dates/times in MySQL format in UTC, values are the objects with the keys described in
+                            `a_conflict`.
+                            When it is not empty, it replaces `a_conflict` of this provider. An empty string, an empty JSON object
+                            and an empty JSON array leave `a_conflict` in effect.
+                            A value that is not a JSON object or array is refused with the `json-invalid` error.
+                            The errors in the entries are reported for `a_conflict`, as for the entries of `a_conflict` itself.
+                            Use it for a long recurring series: every entry of `a_conflict` costs several POST variables, and the
+                            number of the POST variables of one request is limited.
                         k_login_prize:
                           type: string
                           description: "The user's prize."
@@ -109928,9 +109981,10 @@ paths:
                       The amount that has to be charged right now for the cart.
 
                       Equals [CatalogCartApi::$m_total](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json) for everything that is paid for in full at once. A
-                      tuition defers a part of its cost to an installment plan or to a membership schedule, and
-                      `m_total` covers the full cost regardless, so this is the amount to put into the payment form.
-                      It is `m_total` minus `a_config.m_deferred` of every tuition item in
+                      tuition defers a part of its cost to an installment plan, and `m_total` covers the full cost
+                      regardless, so this is the amount to put into the payment form. A tuition billed as memberships
+                      defers nothing: its part of `m_total` is the prorated first payment. It is `m_total` minus
+                      `a_config.m_deferred` of every tuition item in
                       [CatalogCartApi::$a_item](/Wl/Catalog/StaffApp/CatalogCart/CatalogCart.json).
                     default: '0.00'
                   m_discount:
@@ -122487,8 +122541,8 @@ paths:
                                   type: string
                                   description: |-
                                     The part of the event cost that is not charged right now, including tax. Goes
-                                         to the installment plan or to the membership schedule, depending on the
-                                         tuition billing mode.
+                                         to the installment plan. Always `0.00` for a tuition billed as memberships: the
+                                         days of the period that are gone are not billed at all.
                                 m_discount:
                                   type: string
                                   description: 'Total discount amount applied to the event, `0.00` if there is none.'
@@ -122635,9 +122689,10 @@ paths:
                       The amount that has to be charged right now for the given purchase options.
 
                       Equals [PurchaseElementGroupApi::$m_cost](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) for everything that is paid for in full at
-                      once. A tuition defers a part of its cost to an installment plan or to a membership schedule,
-                      and `m_cost` covers the full cost regardless, so this is the amount to put into the payment
-                      form. It is `m_cost` minus `a_config.m_deferred` of every tuition item in
+                      once. A tuition defers a part of its cost to an installment plan, and `m_cost` covers the full
+                      cost regardless, so this is the amount to put into the payment form (a tuition billed as
+                      memberships defers nothing, its `m_cost` is the prorated first payment). It is `m_cost` minus
+                      `a_config.m_deferred` of every tuition item in
                       [PurchaseElementGroupApi::$a_purchase_item](/Wl/Book/Process/Purchase/PurchaseElementGroup.json).
                   m_checkout_tax:
                     type: string
@@ -122652,8 +122707,8 @@ paths:
                     description: |-
                       The total cost of the given purchase options.
 
-                      For a tuition this is the full cost, including whatever is deferred to an installment plan or
-                      to a membership schedule.
+                      For a tuition this is the full cost, including whatever is deferred to an installment plan; for
+                      a tuition billed as memberships it is the prorated first payment.
                   m_discount:
                     type: string
                     description: 'The amount of the whole discount for the given purchase options.'
@@ -122701,8 +122756,9 @@ paths:
         Validates each item in `a_purchase_item` (type, key, installment eligibility, and prize applicability),
         applies discount codes, login-type discounts, and installment adjustments, then accumulates price, subtotal,
         discount, tax, and cost totals across all items and returns them as result fields. For tuition
-        items the totals cover the full cost, so the amount that has to be charged right now, and the
-        tax portion of it, are reported separately in [PurchaseElementGroupApi::$m_checkout](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) and
+        items the totals cover the full cost (the prorated first payment for a tuition billed as memberships),
+        so the amount that has to be charged right now, and the tax portion of it, are reported separately in
+        [PurchaseElementGroupApi::$m_checkout](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) and
         [PurchaseElementGroupApi::$m_checkout_tax](/Wl/Book/Process/Purchase/PurchaseElementGroup.json), and the per-component split is written back
         into `a_config` of the item it belongs to.
       tags:
@@ -122795,8 +122851,8 @@ paths:
                           type: string
                           description: |-
                             The part of the event cost that is not charged right now, including tax. Goes
-                                 to the installment plan or to the membership schedule, depending on the
-                                 tuition billing mode.
+                                 to the installment plan. Always `0.00` for a tuition billed as memberships: the
+                                 days of the period that are gone are not billed at all.
                         m_discount:
                           type: string
                           description: 'Total discount amount applied to the event, `0.00` if there is none.'
@@ -123059,7 +123115,8 @@ paths:
                               type: string
                               description: |-
                                 The part of the event cost that is not charged right now, including tax. Goes to the
-                                installment plan or to the membership schedule, depending on the tuition billing mode.
+                                installment plan. Always `0.00` for a tuition billed as memberships: the days of the period that
+                                are gone are not billed at all, and the amounts of the row are the prorated first payment.
                             m_discount:
                               type: string
                               description: 'Total discount amount applied to the event, `0.00` if there is none.'
@@ -123150,7 +123207,7 @@ paths:
                           description: |-
                             The amount that has to be charged for the tuition right now, including tax. The other
                             amounts of this row cover the full cost, including whatever is deferred to an installment
-                            plan or to a membership schedule.
+                            plan. For a tuition billed as memberships they are the prorated first payment, as this one.
                         m_deferred:
                           type: string
                           description: |-
@@ -123201,8 +123258,8 @@ paths:
         Validates the business, location, and user, then for each item in `a_purchase_item_request` computes the price,
         applicable discount code reduction, login-type discount, and taxes, and returns per-item cost, discount,
         price, tax, and subtotal amounts in `a_purchase_item_result`. For a tuition the amounts cover the
-        full cost, and the split between what is charged right now and what is deferred is added to the
-        same row.
+        full cost (the prorated first payment for a tuition billed as memberships), and the split between what is
+        charged right now and what is deferred is added to the same row.
       tags:
         - Booking
       parameters:
@@ -123377,7 +123434,8 @@ paths:
                             type: string
                             description: |-
                               The part of the event cost that is not charged right now, including tax. Goes to the
-                              installment plan or to the membership schedule, depending on the tuition billing mode.
+                              installment plan. Always `0.00` for a tuition billed as memberships: the days of the period that
+                              are gone are not billed at all, and the amounts of the cart are the prorated first payment.
                           m_discount:
                             type: string
                             description: 'Total discount amount applied to the event, `0.00` if there is none.'
@@ -123479,9 +123537,10 @@ paths:
                       The amount that has to be charged right now for the given purchase options.
 
                       Equals [PurchaseElementGroupApi::$m_cost](/Wl/Book/Process/Purchase/PurchaseElementGroup.json) for everything that is paid for in full at
-                      once. A tuition defers a part of its cost to an installment plan or to a membership schedule,
-                      and `m_cost` covers the full cost regardless, so this is the amount to put into the payment
-                      form. It is `m_cost` minus `a_config.m_deferred` of every tuition item in
+                      once. A tuition defers a part of its cost to an installment plan, and `m_cost` covers the full
+                      cost regardless, so this is the amount to put into the payment form (a tuition billed as
+                      memberships defers nothing, its `m_cost` is the prorated first payment). It is `m_cost` minus
+                      `a_config.m_deferred` of every tuition item in
                       [PurchaseElementGroupApi::$a_purchase_item](/Wl/Book/Process/Purchase/PurchaseElementGroup.json).
                   m_checkout_tax:
                     type: string
@@ -123496,8 +123555,8 @@ paths:
                     description: |-
                       The total cost of the given purchase options.
 
-                      For a tuition this is the full cost, including whatever is deferred to an installment plan or
-                      to a membership schedule.
+                      For a tuition this is the full cost, including whatever is deferred to an installment plan; for
+                      a tuition billed as memberships it is the prorated first payment.
                   m_discount:
                     type: string
                     description: 'The amount of the whole discount for the given purchase options.'
@@ -123618,7 +123677,8 @@ paths:
                     type: string
                     description: |-
                       The part of the event cost that is not charged right now, including tax. Goes to the
-                      installment plan or to the membership schedule, depending on the tuition billing mode.
+                      installment plan. Always `0.00` for a tuition billed as memberships: the days of the period that
+                      are gone are not billed at all, and the amounts of the cart are the prorated first payment.
                   m_discount:
                     type: string
                     description: 'Total discount amount applied to the event, `0.00` if there is none.'
