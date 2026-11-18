@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261118103951
+  version: 1.1.20261118105147
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -26787,7 +26787,9 @@ paths:
                         i_sort:
                           type: integer
                           format: int32
-                          description: 'The sort order of the tag.'
+                          description: |-
+                            The sort order of the tag, starts from zero. A tag sent without it (or with `null`) keeps the sort order
+                              it has now, and a new tag sent without it goes to the end of the list.
                         k_tag:
                           type: string
                           description: 'The tag key.'
@@ -26795,7 +26797,6 @@ paths:
                           type: string
                           description: 'The tag title.'
                       required:
-                        - i_sort
                         - k_tag
                         - text_title
                   has_fee:
@@ -26864,7 +26865,9 @@ paths:
                         i_sort:
                           type: integer
                           format: int32
-                          description: 'The sort order of the tag.'
+                          description: |-
+                            The sort order of the tag, starts from zero. A tag sent without it (or with `null`) keeps the sort order
+                              it has now, and a new tag sent without it goes to the end of the list.
                         k_tag:
                           type: string
                           description: 'The tag key.'
@@ -26872,7 +26875,6 @@ paths:
                           type: string
                           description: 'The tag title.'
                       required:
-                        - i_sort
                         - k_tag
                         - text_title
                 required:
@@ -26926,7 +26928,9 @@ paths:
                       i_sort:
                         type: integer
                         format: int32
-                        description: 'The sort order of the tag.'
+                        description: |-
+                          The sort order of the tag, starts from zero. A tag sent without it (or with `null`) keeps the sort order
+                            it has now, and a new tag sent without it goes to the end of the list.
                       k_tag:
                         type: string
                         description: 'The tag key.'
@@ -26934,7 +26938,6 @@ paths:
                         type: string
                         description: 'The tag title.'
                     required:
-                      - i_sort
                       - k_tag
                       - text_title
                 json_list:
