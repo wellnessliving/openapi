@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261117132503
+  version: 1.1.20261118051420
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -38800,6 +38800,12 @@ paths:
                             The ticket of the purchase item. Only available if the purchase item is a ticket: one purchase item is one
                             ticket. Empty if the purchase item has no ticket. Has the following keys:
                           properties:
+                            k_class:
+                              type: string
+                              description: |-
+                                The key of the instance of the event the ticket is for. It is the same as `k_class` of `a_ticket_event`
+                                in [PurchaseReceiptApi::$a_purchase_detail](/Wl/Purchase/Receipt/PurchaseReceipt.json), so the ticket matches the links of its event. The
+                                instances of one event have the same ticket types, so this key tells the tickets of two instances apart.
                             text_event_title:
                               type: string
                               description: 'The title of the event the ticket is for.'
@@ -38818,6 +38824,7 @@ paths:
                               type: string
                               description: 'The URL of the page to print the ticket. The page works without a login.'
                           required:
+                            - k_class
                             - text_event_title
                             - text_number
                             - text_ticket_title
@@ -48746,6 +48753,113 @@ paths:
                   description: 'Key of the lead stage to move the client into.'
               required:
                 - k_lead_stage
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Lead/Stage/LeadStageManager.json:
+    get:
+      operationId: Wl.Lead.Stage.LeadStageManager.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_lead_stage_manager:
+                    $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid'
+                    description: |-
+                      Who manages the lead stages of the locations of the Enterprise. One of [LeadStageManagerSid](#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid) constants.
+
+                      [LeadStageManagerSid::EACH_LOCATION](#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid) by default.
+                required:
+                  - id_lead_stage_manager
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the setting "Lead stages are managed by".'
+      description: |-
+        The setting tells who manages the lead stages of the locations of the Enterprise that received a push of the
+        lead stages: each location or the Enterprise Headquarters. It is visible to every staff member who can open the
+        Leads settings and to every staff member who can manage the business.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the Enterprise Headquarters business.'
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Lead.Stage.LeadStageManager.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves the setting "Lead stages are managed by".'
+      description: |-
+        Changing the setting takes effect at every location that received a push of the lead stages, and no new push is
+        needed. The change is written to the Edit Log of the business. Only a staff member who can manage the business
+        settings can change the setting.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the Enterprise Headquarters business.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id_lead_stage_manager:
+                  $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid'
+                  description: |-
+                    Who manages the lead stages of the locations of the Enterprise. One of [LeadStageManagerSid](#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid) constants.
+
+                    [LeadStageManagerSid::EACH_LOCATION](#/components/schemas/Wl.Lead.Stage.LeadStageManagerSid) by default.
+              required:
+                - id_lead_stage_manager
+      x-instance-get-key: k_business
       x-rate-limit:
         -
           limit: 200000
@@ -146247,6 +146361,33 @@ components:
 
           Replaces {@link \Wl\Lead\Conversion\LeadConversionTypeSid::WON}.
           Type of the stage is {@link \Wl\Lead\Stage\LeadStageTypeSid::WON}.
+    Wl.Lead.Stage.LeadStageManagerSid:
+      type: integer
+      format: int32
+      description: |-
+        Who manages the lead stages of the locations of an Enterprise.
+
+        The value is chosen by the Enterprise Headquarters in the setting "Lead stages are managed by" and is stored as
+        [LeadStageManagerOption](#/components/schemas/Wl.Business.Config.Option.OptionSidAbstract).
+
+        Last used ID: 2.
+
+        Values:
+        - 1 (`EACH_LOCATION`): Each location manages its own lead stages, also after the Enterprise Headquarters pushed its stages to it.
+        - 2 (`HEADQUARTERS`): The Enterprise Headquarters manages the lead stages. A location that received a push can view its stages, but
+          its staff can not add, rename, reorder or delete them.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - EACH_LOCATION
+        - HEADQUARTERS
+      x-enum-descriptions:
+        - 'Each location manages its own lead stages, also after the Enterprise Headquarters pushed its stages to it.'
+        - |-
+          The Enterprise Headquarters manages the lead stages. A location that received a push can view its stages, but
+          its staff can not add, rename, reorder or delete them.
+      default: 1
     Wl.Member.Progress.Field.ProgressFieldSid:
       type: integer
       format: int32
