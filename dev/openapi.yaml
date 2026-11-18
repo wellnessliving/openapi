@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261118105147
+  version: 1.1.20261118124743
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8765,6 +8765,11 @@ paths:
                         k_login_promotion:
                           type: string
                           description: 'Login promotion key. Required if `a_low` is not set.'
+                        k_visit:
+                          type: string
+                          description: |-
+                            Key of the visit that caused the notice. Set by the automation only if its trigger has a visit. For a time
+                               pass (a class duration pass) it is added to the ID of the email, so one visit sends one email.
                         uid:
                           type: string
                           description: 'User key.'
