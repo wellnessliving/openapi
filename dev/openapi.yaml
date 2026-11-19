@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261119150545
+  version: 1.1.20261119191156
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -13391,8 +13391,6 @@ paths:
           schema:
             type: string
           description: 'Filter phrase to filter quizzes by name.'
-      deprecated: true
-      x-deprecated: 'Use {@link \Wl\Quiz\QuizList79Api} instead.'
       x-instance-get-key: k_business
       x-rate-limit:
         -
