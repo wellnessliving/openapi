@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261119094430
+  version: 1.1.20261119095924
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -296,6 +296,9 @@ tags:
   -
     name: Tags
     description: 'Tag management endpoints.'
+  -
+    name: Task
+    description: 'Tasks of the staff: the list of the Task Manager and the settings of its table.'
   -
     name: Tasks
     description: 'Staff task management endpoints.'
@@ -84810,6 +84813,489 @@ paths:
         -
           limit: 200000
           period: 3600
+  /Wl/Task/Manager/TaskManagerList.json:
+    get:
+      operationId: Wl.Task.Manager.TaskManagerList.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_count:
+                    type: object
+                    description: |-
+                      How many tasks each tab of the page has: 
+
+                      A count follows the staff filter and not the search or the other filters.
+                    properties:
+                      i_all:
+                        type: integer
+                        format: int32
+                        description: 'Every task the user may see.'
+                      i_complete:
+                        type: integer
+                        format: int32
+                        description: 'The tasks that are completed.'
+                      i_future:
+                        type: integer
+                        format: int32
+                        description: 'The tasks that are not completed: to do and in progress.'
+                      i_today:
+                        type: integer
+                        format: int32
+                        description: 'The tasks due today, in the time zone of the business.'
+                    required:
+                      - i_all
+                      - i_complete
+                      - i_future
+                      - i_today
+                  a_row:
+                    type: array
+                    description: 'The tasks of the page, in the order of the sort:'
+                    items:
+                      type: object
+                      properties:
+                        dtl_add:
+                          type: string
+                          description: 'The date and the time when the task was created, in the time zone of the business, MySQL format.'
+                        dtl_due:
+                          type: string
+                          description: 'The date and the time when the task is due, in the time zone of the business, MySQL format.'
+                        html_description:
+                          type: string
+                          description: 'The description of the task, made into HTML from the visual editor. An empty string without one.'
+                        id_task_status:
+                          $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                          description: 'The status of the task. One of [TaskStatusSid](#/components/schemas/Wl.Task.TaskStatusSid) constants.'
+                        k_business:
+                          type: string
+                          description: |-
+                            Key of the business of the task: the business of the request, or another location of a franchise in the
+                            flexible travel mode.
+                        k_task:
+                          type: string
+                          description: 'Task key.'
+                        text_add:
+                          type: string
+                          description: 'The date and the time when the task was created, as the page shows it: "Fri, Dec 30, 2022 at 3:00 pm".'
+                        text_client_mail:
+                          type: string
+                          description: 'The email of the client. An empty string when the task has no client or the client has no email.'
+                        text_client_member:
+                          type: string
+                          description: 'The ID of the client in the business. An empty string when the task has no client or the client has none.'
+                        text_client_name:
+                          type: string
+                          description: 'The full name of the client. An empty string when the task has no client.'
+                        text_client_phone:
+                          type: string
+                          description: |-
+                            The cell phone of the client, formatted. An empty string when the task has no client or the client has no
+                            cell phone.
+                        text_create:
+                          type: string
+                          description: 'Who created the task. An empty string when the task keeps no author.'
+                        text_due:
+                          type: string
+                          description: 'The date and the time when the task is due, as the page shows it: "Fri, Dec 30, 2022 at 3:00 pm".'
+                        text_staff:
+                          type: string
+                          description: |-
+                            The full name of the staff member the task is assigned to. An empty string when that user is no staff member
+                            of the business of the task.
+                        text_title:
+                          type: string
+                          description: 'The name of the task.'
+                        uid:
+                          type:
+                            - string
+                            - 'null'
+                          description: 'Key of the client of the task. `null` when the task has no client.'
+                        uid_staff:
+                          type: string
+                          description: 'Key of the user the task is assigned to.'
+                        url_client_photo:
+                          type: string
+                          description: |-
+                            The address of the photo of the client. An empty string when the task has no client or the client has no
+                            photo.
+                        url_client_profile:
+                          type: string
+                          description: 'The address of the profile of the client. An empty string when the task has no client.'
+                        url_edit:
+                          type: string
+                          description: 'The address of the form that edits the task.'
+                        url_staff:
+                          type: string
+                          description: |-
+                            The address of the profile of the staff member the task is assigned to, as the old report linked it. An
+                            empty string when that user is no staff member of the business of the page: a staff member of another
+                            location of a franchise has no profile here.
+                      required:
+                        - dtl_add
+                        - dtl_due
+                        - html_description
+                        - id_task_status
+                        - k_business
+                        - k_task
+                        - text_add
+                        - text_client_mail
+                        - text_client_member
+                        - text_client_name
+                        - text_client_phone
+                        - text_create
+                        - text_due
+                        - text_staff
+                        - text_title
+                        - uid
+                        - uid_staff
+                        - url_client_photo
+                        - url_client_profile
+                        - url_edit
+                        - url_staff
+                  a_staff:
+                    type: array
+                    description: 'The staff members that the staff filter offers, sorted by the name:'
+                    items:
+                      type: object
+                      properties:
+                        text_name:
+                          type: string
+                          description: 'The full name of the staff member.'
+                        uid:
+                          type: string
+                          description: 'Key of the staff member.'
+                      required:
+                        - text_name
+                        - uid
+                  can_add:
+                    type: boolean
+                    description: 'Whether the signed-in user may add tasks.'
+                  can_edit:
+                    type: boolean
+                    description: 'Whether the signed-in user may edit the tasks. Without it the user only changes their status.'
+                  dl_today:
+                    type: string
+                    format: date
+                    description: 'Today in the time zone of the business, MySQL format: the day of the tab "Due today".'
+                  i_total:
+                    type: integer
+                    format: int32
+                    description: 'How many tasks the selection has over every page.'
+                  id_tab:
+                    $ref: '#/components/schemas/Wl.Task.Manager.ManagerTabSid'
+                    description: 'The tab of the page that the filters of the status and of the date make. One of [ManagerTabSid](#/components/schemas/Wl.Task.Manager.ManagerTabSid) constants.'
+                  is_task_location:
+                    type: boolean
+                    description: 'Whether the page offers the filter of the location: a franchise in the flexible travel mode.'
+                  url_add:
+                    type: string
+                    description: 'The address of the form that adds a task.'
+                required:
+                  - a_count
+                  - a_row
+                  - a_staff
+                  - can_add
+                  - can_edit
+                  - dl_today
+                  - i_total
+                  - id_tab
+                  - is_task_location
+                  - url_add
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns one page of the tasks of the Task Manager.'
+      description: |-
+        Gives the tasks that the signed-in staff member may see in the business, searched, filtered, sorted and cut into
+        pages, with the counts of the tabs and the staff members the staff filter offers. A staff member without the
+        privilege "All tasks" sees only the tasks assigned to them. In a franchise in the flexible travel mode the tasks of
+        every location are listed, and the filter of the location picks the staff of the home location (the default), of
+        the other locations or of every location.
+      tags:
+        - Task
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_task_location
+          in: query
+          required: false
+          schema:
+            type:
+              - array
+              - 'null'
+            items:
+              $ref: '#/components/schemas/Wl.Report.Filter.TaskLocation.TaskLocationSid'
+          description: |-
+            The locations of the staff members whose tasks are shown, for a franchise in the flexible travel mode. One of
+            [TaskLocationSid](#/components/schemas/Wl.Report.Filter.TaskLocation.TaskLocationSid) constants each.
+            `null` to show the tasks of the staff of the home location, which is the default in that mode; both locations to
+            show every location. Ignored outside that mode.
+        -
+          name: a_task_status
+          in: query
+          required: false
+          schema:
+            type:
+              - array
+              - 'null'
+            items:
+              $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+          description: |-
+            The statuses of the tasks to show. One of [TaskStatusSid](#/components/schemas/Wl.Task.TaskStatusSid) constants each.
+            `null` to show the tasks of every status.
+        -
+          name: a_uid_staff
+          in: query
+          required: false
+          schema:
+            type:
+              - array
+              - 'null'
+            items:
+              type: string
+          description: |-
+            Keys of the staff members whose tasks are shown. 
+            `null` to show the tasks of every staff member the user may see.
+        -
+          name: dl_due_end
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            format: date
+          description: |-
+            The last day of the due dates of the shown tasks, in the time zone of the business, MySQL format.
+            `null` for no limit.
+        -
+          name: dl_due_start
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            format: date
+          description: |-
+            The first day of the due dates of the shown tasks, in the time zone of the business, MySQL format.
+            `null` for no limit.
+        -
+          name: i_page
+          in: query
+          required: false
+          schema:
+            type:
+              - integer
+              - 'null'
+            format: int32
+            minimum: 1
+            maximum: 1000000
+          description: 'The number of the page, from 1. The first page when it is not given.'
+        -
+          name: i_page_size
+          in: query
+          required: false
+          schema:
+            type:
+              - integer
+              - 'null'
+            format: int32
+            minimum: 1
+            maximum: 100
+          description: 'How many tasks a page has: 25, 50 or 100. 25 when it is not given.'
+        -
+          name: id_column_sort
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Wl.Task.Manager.TaskManagerColumnEnum'
+          description: |-
+            The column that sorts the list. One of [TaskManagerColumnEnum](#/components/schemas/Wl.Task.Manager.TaskManagerColumnEnum) cases but Date created.
+            `null` to sort by the due date.
+        -
+          name: is_sort_desc
+          in: query
+          required: false
+          schema:
+            type:
+              - boolean
+              - 'null'
+          description: |-
+            Whether the list is sorted in the reverse order: Z to A, newest first.
+            `null` for the direct order.
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business of the page.'
+        -
+          name: text_search
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            maxLength: 255
+          description: |-
+            The text to search in the names of the tasks and in the names, the emails and the keys of their clients.
+            `null` not to search.
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Task/Manager/TaskManagerOption.json:
+    get:
+      operationId: Wl.Task.Manager.TaskManagerOption.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_column:
+                    type:
+                      - array
+                      - 'null'
+                    description: |-
+                      The shown columns in their order. One of [TaskManagerColumnEnum](#/components/schemas/Wl.Task.Manager.TaskManagerColumnEnum) cases each, as IDs.
+
+                      The answer of `get` always holds the column Task. For `put`: `null` to keep the columns as they are; the column
+                      Task is added first when the list does not have it, because it is always shown.
+                    items:
+                      $ref: '#/components/schemas/Wl.Task.Manager.TaskManagerColumnEnum'
+                  i_page_size:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      How many tasks a page of the table has: 25, 50 or 100.
+
+                      The answer of `get` always holds it. For `put`: `null` to keep the size as it is.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the settings of the table of the Task Manager of the signed-in staff member.'
+      description: |-
+        Gives the shown columns in their order and the size of a page that the staff member chose in the business, or
+        the defaults when they changed nothing: every column but Date created, and 25 tasks a page.
+      tags:
+        - Task
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business whose Task Manager the settings belong to.'
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    put:
+      operationId: Wl.Task.Manager.TaskManagerOption.put
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Saves the settings of the table of the Task Manager of the signed-in staff member.'
+      description: |-
+        Saves the shown columns in their order, or sets them back to the default, and the size of a page. A setting
+        that is not given stays as it is. The settings are kept per staff member and business.
+      tags:
+        - Task
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the business whose Task Manager the settings belong to.'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_column:
+                  type:
+                    - array
+                    - 'null'
+                  description: |-
+                    The shown columns in their order. One of [TaskManagerColumnEnum](#/components/schemas/Wl.Task.Manager.TaskManagerColumnEnum) cases each, as IDs.
+
+                    The answer of `get` always holds the column Task. For `put`: `null` to keep the columns as they are; the column
+                    Task is added first when the list does not have it, because it is always shown.
+                  items:
+                    $ref: '#/components/schemas/Wl.Task.Manager.TaskManagerColumnEnum'
+                i_page_size:
+                  type:
+                    - integer
+                    - 'null'
+                  format: int32
+                  description: |-
+                    How many tasks a page of the table has: 25, 50 or 100.
+
+                    The answer of `get` always holds it. For `put`: `null` to keep the size as it is.
+                is_reset:
+                  type:
+                    - boolean
+                    - 'null'
+                  description: 'Whether `put` sets the columns and their order back to the default. `a_column` is not given then.'
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
   /Wl/Task/Staff/TaskStaffList.json:
     get:
       operationId: Wl.Task.Staff.TaskStaffList.get
@@ -151011,6 +151497,97 @@ components:
         - 'Rewards for reviewing a business.'
         - 'Social networks rewards.'
         - 'Rewards for significant user events.'
+    Wl.Task.Manager.ManagerTabSid:
+      type: integer
+      format: int32
+      description: |-
+        A list of tabs in task manager report.
+
+        Values:
+        - 3 (`ALL`): Show all tasks.
+        - 4 (`COMPLETE`): Show tasks in status complete, see [TaskStatusSid::COMPLETE](#/components/schemas/Wl.Task.TaskStatusSid).
+        - 2 (`FUTURE`): Show tasks in future.
+        - 1 (`TODAY`): Show tasks for today.
+      enum:
+        - 3
+        - 4
+        - 2
+        - 1
+      x-enum-varnames:
+        - ALL
+        - COMPLETE
+        - FUTURE
+        - TODAY
+      x-enum-descriptions:
+        - 'Show all tasks.'
+        - 'Show tasks in status complete, see {@link \Wl\Task\TaskStatusSid::COMPLETE}.'
+        - 'Show tasks in future.'
+        - 'Show tasks for today.'
+    Wl.Report.Filter.TaskLocation.TaskLocationSid:
+      type: integer
+      format: int32
+      description: |-
+        A list of task location filters.
+
+        Last ID: 2.
+
+        Values:
+        - 1 (`HOME`): Tasks assigned to staff members from current location only.
+        - 2 (`OTHER`): Tasks assigned to staff members from other locations.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - HOME
+        - OTHER
+      x-enum-descriptions:
+        - 'Tasks assigned to staff members from current location only.'
+        - 'Tasks assigned to staff members from other locations.'
+    Wl.Task.Manager.TaskManagerColumnEnum:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        A column of the table of the Task Manager.
+
+        A staff member shows, hides and orders the columns in the panel "Columns" of the page; the shown columns in their
+        order are kept by [TaskManagerOption](#/components/schemas/Wl.User.Config.Option.OptionAbstract).
+
+        Last used ID: 7.
+
+        Values:
+        - 2 (`CLIENT`): The client of the task.
+        - 5 (`CREATE`): The staff member who created the task.
+        - 7 (`DATE_ADD`): The date and the time when the task was created. Hidden by default.
+        - 4 (`DUE`): The date and the time when the task is due.
+        - 3 (`STAFF`): The staff member the task is assigned to.
+        - 6 (`STATUS`): The status of the task.
+        - 1 (`TASK`): The name and the description of the task. Always shown: a row without it cannot be read.
+      enum:
+        - 2
+        - 5
+        - 7
+        - 4
+        - 3
+        - 6
+        - 1
+      x-enum-varnames:
+        - CLIENT
+        - CREATE
+        - DATE_ADD
+        - DUE
+        - STAFF
+        - STATUS
+        - TASK
+      x-enum-descriptions:
+        - 'The client of the task.'
+        - 'The staff member who created the task.'
+        - 'The date and the time when the task was created. Hidden by default.'
+        - 'The date and the time when the task is due.'
+        - 'The staff member the task is assigned to.'
+        - 'The status of the task.'
+        - 'The name and the description of the task. Always shown: a row without it cannot be read.'
     Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid:
       type: integer
       format: int32
