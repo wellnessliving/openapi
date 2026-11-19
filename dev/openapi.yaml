@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261119131016
+  version: 1.1.20261119150545
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -24141,6 +24141,25 @@ paths:
 
                                 Empty string, if no off-site location is used.
                                 `null` if field is not loaded.
+                            s_time_end:
+                              type: string
+                              description: |-
+                                End time of the scheduled sessions in `MySql` time format (`HH:MM:SS`).
+
+                                It is in the same time zone as `text_time`: the time zone of the location,
+                                or the time zone of the profile of the client when the business lets clients choose a time zone in the profile
+                                and [EventListApi::$uid](/Wl/Event/EventList.json) is passed.
+
+                                It is the start time plus the duration of the session, so it is earlier than
+                                `s_time_start` when the session ends after midnight.
+                            s_time_start:
+                              type: string
+                              description: |-
+                                Start time of the scheduled sessions in `MySql` time format (`HH:MM:SS`).
+
+                                It is in the same time zone as `text_time`: the time zone of the location,
+                                or the time zone of the profile of the client when the business lets clients choose a time zone in the profile
+                                and [EventListApi::$uid](/Wl/Event/EventList.json) is passed.
                             s_timezone_location:
                               type: string
                               description: |-
@@ -24168,6 +24187,8 @@ paths:
                             - k_class_period
                             - k_location
                             - k_resource_location
+                            - s_time_end
+                            - s_time_start
                             - s_timezone_location
                             - text_location
                             - text_room
@@ -26996,7 +27017,9 @@ paths:
                           format: int32
                           description: |-
                             The sort order of the tag, starts from zero. A tag sent without it (or with `null`) keeps the sort order
-                              it has now, and a new tag sent without it goes to the end of the list.
+                              it has now, and a new tag sent without it goes to the end of the list. A new tag sent with it is put at that
+                              position: the tags of the business that are not in the list and have the same or a greater sort order move
+                              down by one. The tags that are in the list are not moved.
                         k_tag:
                           type: string
                           description: 'The tag key.'
@@ -27074,7 +27097,9 @@ paths:
                           format: int32
                           description: |-
                             The sort order of the tag, starts from zero. A tag sent without it (or with `null`) keeps the sort order
-                              it has now, and a new tag sent without it goes to the end of the list.
+                              it has now, and a new tag sent without it goes to the end of the list. A new tag sent with it is put at that
+                              position: the tags of the business that are not in the list and have the same or a greater sort order move
+                              down by one. The tags that are in the list are not moved.
                         k_tag:
                           type: string
                           description: 'The tag key.'
@@ -27137,7 +27162,9 @@ paths:
                         format: int32
                         description: |-
                           The sort order of the tag, starts from zero. A tag sent without it (or with `null`) keeps the sort order
-                            it has now, and a new tag sent without it goes to the end of the list.
+                            it has now, and a new tag sent without it goes to the end of the list. A new tag sent with it is put at that
+                            position: the tags of the business that are not in the list and have the same or a greater sort order move
+                            down by one. The tags that are in the list are not moved.
                       k_tag:
                         type: string
                         description: 'The tag key.'
@@ -84847,6 +84874,10 @@ paths:
                         type: integer
                         format: int32
                         description: 'The tasks that are not completed: to do and in progress.'
+                      i_overdue:
+                        type: integer
+                        format: int32
+                        description: 'The tasks that are overdue: not completed, with the due date and time that have passed.'
                       i_today:
                         type: integer
                         format: int32
@@ -84855,6 +84886,7 @@ paths:
                       - i_all
                       - i_complete
                       - i_future
+                      - i_overdue
                       - i_today
                   a_row:
                     type: array
@@ -84874,6 +84906,11 @@ paths:
                         id_task_status:
                           $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
                           description: 'The status of the task. One of [TaskStatusSid](#/components/schemas/Wl.Task.TaskStatusSid) constants.'
+                        is_overdue:
+                          type: boolean
+                          description: |-
+                            Whether the task is overdue: it is not completed, and its due date and time have passed. The row is overdue on
+                            every tab, not only on the tab Overdue.
                         k_business:
                           type: string
                           description: |-
@@ -84905,6 +84942,11 @@ paths:
                         text_due:
                           type: string
                           description: 'The date and the time when the task is due, as the page shows it: "Fri, Dec 30, 2022 at 3:00 pm".'
+                        text_overdue:
+                          type: string
+                          description: |-
+                            How late the task is, as the page shows it under the due date: "2 days overdue" for whole days of 24 hours,
+                            "Overdue" when the task is late less than a day. An empty string when the task is not overdue.
                         text_staff:
                           type: string
                           description: |-
@@ -84943,6 +84985,7 @@ paths:
                         - dtl_due
                         - html_description
                         - id_task_status
+                        - is_overdue
                         - k_business
                         - k_task
                         - text_add
@@ -84952,6 +84995,7 @@ paths:
                         - text_client_phone
                         - text_create
                         - text_due
+                        - text_overdue
                         - text_staff
                         - text_title
                         - uid
@@ -85210,6 +85254,17 @@ paths:
           description: |-
             The view of the list: whose tasks it shows. One of [TaskManagerViewEnum](#/components/schemas/Wl.Task.Manager.TaskManagerViewEnum) cases.
             `null` for the view of every staff member the user may see.
+        -
+          name: is_overdue
+          in: query
+          required: false
+          schema:
+            type:
+              - boolean
+              - 'null'
+          description: |-
+            Whether to show only the overdue tasks: the tab Overdue. They are the tasks that are not completed and whose due
+            date and time have passed, and the other filters narrow them. `null` or `false` for the tasks of any due time.
         -
           name: is_sort_desc
           in: query
@@ -140333,7 +140388,7 @@ components:
 
           The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
           see [AppleRegistrationApi](/Wl/Wallet/Apple/AppleRegistration.json), and the web service notifies this channel. The page of
-          WalletAddController is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          `WalletAddController` is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
           has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
 
           The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
@@ -140477,7 +140532,7 @@ components:
 
           The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
           see {@link \Wl\Wallet\Apple\AppleRegistrationApi}, and the web service notifies this channel. The page of
-          {@link \Wl\Wallet\WalletAddController} is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          `WalletAddController` is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
           has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
 
           The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
@@ -151602,21 +151657,25 @@ components:
         - 3 (`ALL`): Show all tasks.
         - 4 (`COMPLETE`): Show tasks in status complete, see [TaskStatusSid::COMPLETE](#/components/schemas/Wl.Task.TaskStatusSid).
         - 2 (`FUTURE`): Show tasks in future.
+        - 5 (`OVERDUE`): Show the tasks that are overdue: not completed, with the due date and time that have passed.
         - 1 (`TODAY`): Show tasks for today.
       enum:
         - 3
         - 4
         - 2
+        - 5
         - 1
       x-enum-varnames:
         - ALL
         - COMPLETE
         - FUTURE
+        - OVERDUE
         - TODAY
       x-enum-descriptions:
         - 'Show all tasks.'
         - 'Show tasks in status complete, see {@link \Wl\Task\TaskStatusSid::COMPLETE}.'
         - 'Show tasks in future.'
+        - 'Show the tasks that are overdue: not completed, with the due date and time that have passed.'
         - 'Show tasks for today.'
     Wl.Report.Filter.TaskLocation.TaskLocationSid:
       type: integer
