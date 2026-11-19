@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261119044317
+  version: 1.1.20261119061114
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -13414,6 +13414,9 @@ paths:
                   url_booking:
                     type: string
                     description: 'Link to book the event of the session directly. Empty: the event is not shown on any tab.'
+                  url_checkout:
+                    type: string
+                    description: 'Link to the checkout page of the event of the session.'
                 required:
                   - a_location
                   - a_order
@@ -13432,6 +13435,7 @@ paths:
                   - m_total
                   - text_title
                   - url_booking
+                  - url_checkout
         '400':
           $ref: '#/components/responses/400'
         '401':
