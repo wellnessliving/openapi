@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261119113814
+  version: 1.1.20261119131016
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -84833,7 +84833,7 @@ paths:
                     description: |-
                       How many tasks each tab of the page has: 
 
-                      A count follows the staff filter and not the search or the other filters.
+                      A count follows the view and not the staff filter, the search or the other filters.
                     properties:
                       i_all:
                         type: integer
@@ -84962,7 +84962,9 @@ paths:
                         - url_staff
                   a_staff:
                     type: array
-                    description: 'The staff members that the staff filter offers, sorted by the name:'
+                    description: |-
+                      The staff members that the staff filter offers, sorted by the name: those of the picked view whom the user may
+                      see, the staff members of the role in a role view. The staff filter does not narrow them.
                     items:
                       type: object
                       properties:
@@ -84975,12 +84977,67 @@ paths:
                       required:
                         - text_name
                         - uid
+                  a_view:
+                    type: object
+                    description: |-
+                      How many open tasks each view of the views panel has: 
+
+                      The counts follow neither the picked view nor the filters. An empty array when the user may not see the views
+                      panel ([TaskManagerListApi::$can_view](/Wl/Task/Manager/TaskManagerList.json)).
+                    properties:
+                      a_role:
+                        type: object
+                        description: |-
+                          The staff roles of the business that have a staff member whose tasks the user may see, in the order of the
+                          setup of the business. Each element has the following structure:
+                        properties:
+                          i_task:
+                            type: integer
+                            format: int32
+                            description: 'The tasks that are not completed, of the staff members who have the role now.'
+                          id_privilege_role:
+                            $ref: '#/components/schemas/RsPrivilegeRoleSid'
+                            description: |-
+                              The system role. One of [RsPrivilegeRoleSid](#/components/schemas/RsPrivilegeRoleSid) constants. `null` for a role of the business that is
+                              based on no system role.
+                          k_business_role:
+                            type:
+                              - string
+                              - 'null'
+                            description: |-
+                              Key of the role of the business.  `null` for a
+                              system role that the business has not changed.
+                          text_title:
+                            type: string
+                            description: 'Title of the role.'
+                        required:
+                          - i_task
+                          - id_privilege_role
+                          - k_business_role
+                          - text_title
+                      i_all:
+                        type: integer
+                        format: int32
+                        description: 'The tasks that are not completed, of every staff member whose tasks the user may see.'
+                      i_mine:
+                        type: integer
+                        format: int32
+                        description: 'The tasks that are not completed, of the signed-in staff member.'
+                    required:
+                      - a_role
+                      - i_all
+                      - i_mine
                   can_add:
                     type: boolean
                     description: 'Whether the signed-in user may add tasks.'
                   can_edit:
                     type: boolean
                     description: 'Whether the signed-in user may edit the tasks. Without it the user only changes their status.'
+                  can_view:
+                    type: boolean
+                    description: |-
+                      Whether the page offers the views panel: the user may see the tasks of every staff member, which is the privilege
+                      "All tasks". Without it the user sees their own tasks only, and every view would show the same ones.
                   dl_today:
                     type: string
                     format: date
@@ -85002,8 +85059,10 @@ paths:
                   - a_count
                   - a_row
                   - a_staff
+                  - a_view
                   - can_add
                   - can_edit
+                  - can_view
                   - dl_today
                   - i_total
                   - id_tab
@@ -85027,7 +85086,8 @@ paths:
         pages, with the counts of the tabs and the staff members the staff filter offers. A staff member without the
         privilege "All tasks" sees only the tasks assigned to them. In a franchise in the flexible travel mode the tasks of
         every location are listed, and the filter of the location picks the staff of the home location (the default), of
-        the other locations or of every location.
+        the other locations or of every location. The view of the list narrows the tasks to those of the signed-in staff
+        member or of the staff members who have a staff role, and the counts of the views are given with it.
       tags:
         - Task
       parameters:
@@ -85132,6 +85192,25 @@ paths:
             The column that sorts the list. One of [TaskManagerColumnEnum](#/components/schemas/Wl.Task.Manager.TaskManagerColumnEnum) cases but Date created.
             `null` to sort by the due date.
         -
+          name: id_privilege_role
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/RsPrivilegeRoleSid'
+          description: |-
+            The system role of the view of a role, a system role that the business has not changed. One of
+            [RsPrivilegeRoleSid](#/components/schemas/RsPrivilegeRoleSid) constants. Given for the view [TaskManagerViewEnum::ROLE](#/components/schemas/Wl.Task.Manager.TaskManagerViewEnum) and for a system role
+            only. `null` for every other view and for a role of the business ([TaskManagerListApi::$k_business_role](/Wl/Task/Manager/TaskManagerList.json)).
+        -
+          name: id_view
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Wl.Task.Manager.TaskManagerViewEnum'
+          description: |-
+            The view of the list: whose tasks it shows. One of [TaskManagerViewEnum](#/components/schemas/Wl.Task.Manager.TaskManagerViewEnum) cases.
+            `null` for the view of every staff member the user may see.
+        -
           name: is_sort_desc
           in: query
           required: false
@@ -85149,6 +85228,18 @@ paths:
           schema:
             type: string
           description: 'Key of the business of the page.'
+        -
+          name: k_business_role
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Key of the role of the business of the view of a role. 
+            Given for the view [TaskManagerViewEnum::ROLE](#/components/schemas/Wl.Task.Manager.TaskManagerViewEnum) and for a role of the business only. `null` for every other
+            view and for a system role ([TaskManagerListApi::$id_privilege_role](/Wl/Task/Manager/TaskManagerList.json)).
         -
           name: text_search
           in: query
@@ -151592,6 +151683,36 @@ components:
         - 'The staff member the task is assigned to.'
         - 'The status of the task.'
         - 'The name and the description of the task. Always shown: a row without it cannot be read.'
+    Wl.Task.Manager.TaskManagerViewEnum:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        A view of the Task Manager: whose tasks the list shows.
+
+        The views panel of the page picks a view. A role is a view of the tasks of the staff members who have that role now,
+        the role itself is given beside the view (`k_business_role` and
+        `id_privilege_role`).
+
+        Last used ID: 3.
+
+        Values:
+        - 1 (`ALL`): The tasks of every staff member whose tasks the user may see. The default.
+        - 2 (`MINE`): The tasks of the signed-in staff member.
+        - 3 (`ROLE`): The tasks of the staff members who have a staff role now.
+      enum:
+        - 1
+        - 2
+        - 3
+      x-enum-varnames:
+        - ALL
+        - MINE
+        - ROLE
+      x-enum-descriptions:
+        - 'The tasks of every staff member whose tasks the user may see. The default.'
+        - 'The tasks of the signed-in staff member.'
+        - 'The tasks of the staff members who have a staff role now.'
     Wl.Widget.Analytics.WidgetAnalyticsCheckoutTypeSid:
       type: integer
       format: int32
