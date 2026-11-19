@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261118061629
+  version: 1.1.20261119060641
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -1170,6 +1170,36 @@ paths:
                             - k_class_tab_old
                         -
                           type: object
+                          title: 'Parameters for `2461`'
+                          properties:
+                            dtu_attempt:
+                              type: string
+                              description: |-
+                                Time of the attempt (of the check-in for a visit), in UTC and MySQL format, for example `2026-11-05 14:30:00`.
+
+                                The same value as `dtu_attempt` of the row of the attempt in [AttemptListApi::$a_attempt](/Wl/Visit/Kiosk/AttemptList.json).
+                            id_deny_reason:
+                              $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
+                              description: 'Reason of the failure. One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` for a check-in.'
+                            id_mode:
+                              $ref: '#/components/schemas/Wl.Mode.ModeSid'
+                              description: 'Source of the attempt. One of [ModeSid](#/components/schemas/Wl.Mode.ModeSid) constants. `null` if the source of the check-in is not recorded.'
+                            is_fail:
+                              type: boolean
+                              description: '`true` for a failed attempt, `false` for a check-in.'
+                            k_visit:
+                              type:
+                                - string
+                                - 'null'
+                              description: 'Key of the checked-in visit. `null` for a failed attempt.'
+                          required:
+                            - dtu_attempt
+                            - id_deny_reason
+                            - id_mode
+                            - is_fail
+                            - k_visit
+                        -
+                          type: object
                           title: 'Parameters for `1657`'
                         -
                           type: object
@@ -1995,6 +2025,19 @@ paths:
                           description: 'Business key.'
                       required:
                         - k_business
+                    -
+                      type: object
+                      title: 'Parameters for `2461`'
+                      properties:
+                        k_business:
+                          type: string
+                          description: 'Business key.'
+                        k_location:
+                          type: string
+                          description: 'Key of the location of the kiosk.'
+                      required:
+                        - k_business
+                        - k_location
                     -
                       type: object
                       title: 'Parameters for `1657`'
@@ -19977,6 +20020,8 @@ paths:
                 - is_mail
                 - is_push
                 - is_sms
+      x-error-fields:
+        - id_visit_from
       x-instance-get-key: 'k_visit,k_business'
       x-rate-limit:
         -
@@ -23010,6 +23055,13 @@ paths:
                 - k_business
                 - k_class_period
                 - text_ticket
+      x-error-fields:
+        - dtu_attend
+        - dtu_cancel
+        - dtu_session_start
+        - k_class_period
+        - k_class_period_ticket
+        - text_title
       x-instance-get-key: 'dtu_start,k_business,k_class_period'
       x-rate-limit:
         -
@@ -45915,6 +45967,8 @@ paths:
             The key of the user to edit.
 
             If empty, an empty form will be displayed to add a new user.
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -46239,6 +46293,8 @@ paths:
                 - is_sms_subscription_presented
                 - is_sms_subscription_transactional
                 - text_password
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -46693,6 +46749,8 @@ paths:
             The key of the user to edit.
 
             If empty, an empty form will be displayed to add a new user.
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -47017,6 +47075,8 @@ paths:
                 - is_sms_subscription_presented
                 - is_sms_subscription_transactional
                 - text_password
+      x-error-fields:
+        - a_error_list
       x-instance-get-key: 'k_business,uid,is_staff,id_register_source'
       x-rate-limit:
         -
@@ -48080,9 +48140,57 @@ paths:
                                 List of tuition events.
                                 Each entry has the next structure:
                               properties:
+                                a_checkout_tax:
+                                  type: array
+                                  description: 'Output only. The taxes charged right now for this event, keyed by tax key.  `a_tax` is the tax of the full event price.'
+                                  items:
+                                    type: string
+                                a_discount:
+                                  type: object
+                                  description: 'Output only. Discounts applied to the event price:'
+                                  properties:
+                                    m_discount:
+                                      type: string
+                                      description: 'Discount amount of the full event price.'
+                                    m_discount_checkout:
+                                      type: string
+                                      description: |-
+                                        The part of this discount that is taken from `m_checkout_subtotal`. A percentage discount takes
+                                        its percent of `m_checkout_subtotal` (it is not stacked with the other discounts), a flat
+                                        discount is taken in full.
+                                  required:
+                                    - m_discount
+                                    - m_discount_checkout
+                                a_tax:
+                                  type: object
+                                  description: 'Output only. The taxes of the full event price. Keys are tax keys.'
+                                  additionalProperties:
+                                    type: string
                                 k_class:
                                   type: string
                                   description: 'Key of the event class.'
+                                m_checkout:
+                                  type: string
+                                  description: |-
+                                    Output only. The amount that will be charged for this event when the tuition is purchased, including
+                                    tax: `m_checkout_subtotal` minus `m_discount_checkout` plus `m_checkout_tax`. It is the prorated part
+                                    of the event when the first payment is prorated.
+                                m_checkout_subtotal:
+                                  type: string
+                                  description: |-
+                                    Output only. The price of the event that is charged when the tuition is purchased, before discount
+                                    and before tax: the prorated price when the first payment is prorated, the full price when it is not.
+                                m_checkout_tax:
+                                  type: string
+                                  description: 'Output only. The sum of `a_checkout_tax`.'
+                                m_discount:
+                                  type: string
+                                  description: 'Output only. The discount of the full event price.'
+                                m_discount_checkout:
+                                  type: string
+                                  description: |-
+                                    Output only. The sum of `m_discount_checkout` of `a_discount`: the discount taken from
+                                    `m_checkout_subtotal`.
                                 uid:
                                   type: string
                                   description: 'Key of the tuition participant.'
@@ -48341,9 +48449,57 @@ paths:
                         List of tuition events.
                         Each entry has the next structure:
                       properties:
+                        a_checkout_tax:
+                          type: array
+                          description: 'Output only. The taxes charged right now for this event, keyed by tax key.  `a_tax` is the tax of the full event price.'
+                          items:
+                            type: string
+                        a_discount:
+                          type: object
+                          description: 'Output only. Discounts applied to the event price:'
+                          properties:
+                            m_discount:
+                              type: string
+                              description: 'Discount amount of the full event price.'
+                            m_discount_checkout:
+                              type: string
+                              description: |-
+                                The part of this discount that is taken from `m_checkout_subtotal`. A percentage discount takes
+                                its percent of `m_checkout_subtotal` (it is not stacked with the other discounts), a flat
+                                discount is taken in full.
+                          required:
+                            - m_discount
+                            - m_discount_checkout
+                        a_tax:
+                          type: object
+                          description: 'Output only. The taxes of the full event price. Keys are tax keys.'
+                          additionalProperties:
+                            type: string
                         k_class:
                           type: string
                           description: 'Key of the event class.'
+                        m_checkout:
+                          type: string
+                          description: |-
+                            Output only. The amount that will be charged for this event when the tuition is purchased, including
+                            tax: `m_checkout_subtotal` minus `m_discount_checkout` plus `m_checkout_tax`. It is the prorated part
+                            of the event when the first payment is prorated.
+                        m_checkout_subtotal:
+                          type: string
+                          description: |-
+                            Output only. The price of the event that is charged when the tuition is purchased, before discount
+                            and before tax: the prorated price when the first payment is prorated, the full price when it is not.
+                        m_checkout_tax:
+                          type: string
+                          description: 'Output only. The sum of `a_checkout_tax`.'
+                        m_discount:
+                          type: string
+                          description: 'Output only. The discount of the full event price.'
+                        m_discount_checkout:
+                          type: string
+                          description: |-
+                            Output only. The sum of `m_discount_checkout` of `a_discount`: the discount taken from
+                            `m_checkout_subtotal`.
                         uid:
                           type: string
                           description: 'Key of the tuition participant.'
@@ -48733,22 +48889,28 @@ paths:
                                   - m_discount
                                   - text_discount
                               a_tax:
-                                type: array
+                                type: object
                                 description: |-
                                   List of taxes to be applied to the event price.
                                   Keys are tax keys. 
                                   Values are tax amounts. If not specified, taxes are calculated based on class setup.
                                   Staff-only: ignored when sent by a client.
+                                additionalProperties:
+                                  type: string
                               k_class:
                                 type: string
                                 description: 'Key of the event class.'
-                              m_checkout:
+                              m_checkout_subtotal:
                                 type: string
                                 description: |-
-                                  The amount charged for this event at checkout. Staff-only: ignored when sent by a client.
+                                  The price of the event charged at checkout, before discount and before tax. Staff-only: ignored
+                                  when sent by a client. The discounts and the tax are taken from it, and the amount charged for the
+                                  event is calculated. It can not exceed the price of the event.
                                   When provided for all events in the list, per-event amounts are used as-is without
                                   aggregate redistribution, allowing a non-uniform distribution across events (Mode 2).
                                   If omitted for any event, falls back to item-level `m_checkout` redistribution.
+                                  A value of `m_checkout` of an event is ignored: the amount of the event is changed through this
+                                  field only.
                               m_price:
                                 type: string
                                 description: |-
@@ -49310,8 +49472,14 @@ paths:
                           - text_family
                           - text_staff
                       dl_expire:
-                        type: string
-                        description: 'Date of expiration of coupon, local date in MySQL format.'
+                        type:
+                          - string
+                          - 'null'
+                        description: |-
+                          Expiration date, local date in MySQL format. Example: `2027-02-01`.
+                          For a coupon: the expiration date of the coupon, `null` if the coupon has no expiration date.
+                          For a purchase option: the fixed expiration date. Set only when the duration type is a fixed date
+                          (`sid_duration_type` is `date`, see [RsDurationTypeSid::DATE](#/components/schemas/RsDurationTypeSid)), `null` otherwise.
                       dl_now:
                         type: string
                         description: 'Current date, local date in MySQL format.'
@@ -49600,8 +49768,14 @@ paths:
                                 - text_family
                                 - text_staff
                             dl_expire:
-                              type: string
-                              description: 'Date of expiration of coupon, local date in MySQL format.'
+                              type:
+                                - string
+                                - 'null'
+                              description: |-
+                                Expiration date, local date in MySQL format. Example: `2027-02-01`.
+                                For a coupon: the expiration date of the coupon, `null` if the coupon has no expiration date.
+                                For a purchase option: the fixed expiration date. Set only when the duration type is a fixed date
+                                (`sid_duration_type` is `date`, see [RsDurationTypeSid::DATE](#/components/schemas/RsDurationTypeSid)), `null` otherwise.
                             dl_now:
                               type: string
                               description: 'Current date, local date in MySQL format.'
@@ -50369,8 +50543,14 @@ paths:
                           - text_family
                           - text_staff
                       dl_expire:
-                        type: string
-                        description: 'Date of expiration of coupon, local date in MySQL format.'
+                        type:
+                          - string
+                          - 'null'
+                        description: |-
+                          Expiration date, local date in MySQL format. Example: `2027-02-01`.
+                          For a coupon: the expiration date of the coupon, `null` if the coupon has no expiration date.
+                          For a purchase option: the fixed expiration date. Set only when the duration type is a fixed date
+                          (`sid_duration_type` is `date`, see [RsDurationTypeSid::DATE](#/components/schemas/RsDurationTypeSid)), `null` otherwise.
                       dl_now:
                         type: string
                         description: 'Current date, local date in MySQL format.'
@@ -50659,8 +50839,14 @@ paths:
                                 - text_family
                                 - text_staff
                             dl_expire:
-                              type: string
-                              description: 'Date of expiration of coupon, local date in MySQL format.'
+                              type:
+                                - string
+                                - 'null'
+                              description: |-
+                                Expiration date, local date in MySQL format. Example: `2027-02-01`.
+                                For a coupon: the expiration date of the coupon, `null` if the coupon has no expiration date.
+                                For a purchase option: the fixed expiration date. Set only when the duration type is a fixed date
+                                (`sid_duration_type` is `date`, see [RsDurationTypeSid::DATE](#/components/schemas/RsDurationTypeSid)), `null` otherwise.
                             dl_now:
                               type: string
                               description: 'Current date, local date in MySQL format.'
@@ -53336,6 +53522,8 @@ paths:
                 - s_key
                 - text_sms_body
                 - uid
+      x-error-fields:
+        - dtl_send
       x-rate-limit:
         -
           limit: 200000
@@ -58106,7 +58294,9 @@ paths:
                               description: 'The product option key.'
                             m_price:
                               type: string
-                              description: 'The regular price of the option.'
+                              description: |-
+                                The price of the option: the discount price when the discount of the option is enabled, the regular
+                                price otherwise.
                             text_title:
                               type: string
                               description: 'The product option title.'
@@ -78509,6 +78699,8 @@ paths:
         Applies the selected promotion or session pass to the visit. Does nothing if the selected
          option is already applied to the visit. Verifies that the caller has access to the visit
          and that the selected promotion belongs to the visit's client before saving the change.
+
+        An appointment visit that waits for a payment requested by the system is confirmed as soon as the change pays it.
       tags:
         - Visits
       parameters:
@@ -78782,6 +78974,16 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_deny_reason:
+                    type: array
+                    description: |-
+                      Every reason why the check-in has been refused.
+
+                      Each is one of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. The first one is the reason given by the check-in and equals
+                      [AttendApi::$id_deny_reason](/Wl/Visit/Kiosk/Attend.json); the others are the reasons found by the evaluation of the check-in, in the
+                      order of the check-in, without duplicates. Empty if the check-in has been made.
+                    items:
+                      $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
                   dtu_attend:
                     type:
                       - string
@@ -78818,7 +79020,7 @@ paths:
                   id_deny_reason:
                     $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
                     description: |-
-                      Reason why the check-in has been refused.
+                      Reason why the check-in has been refused, the first element of [AttendApi::$a_deny_reason](/Wl/Visit/Kiosk/Attend.json).
 
                       One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` if the check-in has been made.
                   id_unpaid_reason:
@@ -78906,6 +79108,7 @@ paths:
 
                       `null` if the visit is paid or the check-in has been refused.
                 required:
+                  - a_deny_reason
                   - i_attend_quick_close_fail
                   - i_attend_quick_close_success
                   - id_deny_reason
@@ -78932,8 +79135,8 @@ paths:
         client; no key of a kiosk is needed. The visit is checked in from the source "Kiosk". A client is checked in for
         a gym visit once a day: a second check-in on the same local day, at any location of the business, is refused
         and nothing is written. A booked gym visit of the day at the location of the kiosk is checked in. A refusal
-        gives its reason, its message and the key of the failed attempt; a refusal for a negative balance does not
-        show the amount to a staff member who may not see the balances of the clients.
+        gives its reason, every reason of the refusal, its message and the key of the failed attempt; a refusal for a
+        negative balance does not show the amount to a staff member who may not see the balances of the clients.
       tags:
         - Visits
       parameters:
@@ -78959,6 +79162,17 @@ paths:
                 - k_business
                 - k_location
                 - uid
+      x-error-fields:
+        - a_deny_reason
+        - dtu_attend
+        - i_attend_quick_close_fail
+        - i_attend_quick_close_success
+        - id_deny_reason
+        - is_attend_quick_navigate
+        - k_location_visit
+        - k_visit
+        - s_attempt
+        - text_message
       x-rate-limit:
         -
           limit: 200000
@@ -79081,6 +79295,16 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_deny_reason:
+                    type: array
+                    description: |-
+                      Every reason why the check-in would be refused, in the order of the check-in.
+
+                      Each is one of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. The first one equals [EvaluateApi::$id_deny_reason](/Wl/Visit/Kiosk/Evaluate.json).
+                      Empty if no reason is found; the check-in still may be refused by the rules of the booking. A client already
+                      checked in on the day gets only [VisitDenyReasonSid::ATTEND_ONCE](#/components/schemas/Wl.Visit.VisitDenyReasonSid).
+                    items:
+                      $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
                   a_login_promotion:
                     type: array
                     description: |-
@@ -79144,7 +79368,7 @@ paths:
                   id_deny_reason:
                     $ref: '#/components/schemas/Wl.Visit.VisitDenyReasonSid'
                     description: |-
-                      The first reason why the check-in would be refused.
+                      The first reason why the check-in would be refused, the first element of [EvaluateApi::$a_deny_reason](/Wl/Visit/Kiosk/Evaluate.json).
 
                       One of [VisitDenyReasonSid](#/components/schemas/Wl.Visit.VisitDenyReasonSid) constants. `0` if no reason is found; the check-in still may be refused by
                       the rules of the booking.
@@ -79221,6 +79445,7 @@ paths:
 
                       `null` if the staff member may not see the balances of the clients.
                 required:
+                  - a_deny_reason
                   - a_login_promotion
                   - id_deny_reason
                   - id_unpaid_reason
@@ -79250,12 +79475,12 @@ paths:
           $ref: '#/components/responses/500'
       summary: 'Evaluates a gym check-in of the client.'
       description: |-
-        Finds the gym visit of the client on the local day of the location (at any location of the business), the
-        first reason why the check-in would be refused, in the order of the check-in, and the reason why the pass of
-        the client would not pay for the visit. Fills the state of the profile: the balance, the unpaid visits, the
-        waiver, the contract, the required forms, the credit cards, the flag, the passes on hold and expired, and the
-        passes that may pay for the visit. Only the first reason is given. Nothing is written: no visit and no failed
-        attempt.
+        Finds the gym visit of the client on the local day of the location (at any location of the business), every
+        reason why the check-in would be refused, in the order of the check-in, and the reason why the pass of the
+        client would not pay for the visit. Fills the state of the profile: the balance, the unpaid visits, the waiver,
+        the contract, the required forms, the credit cards, the flag, the passes on hold and expired, and the passes that
+        may pay for the visit. Every reason is given in `a_deny_reason`, and the first one in `id_deny_reason`. Nothing
+        is written: no visit and no failed attempt.
       tags:
         - Visits
       parameters:
@@ -79295,6 +79520,77 @@ paths:
           schema:
             type: string
           description: 'Key of the client.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Visit/Kiosk/SignSend.json:
+    post:
+      operationId: Wl.Visit.Kiosk.SignSend.post
+      responses:
+        '200':
+          description: 'Successful response.'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Sends the client an email with the waiver or the contract that the client has not signed.'
+      description: |-
+        Without [SignSendApi::$k_purchase_item](/Wl/Visit/Kiosk/SignSend.json) the waiver of the business is sent, if the business requires a
+        waiver and the client has not signed it. With it, the contract of that purchase item is sent, if it is a
+        contract of the business that the client has not signed. The email is the copy of the document that the
+        profile of the client sends, without a date of signing. A normal answer means that the email is queued; the
+        email address is not returned.
+
+        The checks go in this order, and the code of a refusal tells which of them has failed:
+        <ul>
+          <li>`access-backend`: no session of a staff member, or no access to the business;</li>
+          <li>`access`: no access to the location or to the client;</li>
+          <li>`sign-none`: the client has no such document to sign;</li>
+          <li>`mail-nx`: the client has no email address.</li>
+        </ul>
+      tags:
+        - Visits
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                k_business:
+                  type: string
+                  description: 'Business key.'
+                k_location:
+                  type: string
+                  description: 'Key of the location of the kiosk.'
+                k_purchase_item:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the purchase item whose contract is sent: the `k_purchase_item` of a contract alert of the client
+                    ([AlertApi::$a_alert](/Wl/Profile/Alert/Alert.json)).
+
+                    `null` to send the waiver of the business.
+                uid:
+                  type: string
+                  description: 'Key of the client.'
+              required:
+                - k_business
+                - k_location
+                - uid
       x-rate-limit:
         -
           limit: 200000
@@ -84883,6 +85179,8 @@ paths:
                 - s_password
                 - s_remember
                 - url_return
+      x-error-fields:
+        - url_captcha
       x-rate-limit:
         -
           limit: 200000
@@ -87692,6 +87990,22 @@ paths:
                             description: |-
                               The amount charged for this event right now, including tax. `0.00` when every
                               installment payment is still ahead. `null` when the amount is not calculated yet.
+                          a_checkout_tax:
+                            type: array
+                            description: 'The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the full price.'
+                            items:
+                              type: string
+                          m_checkout_subtotal:
+                            type: string
+                            description: 'The price charged for this event right now, before discount and tax.'
+                          m_checkout_tax:
+                            type: string
+                            description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                          m_discount_checkout:
+                            type: string
+                            description: |-
+                              The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full price.
+                              Every row of `a_discount` has its part of it in `m_discount_checkout`.
                           m_deferred:
                             type: string
                             description: |-
@@ -87713,6 +88027,10 @@ paths:
                           - a_tax
                           - k_class
                           - m_checkout
+                          - a_checkout_tax
+                          - m_checkout_subtotal
+                          - m_checkout_tax
+                          - m_discount_checkout
                           - m_deferred
                           - m_discount
                           - m_price
@@ -87913,6 +88231,22 @@ paths:
                     description: |-
                       The amount charged for this event right now, including tax. `0.00` when every
                       installment payment is still ahead. `null` when the amount is not calculated yet.
+                  a_checkout_tax:
+                    type: array
+                    description: 'The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the full price.'
+                    items:
+                      type: string
+                  m_checkout_subtotal:
+                    type: string
+                    description: 'The price charged for this event right now, before discount and tax.'
+                  m_checkout_tax:
+                    type: string
+                    description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                  m_discount_checkout:
+                    type: string
+                    description: |-
+                      The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full price.
+                      Every row of `a_discount` has its part of it in `m_discount_checkout`.
                   m_deferred:
                     type: string
                     description: |-
@@ -87934,6 +88268,10 @@ paths:
                   - a_tax
                   - k_class
                   - m_checkout
+                  - a_checkout_tax
+                  - m_checkout_subtotal
+                  - m_checkout_tax
+                  - m_discount_checkout
                   - m_deferred
                   - m_discount
                   - m_price
@@ -88196,6 +88534,24 @@ paths:
                                   description: |-
                                     The amount charged for this event right now, including tax. `0.00` when every
                                          installment payment is still ahead. `null` when it is not calculated yet.
+                                a_checkout_tax:
+                                  type: array
+                                  description: |-
+                                    The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the
+                                         full price.
+                                  items:
+                                    type: string
+                                m_checkout_subtotal:
+                                  type: string
+                                  description: 'The price charged for this event right now, before discount and tax.'
+                                m_checkout_tax:
+                                  type: string
+                                  description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                                m_discount_checkout:
+                                  type: string
+                                  description: |-
+                                    The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full
+                                         price. Every row of `a_discount` has its part of it in `m_discount_checkout`.
                                 m_deferred:
                                   type: string
                                   description: |-
@@ -88218,6 +88574,10 @@ paths:
                                 - a_tax
                                 - k_class
                                 - m_checkout
+                                - a_checkout_tax
+                                - m_checkout_subtotal
+                                - m_checkout_tax
+                                - m_discount_checkout
                                 - m_deferred
                                 - m_discount
                                 - m_price
@@ -88482,6 +88842,24 @@ paths:
                           description: |-
                             The amount charged for this event right now, including tax. `0.00` when every
                                  installment payment is still ahead. `null` when it is not calculated yet.
+                        a_checkout_tax:
+                          type: array
+                          description: |-
+                            The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the
+                                 full price.
+                          items:
+                            type: string
+                        m_checkout_subtotal:
+                          type: string
+                          description: 'The price charged for this event right now, before discount and tax.'
+                        m_checkout_tax:
+                          type: string
+                          description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                        m_discount_checkout:
+                          type: string
+                          description: |-
+                            The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full
+                                 price. Every row of `a_discount` has its part of it in `m_discount_checkout`.
                         m_deferred:
                           type: string
                           description: |-
@@ -88504,6 +88882,10 @@ paths:
                         - a_tax
                         - k_class
                         - m_checkout
+                        - a_checkout_tax
+                        - m_checkout_subtotal
+                        - m_checkout_tax
+                        - m_discount_checkout
                         - m_deferred
                         - m_discount
                         - m_price
@@ -88726,6 +89108,22 @@ paths:
                               description: |-
                                 The amount charged for this event right now, including tax. `0.00` when every
                                 installment payment is still ahead. `null` when the amount is not calculated yet.
+                            a_checkout_tax:
+                              type: array
+                              description: 'The taxes charged for this event right now, keyed by tax key. `a_tax` is the tax of the full price.'
+                              items:
+                                type: string
+                            m_checkout_subtotal:
+                              type: string
+                              description: 'The price charged for this event right now, before discount and tax.'
+                            m_checkout_tax:
+                              type: string
+                              description: 'The tax charged for this event right now: the sum of `a_checkout_tax`.'
+                            m_discount_checkout:
+                              type: string
+                              description: |-
+                                The discount taken from `m_checkout_subtotal`, `m_discount` is the discount of the full price.
+                                Every row of `a_discount` has its part of it in `m_discount_checkout`.
                             m_deferred:
                               type: string
                               description: |-
@@ -88747,6 +89145,10 @@ paths:
                             - a_tax
                             - k_class
                             - m_checkout
+                            - a_checkout_tax
+                            - m_checkout_subtotal
+                            - m_checkout_tax
+                            - m_discount_checkout
                             - m_deferred
                             - m_discount
                             - m_price
@@ -97252,20 +97654,36 @@ paths:
                                       description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
                                     m_calculated:
                                       type: string
-                                      description: 'Prorated amount as calculated by the system, before any manual override of `m_checkout`.'
+                                      description: |-
+                                        Prorated price as calculated by the system, before discount and tax and before any manual
+                                             override of `m_checkout_subtotal`.
                                   required:
                                     - i_days_prorate
                                     - i_days_total
                                     - i_sessions_prorate
                                     - i_sessions_total
                                     - m_calculated
+                                a_checkout_tax:
+                                  type: array
+                                  description: |-
+                                    Output only. The taxes charged right now for this event, calculated from `m_checkout_subtotal`
+                                         after the discounts. Keys are internal system tax keys. 
+                                         `a_tax` is the tax of the full event price.
+                                  items:
+                                    type: string
                                 a_discount:
                                   type: object
                                   description: 'Discount applied to the event price:'
                                   properties:
                                     m_discount:
                                       type: string
-                                      description: 'Discount amount.'
+                                      description: 'Discount amount of the full event price.'
+                                    m_discount_checkout:
+                                      type: string
+                                      description: |-
+                                        Output only. The part of this discount that is taken from `m_checkout_subtotal`. A
+                                             percentage discount takes its percent of `m_checkout_subtotal` (it is not stacked with the
+                                             other discounts), a flat discount is taken in full.
                                     text_discount:
                                       type: string
                                       description: 'Discount title.'
@@ -97287,10 +97705,25 @@ paths:
                                 m_checkout:
                                   type: string
                                   description: |-
-                                    The amount that will be charged for this event when the tuition is purchased.
-                                         Calculated based on the payment schedule (full amount or the prorated part due now).
-                                         Can be overridden manually. If not specified or `null`, the amount will be calculated
-                                         automatically.
+                                    Output only. The amount that will be charged for this event when the tuition is purchased,
+                                         including tax: `m_checkout_subtotal` minus `m_discount_checkout` plus `m_checkout_tax`.
+                                         A value in the request is ignored, use `m_checkout_subtotal` to change the amount.
+                                m_checkout_subtotal:
+                                  type: string
+                                  description: |-
+                                    The price of the event that is charged when the tuition is purchased, before discount and
+                                         before tax: the prorated price when the first payment is prorated, the full price when it
+                                         is not. This is the only amount that can be changed manually: the discounts and the tax are
+                                         taken from it and `m_checkout` is calculated. It can not exceed the price of the event.
+                                         If not specified or `null`, the amount will be calculated automatically.
+                                m_checkout_tax:
+                                  type: string
+                                  description: 'Output only. The sum of `a_checkout_tax`.'
+                                m_discount_checkout:
+                                  type: string
+                                  description: |-
+                                    Output only. The sum of `m_discount_checkout` of `a_discount`: the discount taken from
+                                         `m_checkout_subtotal`. `m_discount` is the discount of the full event price.
                                 m_price:
                                   type: string
                                   description: |-
@@ -97599,20 +98032,36 @@ paths:
                               description: 'Number of sessions in the billing cycle. `null` if prorated by days.'
                             m_calculated:
                               type: string
-                              description: 'Prorated amount as calculated by the system, before any manual override of `m_checkout`.'
+                              description: |-
+                                Prorated price as calculated by the system, before discount and tax and before any manual
+                                     override of `m_checkout_subtotal`.
                           required:
                             - i_days_prorate
                             - i_days_total
                             - i_sessions_prorate
                             - i_sessions_total
                             - m_calculated
+                        a_checkout_tax:
+                          type: array
+                          description: |-
+                            Output only. The taxes charged right now for this event, calculated from `m_checkout_subtotal`
+                                 after the discounts. Keys are internal system tax keys. 
+                                 `a_tax` is the tax of the full event price.
+                          items:
+                            type: string
                         a_discount:
                           type: object
                           description: 'Discount applied to the event price:'
                           properties:
                             m_discount:
                               type: string
-                              description: 'Discount amount.'
+                              description: 'Discount amount of the full event price.'
+                            m_discount_checkout:
+                              type: string
+                              description: |-
+                                Output only. The part of this discount that is taken from `m_checkout_subtotal`. A
+                                     percentage discount takes its percent of `m_checkout_subtotal` (it is not stacked with the
+                                     other discounts), a flat discount is taken in full.
                             text_discount:
                               type: string
                               description: 'Discount title.'
@@ -97634,10 +98083,25 @@ paths:
                         m_checkout:
                           type: string
                           description: |-
-                            The amount that will be charged for this event when the tuition is purchased.
-                                 Calculated based on the payment schedule (full amount or the prorated part due now).
-                                 Can be overridden manually. If not specified or `null`, the amount will be calculated
-                                 automatically.
+                            Output only. The amount that will be charged for this event when the tuition is purchased,
+                                 including tax: `m_checkout_subtotal` minus `m_discount_checkout` plus `m_checkout_tax`.
+                                 A value in the request is ignored, use `m_checkout_subtotal` to change the amount.
+                        m_checkout_subtotal:
+                          type: string
+                          description: |-
+                            The price of the event that is charged when the tuition is purchased, before discount and
+                                 before tax: the prorated price when the first payment is prorated, the full price when it
+                                 is not. This is the only amount that can be changed manually: the discounts and the tax are
+                                 taken from it and `m_checkout` is calculated. It can not exceed the price of the event.
+                                 If not specified or `null`, the amount will be calculated automatically.
+                        m_checkout_tax:
+                          type: string
+                          description: 'Output only. The sum of `a_checkout_tax`.'
+                        m_discount_checkout:
+                          type: string
+                          description: |-
+                            Output only. The sum of `m_discount_checkout` of `a_discount`: the discount taken from
+                                 `m_checkout_subtotal`. `m_discount` is the discount of the full event price.
                         m_price:
                           type: string
                           description: |-
@@ -101300,6 +101764,26 @@ paths:
                           description: 'The asset.'
                       required:
                         - k_resource
+                    a_week:
+                      type: array
+                      description: |-
+                        New weekdays for a weekly `FORWARD` reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                        Omitted or empty to keep the current weekdays. Ignored for other scopes.
+                      items:
+                        type: integer
+                        format: int32
+                    dl_edit_from:
+                      type: string
+                      description: |-
+                        The start of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                        Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                        only the visits of the recurring series on or after this date are rescheduled.
+                    dl_edit_to:
+                      type: string
+                      description: |-
+                        The end of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                        Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                        only the visits of the recurring series on or before this date are rescheduled.
                     dt_date:
                       type: string
                       description: "The date/time for the booking in MySQL format in the location's time zone."
@@ -101316,6 +101800,16 @@ paths:
                     id_class_tab:
                       $ref: '#/components/schemas/Wl.Classes.Tab.TabSid'
                       description: 'The booking service type. One of the [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.'
+                    id_edit_range:
+                      $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+                      description: |-
+                        The scope of a recurring reschedule. One of the [EditRangeSid](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) constants:
+                        `ONCE` (default) reschedules this visit only; `FORWARD` reschedules this visit and all the following
+                        visits of the recurring series (new weekly days are supplied in `a_week`); `RANGE`
+                        reschedules only the visits inside the `dl_edit_from` / `dl_edit_to` range.
+                        Applied in backend mode only, while rescheduling (`k_appointment` is set).
+                        For a wider-than-`ONCE` scope, `dt_date` keeps the opened session's original local date; only the time
+                        changes. The repeat frequency and end remain unchanged.
                     id_gender_staff:
                       $ref: '#/components/schemas/AGenderSid'
                       description: |-
@@ -101828,6 +102322,26 @@ paths:
                     description: 'The asset.'
                 required:
                   - k_resource
+              a_week:
+                type: array
+                description: |-
+                  New weekdays for a weekly `FORWARD` reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                  Omitted or empty to keep the current weekdays. Ignored for other scopes.
+                items:
+                  type: integer
+                  format: int32
+              dl_edit_from:
+                type: string
+                description: |-
+                  The start of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                  Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                  only the visits of the recurring series on or after this date are rescheduled.
+              dl_edit_to:
+                type: string
+                description: |-
+                  The end of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                  Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                  only the visits of the recurring series on or before this date are rescheduled.
               dt_date:
                 type: string
                 description: "The date/time for the booking in MySQL format in the location's time zone."
@@ -101844,6 +102358,16 @@ paths:
               id_class_tab:
                 $ref: '#/components/schemas/Wl.Classes.Tab.TabSid'
                 description: 'The booking service type. One of the [TabSid](#/components/schemas/Wl.Classes.Tab.TabSid) constants.'
+              id_edit_range:
+                $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+                description: |-
+                  The scope of a recurring reschedule. One of the [EditRangeSid](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) constants:
+                  `ONCE` (default) reschedules this visit only; `FORWARD` reschedules this visit and all the following
+                  visits of the recurring series (new weekly days are supplied in `a_week`); `RANGE`
+                  reschedules only the visits inside the `dl_edit_from` / `dl_edit_to` range.
+                  Applied in backend mode only, while rescheduling (`k_appointment` is set).
+                  For a wider-than-`ONCE` scope, `dt_date` keeps the opened session's original local date; only the time
+                  changes. The repeat frequency and end remain unchanged.
               id_gender_staff:
                 $ref: '#/components/schemas/AGenderSid'
                 description: |-
@@ -102346,7 +102870,10 @@ paths:
                       properties:
                         a_conflict:
                           type: object
-                          description: 'Information about booking conflicts. Keys are bookings dates/times in MySQL format in UTC. Values are arrays with next keys:'
+                          description: |-
+                            Information about booking conflicts. Keys are bookings dates/times in MySQL format in UTC. Values are arrays with next keys:
+
+                            For a long recurring series, send the same information in `json_conflict` instead.
                           properties:
                             dt_date_local:
                               type: string
@@ -102460,6 +102987,26 @@ paths:
                               description: 'The asset.'
                           required:
                             - k_resource
+                        a_week:
+                          type: array
+                          description: |-
+                            New days of the week for a weekly `FORWARD` reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                            Omitted or empty to keep the current weekdays. Ignored for other scopes.
+                          items:
+                            type: integer
+                            format: int32
+                        dl_edit_from:
+                          type: string
+                          description: |-
+                            The start of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                            Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                            only the visits of the recurring series on or after this date are rescheduled.
+                        dl_edit_to:
+                          type: string
+                          description: |-
+                            The end of the date range of a recurring reschedule, in MySQL format in the location's time zone.
+                            Specify this only when `id_edit_range` is [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid):
+                            only the visits of the recurring series on or before this date are rescheduled.
                         dt_date:
                           type: string
                           description: "The date/time for the booking in MySQL format in the location's time zone."
@@ -102473,6 +103020,16 @@ paths:
                           description: |-
                             The asset index on the layout.
                             Specify this for separate asset bookings only and for cases when the asset category only has the layout.
+                        id_edit_range:
+                          $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+                          description: |-
+                            The scope of a recurring reschedule. One of the [EditRangeSid](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) constants:
+                            `ONCE` (default) reschedules this visit only; `FORWARD` reschedules this visit and all the following
+                            visits of the recurring series (new weekly days are supplied in `a_week`); `RANGE`
+                            reschedules only the visits inside the `dl_edit_from` / `dl_edit_to` range.
+                            Applied in backend mode only, while rescheduling (the top-level `k_appointment` is set).
+                            A wider-than-`ONCE` scope requires exactly one provider. Its `dt_date` keeps the opened session's
+                            original local date; only the time changes. The repeat frequency and end remain unchanged.
                         id_gender_staff:
                           $ref: '#/components/schemas/AGenderSid'
                           description: |-
@@ -102487,6 +103044,18 @@ paths:
                         is_wait_list_unpaid:
                           type: boolean
                           description: 'If `true`, appointment waits unpaid.'
+                        json_conflict:
+                          type: string
+                          description: |-
+                            The same information about booking conflicts as `a_conflict`, encoded as one JSON object: keys are
+                            booking dates/times in MySQL format in UTC, values are the objects with the keys described in
+                            `a_conflict`.
+                            When it is not empty, it replaces `a_conflict` of this provider. An empty string, an empty JSON object
+                            and an empty JSON array leave `a_conflict` in effect.
+                            A value that is not a JSON object or array is refused with the `json-invalid` error.
+                            The errors in the entries are reported for `a_conflict`, as for the entries of `a_conflict` itself.
+                            Use it for a long recurring series: every entry of `a_conflict` costs several POST variables, and the
+                            number of the POST variables of one request is limited.
                         k_login_prize:
                           type: string
                           description: "The user's prize."
@@ -102740,6 +103309,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -102806,6 +103376,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -103214,6 +103802,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -103354,6 +103943,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -103606,6 +104213,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -103672,6 +104280,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -103966,6 +104592,7 @@ paths:
                         description: |-
                           User key of the staff member the system would assign for this time if the client booked with any staff member.
                           Populated only when no specific staff member is requested and the booking is not back-to-back.
+                          When [DayTimeApi::$a_staff](/Wl/Appointment/Book/Schedule/DayTime.json) is set, this is a staff member from that list.
 
                           `'0'` when not applicable or for asset bookings.
                     required:
@@ -104106,6 +104733,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -104387,6 +105032,24 @@ paths:
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_staff
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: |-
+            The list of staff members to limit the availability to. Empty means no limit.
+            Each element is the user key of a staff member. 
+
+            When the list is set, only the times that a listed staff member can take are returned, and the suggested staff
+            member of each time is taken from this list.
+            The list is ignored when [DayTimeApi::$uid_staff](/Wl/Appointment/Book/Schedule/DayTime.json) (or the legacy [DayTimeApi::$k_staff](/Wl/Appointment/Book/Schedule/DayTime.json)) is set,
+            and for asset bookings.
+            Listed staff members who cannot take the booking (not configured for the service, without a work period at the
+            location, inactive) are skipped. When none of the listed staff members remains, no availability is returned.
         -
           name: a_uid
           in: query
@@ -107968,7 +108631,6 @@ paths:
         Each service and category includes an array of location keys where it is available.
         All active services are returned: unlike the location-scoped list, the result is not filtered by class tab
         or by online bookability, and removed locations are skipped.
-        The caller must be a staff member or admin of the business.
       tags:
         - Appointments
       parameters:
@@ -110174,6 +110836,37 @@ paths:
             List of user keys to book appointments.
             There may be empty values in this list, which means that this is a walk-in.
         -
+          name: a_week
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ADateWeekSid'
+          description: |-
+            New weekdays for a weekly forward reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+            Empty to keep the current weekdays.
+        -
+          name: dl_edit_from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: |-
+            First local date of the bounded reschedule range, in MySQL format.
+            Required for [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid); empty otherwise.
+        -
+          name: dl_edit_to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: |-
+            Last local date of the bounded reschedule range, in MySQL format.
+            Required for [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid); empty otherwise.
+        -
           name: dt_date
           in: query
           required: true
@@ -110191,6 +110884,18 @@ paths:
           description: |-
             Appointment duration.
             Must be specified for asset booking only.
+        -
+          name: id_edit_range
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+          description: |-
+            Scope of a staff reschedule of a recurring appointment.
+
+            Omitted or [EditRangeSid::ONCE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) keeps the existing single-session behavior.
+            A wider scope keeps each session's calendar date and checks its new time in the destination location.
+            Each returned `dt_date_global` is the key of that session's conflict solution on the write.
         -
           name: is_walk_in
           in: query
@@ -110256,7 +110961,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Staff member user ID.'
+          description: 'Staff member user key.'
       x-rate-limit:
         -
           limit: 200000
@@ -110432,6 +111137,37 @@ paths:
             List of user keys to book appointments.
             There may be empty values in this list, which means that this is a walk-in.
         -
+          name: a_week
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ADateWeekSid'
+          description: |-
+            New weekdays for a weekly forward reschedule, constants of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+            Empty to keep the current weekdays.
+        -
+          name: dl_edit_from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: |-
+            First local date of the bounded reschedule range, in MySQL format.
+            Required for [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid); empty otherwise.
+        -
+          name: dl_edit_to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: |-
+            Last local date of the bounded reschedule range, in MySQL format.
+            Required for [EditRangeSid::RANGE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid); empty otherwise.
+        -
           name: dt_date
           in: query
           required: true
@@ -110449,6 +111185,18 @@ paths:
           description: |-
             Appointment duration.
             Must be specified for asset booking only.
+        -
+          name: id_edit_range
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Appointment.Edit.EditRangeSid'
+          description: |-
+            Scope of a staff reschedule of a recurring appointment.
+
+            Omitted or [EditRangeSid::ONCE](#/components/schemas/Wl.Appointment.Edit.EditRangeSid) keeps the existing single-session behavior.
+            A wider scope keeps each session's calendar date and checks its new time in the destination location.
+            Each returned `dt_date_global` is the key of that session's conflict solution on the write.
         -
           name: is_walk_in
           in: query
@@ -110514,7 +111262,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Staff member user ID.'
+          description: 'Staff member user key.'
       deprecated: true
       x-deprecated: 'New version {@link \Wl\Appointment\Book\Conflict\Conflict56Api} should be used instead.'
       x-rate-limit:
@@ -124766,6 +125514,317 @@ components:
         - 'Workout YOY report for Curves business.'
         - 'Report with list of businesses connected to FitLIVE.'
         - 'Report with list of businesses connected to FitLIVE.'
+    Wl.Visit.VisitDenyReasonSid:
+      type: integer
+      format: int32
+      description: |-
+        Reasons of failed book or check-in.
+
+        Last used ID: 38
+
+        Values:
+        - 1 (`ACCESS_DENIED`): The business can not take one more client.
+        - 2 (`ACCESS_LIMITED`): Access is limited.
+        - 3 (`ACCOUNT_LIMIT`): The business can not take one more client.
+        - 4 (`AGE_RESTRICTION`): Class is not available for certain age.
+        - 5 (`AGREE_NX`): Liability Release needs to be agreed.
+        - 25 (`APPOINTMENT_DENY`): Service approval denied
+        - 26 (`APPOINTMENT_REQUEST`): Service requires staff approval
+        - 23 (`ATTEND_GYM_DISABLE`): Business Policy restricts Gym Visits
+        - 38 (`ATTEND_ONCE`): The client already has a checked-in gym visit on the same local day, at any location of the business.
+        - 22 (`ATTEND_SELF_DISABLE`): Self check-in not available for this service
+        - 28 (`ATTEND_UNPAID`): Business policy prevents unpaid check-ins
+        - 27 (`ATTEND_WAIT`): Client is on the Wait List
+        - 37 (`BALANCE_NEGATIVE`): Client has a negative account balance
+        - 7 (`BOOK_EARLY`): It's too early to book a class.
+        - 8 (`BOOK_LATE`): It's too late to book a class.
+        - 24 (`BOOK_NX`): Visit must be booked before check-in
+        - 9 (`BOOK_RESTRICT`): Cannot book to this class anymore.
+        - 6 (`BOOKED_ALREADY`): Client is already booked for this session.
+        - 10 (`BUSINESS_INACTIVE`): Business is inactive.
+        - 11 (`CLASS_CANCELED`): Class is canceled.
+        - 14 (`CLASS_FULL`): Class is full.
+        - 15 (`CLASS_NOT_AVAILABLE_ANYMORE`): Class does not exist anymore.
+        - 12 (`CLIENT_FLAGGED`): Client is flagged at location.
+        - 13 (`CREDIT_CARD_REQUIRE`): Credit card is required for booking services.
+        - 16 (`HOLIDAY`): Business is closed.
+        - 17 (`LOGIN_REQUIRED`): Login is required.
+        - 18 (`NOT_BOOKABLE`): Online booking is disabled for the class.
+        - 35 (`PAYMENT_CONTRACT`): Contract not signed
+        - 36 (`PAYMENT_EXPIRE`): Purchase Option expired
+        - 34 (`PAYMENT_HOLD`): Purchase Option on hold
+        - 30 (`PAYMENT_NX`): No valid Purchase Option
+        - 33 (`PAYMENT_REMAIN`): Purchase Option has no visits left
+        - 32 (`PAYMENT_START`): Purchase Option not active yet
+        - 31 (`SCHEDULE_RESTRICT`): Attendance limit on Purchase Option reached
+        - 29 (`UNKNOWN`): Check-in could not be completed
+        - 19 (`USER_INFO_MISSING`): Required personal details missing.
+        - 20 (`VISIT_BEFORE`): Visit to another class is required first.
+        - 21 (`WAIT_LIST_LIMIT_MAX`): The wait list is full.
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 25
+        - 26
+        - 23
+        - 38
+        - 22
+        - 28
+        - 27
+        - 37
+        - 7
+        - 8
+        - 24
+        - 9
+        - 6
+        - 10
+        - 11
+        - 14
+        - 15
+        - 12
+        - 13
+        - 16
+        - 17
+        - 18
+        - 35
+        - 36
+        - 34
+        - 30
+        - 33
+        - 32
+        - 31
+        - 29
+        - 19
+        - 20
+        - 21
+      x-enum-varnames:
+        - ACCESS_DENIED
+        - ACCESS_LIMITED
+        - ACCOUNT_LIMIT
+        - AGE_RESTRICTION
+        - AGREE_NX
+        - APPOINTMENT_DENY
+        - APPOINTMENT_REQUEST
+        - ATTEND_GYM_DISABLE
+        - ATTEND_ONCE
+        - ATTEND_SELF_DISABLE
+        - ATTEND_UNPAID
+        - ATTEND_WAIT
+        - BALANCE_NEGATIVE
+        - BOOK_EARLY
+        - BOOK_LATE
+        - BOOK_NX
+        - BOOK_RESTRICT
+        - BOOKED_ALREADY
+        - BUSINESS_INACTIVE
+        - CLASS_CANCELED
+        - CLASS_FULL
+        - CLASS_NOT_AVAILABLE_ANYMORE
+        - CLIENT_FLAGGED
+        - CREDIT_CARD_REQUIRE
+        - HOLIDAY
+        - LOGIN_REQUIRED
+        - NOT_BOOKABLE
+        - PAYMENT_CONTRACT
+        - PAYMENT_EXPIRE
+        - PAYMENT_HOLD
+        - PAYMENT_NX
+        - PAYMENT_REMAIN
+        - PAYMENT_START
+        - SCHEDULE_RESTRICT
+        - UNKNOWN
+        - USER_INFO_MISSING
+        - VISIT_BEFORE
+        - WAIT_LIST_LIMIT_MAX
+      x-enum-descriptions:
+        - 'The business can not take one more client.'
+        - 'Access is limited.'
+        - 'The business can not take one more client.'
+        - 'Class is not available for certain age.'
+        - 'Liability Release needs to be agreed.'
+        - 'Service approval denied'
+        - 'Service requires staff approval'
+        - 'Business Policy restricts Gym Visits'
+        - 'The client already has a checked-in gym visit on the same local day, at any location of the business.'
+        - 'Self check-in not available for this service'
+        - 'Business policy prevents unpaid check-ins'
+        - 'Client is on the Wait List'
+        - 'Client has a negative account balance'
+        - "It's too early to book a class."
+        - "It's too late to book a class."
+        - 'Visit must be booked before check-in'
+        - 'Cannot book to this class anymore.'
+        - 'Client is already booked for this session.'
+        - 'Business is inactive.'
+        - 'Class is canceled.'
+        - 'Class is full.'
+        - 'Class does not exist anymore.'
+        - 'Client is flagged at location.'
+        - 'Credit card is required for booking services.'
+        - 'Business is closed.'
+        - 'Login is required.'
+        - 'Online booking is disabled for the class.'
+        - 'Contract not signed'
+        - 'Purchase Option expired'
+        - 'Purchase Option on hold'
+        - 'No valid Purchase Option'
+        - 'Purchase Option has no visits left'
+        - 'Purchase Option not active yet'
+        - 'Attendance limit on Purchase Option reached'
+        - 'Check-in could not be completed'
+        - 'Required personal details missing.'
+        - 'Visit to another class is required first.'
+        - 'The wait list is full.'
+    Wl.Mode.ModeSid:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        The source of a visit.
+
+        Last used ID: 35.
+
+        Values:
+        - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
+        - 21 (`AZURE`): Registered through `Azure`.
+        - 31 (`BRIVO_DOOR_ACCESS`): Visit has been checked-in by Brivo Door Access.
+        - 33 (`BULK_BILLING`): Purchase created by a bulk billing batch charge.
+        - 23 (`CENTRED`): Visit has been created by `CENTRED`.
+        - 8 (`CLASSPASS_BOOKING`): Visit has been created by `ClassPass`.
+        - 22 (`COLLECTIONS`): Debt paid via collections.
+        - 26 (`COLLECTIONS_FUTURE`): Debt paid via collections.
+        - 27 (`CONCERTO`): Action from Concerto.
+        - 18 (`EMAIL`): Action made via email.
+        - 20 (`FACEBOOK`): Indicating that the source is Facebook.
+        - 30 (`GO_HIGH_LEVEL`): Action from Go High Level.
+        - 19 (`GOOGLE`): Indicating that the source is Google.
+        - 7 (`GOOGLE_BOOKING`): Visit has been created by Google Booking Service.
+        - 14 (`GYMPASS_BOOKING`): Visit has been created by `GymPass`.
+        - 5 (`IMPORT`): Visit was created during import.
+        - 12 (`MICROSITE`): Action made via microsite.
+
+          It is also names as directory listing.
+        - 24 (`MICROSOFT`): Indicating that the source is Microsoft.
+        - 13 (`MY_PRESENCE_SITE`): Client booked session on My Presence Site.
+        - 32 (`PASSPORT_DOOR_ACCESS`): Visit has been created by `Passport Door Access`.
+        - 17 (`SMS`): Action made via SMS.
+        - 4 (`SPA_BACKEND`): Staff booked session from spa backend.
+        - 3 (`SPA_FRONTEND`): Client booked session from spa frontend.
+        - 35 (`STAFF_KIOSK`): Staff member checked the client in at the staff check-in kiosk.
+        - 10 (`SYSTEM`): Created by system.
+        - 6 (`UNDEFINED`): Means that we did not define mode.
+        - 16 (`WEB_APP_ATTENDANCE`): Client booked session from Attendance Web App.
+        - 15 (`WEB_APP_CHECK_IN`): Client checked-in for the session through Check-In Web App.
+        - 2 (`WEB_BACKEND`): Staff booked session for client from website backend.
+        - 1 (`WEB_FRONTEND`): Client booked session from website frontend.
+        - 11 (`WIDGET`): Action made via widget (purchase, book etc).
+        - 25 (`ZAPIER`): Action from Zapier.
+      enum:
+        - 28
+        - 21
+        - 31
+        - 33
+        - 23
+        - 8
+        - 22
+        - 26
+        - 27
+        - 18
+        - 20
+        - 30
+        - 19
+        - 7
+        - 14
+        - 5
+        - 12
+        - 24
+        - 13
+        - 32
+        - 17
+        - 4
+        - 3
+        - 35
+        - 10
+        - 6
+        - 16
+        - 15
+        - 2
+        - 1
+        - 11
+        - 25
+      x-enum-varnames:
+        - API
+        - AZURE
+        - BRIVO_DOOR_ACCESS
+        - BULK_BILLING
+        - CENTRED
+        - CLASSPASS_BOOKING
+        - COLLECTIONS
+        - COLLECTIONS_FUTURE
+        - CONCERTO
+        - EMAIL
+        - FACEBOOK
+        - GO_HIGH_LEVEL
+        - GOOGLE
+        - GOOGLE_BOOKING
+        - GYMPASS_BOOKING
+        - IMPORT
+        - MICROSITE
+        - MICROSOFT
+        - MY_PRESENCE_SITE
+        - PASSPORT_DOOR_ACCESS
+        - SMS
+        - SPA_BACKEND
+        - SPA_FRONTEND
+        - STAFF_KIOSK
+        - SYSTEM
+        - UNDEFINED
+        - WEB_APP_ATTENDANCE
+        - WEB_APP_CHECK_IN
+        - WEB_BACKEND
+        - WEB_FRONTEND
+        - WIDGET
+        - ZAPIER
+      x-enum-descriptions:
+        - 'Action made via Api Endpoint. Default for leads created via API, unless overridden.'
+        - 'Registered through `Azure`.'
+        - 'Visit has been checked-in by Brivo Door Access.'
+        - 'Purchase created by a bulk billing batch charge.'
+        - 'Visit has been created by `CENTRED`.'
+        - 'Visit has been created by `ClassPass`.'
+        - 'Debt paid via collections.'
+        - 'Debt paid via collections.'
+        - 'Action from Concerto.'
+        - 'Action made via email.'
+        - 'Indicating that the source is Facebook.'
+        - 'Action from Go High Level.'
+        - 'Indicating that the source is Google.'
+        - 'Visit has been created by Google Booking Service.'
+        - 'Visit has been created by `GymPass`.'
+        - 'Visit was created during import.'
+        - |-
+          Action made via microsite.
+
+          It is also names as directory listing.
+        - 'Indicating that the source is Microsoft.'
+        - 'Client booked session on My Presence Site.'
+        - 'Visit has been created by `Passport Door Access`.'
+        - 'Action made via SMS.'
+        - 'Staff booked session from spa backend.'
+        - 'Client booked session from spa frontend.'
+        - 'Staff member checked the client in at the staff check-in kiosk.'
+        - 'Created by system.'
+        - 'Means that we did not define mode.'
+        - 'Client booked session from Attendance Web App.'
+        - 'Client checked-in for the session through Check-In Web App.'
+        - 'Staff booked session for client from website backend.'
+        - 'Client booked session from website frontend.'
+        - 'Action made via widget (purchase, book etc).'
+        - 'Action from Zapier.'
     ACardSystemSid:
       type:
         - integer
@@ -126640,6 +127699,16 @@ components:
         - 1820 (`Wl\Member\Info\ClientTypeChangeChannel`): A message is sent through this channel every time a client type is changed.
         - 305 (`Wl\Schedule\ScheduleList\ScheduleListChannel`): Channel to notify user that a session has been booked or book cancelled.
         - 298 (`Wl\Schedule\ClassList\ClassListChannel`): Channel to notify user that class schedule is changed.
+        - 2461 (`Wl\Visit\Kiosk\AttemptChannel`): Channel to notify the staff at the check-in kiosk of a location about every gym check-in and every failed gym
+          check-in attempt at that location, from any source.
+
+          A check-in to a class, an event or an appointment and a failed attempt of it send nothing, and neither does an undo
+          of a check-in.
+
+          The message carries no data of the client, of the user who made the attempt or of the pass: a broadcast reaches
+          every subscriber of the keys, so it cannot be limited to the clients that one staff member may see. On each message
+          the kiosk reads [AttemptListApi](/Wl/Visit/Kiosk/AttemptList.json) with [AttemptListApi::$dtu_since](/Wl/Visit/Kiosk/AttemptList.json) equal to
+          [AttemptChannel::$dtu_attempt](#/components/schemas/Core.WebSocket.ChannelBroadcast) to get the full row of the attempt with its `s_attempt`.
         - 1657 (`Wl\Reception\Design\ReceptionDesignChannel`): Channel to pass over information about changing the Self Check-In settings.
         - 1421 (`Thoth\PayProcessor\DirectConnect\Ticket\DirectConnectTicketStatusChannel`): Channel to pass over information about ticket status.
         - 960 (`Wl\Business\Sms\Unread\SmsUnreadCountChannel`): Channel to pass over information about unread SMS in the business.
@@ -126676,6 +127745,7 @@ components:
         - 1820
         - 305
         - 298
+        - 2461
         - 1657
         - 1421
         - 960
@@ -126712,6 +127782,7 @@ components:
         - Wl\Member\Info\ClientTypeChangeChannel
         - Wl\Schedule\ScheduleList\ScheduleListChannel
         - Wl\Schedule\ClassList\ClassListChannel
+        - Wl\Visit\Kiosk\AttemptChannel
         - Wl\Reception\Design\ReceptionDesignChannel
         - Thoth\PayProcessor\DirectConnect\Ticket\DirectConnectTicketStatusChannel
         - Wl\Business\Sms\Unread\SmsUnreadCountChannel
@@ -126760,6 +127831,17 @@ components:
         - 'A message is sent through this channel every time a client type is changed.'
         - 'Channel to notify user that a session has been booked or book cancelled.'
         - 'Channel to notify user that class schedule is changed.'
+        - |-
+          Channel to notify the staff at the check-in kiosk of a location about every gym check-in and every failed gym
+          check-in attempt at that location, from any source.
+
+          A check-in to a class, an event or an appointment and a failed attempt of it send nothing, and neither does an undo
+          of a check-in.
+
+          The message carries no data of the client, of the user who made the attempt or of the pass: a broadcast reaches
+          every subscriber of the keys, so it cannot be limited to the clients that one staff member may see. On each message
+          the kiosk reads {@link \Wl\Visit\Kiosk\AttemptListApi} with {@link \Wl\Visit\Kiosk\AttemptListApi::$dtu_since} equal to
+          {@link \Wl\Visit\Kiosk\AttemptChannel::$dtu_attempt} to get the full row of the attempt with its `s_attempt`.
         - 'Channel to pass over information about changing the Self Check-In settings.'
         - 'Channel to pass over information about ticket status.'
         - 'Channel to pass over information about unread SMS in the business.'
@@ -127475,151 +128557,6 @@ components:
         - 'Customer insists on immediate live transfer to a staff member.'
         - 'Customer asks about their already scheduled or upcoming appointments.'
         - 'Customer asks about their purchased memberships, session passes, or packages.'
-    Wl.Mode.ModeSid:
-      type: integer
-      format: int32
-      description: |-
-        The source of a visit.
-
-        Last used ID: 35.
-
-        Values:
-        - 28 (`API`): Action made via Api Endpoint. Default for leads created via API, unless overridden.
-        - 21 (`AZURE`): Registered through `Azure`.
-        - 31 (`BRIVO_DOOR_ACCESS`): Visit has been checked-in by Brivo Door Access.
-        - 33 (`BULK_BILLING`): Purchase created by a bulk billing batch charge.
-        - 23 (`CENTRED`): Visit has been created by `CENTRED`.
-        - 8 (`CLASSPASS_BOOKING`): Visit has been created by `ClassPass`.
-        - 22 (`COLLECTIONS`): Debt paid via collections.
-        - 26 (`COLLECTIONS_FUTURE`): Debt paid via collections.
-        - 27 (`CONCERTO`): Action from Concerto.
-        - 18 (`EMAIL`): Action made via email.
-        - 20 (`FACEBOOK`): Indicating that the source is Facebook.
-        - 30 (`GO_HIGH_LEVEL`): Action from Go High Level.
-        - 19 (`GOOGLE`): Indicating that the source is Google.
-        - 7 (`GOOGLE_BOOKING`): Visit has been created by Google Booking Service.
-        - 14 (`GYMPASS_BOOKING`): Visit has been created by `GymPass`.
-        - 5 (`IMPORT`): Visit was created during import.
-        - 12 (`MICROSITE`): Action made via microsite.
-
-          It is also names as directory listing.
-        - 24 (`MICROSOFT`): Indicating that the source is Microsoft.
-        - 13 (`MY_PRESENCE_SITE`): Client booked session on My Presence Site.
-        - 32 (`PASSPORT_DOOR_ACCESS`): Visit has been created by `Passport Door Access`.
-        - 17 (`SMS`): Action made via SMS.
-        - 4 (`SPA_BACKEND`): Staff booked session from spa backend.
-        - 3 (`SPA_FRONTEND`): Client booked session from spa frontend.
-        - 35 (`STAFF_KIOSK`): Staff member checked the client in at the staff check-in kiosk.
-        - 10 (`SYSTEM`): Created by system.
-        - 6 (`UNDEFINED`): Means that we did not define mode.
-        - 16 (`WEB_APP_ATTENDANCE`): Client booked session from Attendance Web App.
-        - 15 (`WEB_APP_CHECK_IN`): Client checked-in for the session through Check-In Web App.
-        - 2 (`WEB_BACKEND`): Staff booked session for client from website backend.
-        - 1 (`WEB_FRONTEND`): Client booked session from website frontend.
-        - 11 (`WIDGET`): Action made via widget (purchase, book etc).
-        - 25 (`ZAPIER`): Action from Zapier.
-      enum:
-        - 28
-        - 21
-        - 31
-        - 33
-        - 23
-        - 8
-        - 22
-        - 26
-        - 27
-        - 18
-        - 20
-        - 30
-        - 19
-        - 7
-        - 14
-        - 5
-        - 12
-        - 24
-        - 13
-        - 32
-        - 17
-        - 4
-        - 3
-        - 35
-        - 10
-        - 6
-        - 16
-        - 15
-        - 2
-        - 1
-        - 11
-        - 25
-      x-enum-varnames:
-        - API
-        - AZURE
-        - BRIVO_DOOR_ACCESS
-        - BULK_BILLING
-        - CENTRED
-        - CLASSPASS_BOOKING
-        - COLLECTIONS
-        - COLLECTIONS_FUTURE
-        - CONCERTO
-        - EMAIL
-        - FACEBOOK
-        - GO_HIGH_LEVEL
-        - GOOGLE
-        - GOOGLE_BOOKING
-        - GYMPASS_BOOKING
-        - IMPORT
-        - MICROSITE
-        - MICROSOFT
-        - MY_PRESENCE_SITE
-        - PASSPORT_DOOR_ACCESS
-        - SMS
-        - SPA_BACKEND
-        - SPA_FRONTEND
-        - STAFF_KIOSK
-        - SYSTEM
-        - UNDEFINED
-        - WEB_APP_ATTENDANCE
-        - WEB_APP_CHECK_IN
-        - WEB_BACKEND
-        - WEB_FRONTEND
-        - WIDGET
-        - ZAPIER
-      x-enum-descriptions:
-        - 'Action made via Api Endpoint. Default for leads created via API, unless overridden.'
-        - 'Registered through `Azure`.'
-        - 'Visit has been checked-in by Brivo Door Access.'
-        - 'Purchase created by a bulk billing batch charge.'
-        - 'Visit has been created by `CENTRED`.'
-        - 'Visit has been created by `ClassPass`.'
-        - 'Debt paid via collections.'
-        - 'Debt paid via collections.'
-        - 'Action from Concerto.'
-        - 'Action made via email.'
-        - 'Indicating that the source is Facebook.'
-        - 'Action from Go High Level.'
-        - 'Indicating that the source is Google.'
-        - 'Visit has been created by Google Booking Service.'
-        - 'Visit has been created by `GymPass`.'
-        - 'Visit was created during import.'
-        - |-
-          Action made via microsite.
-
-          It is also names as directory listing.
-        - 'Indicating that the source is Microsoft.'
-        - 'Client booked session on My Presence Site.'
-        - 'Visit has been created by `Passport Door Access`.'
-        - 'Action made via SMS.'
-        - 'Staff booked session from spa backend.'
-        - 'Client booked session from spa frontend.'
-        - 'Staff member checked the client in at the staff check-in kiosk.'
-        - 'Created by system.'
-        - 'Means that we did not define mode.'
-        - 'Client booked session from Attendance Web App.'
-        - 'Client checked-in for the session through Check-In Web App.'
-        - 'Staff booked session for client from website backend.'
-        - 'Client booked session from website frontend.'
-        - 'Action made via widget (purchase, book etc).'
-        - 'Action from Zapier.'
     Wl.Login.Member.VaccinationStatus.VaccinationStatusSid:
       type: integer
       format: int32
@@ -136669,170 +137606,6 @@ components:
         - 'Rewards for reviewing a business.'
         - 'Social networks rewards.'
         - 'Rewards for significant user events.'
-    Wl.Visit.VisitDenyReasonSid:
-      type: integer
-      format: int32
-      description: |-
-        Reasons of failed book or check-in.
-
-        Last used ID: 38
-
-        Values:
-        - 1 (`ACCESS_DENIED`): The business can not take one more client.
-        - 2 (`ACCESS_LIMITED`): Access is limited.
-        - 3 (`ACCOUNT_LIMIT`): The business can not take one more client.
-        - 4 (`AGE_RESTRICTION`): Class is not available for certain age.
-        - 5 (`AGREE_NX`): Liability Release needs to be agreed.
-        - 25 (`APPOINTMENT_DENY`): Service approval denied
-        - 26 (`APPOINTMENT_REQUEST`): Service requires staff approval
-        - 23 (`ATTEND_GYM_DISABLE`): Business Policy restricts Gym Visits
-        - 38 (`ATTEND_ONCE`): The client already has a checked-in gym visit on the same local day, at any location of the business.
-        - 22 (`ATTEND_SELF_DISABLE`): Self check-in not available for this service
-        - 28 (`ATTEND_UNPAID`): Business policy prevents unpaid check-ins
-        - 27 (`ATTEND_WAIT`): Client is on the Wait List
-        - 37 (`BALANCE_NEGATIVE`): Client has a negative account balance
-        - 7 (`BOOK_EARLY`): It's too early to book a class.
-        - 8 (`BOOK_LATE`): It's too late to book a class.
-        - 24 (`BOOK_NX`): Visit must be booked before check-in
-        - 9 (`BOOK_RESTRICT`): Cannot book to this class anymore.
-        - 6 (`BOOKED_ALREADY`): Client is already booked for this session.
-        - 10 (`BUSINESS_INACTIVE`): Business is inactive.
-        - 11 (`CLASS_CANCELED`): Class is canceled.
-        - 14 (`CLASS_FULL`): Class is full.
-        - 15 (`CLASS_NOT_AVAILABLE_ANYMORE`): Class does not exist anymore.
-        - 12 (`CLIENT_FLAGGED`): Client is flagged at location.
-        - 13 (`CREDIT_CARD_REQUIRE`): Credit card is required for booking services.
-        - 16 (`HOLIDAY`): Business is closed.
-        - 17 (`LOGIN_REQUIRED`): Login is required.
-        - 18 (`NOT_BOOKABLE`): Online booking is disabled for the class.
-        - 35 (`PAYMENT_CONTRACT`): Contract not signed
-        - 36 (`PAYMENT_EXPIRE`): Purchase Option expired
-        - 34 (`PAYMENT_HOLD`): Purchase Option on hold
-        - 30 (`PAYMENT_NX`): No valid Purchase Option
-        - 33 (`PAYMENT_REMAIN`): Purchase Option has no visits left
-        - 32 (`PAYMENT_START`): Purchase Option not active yet
-        - 31 (`SCHEDULE_RESTRICT`): Attendance limit on Purchase Option reached
-        - 29 (`UNKNOWN`): Check-in could not be completed
-        - 19 (`USER_INFO_MISSING`): Required personal details missing.
-        - 20 (`VISIT_BEFORE`): Visit to another class is required first.
-        - 21 (`WAIT_LIST_LIMIT_MAX`): The wait list is full.
-      enum:
-        - 1
-        - 2
-        - 3
-        - 4
-        - 5
-        - 25
-        - 26
-        - 23
-        - 38
-        - 22
-        - 28
-        - 27
-        - 37
-        - 7
-        - 8
-        - 24
-        - 9
-        - 6
-        - 10
-        - 11
-        - 14
-        - 15
-        - 12
-        - 13
-        - 16
-        - 17
-        - 18
-        - 35
-        - 36
-        - 34
-        - 30
-        - 33
-        - 32
-        - 31
-        - 29
-        - 19
-        - 20
-        - 21
-      x-enum-varnames:
-        - ACCESS_DENIED
-        - ACCESS_LIMITED
-        - ACCOUNT_LIMIT
-        - AGE_RESTRICTION
-        - AGREE_NX
-        - APPOINTMENT_DENY
-        - APPOINTMENT_REQUEST
-        - ATTEND_GYM_DISABLE
-        - ATTEND_ONCE
-        - ATTEND_SELF_DISABLE
-        - ATTEND_UNPAID
-        - ATTEND_WAIT
-        - BALANCE_NEGATIVE
-        - BOOK_EARLY
-        - BOOK_LATE
-        - BOOK_NX
-        - BOOK_RESTRICT
-        - BOOKED_ALREADY
-        - BUSINESS_INACTIVE
-        - CLASS_CANCELED
-        - CLASS_FULL
-        - CLASS_NOT_AVAILABLE_ANYMORE
-        - CLIENT_FLAGGED
-        - CREDIT_CARD_REQUIRE
-        - HOLIDAY
-        - LOGIN_REQUIRED
-        - NOT_BOOKABLE
-        - PAYMENT_CONTRACT
-        - PAYMENT_EXPIRE
-        - PAYMENT_HOLD
-        - PAYMENT_NX
-        - PAYMENT_REMAIN
-        - PAYMENT_START
-        - SCHEDULE_RESTRICT
-        - UNKNOWN
-        - USER_INFO_MISSING
-        - VISIT_BEFORE
-        - WAIT_LIST_LIMIT_MAX
-      x-enum-descriptions:
-        - 'The business can not take one more client.'
-        - 'Access is limited.'
-        - 'The business can not take one more client.'
-        - 'Class is not available for certain age.'
-        - 'Liability Release needs to be agreed.'
-        - 'Service approval denied'
-        - 'Service requires staff approval'
-        - 'Business Policy restricts Gym Visits'
-        - 'The client already has a checked-in gym visit on the same local day, at any location of the business.'
-        - 'Self check-in not available for this service'
-        - 'Business policy prevents unpaid check-ins'
-        - 'Client is on the Wait List'
-        - 'Client has a negative account balance'
-        - "It's too early to book a class."
-        - "It's too late to book a class."
-        - 'Visit must be booked before check-in'
-        - 'Cannot book to this class anymore.'
-        - 'Client is already booked for this session.'
-        - 'Business is inactive.'
-        - 'Class is canceled.'
-        - 'Class is full.'
-        - 'Class does not exist anymore.'
-        - 'Client is flagged at location.'
-        - 'Credit card is required for booking services.'
-        - 'Business is closed.'
-        - 'Login is required.'
-        - 'Online booking is disabled for the class.'
-        - 'Contract not signed'
-        - 'Purchase Option expired'
-        - 'Purchase Option on hold'
-        - 'No valid Purchase Option'
-        - 'Purchase Option has no visits left'
-        - 'Purchase Option not active yet'
-        - 'Attendance limit on Purchase Option reached'
-        - 'Check-in could not be completed'
-        - 'Required personal details missing.'
-        - 'Visit to another class is required first.'
-        - 'The wait list is full.'
     Wl.Visit.Kiosk.ScanResultSid:
       type: integer
       format: int32
@@ -138519,6 +139292,29 @@ components:
         - 'Create an event with other staff, date or time.'
         - 'Ignore this conflict and create event as it is.'
         - 'Do not create conflicted event.'
+    Wl.Appointment.Edit.EditRangeSid:
+      type: integer
+      format: int32
+      description: |-
+        Different types of range to apply rescheduling. Important for recurring appointments that
+        can be changed only once, per date range or forward from current date.
+
+        Values:
+        - 2 (`FORWARD`): Change all appointment from current one until the end of the recurring appointments.
+        - 1 (`ONCE`): Change only one appointment.
+        - 3 (`RANGE`): Change all appointments withing the given date range.
+      enum:
+        - 2
+        - 1
+        - 3
+      x-enum-varnames:
+        - FORWARD
+        - ONCE
+        - RANGE
+      x-enum-descriptions:
+        - 'Change all appointment from current one until the end of the recurring appointments.'
+        - 'Change only one appointment.'
+        - 'Change all appointments withing the given date range.'
     Wl.Service.ServiceBookFlowSid:
       type: integer
       format: int32
