@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261120141908
+  version: 1.1.20261120151827
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -85174,10 +85174,9 @@ paths:
                   description: |-
                     Whether the task had a repeat when the client read it.
 
-                    Optional. A client that sends it with the repeat on is refused when the rule has moved to a newer task of the
-                    series since, so a turn-off does not go to a task that no longer carries the rule. `null` if the client does not
-                    send it, and then only a request that turns the repeat on is checked: the protection against a stale turn-off
-                    exists only for a client that sends it.
+                    Optional. An older task of a series shows the rule of the series, and a request that turns the repeat off stops
+                    the series only when the client says it read the task with the repeat on. `null` if the client does not send it:
+                    then a turn-off on an older task changes nothing.
                 k_location:
                   type:
                     - string
@@ -124525,6 +124524,12 @@ paths:
                           description: |-
                             Padding before each booking of the asset, in minutes. `0` if the asset has no padding before.
                             The asset is blocked for this time before each booking. Whether to show it is up to the client.
+                        i_quantity:
+                          type: integer
+                          format: int32
+                          description: |-
+                            The number of identical units of the asset. One booking takes one unit.
+                            The units booked at [AssetListApi::$dtl_date](/Wl/Appointment/Book/Asset/AssetList.json) are listed in [AssetListApi::$a_asset_busy](/Wl/Appointment/Book/Asset/AssetList.json).
                         id_deny_reason:
                           $ref: '#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid'
                           description: |-
@@ -124570,6 +124575,7 @@ paths:
                         - html_title
                         - i_padding_after
                         - i_padding_before
+                        - i_quantity
                         - id_deny_reason
                         - id_service_require
                         - is_age_restricted
