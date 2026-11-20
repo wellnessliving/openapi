@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261120081743
+  version: 1.1.20261120141908
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -9580,6 +9580,19 @@ paths:
                         - k_task
                     -
                       type: object
+                      title: 'task-remind (id_mail 233)'
+                      properties:
+                        k_staff:
+                          type: string
+                          description: 'Key of the staff member assigned to the task.'
+                        k_task:
+                          type: string
+                          description: 'Key of the task.'
+                      required:
+                        - k_staff
+                        - k_task
+                    -
+                      type: object
                       title: 'term-copy (id_mail 99)'
                       properties:
                         dt_agree:
@@ -15171,6 +15184,9 @@ paths:
                       is_member_group_all:
                         type: boolean
                         description: '`true` if all client groups are selected, `false` otherwise.'
+                      is_sms_disable:
+                        type: boolean
+                        description: '`true` if the business cannot send SMS notifications, `false` otherwise.'
                       k_mail_pattern_live:
                         type:
                           - string
@@ -15185,6 +15201,7 @@ paths:
                       - is_login_type_all
                       - is_member_group
                       - is_member_group_all
+                      - is_sms_disable
                       - k_mail_pattern_live
                   a_setting:
                     type: object
@@ -84722,6 +84739,8 @@ paths:
         Deletes the task record, removes any pending due-date reminder, reindexes search data for
          the previously assigned client, logs the removal, and notifies the task channel so that
          connected clients refresh their task list.
+
+        If the task carries the rule of a repeat, the repeat ends with it.
       tags:
         - Tasks
       parameters:
@@ -84765,6 +84784,13 @@ paths:
               schema:
                 type: object
                 properties:
+                  a_repeat_day_week:
+                    type: array
+                    description: |-
+                      Days of the week of a repeat by weeks on a schedule, each one of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                      Empty if the repeat is not by weeks, or if the task does not repeat.
+                    items:
+                      $ref: '#/components/schemas/ADateWeekSid'
                   a_staff:
                     type: array
                     deprecated: true
@@ -84793,12 +84819,78 @@ paths:
                     type: string
                     format: date
                     description: 'Due date.'
+                  dl_repeat_end:
+                    type:
+                      - string
+                      - 'null'
+                    format: date
+                    description: |-
+                      Last day, in the time zone of the business, on which the next task is still made, in the MySQL format.
+                      `null` if the repeat does not end by a date. Set when [EditApi::$id_repeat_end](/Wl/Task/Edit/Edit.json) is [TaskRepeatEndEnum::DATE](#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum).
+                  i_repeat_day_month:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      Day of the month, 1 to 31, of a repeat by months on a day.
+                      `null` if the repeat is not by months on a day. A month that has fewer days gets its last day.
+                  i_repeat_end_count:
+                    $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum'
+                    description: |-
+                      Total number of tasks of the series, the first one included, after which no task is made.
+                      `null` if the repeat does not end by a count. Set when [EditApi::$id_repeat_end](/Wl/Task/Edit/Edit.json) is [TaskRepeatEndEnum::COUNT](#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum).
+                  i_repeat_every:
+                    type:
+                      - integer
+                      - 'null'
+                    format: int32
+                    description: |-
+                      The number of units of the repeat, 1 to 99: every 2 weeks on a schedule, or the gap after the task is completed.
+                      `null` if the task does not repeat.
+                  i_repeat_month_order:
+                    $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatOrderEnum'
+                    description: |-
+                      Number of the weekday in the month of a repeat by months on a weekday: one of [TaskRepeatOrderEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatOrderEnum), 1 to
+                      4, or 5 for the last one. `null` if the repeat is not by months on a weekday.
+                  id_repeat_end:
+                    $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum'
+                    description: |-
+                      How the series of repeating tasks ends, one of [TaskRepeatEndEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum).
+                      `null` if the task does not repeat.
+                  id_repeat_mode:
+                    $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatModeEnum'
+                    description: |-
+                      When the next task is made, one of [TaskRepeatModeEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatModeEnum).
+                      `null` if the task does not repeat.
+                  id_repeat_month:
+                    $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatMonthEnum'
+                    description: |-
+                      How a repeat by months chooses the day, one of [TaskRepeatMonthEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatMonthEnum).
+                      `null` if the repeat is not by months on a schedule.
+                  id_repeat_month_weekday:
+                    $ref: '#/components/schemas/ADateWeekSid'
+                    description: |-
+                      Day of the week of a repeat by months on a weekday, one of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                      `null` if the repeat is not by months on a weekday.
+                  id_repeat_unit:
+                    $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatUnitEnum'
+                    description: |-
+                      Unit of the repeat, one of [TaskRepeatUnitEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatUnitEnum).
+                      `null` if the task does not repeat.
                   id_task_status:
                     $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
                     description: |-
                       Task status.
 
                       `null` means not set.
+                  is_repeat:
+                    type:
+                      - boolean
+                      - 'null'
+                    description: |-
+                      Whether the task repeats. The other properties of the repeat are read only if it is `true`.
+                      On a save, `null` leaves the repeat of the task as it is, and `false` turns it off.
                   k_location:
                     type:
                       - string
@@ -84825,6 +84917,7 @@ paths:
                     type: string
                     description: 'Task description.'
                 required:
+                  - a_repeat_day_week
                   - a_staff
                   - a_uid_staff
                   - dl_due
@@ -84967,6 +85060,13 @@ paths:
             schema:
               type: object
               properties:
+                a_repeat_day_week:
+                  type: array
+                  description: |-
+                    Days of the week of a repeat by weeks on a schedule, each one of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                    Empty if the repeat is not by weeks, or if the task does not repeat.
+                  items:
+                    $ref: '#/components/schemas/ADateWeekSid'
                 a_staff:
                   type: array
                   deprecated: true
@@ -84995,12 +85095,89 @@ paths:
                   type: string
                   format: date
                   description: 'Due date.'
+                dl_repeat_end:
+                  type:
+                    - string
+                    - 'null'
+                  format: date
+                  description: |-
+                    Last day, in the time zone of the business, on which the next task is still made, in the MySQL format.
+                    `null` if the repeat does not end by a date. Set when [EditApi::$id_repeat_end](/Wl/Task/Edit/Edit.json) is [TaskRepeatEndEnum::DATE](#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum).
+                i_repeat_day_month:
+                  type:
+                    - integer
+                    - 'null'
+                  format: int32
+                  description: |-
+                    Day of the month, 1 to 31, of a repeat by months on a day.
+                    `null` if the repeat is not by months on a day. A month that has fewer days gets its last day.
+                i_repeat_end_count:
+                  $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum'
+                  description: |-
+                    Total number of tasks of the series, the first one included, after which no task is made.
+                    `null` if the repeat does not end by a count. Set when [EditApi::$id_repeat_end](/Wl/Task/Edit/Edit.json) is [TaskRepeatEndEnum::COUNT](#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum).
+                i_repeat_every:
+                  type:
+                    - integer
+                    - 'null'
+                  format: int32
+                  description: |-
+                    The number of units of the repeat, 1 to 99: every 2 weeks on a schedule, or the gap after the task is completed.
+                    `null` if the task does not repeat.
+                i_repeat_month_order:
+                  $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatOrderEnum'
+                  description: |-
+                    Number of the weekday in the month of a repeat by months on a weekday: one of [TaskRepeatOrderEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatOrderEnum), 1 to
+                    4, or 5 for the last one. `null` if the repeat is not by months on a weekday.
+                id_repeat_end:
+                  $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum'
+                  description: |-
+                    How the series of repeating tasks ends, one of [TaskRepeatEndEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatEndEnum).
+                    `null` if the task does not repeat.
+                id_repeat_mode:
+                  $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatModeEnum'
+                  description: |-
+                    When the next task is made, one of [TaskRepeatModeEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatModeEnum).
+                    `null` if the task does not repeat.
+                id_repeat_month:
+                  $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatMonthEnum'
+                  description: |-
+                    How a repeat by months chooses the day, one of [TaskRepeatMonthEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatMonthEnum).
+                    `null` if the repeat is not by months on a schedule.
+                id_repeat_month_weekday:
+                  $ref: '#/components/schemas/ADateWeekSid'
+                  description: |-
+                    Day of the week of a repeat by months on a weekday, one of [ADateWeekSid](#/components/schemas/ADateWeekSid).
+                    `null` if the repeat is not by months on a weekday.
+                id_repeat_unit:
+                  $ref: '#/components/schemas/Wl.Task.Repeat.TaskRepeatUnitEnum'
+                  description: |-
+                    Unit of the repeat, one of [TaskRepeatUnitEnum](#/components/schemas/Wl.Task.Repeat.TaskRepeatUnitEnum).
+                    `null` if the task does not repeat.
                 id_task_status:
                   $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
                   description: |-
                     Task status.
 
                     `null` means not set.
+                is_repeat:
+                  type:
+                    - boolean
+                    - 'null'
+                  description: |-
+                    Whether the task repeats. The other properties of the repeat are read only if it is `true`.
+                    On a save, `null` leaves the repeat of the task as it is, and `false` turns it off.
+                is_repeat_open:
+                  type:
+                    - boolean
+                    - 'null'
+                  description: |-
+                    Whether the task had a repeat when the client read it.
+
+                    Optional. A client that sends it with the repeat on is refused when the rule has moved to a newer task of the
+                    series since, so a turn-off does not go to a task that no longer carries the rule. `null` if the client does not
+                    send it, and then only a request that turns the repeat on is checked: the protection against a stale turn-off
+                    exists only for a client that sends it.
                 k_location:
                   type:
                     - string
@@ -85027,6 +85204,7 @@ paths:
                   type: string
                   description: 'Task description.'
               required:
+                - a_repeat_day_week
                 - a_staff
                 - a_uid_staff
                 - dl_due
@@ -85058,6 +85236,10 @@ paths:
       description: |-
         Updates the task status, logs the change, and notifies the task channel so that connected
          clients refresh their task list.
+
+        If the task is set to Completed and repeats "when this one is completed", the next task of the repeat is made,
+        and its staff are notified as of any new task. A status other than Completed, and a task that was Completed
+        already, make nothing.
       tags:
         - Tasks
       parameters:
@@ -85166,7 +85348,7 @@ paths:
                         id_task_status:
                           $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
                           description: 'The status of the task. One of [TaskStatusSid](#/components/schemas/Wl.Task.TaskStatusSid) constants.'
-                        is_overdue:
+                        is_late:
                           type: boolean
                           description: |-
                             Whether the task is overdue: it is not completed, and its due date and time have passed. The row is overdue on
@@ -85207,6 +85389,11 @@ paths:
                           description: |-
                             How late the task is, as the page shows it under the due date: "2 days overdue" for whole days of 24 hours,
                             "Overdue" when the task is late less than a day. An empty string when the task is not overdue.
+                        text_repeat:
+                          type: string
+                          description: |-
+                            Text that tells how the task repeats, such as "Repeats every week on Friday". An empty string if the task
+                            does not repeat.
                         text_staff:
                           type: string
                           description: |-
@@ -85245,7 +85432,7 @@ paths:
                         - dtl_due
                         - html_description
                         - id_task_status
-                        - is_overdue
+                        - is_late
                         - k_business
                         - k_task
                         - text_add
@@ -85256,6 +85443,7 @@ paths:
                         - text_create
                         - text_due
                         - text_overdue
+                        - text_repeat
                         - text_staff
                         - text_title
                         - uid
@@ -140648,7 +140836,7 @@ components:
 
           The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
           see [AppleRegistrationApi](/Wl/Wallet/Apple/AppleRegistration.json), and the web service notifies this channel. The page of
-          `WalletAddController` is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          WalletAddController is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
           has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
 
           The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
@@ -140792,7 +140980,7 @@ components:
 
           The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
           see {@link \Wl\Wallet\Apple\AppleRegistrationApi}, and the web service notifies this channel. The page of
-          `WalletAddController` is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          {@link \Wl\Wallet\WalletAddController} is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
           has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
 
           The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
@@ -143153,7 +143341,7 @@ components:
 
         Pay attention that all `\MailPrioritySid` must start with backslash.
 
-        Last used ID: 232.
+        Last used ID: 233.
 
         Values:
         - 220 (`ABANDONED_CHECKOUT`): Sent when a client abandons a checkout (used in automations).
@@ -143615,6 +143803,7 @@ components:
         - 196 (`STAFF_CALLBACK_REQUEST`): Notifies staff when CAASI captures a client request for a staff connect,
           including their contact details and any relevant notes from the conversation.
         - 104 (`TASK_ASSIGN`): Sends when task assigned to staff.
+        - 233 (`TASK_REMIND`): Sends to a staff member to remind them that a task is due soon.
         - 99 (`TERM_COPY`): Send a copy of waiver.
         - 225 (`TICKET_PURCHASE`): Sent after a ticketed event is purchased.
 
@@ -143828,6 +144017,7 @@ components:
         - 122
         - 196
         - 104
+        - 233
         - 99
         - 225
         - 112
@@ -144035,6 +144225,7 @@ components:
         - SKIN_APPLICATION_CONNECT
         - STAFF_CALLBACK_REQUEST
         - TASK_ASSIGN
+        - TASK_REMIND
         - TERM_COPY
         - TICKET_PURCHASE
         - USER_CAMPAIGN
@@ -144589,6 +144780,7 @@ components:
           Notifies staff when CAASI captures a client request for a staff connect,
           including their contact details and any relevant notes from the conversation.
         - 'Sends when task assigned to staff.'
+        - 'Sends to a staff member to remind them that a task is due soon.'
         - 'Send a copy of waiver.'
         - |-
           Sent after a ticketed event is purchased.
@@ -148498,10 +148690,6 @@ components:
         - 68 (`GUEST_PASS_REDEEM_HOST`): The guest redeemed a guest pass sent by the client.
 
           Written on the feed of the owner of the guest pass.
-        - 71 (`GUEST_PASS_REMIND`): A reminder of a guest pass invitation was sent to the guest.
-
-          Written on the feed of the owner of the guest pass. Hidden from the client while
-          [RsLoginActivityTypeSid::guestPassRemindClientShow()](#/components/schemas/RsLoginActivityTypeSid) says so.
         - 66 (`GUEST_PASS_REVOKE_MANUAL`): A guest pass invitation sent by the client was revoked by a person: a staff member or the client.
 
           Written on the feed of the owner of the guest pass.
@@ -148579,7 +148767,6 @@ components:
         - 70
         - 69
         - 68
-        - 71
         - 66
         - 67
         - 65
@@ -148650,7 +148837,6 @@ components:
         - GUEST_PASS_EXPIRE
         - GUEST_PASS_REDEEM_GUEST
         - GUEST_PASS_REDEEM_HOST
-        - GUEST_PASS_REMIND
         - GUEST_PASS_REVOKE_MANUAL
         - GUEST_PASS_REVOKE_SYSTEM
         - GUEST_PASS_SEND
@@ -148731,11 +148917,6 @@ components:
           The guest redeemed a guest pass sent by the client.
 
           Written on the feed of the owner of the guest pass.
-        - |-
-          A reminder of a guest pass invitation was sent to the guest.
-
-          Written on the feed of the owner of the guest pass. Hidden from the client while
-          {@link \RsLoginActivityTypeSid::guestPassRemindClientShow()} says so.
         - |-
           A guest pass invitation sent by the client was revoked by a person: a staff member or the client.
 
@@ -151976,6 +152157,128 @@ components:
         - 'Rewards for reviewing a business.'
         - 'Social networks rewards.'
         - 'Rewards for significant user events.'
+    Wl.Task.Repeat.TaskRepeatEndEnum:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |
+        How a series of repeating tasks ends.
+
+        Last used ID: 3
+
+        Values:
+      enum: []
+      x-enum-varnames: []
+      x-enum-descriptions: []
+    Wl.Task.Repeat.TaskRepeatOrderEnum:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        Number of the weekday in a month for a repeat by months on a weekday, such as the second Tuesday.
+
+        Last used ID: 5
+
+        Values:
+        - 1 (`FIRST`): The first weekday of the month.
+        - 4 (`FOURTH`): The fourth weekday of the month.
+        - 5 (`LAST`): The last weekday of the month: the fourth or the fifth one.
+        - 2 (`SECOND`): The second weekday of the month.
+        - 3 (`THIRD`): The third weekday of the month.
+      enum:
+        - 1
+        - 4
+        - 5
+        - 2
+        - 3
+      x-enum-varnames:
+        - FIRST
+        - FOURTH
+        - LAST
+        - SECOND
+        - THIRD
+      x-enum-descriptions:
+        - 'The first weekday of the month.'
+        - 'The fourth weekday of the month.'
+        - 'The last weekday of the month: the fourth or the fifth one.'
+        - 'The second weekday of the month.'
+        - 'The third weekday of the month.'
+    Wl.Task.Repeat.TaskRepeatModeEnum:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        When the next task of a series is made.
+
+        Last used ID: 2
+
+        Values:
+        - 2 (`COMPLETED`): The next task is made when the current one is completed.
+        - 1 (`SCHEDULE`): The next task is made on the due date of the current one, whether it is done or not.
+      enum:
+        - 2
+        - 1
+      x-enum-varnames:
+        - COMPLETED
+        - SCHEDULE
+      x-enum-descriptions:
+        - 'The next task is made when the current one is completed.'
+        - 'The next task is made on the due date of the current one, whether it is done or not.'
+    Wl.Task.Repeat.TaskRepeatMonthEnum:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        How a series that repeats by months chooses the day of the month.
+
+        Last used ID: 2
+
+        Values:
+        - 1 (`DAY`): A day of the month, such as the 15th.
+        - 2 (`WEEKDAY`): A weekday of the month, such as the second Tuesday or the last Friday.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - DAY
+        - WEEKDAY
+      x-enum-descriptions:
+        - 'A day of the month, such as the 15th.'
+        - 'A weekday of the month, such as the second Tuesday or the last Friday.'
+    Wl.Task.Repeat.TaskRepeatUnitEnum:
+      type:
+        - integer
+        - 'null'
+      format: int32
+      description: |-
+        Unit of the repeat of a task.
+
+        Last used ID: 4
+
+        Values:
+        - 1 (`DAY`): Days.
+        - 3 (`MONTH`): Months.
+        - 2 (`WEEK`): Weeks.
+        - 4 (`YEAR`): Years.
+      enum:
+        - 1
+        - 3
+        - 2
+        - 4
+      x-enum-varnames:
+        - DAY
+        - MONTH
+        - WEEK
+        - YEAR
+      x-enum-descriptions:
+        - Days.
+        - Months.
+        - Weeks.
+        - Years.
     Wl.Task.Manager.ManagerTabSid:
       type: integer
       format: int32
