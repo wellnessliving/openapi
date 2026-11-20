@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261119193124
+  version: 1.1.20261120081743
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -15136,6 +15136,56 @@ paths:
                             - text_question
                             - xml_description
                             - xml_question
+                  a_notification_custom:
+                    type: object
+                    description: |-
+                      Send rules of the custom confirmation of the form: how many client types and client groups it is sent to.
+
+                      Empty for a form of the main business. Otherwise:
+                    properties:
+                      i_login_type:
+                        type: integer
+                        format: int32
+                        description: 'Number of selected client types.'
+                      i_login_type_all:
+                        type: integer
+                        format: int32
+                        description: 'Number of all client types of the business.'
+                      i_member_group:
+                        type: integer
+                        format: int32
+                        description: 'Number of selected client groups.'
+                      i_member_group_all:
+                        type: integer
+                        format: int32
+                        description: 'Number of all client groups of the business.'
+                      is_login_type:
+                        type: boolean
+                        description: '`true` if the confirmation is sent only to specific client types, `false` otherwise.'
+                      is_login_type_all:
+                        type: boolean
+                        description: '`true` if all client types are selected, `false` otherwise.'
+                      is_member_group:
+                        type: boolean
+                        description: '`true` if the confirmation is sent only to specific client groups, `false` otherwise.'
+                      is_member_group_all:
+                        type: boolean
+                        description: '`true` if all client groups are selected, `false` otherwise.'
+                      k_mail_pattern_live:
+                        type:
+                          - string
+                          - 'null'
+                        description: 'Key of the pattern of the custom confirmation. `null` if the form has no pattern yet.'
+                    required:
+                      - i_login_type
+                      - i_login_type_all
+                      - i_member_group
+                      - i_member_group_all
+                      - is_login_type
+                      - is_login_type_all
+                      - is_member_group
+                      - is_member_group_all
+                      - k_mail_pattern_live
                   a_setting:
                     type: object
                     description: 'Quiz settings.'
@@ -15224,6 +15274,40 @@ paths:
                       is_notify_client:
                         type: boolean
                         description: 'Whether email notification should be sent to client after quiz submitted.'
+                      is_notify_custom:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the custom confirmation of the form is turned on: it is sent instead of the global form submission
+                          notification.
+
+                          `null` if it was not sent: the stored state is then not changed. Never set for the forms of the main business
+                          (`0`), which have no custom confirmation.
+                      is_notify_custom_mail:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the email of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
+                      is_notify_custom_push:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the push notification of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
+                      is_notify_custom_sms:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the SMS of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
                       is_notify_staff:
                         type: boolean
                         description: 'Whether email notification should be sent to staff members after quiz is submitted.'
@@ -15337,6 +15421,12 @@ paths:
                   text_title:
                     type: string
                     description: 'Quiz form title.'
+                  url_notification:
+                    type: string
+                    description: |-
+                      URL of the page of the global form submission notification, which the custom confirmation of the form replaces.
+
+                      Empty for a form of the main business.
                   url_quiz:
                     type: string
                     description: 'Direct URL to quiz.'
@@ -15346,6 +15436,7 @@ paths:
                 required:
                   - a_access_log
                   - a_element
+                  - a_notification_custom
                   - a_setting
                   - can_amend
                   - i_responses
@@ -15354,6 +15445,7 @@ paths:
                   - is_prevent_franchisee
                   - show_numbering
                   - text_title
+                  - url_notification
                   - url_quiz
                   - url_quiz_kiosk
         '400':
@@ -17356,6 +17448,40 @@ paths:
                     is_notify_client:
                       type: boolean
                       description: 'Whether email notification should be sent to client after quiz submitted.'
+                    is_notify_custom:
+                      type:
+                        - boolean
+                        - 'null'
+                      description: |-
+                        Whether the custom confirmation of the form is turned on: it is sent instead of the global form submission
+                        notification.
+
+                        `null` if it was not sent: the stored state is then not changed. Never set for the forms of the main business
+                        (`0`), which have no custom confirmation.
+                    is_notify_custom_mail:
+                      type:
+                        - boolean
+                        - 'null'
+                      description: |-
+                        Whether the email of the custom confirmation is activated.
+
+                        `null` if it was not sent: the stored state is then not changed.
+                    is_notify_custom_push:
+                      type:
+                        - boolean
+                        - 'null'
+                      description: |-
+                        Whether the push notification of the custom confirmation is activated.
+
+                        `null` if it was not sent: the stored state is then not changed.
+                    is_notify_custom_sms:
+                      type:
+                        - boolean
+                        - 'null'
+                      description: |-
+                        Whether the SMS of the custom confirmation is activated.
+
+                        `null` if it was not sent: the stored state is then not changed.
                     is_notify_staff:
                       type: boolean
                       description: 'Whether email notification should be sent to staff members after quiz is submitted.'
@@ -17570,6 +17696,40 @@ paths:
                       is_notify_client:
                         type: boolean
                         description: 'Whether email notification should be sent to client after quiz submitted.'
+                      is_notify_custom:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the custom confirmation of the form is turned on: it is sent instead of the global form submission
+                          notification.
+
+                          `null` if it was not sent: the stored state is then not changed. Never set for the forms of the main business
+                          (`0`), which have no custom confirmation.
+                      is_notify_custom_mail:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the email of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
+                      is_notify_custom_push:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the push notification of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
+                      is_notify_custom_sms:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the SMS of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
                       is_notify_staff:
                         type: boolean
                         description: 'Whether email notification should be sent to staff members after quiz is submitted.'
@@ -19545,6 +19705,40 @@ paths:
                       is_notify_client:
                         type: boolean
                         description: 'Whether email notification should be sent to client after quiz submitted.'
+                      is_notify_custom:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the custom confirmation of the form is turned on: it is sent instead of the global form submission
+                          notification.
+
+                          `null` if it was not sent: the stored state is then not changed. Never set for the forms of the main business
+                          (`0`), which have no custom confirmation.
+                      is_notify_custom_mail:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the email of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
+                      is_notify_custom_push:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the push notification of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
+                      is_notify_custom_sms:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the SMS of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
                       is_notify_staff:
                         type: boolean
                         description: 'Whether email notification should be sent to staff members after quiz is submitted.'
@@ -21668,6 +21862,40 @@ paths:
                     is_notify_client:
                       type: boolean
                       description: 'Whether email notification should be sent to client after quiz submitted.'
+                    is_notify_custom:
+                      type:
+                        - boolean
+                        - 'null'
+                      description: |-
+                        Whether the custom confirmation of the form is turned on: it is sent instead of the global form submission
+                        notification.
+
+                        `null` if it was not sent: the stored state is then not changed. Never set for the forms of the main business
+                        (`0`), which have no custom confirmation.
+                    is_notify_custom_mail:
+                      type:
+                        - boolean
+                        - 'null'
+                      description: |-
+                        Whether the email of the custom confirmation is activated.
+
+                        `null` if it was not sent: the stored state is then not changed.
+                    is_notify_custom_push:
+                      type:
+                        - boolean
+                        - 'null'
+                      description: |-
+                        Whether the push notification of the custom confirmation is activated.
+
+                        `null` if it was not sent: the stored state is then not changed.
+                    is_notify_custom_sms:
+                      type:
+                        - boolean
+                        - 'null'
+                      description: |-
+                        Whether the SMS of the custom confirmation is activated.
+
+                        `null` if it was not sent: the stored state is then not changed.
                     is_notify_staff:
                       type: boolean
                       description: 'Whether email notification should be sent to staff members after quiz is submitted.'
@@ -21884,6 +22112,40 @@ paths:
                       is_notify_client:
                         type: boolean
                         description: 'Whether email notification should be sent to client after quiz submitted.'
+                      is_notify_custom:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the custom confirmation of the form is turned on: it is sent instead of the global form submission
+                          notification.
+
+                          `null` if it was not sent: the stored state is then not changed. Never set for the forms of the main business
+                          (`0`), which have no custom confirmation.
+                      is_notify_custom_mail:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the email of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
+                      is_notify_custom_push:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the push notification of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
+                      is_notify_custom_sms:
+                        type:
+                          - boolean
+                          - 'null'
+                        description: |-
+                          Whether the SMS of the custom confirmation is activated.
+
+                          `null` if it was not sent: the stored state is then not changed.
                       is_notify_staff:
                         type: boolean
                         description: 'Whether email notification should be sent to staff members after quiz is submitted.'
@@ -148190,7 +148452,7 @@ components:
       description: |-
         Manages identifiers of user activity.
 
-        Last ID: 64.
+        Last ID: 71.
 
         Values:
         - 27 (`APPOINTMENT_BOOK`): Client books an appointment.
@@ -148226,6 +148488,30 @@ components:
         - 8 (`FAVORITE_REMOVE_LOCATION`): Client removed a location from favorites.
         - 9 (`FAVORITE_REMOVE_STAFF`): Client removed a staff member from favorites.
         - 10 (`FRIEND_ADD`): Client added a friend.
+        - 70 (`GUEST_PASS_EXPIRE`): A guest pass invitation sent by the client expired: the guest did not claim it, or claimed it and did not visit
+          before the expiration.
+
+          Written on the feed of the owner of the guest pass.
+        - 69 (`GUEST_PASS_REDEEM_GUEST`): The client redeemed a guest pass sent by another client.
+
+          Written on the feed of the guest.
+        - 68 (`GUEST_PASS_REDEEM_HOST`): The guest redeemed a guest pass sent by the client.
+
+          Written on the feed of the owner of the guest pass.
+        - 71 (`GUEST_PASS_REMIND`): A reminder of a guest pass invitation was sent to the guest.
+
+          Written on the feed of the owner of the guest pass. Hidden from the client while
+          [RsLoginActivityTypeSid::guestPassRemindClientShow()](#/components/schemas/RsLoginActivityTypeSid) says so.
+        - 66 (`GUEST_PASS_REVOKE_MANUAL`): A guest pass invitation sent by the client was revoked by a person: a staff member or the client.
+
+          Written on the feed of the owner of the guest pass.
+        - 67 (`GUEST_PASS_REVOKE_SYSTEM`): A guest pass invitation sent by the client was revoked by the system: a renewal, a hold, a transfer or another
+          change of the membership, a change of the purchase option, a cancellation of the visit.
+
+          Written on the feed of the owner of the guest pass.
+        - 65 (`GUEST_PASS_SEND`): The client sent a guest pass invitation, or a staff member sent it on behalf of the client.
+
+          Written on the feed of the owner of the guest pass.
         - 32 (`GYM_VISIT`): Client made a gym visit.
         - 14 (`INVITE_SEND`): Client sent an invite.
         - 57 (`LEAD_STAGE_AUTOMATION`): Lead stage was changed by an automation step.
@@ -148290,6 +148576,13 @@ components:
         - 8
         - 9
         - 10
+        - 70
+        - 69
+        - 68
+        - 71
+        - 66
+        - 67
+        - 65
         - 32
         - 14
         - 57
@@ -148354,6 +148647,13 @@ components:
         - FAVORITE_REMOVE_LOCATION
         - FAVORITE_REMOVE_STAFF
         - FRIEND_ADD
+        - GUEST_PASS_EXPIRE
+        - GUEST_PASS_REDEEM_GUEST
+        - GUEST_PASS_REDEEM_HOST
+        - GUEST_PASS_REMIND
+        - GUEST_PASS_REVOKE_MANUAL
+        - GUEST_PASS_REVOKE_SYSTEM
+        - GUEST_PASS_SEND
         - GYM_VISIT
         - INVITE_SEND
         - LEAD_STAGE_AUTOMATION
@@ -148418,6 +148718,37 @@ components:
         - 'Client removed a location from favorites.'
         - 'Client removed a staff member from favorites.'
         - 'Client added a friend.'
+        - |-
+          A guest pass invitation sent by the client expired: the guest did not claim it, or claimed it and did not visit
+          before the expiration.
+
+          Written on the feed of the owner of the guest pass.
+        - |-
+          The client redeemed a guest pass sent by another client.
+
+          Written on the feed of the guest.
+        - |-
+          The guest redeemed a guest pass sent by the client.
+
+          Written on the feed of the owner of the guest pass.
+        - |-
+          A reminder of a guest pass invitation was sent to the guest.
+
+          Written on the feed of the owner of the guest pass. Hidden from the client while
+          {@link \RsLoginActivityTypeSid::guestPassRemindClientShow()} says so.
+        - |-
+          A guest pass invitation sent by the client was revoked by a person: a staff member or the client.
+
+          Written on the feed of the owner of the guest pass.
+        - |-
+          A guest pass invitation sent by the client was revoked by the system: a renewal, a hold, a transfer or another
+          change of the membership, a change of the purchase option, a cancellation of the visit.
+
+          Written on the feed of the owner of the guest pass.
+        - |-
+          The client sent a guest pass invitation, or a staff member sent it on behalf of the client.
+
+          Written on the feed of the owner of the guest pass.
         - 'Client made a gym visit.'
         - 'Client sent an invite.'
         - 'Lead stage was changed by an automation step.'
