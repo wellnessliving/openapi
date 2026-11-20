@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261120063658
+  version: 1.1.20261120135125
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -4508,6 +4508,9 @@ paths:
             secret that has expired or a secret of another visit gives nothing: the access is checked as without it. Only
             the status is given by it, the visit cannot be changed, and the link to join a virtual visit is never given.
             It is not the permanent secret of the visit, `rs_visit.s_secret`.
+
+            The value is passed in the query of a GET request, so it may be written to the access logs of the web server and
+            to the referrer of a page. The expiration in one hour and the access to one visit limit what a leaked value gives.
 
             Example: `1767225600-0f3a...`, where the number is the time of the expiration in UTC, and the rest is the
             signature in 64 hexadecimal digits.
@@ -103248,6 +103251,12 @@ paths:
                           description: |-
                             Padding before each booking of the asset, in minutes. `0` if the asset has no padding before.
                             The asset is blocked for this time before each booking. Whether to show it is up to the client.
+                        i_quantity:
+                          type: integer
+                          format: int32
+                          description: |-
+                            The number of identical units of the asset. One booking takes one unit.
+                            The units booked at [AssetListApi::$dtl_date](/Wl/Appointment/Book/Asset/AssetList.json) are listed in [AssetListApi::$a_asset_busy](/Wl/Appointment/Book/Asset/AssetList.json).
                         id_deny_reason:
                           $ref: '#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid'
                           description: |-
@@ -103293,6 +103302,7 @@ paths:
                         - html_title
                         - i_padding_after
                         - i_padding_before
+                        - i_quantity
                         - id_deny_reason
                         - id_service_require
                         - is_age_restricted
