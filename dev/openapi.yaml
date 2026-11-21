@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261120151827
+  version: 1.1.20261121085228
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -13177,8 +13177,59 @@ paths:
                         - uid_client
                         - url_detail
                         - url_logo
+                  a_pinned:
+                    type: array
+                    description: |-
+                      The tasks that are pinned to the top of the Alert Center: the open tasks that are overdue by 24 hours or more, the
+                      oldest due date first, at most 5. Empty unless [AlertListApi::$is_pinned](/Wl/Alert/AlertList.json) is set, and for a user who gets no
+                      "Task due" alert.
+                    items:
+                      type: object
+                      properties:
+                        k_task:
+                          type: string
+                          description: 'Task key.'
+                        text_assign:
+                          type: string
+                          description: |-
+                            Who the task is assigned to and, when there is one, the client: "Assigned to Alice for Bob". An empty
+                              string when no assignee gets a name.
+                        text_due:
+                          type: string
+                          description: |-
+                            The due date and time in the time zone of the business, as the page of the Task Manager shows a date: "Due
+                              on Mon, Nov 2, 2026 at 10:00am".
+                        text_overdue:
+                          type: string
+                          description: 'How late the task is: "2 days overdue". A pinned task is late 1 day or more.'
+                        text_title:
+                          type: string
+                          description: 'The name of the task, in full.'
+                        url_task:
+                          type: string
+                          description: 'The address of the Task Manager that opens the form of the task.'
+                      required:
+                        - k_task
+                        - text_assign
+                        - text_due
+                        - text_overdue
+                        - text_title
+                        - url_task
+                  is_pinned_more:
+                    type: boolean
+                    description: |-
+                      Whether more tasks are pinned than [AlertListApi::$a_pinned](/Wl/Alert/AlertList.json) has. `true` when there are more, so the client
+                      shows the link [AlertListApi::$url_pinned_more](/Wl/Alert/AlertList.json), `false` otherwise.
+                  url_pinned_more:
+                    type: string
+                    description: |-
+                      The address of the page with every overdue task, the tab Overdue of the Task Manager. Empty when
+                      [AlertListApi::$is_pinned_more](/Wl/Alert/AlertList.json) is `false`.
                 required:
                   - a_alert_list
+                  - a_pinned
+                  - is_pinned_more
+                  - url_pinned_more
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -13195,12 +13246,21 @@ paths:
       description: |-
         Validates that the user has access to the business, then loads the alert list for the current
          user. Additional alert data needed to make alerts tappable is included only when the request
-         comes from the staff backend.
+         comes from the staff backend. The pinned overdue tasks are loaded only when the client asks for them.
       tags:
         - Alerts
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_pinned
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Whether to return the pinned tasks of [AlertListApi::$a_pinned](/Wl/Alert/AlertList.json). `true` to return them, `false` otherwise.
+            Only a client that draws the group asks for it.
         -
           name: k_business
           in: query
@@ -22860,6 +22920,9 @@ paths:
             secret that has expired or a secret of another visit gives nothing: the access is checked as without it. Only
             the status is given by it, the visit cannot be changed, and the link to join a virtual visit is never given.
             It is not the permanent secret of the visit, `rs_visit.s_secret`.
+
+            The value is passed in the query of a GET request, so it may be written to the access logs of the web server and
+            to the referrer of a page. The expiration in one hour and the access to one visit limit what a leaked value gives.
 
             Example: `1767225600-0f3a...`, where the number is the time of the expiration in UTC, and the rest is the
             signature in 64 hexadecimal digits.
@@ -47737,6 +47800,20 @@ paths:
                     type: string
                     format: date
                     description: 'The start date of the promotion. Only available if the item is a promotion.'
+                  dl_start_first:
+                    type:
+                      - string
+                      - 'null'
+                    format: date
+                    description: |-
+                      The local date in MySQL format when the purchase option first started, before any renewal.
+                      Only available if the item is a promotion.
+
+                      For a purchase option that was never renewed, this is the same as [PurchaseListElementApi::$dl_start](/Wl/Profile/PurchaseList/PurchaseListElement.json)
+                      unless its start date was moved later.
+
+                      `null` if the purchase option has not started yet (for example, a pass before its first visit) or if the item
+                      is not a promotion.
                   dt_cancel:
                     type: string
                     format: date-time
@@ -140842,7 +140919,7 @@ components:
 
           The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
           see [AppleRegistrationApi](/Wl/Wallet/Apple/AppleRegistration.json), and the web service notifies this channel. The page of
-          WalletAddController is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          `WalletAddController` is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
           has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
 
           The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
@@ -140986,7 +141063,7 @@ components:
 
           The phone tells it itself: when a pass is put into Wallet, the phone registers itself in the web service of Apple Wallet,
           see {@link \Wl\Wallet\Apple\AppleRegistrationApi}, and the web service notifies this channel. The page of
-          {@link \Wl\Wallet\WalletAddController} is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
+          `WalletAddController` is subscribed to the channel of every ticket of the link, and shows that the pass is added when it
           has heard of all of them. A page that did not hear anything stays as it is: the user is told what to do anyway.
 
           The page is opened without a login, so the access is given by a signature of the ticket, which only the page that
