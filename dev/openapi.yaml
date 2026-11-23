@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261121085228
+  version: 1.1.20261123074211
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -9588,6 +9588,9 @@ paths:
                         k_task:
                           type: string
                           description: 'Key of the task.'
+                        k_business:
+                          type: string
+                          description: 'Key of the business of the request. If it is given, it must be the business of the task.'
                       required:
                         - k_staff
                         - k_task
@@ -11614,6 +11617,15 @@ paths:
                       returned in API result for compatibility.
 
                       Passing `k_staff` in request payload is not supported and causes an error.
+                  uid_staff:
+                    type:
+                      - string
+                      - 'null'
+                    description: |-
+                      User key of a staff member.
+
+                      This is the supported request identifier for staff update operations.
+                      Value is normalized into [StaffElementApi::$k_staff](/Wl/Staff/StaffElement.json) in `post()`.
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -13207,7 +13219,9 @@ paths:
                           description: 'The name of the task, in full.'
                         url_task:
                           type: string
-                          description: 'The address of the Task Manager that opens the form of the task.'
+                          description: |-
+                            The address of the Task Manager that opens the form of the task, for example
+                              `https://example.com/Wl/Task/Manager.html?is_all=1&k_task=112811`.
                       required:
                         - k_task
                         - text_assign
@@ -13223,8 +13237,9 @@ paths:
                   url_pinned_more:
                     type: string
                     description: |-
-                      The address of the page with every overdue task, the tab Overdue of the Task Manager. Empty when
-                      [AlertListApi::$is_pinned_more](/Wl/Alert/AlertList.json) is `false`.
+                      The address of the page with every overdue task, the tab Overdue of the Task Manager, for example
+                      `https://example.com/Wl/Task/Manager.html?is_overdue=1`. Empty when [AlertListApi::$is_pinned_more](/Wl/Alert/AlertList.json) is
+                      `false`.
                 required:
                   - a_alert_list
                   - a_pinned
@@ -82283,7 +82298,8 @@ paths:
         of the classes and of the appointments are not listed. The newest attempt goes first, 100 attempts a page.
         The totals count the whole day. The attempts of the clients whom the staff member may not see (the scope of the
         clients of the staff member) are neither listed nor counted. Works in the session of a staff member with access
-        to the location and the privilege to see the profiles of the clients; no key of a kiosk is needed.
+        to the location and either the privilege to manage the profiles of the clients or the privilege to view the
+        details of the clients; no key of a kiosk is needed.
       tags:
         - Visits
       parameters:
@@ -82627,10 +82643,11 @@ paths:
           <li>the client is found: the key, the name and the photo of the client;</li>
           <li>no client that the staff member may see matches the value;</li>
           <li>the member ID of the client is inactive;</li>
-          <li>the dynamic barcode has expired;</li>
-          <li>the business uses QR codes, which the kiosk does not read: every scan gives this result.</li>
+          <li>the dynamic barcode has expired, or the 30 seconds of the QR code have passed;</li>
+          <li>the business uses QR codes, and the value contains `|` but is not a well-formed QR code.</li>
         </ul>
-        Only one client is returned: there is no list of the candidates.
+        At a business that uses QR codes, a value without `|` is found as at a business that does not use them. Only
+        one client is returned: there is no list of the candidates.
       tags:
         - Visits
       parameters:
@@ -82655,7 +82672,8 @@ paths:
                   description: |-
                     The scanned value: a member ID or a dynamic barcode, for example `100245`.
 
-                    The symbols that are not letters or digits are cut from both ends.
+                    When the business uses QR codes, also the QR code of the client, `text_barcode|tu_qr_issued|30`, for example
+                    `100245|1795000000|30`. The symbols that are not letters or digits are cut from both ends.
               required:
                 - k_business
                 - k_location
@@ -85253,7 +85271,7 @@ paths:
 
                     Optional. An older task of a series shows the rule of the series, and a request that turns the repeat off stops
                     the series only when the client says it read the task with the repeat on. `null` if the client does not send it:
-                    then a turn-off on an older task changes nothing.
+                    then a turn-off on an older task is refused with the code `repeat-series-open`.
                 k_location:
                   type:
                     - string
@@ -85493,7 +85511,9 @@ paths:
                             photo.
                         url_client_profile:
                           type: string
-                          description: 'The address of the profile of the client. An empty string when the task has no client.'
+                          description: |-
+                            The address of the page Overview of the profile of the client. An empty string when the task has no
+                            client.
                         url_edit:
                           type: string
                           description: 'The address of the form that edits the task.'
@@ -152182,7 +152202,9 @@ components:
 
         Values:
         - 4 (`DYNAMIC_EXPIRED`): The scanned value is a dynamic barcode of a client that has expired.
-        - 5 (`FORMAT_UNSUPPORTED`): The business uses QR codes for the member IDs, and the kiosk does not read them.
+
+          Also the result for the QR code of a client whose window of 30 seconds after its issue has passed.
+        - 5 (`FORMAT_UNSUPPORTED`): The business uses QR codes, and the scanned value contains `|` but is not a well-formed QR code of a client.
         - 1 (`FOUND`): The scanned value identifies an active client that the staff member may see.
         - 3 (`MEMBER_INACTIVE`): The scanned value identifies a client whose member ID is inactive.
         - 2 (`NOT_FOUND`): No client that the staff member may see matches the scanned value.
@@ -152199,8 +152221,11 @@ components:
         - MEMBER_INACTIVE
         - NOT_FOUND
       x-enum-descriptions:
-        - 'The scanned value is a dynamic barcode of a client that has expired.'
-        - 'The business uses QR codes for the member IDs, and the kiosk does not read them.'
+        - |-
+          The scanned value is a dynamic barcode of a client that has expired.
+
+          Also the result for the QR code of a client whose window of 30 seconds after its issue has passed.
+        - 'The business uses QR codes, and the scanned value contains `|` but is not a well-formed QR code of a client.'
         - 'The scanned value identifies an active client that the staff member may see.'
         - 'The scanned value identifies a client whose member ID is inactive.'
         - 'No client that the staff member may see matches the scanned value.'
