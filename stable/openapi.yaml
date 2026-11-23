@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261123062047
+  version: 1.1.20261123084708
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -4462,7 +4462,7 @@ paths:
         the visit can still be cancelled. Handles class, appointment, and gym visit types. Used
         to render the visit detail view and action buttons in the client portal. A visit of a class can also be read
         without a login and without the access of the user by its temporary secret,
-        [VisitStatusApi::$s_status_secret](/Wl/Visit/VisitStatus.json). Such a visit cannot be virtual.
+        [VisitStatusApi::$s_status_secret](/Wl/Visit/VisitStatus.json). Such a visit has no link to join a virtual service.
       tags:
         - Visits
       parameters:
@@ -4507,7 +4507,7 @@ paths:
             [PurchaseReceiptApi::$a_purchase_item](/Wl/Purchase/Receipt/PurchaseReceipt.json), and expires in one hour. An empty value, a
             secret that has expired or a secret of another visit gives nothing: the access is checked as without it. Only
             the status is given by it, the visit cannot be changed, and the link to join a virtual visit is never given.
-            It is not the permanent secret of the visit, `rs_visit.s_secret`.
+
 
             The value is passed in the query of a GET request, so it may be written to the access logs of the web server and
             to the referrer of a page. The expiration in one hour and the access to one visit limit what a leaked value gives.
@@ -48308,6 +48308,16 @@ paths:
             type: boolean
             default: true
           description: 'Whether selected login prize should be auto applied to first applicable item.'
+        -
+          name: is_staff
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Specify this if the cart is calculated for a staff member in the backend (optional).
+
+            Products in such a cart have the retail price, not the online discounted price that clients get.
         -
           name: k_location
           in: query
