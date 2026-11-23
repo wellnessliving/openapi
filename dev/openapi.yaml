@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261123074211
+  version: 1.1.20261123141656
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -8565,7 +8565,7 @@ paths:
                           description: 'Name of the studio.'
                         text_date_due:
                           type: string
-                          description: 'The response deadline of the dispute, in the time zone of the business. Empty if there is none.'
+                          description: 'The response deadline, in the time zone of the business with its name, and in UTC. Empty if none.'
                         url_transaction:
                           type: string
                           description: 'Address of the page of the disputed transaction for the staff. Empty if the transaction is not found.'
@@ -15229,7 +15229,8 @@ paths:
                     description: |-
                       Send rules of the custom confirmation of the form: how many client types and client groups it is sent to.
 
-                      Empty for a form of the main business. Otherwise:
+                      Empty for a form of the main business, and for a user who may not manage forms (a client who fills the form).
+                      Otherwise:
                     properties:
                       i_login_type:
                         type: integer
@@ -15518,7 +15519,7 @@ paths:
                     description: |-
                       URL of the page of the global form submission notification, which the custom confirmation of the form replaces.
 
-                      Empty for a form of the main business.
+                      Empty for a form of the main business, and for a user who may not manage forms.
                   url_quiz:
                     type: string
                     description: 'Direct URL to quiz.'
@@ -22889,7 +22890,7 @@ paths:
         the visit can still be cancelled. Handles class, appointment, and gym visit types. Used
         to render the visit detail view and action buttons in the client portal. A visit of a class can also be read
         without a login and without the access of the user by its temporary secret,
-        [VisitStatusApi::$s_status_secret](/Wl/Visit/VisitStatus.json). Such a visit cannot be virtual.
+        [VisitStatusApi::$s_status_secret](/Wl/Visit/VisitStatus.json). Such a visit has no link to join a virtual service.
       tags:
         - Visits
       parameters:
@@ -22934,7 +22935,7 @@ paths:
             [PurchaseReceiptApi::$a_purchase_item](/Wl/Purchase/Receipt/PurchaseReceipt.json), and expires in one hour. An empty value, a
             secret that has expired or a secret of another visit gives nothing: the access is checked as without it. Only
             the status is given by it, the visit cannot be changed, and the link to join a virtual visit is never given.
-            It is not the permanent secret of the visit, `rs_visit.s_secret`.
+
 
             The value is passed in the query of a GET request, so it may be written to the access logs of the web server and
             to the referrer of a page. The expiration in one hour and the access to one visit limit what a leaked value gives.
@@ -59051,6 +59052,16 @@ paths:
             default: true
           description: 'Whether selected login prize should be auto applied to first applicable item.'
         -
+          name: is_staff
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Specify this if the cart is calculated for a staff member in the backend (optional).
+
+            Products in such a cart have the retail price, not the online discounted price that clients get.
+        -
           name: k_location
           in: query
           required: true
@@ -85007,7 +85018,8 @@ paths:
                     description: |-
                       Client's uid for whom connected task.
 
-                      `null` means not set.
+                      `null` means not set. When a task is changed by `put()`, the client to assign to the task: the task
+                      gets this client, or its client is replaced by this one. `null` there leaves the client of the task as it is.
                   xml_description:
                     type: string
                     description: 'Task description.'
@@ -85293,7 +85305,8 @@ paths:
                   description: |-
                     Client's uid for whom connected task.
 
-                    `null` means not set.
+                    `null` means not set. When a task is changed by `put()`, the client to assign to the task: the task
+                    gets this client, or its client is replaced by this one. `null` there leaves the client of the task as it is.
                 xml_description:
                   type: string
                   description: 'Task description.'
@@ -85326,14 +85339,19 @@ paths:
           $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
-      summary: 'Changes task status.'
+      summary: 'Changes task status or assigns a client to the task.'
       description: |-
-        Updates the task status, logs the change, and notifies the task channel so that connected
-         clients refresh their task list.
+        Updates the task status, the client of the task, or both, logs the change, and notifies the task channel so that
+        connected clients refresh their task list. The status is changed when [EditApi::$id_task_status](/Wl/Task/Edit/Edit.json) is given,
+        and the client when [EditApi::$uid](/Wl/Task/Edit/Edit.json) is given. At least one of them must be given. The client of the task is
+        set when it has none, or replaced; it cannot be cleared. Changing the client sends no alert, no notification and
+        no reminder, and does not touch the reminder or the due date of the task:  The staff member must be allowed to edit the task to change the client.
 
         If the task is set to Completed and repeats "when this one is completed", the next task of the repeat is made,
         and its staff are notified as of any new task. A status other than Completed, and a task that was Completed
-        already, make nothing.
+        already, make nothing. 
+
+        Access: staff with the privilege to see all tasks and the staff member the task is assigned to; others get `access`.
       tags:
         - Tasks
       parameters:
@@ -85376,6 +85394,15 @@ paths:
                     Task status.
 
                     `null` means not set.
+                uid:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Client's uid for whom connected task.
+
+                    `null` means not set. When a task is changed by `put()`, the client to assign to the task: the task
+                    gets this client, or its client is replaced by this one. `null` there leaves the client of the task as it is.
       x-rate-limit:
         -
           limit: 200000
@@ -85430,6 +85457,12 @@ paths:
                     items:
                       type: object
                       properties:
+                        can_edit:
+                          type: boolean
+                          description: |-
+                            Whether the signed-in staff member may change the task with the bulk actions of the page and edit it: they have
+                            the privilege to edit tasks, and the privilege for all tasks or the task is assigned to them. The page lets
+                            them select only such tasks. [TaskBulkApi](/Wl/Task/Manager/TaskBulk.json) checks the same right again for every task.
                         dtl_add:
                           type: string
                           description: 'The date and the time when the task was created, in the time zone of the business, MySQL format.'
@@ -85514,6 +85547,12 @@ paths:
                           description: |-
                             The address of the page Overview of the profile of the client. An empty string when the task has no
                             client.
+                        url_duplicate:
+                          type: string
+                          description: |-
+                            The address of the form of a new task that is a copy of the task, filled in from the saved task. It is the
+                            address of `url_edit` with  in the query in place of
+                            `k_task`: `<address>?k_task_duplicate=<key of the task>`.
                         url_edit:
                           type: string
                           description: 'The address of the form that edits the task.'
@@ -85524,6 +85563,7 @@ paths:
                             empty string when that user is no staff member of the business of the page: a staff member of another
                             location of a franchise has no profile here.
                       required:
+                        - can_edit
                         - dtl_add
                         - dtl_due
                         - html_description
@@ -85546,6 +85586,7 @@ paths:
                         - uid_staff
                         - url_client_photo
                         - url_client_profile
+                        - url_duplicate
                         - url_edit
                         - url_staff
                   a_staff:
@@ -85985,6 +86026,265 @@ paths:
                     - boolean
                     - 'null'
                   description: 'Whether `put` sets the columns and their order back to the default. `a_column` is not given then.'
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Task/Manager/TaskBulk.json:
+    delete:
+      operationId: Wl.Task.Manager.TaskBulk.delete
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  i_done:
+                    type: integer
+                    format: int32
+                    description: 'How many of the selected tasks the request changed (or removed, or reminded of).'
+                  i_skip:
+                    type: integer
+                    format: int32
+                    description: |-
+                      How many of the selected tasks the request skipped: a task that someone removed after the staff member selected
+                      it, and, for the reminder, a task that has nobody assigned to it. `i_done` and `i_skip` together make the number
+                      of the selected tasks.
+                required:
+                  - i_done
+                  - i_skip
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Removes the tasks that the staff member selected.'
+      description: |-
+        Removes them all or none (the same removal as `delete()` does for one task, the series of a repeat
+        that is left empty goes too). A task that someone removed already is skipped and counted in `i_skip`.
+      tags:
+        - Task
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_k_task
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 'Keys of the selected tasks, each at most once, no more than 100: the largest size of a page of the Task Manager.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the business of the Task Manager. In a franchise in the flexible travel mode the tasks of the other
+            businesses of the franchise may be selected too.
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    post:
+      operationId: Wl.Task.Manager.TaskBulk.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  i_done:
+                    type: integer
+                    format: int32
+                    description: 'How many of the selected tasks the request changed (or removed, or reminded of).'
+                  i_skip:
+                    type: integer
+                    format: int32
+                    description: |-
+                      How many of the selected tasks the request skipped: a task that someone removed after the staff member selected
+                      it, and, for the reminder, a task that has nobody assigned to it. `i_done` and `i_skip` together make the number
+                      of the selected tasks.
+                required:
+                  - i_done
+                  - i_skip
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Sends the notification Task reminder to the staff of the selected tasks, now.'
+      description: |-
+        Every staff member who is assigned to a selected task and is active in its business gets it, a completed task
+        included, and it is sent whether the business turned the notification off or not: the email and the push are
+        always sent, the text message only if the business has it on. A staff member keeps the choice of their own
+        profile. A task that has nobody to remind, and a task that someone removed already, are skipped and counted in
+        `i_skip`. Nothing of the task changes.
+      tags:
+        - Task
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_k_task
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 'Keys of the selected tasks, each at most once, no more than 100: the largest size of a page of the Task Manager.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the business of the Task Manager. In a franchise in the flexible travel mode the tasks of the other
+            businesses of the franchise may be selected too.
+      x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+    put:
+      operationId: Wl.Task.Manager.TaskBulk.put
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  i_done:
+                    type: integer
+                    format: int32
+                    description: 'How many of the selected tasks the request changed (or removed, or reminded of).'
+                  i_skip:
+                    type: integer
+                    format: int32
+                    description: |-
+                      How many of the selected tasks the request skipped: a task that someone removed after the staff member selected
+                      it, and, for the reminder, a task that has nobody assigned to it. `i_done` and `i_skip` together make the number
+                      of the selected tasks.
+                required:
+                  - i_done
+                  - i_skip
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Changes the tasks that the staff member selected.'
+      description: |-
+        Sets the status, the due date and time, the client and the staff of every selected task: a field that is not given
+        keeps the value that the task has. The status alone is the "Mark complete" of the page when it is
+        [TaskStatusSid::COMPLETE](#/components/schemas/Wl.Task.TaskStatusSid): a task of a repeat "when this one is completed" makes its next task, as
+        `put()` does for one task; with the status alone a task that has the status already is not changed,
+        and is skipped and counted in `i_skip`, as a task that someone removed already is. A new due date of a task of a
+        repeat follows the rules of the repeat, and a staff member who gets a task gets the notification and the alert of
+        a new task.
+      tags:
+        - Task
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_k_task
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: 'Keys of the selected tasks, each at most once, no more than 100: the largest size of a page of the Task Manager.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the business of the Task Manager. In a franchise in the flexible travel mode the tasks of the other
+            businesses of the franchise may be selected too.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                dl_due:
+                  type:
+                    - string
+                    - 'null'
+                  format: date
+                  description: |-
+                    The new due date of the tasks, in the time zone of the business, as `2026-12-31`. For `put`; `null` to keep the date
+                    of every task, and then the time of the day is kept or changed alone by `tl_due`.
+                id_task_status:
+                  $ref: '#/components/schemas/Wl.Task.TaskStatusSid'
+                  description: |-
+                    The new status of the tasks, one of [TaskStatusSid](#/components/schemas/Wl.Task.TaskStatusSid) constants. For `put`; [TaskStatusSid::COMPLETE](#/components/schemas/Wl.Task.TaskStatusSid)
+                    with nothing else given is the "Mark complete" of the page. A task that already has the status keeps it.
+                is_client_clear:
+                  type: boolean
+                  description: 'Whether `put` takes the client off the tasks ("No client"). Not given together with `uid`.'
+                tl_due:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    The new due time of the tasks, in the time zone of the business, as `09:30:00`. For `put`; `null` to keep the time
+                    of every task.
+                uid:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the client to put to the tasks. For `put`; `null` to keep the client of every task. Not given together
+                    with `is_client_clear`.
+                uid_staff:
+                  type:
+                    - string
+                    - 'null'
+                  description: |-
+                    Key of the staff member to assign the tasks to. For `put`; `null` to keep the staff of every task. The task gets
+                    the staff member instead of the one it had: a task has one.
+              required:
+                - is_client_clear
       x-instance-get-key: k_business
       x-rate-limit:
         -
@@ -141850,9 +142150,7 @@ components:
       description: |-
         The step of the funds of a Stripe dispute that failed, and that Finance must do by hand.
 
-        Stored in the column `id_fail` of StripeDisputeSql and given to
-        Mail::send(). The code does not repeat a failed step, see
-        StripeDisputeFunds.
+
 
         Last used ID: 3
 
