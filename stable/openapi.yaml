@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261123031754
+  version: 1.1.20261123054908
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -62742,6 +62742,20 @@ paths:
                     type: string
                     format: date
                     description: 'The start date of the promotion. Only available if the item is a promotion.'
+                  dl_start_first:
+                    type:
+                      - string
+                      - 'null'
+                    format: date
+                    description: |-
+                      The local date in MySQL format when the purchase option first started, before any renewal.
+                      Only available if the item is a promotion.
+
+                      For a purchase option that was never renewed, this is the same as [PurchaseListElementApi::$dl_start](/Wl/Profile/PurchaseList/PurchaseListElement.json)
+                      unless its start date was moved later.
+
+                      `null` if the purchase option has not started yet (for example, a pass before its first visit) or if the item
+                      is not a promotion.
                   dt_cancel:
                     type: string
                     format: date-time
