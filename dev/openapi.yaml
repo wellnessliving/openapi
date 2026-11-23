@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261123150342
+  version: 1.1.20261123185711
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -22849,7 +22849,9 @@ paths:
                       `null` for appointments/events/gym visits.
                   url_virtual_service:
                     type: string
-                    description: 'URL of virtual service. Empty if the visit is not virtual.'
+                    description: |-
+                      URL of virtual service. Empty if the visit is not virtual. Also empty for a virtual visit that is opened only by
+                      [VisitStatusApi::$s_status_secret](/Wl/Visit/VisitStatus.json): the link holds the permanent secret of the visit.
                 required:
                   - a_cancel
                   - a_staff
