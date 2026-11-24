@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261124114723
+  version: 1.1.20261124141743
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -11624,8 +11624,13 @@ paths:
                     description: |-
                       User key of a staff member.
 
-                      This is the supported request identifier for staff update operations.
-                      Value is normalized into [StaffElementApi::$k_staff](/Wl/Staff/StaffElement.json) in `post()`.
+
+                      In the request: the staff member to update. `null` to create a new staff member.
+                      In the result: the user key of the saved staff member. It is returned after every successful save, for a
+                      new staff member too.
+
+                      The value of the request is normalized into [StaffElementApi::$k_staff](/Wl/Staff/StaffElement.json) in
+                      `post()`.
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -11872,8 +11877,13 @@ paths:
                   description: |-
                     User key of a staff member.
 
-                    This is the supported request identifier for staff update operations.
-                    Value is normalized into [StaffElementApi::$k_staff](/Wl/Staff/StaffElement.json) in `post()`.
+
+                    In the request: the staff member to update. `null` to create a new staff member.
+                    In the result: the user key of the saved staff member. It is returned after every successful save, for a
+                    new staff member too.
+
+                    The value of the request is normalized into [StaffElementApi::$k_staff](/Wl/Staff/StaffElement.json) in
+                    `post()`.
               required:
                 - is_password_set_disable
                 - is_uid
@@ -55216,6 +55226,11 @@ paths:
                                   Discount applied to the event price.
                                   Staff-only: ignored when sent by a client.
                                 properties:
+                                  f_discount_percent:
+                                    type: string
+                                    description: |-
+                                      Discount in percents of the event price, more than `0` and not more than `100`.
+                                        When set, `m_discount` is ignored and calculated from the price.
                                   is_recurrent:
                                     type: boolean
                                     description: 'Whether the discount should also apply to the recurring membership payments.'
@@ -108704,6 +108719,12 @@ paths:
                                   type: object
                                   description: 'Discount applied to the event price:'
                                   properties:
+                                    f_discount_percent:
+                                      type: string
+                                      description: |-
+                                        Discount in percents of the event price, more than `0` and not more than `100`. When it is
+                                             set, `m_discount` that comes with the request is ignored and the amount is calculated from
+                                             the price.
                                     m_discount:
                                       type: string
                                       description: 'Discount amount of the full event price.'
@@ -109083,6 +109104,12 @@ paths:
                           type: object
                           description: 'Discount applied to the event price:'
                           properties:
+                            f_discount_percent:
+                              type: string
+                              description: |-
+                                Discount in percents of the event price, more than `0` and not more than `100`. When it is
+                                     set, `m_discount` that comes with the request is ignored and the amount is calculated from
+                                     the price.
                             m_discount:
                               type: string
                               description: 'Discount amount of the full event price.'
