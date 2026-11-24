@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261124071918
+  version: 1.1.20261124090442
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -44363,6 +44363,11 @@ paths:
                                   Discount applied to the event price.
                                   Staff-only: ignored when sent by a client.
                                 properties:
+                                  f_discount_percent:
+                                    type: string
+                                    description: |-
+                                      Discount in percents of the event price, more than `0` and not more than `100`.
+                                        When set, `m_discount` is ignored and calculated from the price.
                                   is_recurrent:
                                     type: boolean
                                     description: 'Whether the discount should also apply to the recurring membership payments.'
@@ -109837,6 +109842,12 @@ paths:
                                   type: object
                                   description: 'Discount applied to the event price:'
                                   properties:
+                                    f_discount_percent:
+                                      type: string
+                                      description: |-
+                                        Discount in percents of the event price, more than `0` and not more than `100`. When it is
+                                             set, `m_discount` that comes with the request is ignored and the amount is calculated from
+                                             the price.
                                     m_discount:
                                       type: string
                                       description: 'Discount amount of the full event price.'
@@ -110216,6 +110227,12 @@ paths:
                           type: object
                           description: 'Discount applied to the event price:'
                           properties:
+                            f_discount_percent:
+                              type: string
+                              description: |-
+                                Discount in percents of the event price, more than `0` and not more than `100`. When it is
+                                     set, `m_discount` that comes with the request is ignored and the amount is calculated from
+                                     the price.
                             m_discount:
                               type: string
                               description: 'Discount amount of the full event price.'
