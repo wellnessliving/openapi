@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261125032357
+  version: 1.1.20261125055235
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -10590,7 +10590,7 @@ paths:
                           description: 'Name of the studio.'
                         text_date_due:
                           type: string
-                          description: 'The response deadline of the dispute, in the time zone of the business. Empty if there is none.'
+                          description: 'The response deadline, in the time zone of the business with its name, and in UTC. Empty if none.'
                         url_transaction:
                           type: string
                           description: 'Address of the page of the disputed transaction for the staff. Empty if the transaction is not found.'
@@ -60718,6 +60718,20 @@ paths:
 
             An empty value will return the system-wide fields.
         -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the session of a class or an event that the client is booking while the profile is saved.
+
+
+            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
+            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+
+            Empty when the profile is not saved during the booking of a session.
+        -
           name: k_lead_source
           in: query
           required: false
@@ -60962,6 +60976,20 @@ paths:
             The key of the business you're editing.
 
             An empty value will return the system-wide fields.
+        -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the session of a class or an event that the client is booking while the profile is saved.
+
+
+            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
+            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+
+            Empty when the profile is not saved during the booking of a session.
         -
           name: k_lead_source
           in: query
@@ -61567,6 +61595,20 @@ paths:
 
             An empty value will return the system-wide fields.
         -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the session of a class or an event that the client is booking while the profile is saved.
+
+
+            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
+            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+
+            Empty when the profile is not saved during the booking of a session.
+        -
           name: k_lead_source
           in: query
           required: false
@@ -61811,6 +61853,20 @@ paths:
             The key of the business you're editing.
 
             An empty value will return the system-wide fields.
+        -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the session of a class or an event that the client is booking while the profile is saved.
+
+
+            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
+            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+
+            Empty when the profile is not saved during the booking of a session.
         -
           name: k_lead_source
           in: query
@@ -93274,9 +93330,9 @@ paths:
         Also returns [CustomTermsApi::$a_rule](/Wl/Business/Custom/Terms/CustomTerms.json), the ready rules that apply the terms to the English texts of a
         client of the API. The rules are as public as the terms they are built from.
 
-        While [CustomTermsFeatureFlag](#/components/schemas/Wl.FeatureFlag.BusinessFeatureFlagAbstract) is disabled for the business, the saved terms (the preset of its business
-        type is saved at the creation of the business whether the feature is on or not) are not shown: every term has
-        the platform option, as CustomTermsRuntime::ruleList() gives no rules.
+        While the feature is disabled for the business, the saved terms (the preset of its business type is saved at
+        the creation of the business whether the feature is on or not) are not shown: every term has the platform
+        option, and there are no rules.
       tags:
         - 'Custom Terms'
       parameters:
@@ -140479,9 +140535,7 @@ components:
       description: |-
         The step of the funds of a Stripe dispute that failed, and that Finance must do by hand.
 
-        Stored in the column `id_fail` of StripeDisputeSql and given to
-        Mail::send(). The code does not repeat a failed step, see
-        StripeDisputeFunds.
+
 
         Last used ID: 3
 
