@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261124060035
+  version: 1.1.20261125051207
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -130178,7 +130178,7 @@ components:
 
 
 
-        Last used ID: 23.
+        Last used ID: 24.
 
         Values:
         - 19 (`AI_AGENT`): Ai Agent web-chat.
@@ -130193,6 +130193,7 @@ components:
         - 20 (`LEAD_FOREIGN`): Skin for lead tracking form from microservice.
         - 10 (`MOBILE_SCHEDULE`): Mobile schedule version.
         - 16 (`RESOURCE`): Asset booking wizard.
+        - 24 (`RESOURCE_FOREIGN`): Asset booking widget built by microservice widget team.
         - 4 (`REVIEW_LIST`): Review list widget.
         - 15 (`SCHEDULE_DESIGN`): General schedule design appearance.
         - 18 (`SCHEDULE_FOREIGN`): Foreign schedule widget on react language.
@@ -130216,6 +130217,7 @@ components:
         - 20
         - 10
         - 16
+        - 24
         - 4
         - 15
         - 18
@@ -130236,6 +130238,7 @@ components:
         - LEAD_FOREIGN
         - MOBILE_SCHEDULE
         - RESOURCE
+        - RESOURCE_FOREIGN
         - REVIEW_LIST
         - SCHEDULE_DESIGN
         - SCHEDULE_FOREIGN
@@ -130256,6 +130259,7 @@ components:
         - 'Skin for lead tracking form from microservice.'
         - 'Mobile schedule version.'
         - 'Asset booking wizard.'
+        - 'Asset booking widget built by microservice widget team.'
         - 'Review list widget.'
         - 'General schedule design appearance.'
         - 'Foreign schedule widget on react language.'
