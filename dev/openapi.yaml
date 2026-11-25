@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261125092556
+  version: 1.1.20261125120729
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5444,6 +5444,23 @@ paths:
                         - k_class_period
                         - k_visit
                         - uid
+                    -
+                      type: object
+                      title: 'book-remind-service-list-user (id_mail 234)'
+                      properties:
+                        k_business:
+                          type: string
+                          description: 'Business key. Primary key in the RsBusinessSql table.'
+                        a_visit_list:
+                          type: array
+                          description: |-
+                            Keys of the visits of the client on one day, the earliest first. Each is a primary key in the
+                            RsVisitSql table. See ServiceListGroup::visitListGet().
+                          items:
+                            type: string
+                      required:
+                        - k_business
+                        - a_visit_list
                     -
                       type: object
                       title: 'book-remind-service-staff (id_mail 27)'
@@ -44694,6 +44711,20 @@ paths:
 
             An empty value will return the system-wide fields.
         -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the session of a class or an event that the client is booking while the profile is saved.
+
+
+            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
+            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+
+            Empty when the profile is not saved during the booking of a session.
+        -
           name: k_lead_source
           in: query
           required: false
@@ -44938,6 +44969,20 @@ paths:
             The key of the business you're editing.
 
             An empty value will return the system-wide fields.
+        -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the session of a class or an event that the client is booking while the profile is saved.
+
+
+            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
+            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+
+            Empty when the profile is not saved during the booking of a session.
         -
           name: k_lead_source
           in: query
@@ -45543,6 +45588,20 @@ paths:
 
             An empty value will return the system-wide fields.
         -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the session of a class or an event that the client is booking while the profile is saved.
+
+
+            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
+            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+
+            Empty when the profile is not saved during the booking of a session.
+        -
           name: k_lead_source
           in: query
           required: false
@@ -45787,6 +45846,20 @@ paths:
             The key of the business you're editing.
 
             An empty value will return the system-wide fields.
+        -
+          name: k_class_period
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |-
+            Key of the session of a class or an event that the client is booking while the profile is saved.
+
+
+            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
+            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
+
+            Empty when the profile is not saved during the booking of a session.
         -
           name: k_lead_source
           in: query
@@ -98584,9 +98657,9 @@ paths:
         Also returns [CustomTermsApi::$a_rule](/Wl/Business/Custom/Terms/CustomTerms.json), the ready rules that apply the terms to the English texts of a
         client of the API. The rules are as public as the terms they are built from.
 
-        While [CustomTermsFeatureFlag](#/components/schemas/Wl.FeatureFlag.BusinessFeatureFlagAbstract) is disabled for the business, the saved terms (the preset of its business
-        type is saved at the creation of the business whether the feature is on or not) are not shown: every term has
-        the platform option, as CustomTermsRuntime::ruleList() gives no rules.
+        While the feature is disabled for the business, the saved terms (the preset of its business type is saved at
+        the creation of the business whether the feature is on or not) are not shown: every term has the platform
+        option, and there are no rules.
       tags:
         - 'Custom Terms'
       parameters:
@@ -126778,6 +126851,11 @@ paths:
                         dtu_change:
                           type: string
                           description: 'Date and time of the change in UTC.'
+                        is_staff_delete:
+                          type: boolean
+                          description: |-
+                            `true` when the user who made the change was deleted. `false` for the codes applied by default, for a void,
+                            and when `uid_staff` is set.
                         text_log:
                           type: string
                           description: 'What changed.'
@@ -126798,10 +126876,11 @@ paths:
                             - string
                             - 'null'
                           description: |-
-                            Key of the staff member who made the change. `null` if the user is deleted, for the codes applied by
-                            default, and for a void made not by a user.
+                            Key of the staff member who made the change. `null` for the codes applied by default, for a void not made by
+                            a user, and when the user was deleted (see `is_staff_delete`).
                       required:
                         - dtu_change
+                        - is_staff_delete
                         - text_log
                         - text_reason
                         - text_signature
@@ -126860,6 +126939,11 @@ paths:
                   is_signature:
                     type: boolean
                     description: '`true` if the business requires a signature when diagnostic codes of a visit are saved, `false` otherwise.'
+                  is_staff_lock_delete:
+                    type: boolean
+                    description: |-
+                      `true` when the diagnostic codes of the visit are locked and the user who signed them was deleted, so
+                      [VisitBillingCodeAssignApi::$uid_staff_lock](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json) is `null`; `false` otherwise.
                   is_system:
                     type: boolean
                     description: '`true` if the business has the diagnostic codes turned on, `false` otherwise.'
@@ -126883,8 +126967,9 @@ paths:
                       Full name of the staff member who signed and locked the diagnostic codes of the visit, as it is at the moment
                       of the request.
 
-                      `null` when the diagnostic codes are not locked or when the user is deleted; the lock itself stays, so the
-                      diagnostic codes are kept frozen.
+                      `null` when the diagnostic codes are not locked. An empty string when the user who signed was deleted, see
+                      [VisitBillingCodeAssignApi::$is_staff_lock_delete](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json), or is not a staff member of the business; the lock
+                      itself stays, so the diagnostic codes are kept frozen.
                   uid_staff_lock:
                     type:
                       - string
@@ -126892,7 +126977,8 @@ paths:
                     description: |-
                       Key of the staff member who signed and locked the diagnostic codes of the visit.
 
-                      `null` when the diagnostic codes are not locked or when the user is deleted.
+                      `null` when the diagnostic codes are not locked, or when the user who signed was deleted, see
+                      [VisitBillingCodeAssignApi::$is_staff_lock_delete](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
                 required:
                   - a_code
                   - a_history
@@ -126900,6 +126986,7 @@ paths:
                   - is_locked
                   - is_receipt_sent
                   - is_signature
+                  - is_staff_lock_delete
                   - is_system
                   - s_code_version
         '400':
@@ -143775,7 +143862,7 @@ components:
 
         Pay attention that all `\MailPrioritySid` must start with backslash.
 
-        Last used ID: 233.
+        Last used ID: 234.
 
         Values:
         - 220 (`ABANDONED_CHECKOUT`): Sent when a client abandons a checkout (used in automations).
@@ -143904,6 +143991,11 @@ components:
         - 62 (`BOOK_REMIND_ENROLLMENT`): Enrollment Reminder.
 
           Sent to the client reminding about an upcoming enrollment.
+        - 234 (`BOOK_REMIND_SERVICE_LIST_USER`): Multiple Appointment Reminder (Client).
+
+          Sent to remind the client about all of their appointments on the same day, in one message. It is sent instead
+          of several appointment reminders, when the client has several appointments on the same day. It is off by
+          default. The time of sending comes from the schedule of [RsMailSid::BOOK_REMIND_SERVICE_USER](#/components/schemas/RsMailSid).
         - 27 (`BOOK_REMIND_SERVICE_STAFF`): Appointment Reminder - Staff.
 
           Sent to the staff member reminding them about an upcoming appointment.
@@ -144303,6 +144395,7 @@ components:
         - 61
         - 25
         - 62
+        - 234
         - 27
         - 26
         - 101
@@ -144511,6 +144604,7 @@ components:
         - BOOK_PROMOTE_DIRECT_ENROLLMENT
         - BOOK_REMIND_CLASS
         - BOOK_REMIND_ENROLLMENT
+        - BOOK_REMIND_SERVICE_LIST_USER
         - BOOK_REMIND_SERVICE_STAFF
         - BOOK_REMIND_SERVICE_USER
         - BOOK_REPEAT_ADD
@@ -144821,6 +144915,12 @@ components:
           Enrollment Reminder.
 
           Sent to the client reminding about an upcoming enrollment.
+        - |-
+          Multiple Appointment Reminder (Client).
+
+          Sent to remind the client about all of their appointments on the same day, in one message. It is sent instead
+          of several appointment reminders, when the client has several appointments on the same day. It is off by
+          default. The time of sending comes from the schedule of {@link \RsMailSid::BOOK_REMIND_SERVICE_USER}.
         - |-
           Appointment Reminder - Staff.
 
