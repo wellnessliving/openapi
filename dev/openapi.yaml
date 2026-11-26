@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261125173550
+  version: 1.1.20261126094601
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -46308,6 +46308,12 @@ paths:
         Changes the user's password after verifying the current one, enforcing complexity and
          length rules, and sends a password-change notification email. The old password check can
          be skipped by staff with the appropriate access level.
+
+        The password of another person is changed by staff only within the business
+         [EditPasswordApi::$k_business](/Wl/Profile/Edit/EditPassword.json), where the business allows staff to modify passwords and the person is a
+         client of this business only (in a franchise, of the franchisor and this franchisee only, and not a staff
+         member); without a business, only by an administrator of WellnessLiving. The password of an administrator is
+         changed by nobody but the administrator themself.
       tags:
         - Profile
       parameters:
@@ -63825,6 +63831,368 @@ paths:
             type: string
           description: 'The business key to retrieve a list of all the gift cards in a business.'
       x-instance-get-key: 'k_business,is_franchise,is_frontend,is_inactive_include'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Promotion/Editor/List.json:
+    get:
+      operationId: Wl.Promotion.Editor.List.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_promotion:
+                    type: array
+                    description: |-
+                      The Purchase Options of the requested page, in the requested order.
+                      The fields marked "with a column" are in a row only when the column is asked in [ListApi::$a_column](/Wl/Promotion/Editor/List.json).
+                    items:
+                      type: object
+                      properties:
+                        a_client_group:
+                          type: array
+                          description: |-
+                            With the column [ListColumnEnum::CLIENT_GROUP](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). The titles of the client groups that the Purchase
+                            Option is only for. Empty if it is not restricted to groups.
+                          items:
+                            type: string
+                        a_client_type:
+                          type: array
+                          description: |-
+                            With the column [ListColumnEnum::CLIENT_TYPE](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). The titles of the client types that the Purchase
+                            Option is only for. Empty if it is not restricted to types.
+                          items:
+                            type: string
+                        a_location:
+                          type: array
+                          description: |-
+                            With the column [ListColumnEnum::LOCATION](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). The titles of the locations where the Purchase Option is
+                            sold, in alphabetical order. Empty if it is sold in every location. A package is sold where its components
+                            are.
+                          items:
+                            type: string
+                        a_shop_category:
+                          type: array
+                          description: |-
+                            With the column [ListColumnEnum::SHOP_CATEGORY](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). The titles of the store categories of the Purchase
+                            Option, in alphabetical order. Empty if it is in none.
+                          items:
+                            type: string
+                        dl_terminate:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            With the column [ListColumnEnum::STATUS](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). The date when the Purchase Option is planned to be switched
+                            off. `null` if none is planned.
+                        dtl_publish:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            With the column [ListColumnEnum::PUBLISH](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). The date and time when the Purchase Option is published,
+                            local to the business. `null` if it is published at once.
+                        dtl_unpublish:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            With the column [ListColumnEnum::UNPUBLISH](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). The date and time when the Purchase Option is
+                            unpublished, local to the business. `null` if it is published until it is removed.
+                        i_client:
+                          type: integer
+                          format: int32
+                          description: |-
+                            The number of the clients who use the Purchase Option. A client counts once however many purchases they
+                            have, the purchases that are finished or cancelled do not count, and the purchases of the copies of the
+                            Purchase Option made for one client count under the Purchase Option itself.
+                        i_quantity_limit:
+                          type:
+                            - integer
+                            - 'null'
+                          format: int32
+                          description: |-
+                            With the column [ListColumnEnum::BUY_LIMIT](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). How many times one client can buy the Purchase Option.
+                            `null` if there is no limit.
+                        id_program:
+                          $ref: '#/components/schemas/RsProgramSid'
+                          description: 'The program of the Purchase Option. One of the [RsProgramSid](#/components/schemas/RsProgramSid) constants.'
+                        id_program_type:
+                          $ref: '#/components/schemas/RsProgramTypeSid'
+                          description: 'The type of the Purchase Option. One of the [RsProgramTypeSid](#/components/schemas/RsProgramTypeSid) constants.'
+                        is_active:
+                          type: boolean
+                          description: 'Whether the Purchase Option is active now: it is switched on and has not expired.'
+                        is_introductory:
+                          type: boolean
+                          description: 'Whether the Purchase Option is an introductory offer.'
+                        is_location_all:
+                          type: boolean
+                          description: |-
+                            With the column [ListColumnEnum::LOCATION](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). Whether the Purchase Option is sold in every location of
+                            the business.
+                        is_online_sell:
+                          type: boolean
+                          description: 'Whether clients can buy the Purchase Option online. `false` if only the staff can sell it.'
+                        is_renew:
+                          type: boolean
+                          description: 'With the column [ListColumnEnum::RENEW](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). Whether the Purchase Option renews itself.'
+                        k_promotion:
+                          type: string
+                          description: 'The key of the Purchase Option.'
+                        text_create_by:
+                          type: string
+                          description: |-
+                            With the column [ListColumnEnum::CREATE](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). Who created the Purchase Option: the word for the
+                            franchisor, for an admin, or the public name of a staff member of the business. Empty for anybody else.
+                        text_create_date:
+                          type: string
+                          description: |-
+                            With the column [ListColumnEnum::CREATE](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). When the Purchase Option was created, in the time zone and
+                            the format of the business.
+                        text_edit_by:
+                          type: string
+                          description: |-
+                            With the column [ListColumnEnum::EDIT](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). Who changed the Purchase Option last, named as the creator,
+                            or the words for an option that nobody changed.
+                        text_edit_date:
+                          type: string
+                          description: |-
+                            With the column [ListColumnEnum::EDIT](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum). When the Purchase Option was changed last, or the words for
+                            an option that nobody changed.
+                        text_length:
+                          type: string
+                          description: |-
+                            How long the Purchase Option lasts: the number of periods, the last date or the word for no end. Empty if
+                            it has no length, as a guest pass.
+                        text_price:
+                          type: string
+                          description: 'The price in the currency of the Purchase Option, or the word for a free one.'
+                        text_price_period:
+                          type: string
+                          description: 'The period that the price of a membership is paid for. Empty for the other types.'
+                        text_program_type:
+                          type: string
+                          description: 'The title of the type of the Purchase Option.'
+                        text_service_category:
+                          type: string
+                          description: 'The titles of the service categories of the Purchase Option, those of its components for a package.'
+                        text_title:
+                          type: string
+                          description: 'The title of the Purchase Option in the language of the business.'
+                        text_visit:
+                          type: string
+                          description: 'The visits that the Purchase Option includes, with the attending restriction, or the word for no limit.'
+                        url_image:
+                          type: string
+                          description: 'The link to the small image of the Purchase Option. Empty if it has no image.'
+                      required:
+                        - a_client_group
+                        - a_client_type
+                        - a_location
+                        - a_shop_category
+                        - dl_terminate
+                        - dtl_publish
+                        - dtl_unpublish
+                        - i_client
+                        - i_quantity_limit
+                        - id_program
+                        - id_program_type
+                        - is_active
+                        - is_introductory
+                        - is_location_all
+                        - is_online_sell
+                        - is_renew
+                        - k_promotion
+                        - text_create_by
+                        - text_create_date
+                        - text_edit_by
+                        - text_edit_date
+                        - text_length
+                        - text_price
+                        - text_price_period
+                        - text_program_type
+                        - text_service_category
+                        - text_title
+                        - text_visit
+                        - url_image
+                  i_total:
+                    type: integer
+                    format: int32
+                    description: 'The number of the Purchase Options in the whole list, not only on the requested page.'
+                required:
+                  - a_promotion
+                  - i_total
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets the page of the list of Purchase Options of the business.'
+      description: |-
+        The list holds the Purchase Options of the business that were not removed, filtered by the search words, the
+        status, the type, the service category, the store category and the location, in the requested order. The daily
+        deals, the enrollments, the programs of the services that the business has switched off and the programs that
+        the user has no right to see are never listed.
+      tags:
+        - Promotions
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: a_column
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Wl.Promotion.Editor.ListColumnEnum'
+          description: |-
+            The optional columns whose data is wanted. Empty to read the default columns only.
+
+            Each item is one of the [ListColumnEnum](#/components/schemas/Wl.Promotion.Editor.ListColumnEnum) cases. The data of a column that is not asked is not read, and its
+            fields are not in the rows.
+        -
+          name: a_program_category
+          in: query
+          required: false
+          schema:
+            type:
+              - array
+              - 'null'
+            items:
+              $ref: '#/components/schemas/RsProgramCategorySid'
+          description: |-
+            The service categories to show. `null` to show every category.
+
+            Each item is one of the [RsProgramCategorySid](#/components/schemas/RsProgramCategorySid) constants.
+        -
+          name: a_program_type
+          in: query
+          required: false
+          schema:
+            type:
+              - array
+              - 'null'
+            items:
+              $ref: '#/components/schemas/RsProgramTypeSid'
+          description: |-
+            The types of the Purchase Options to show. `null` to show every type.
+
+            Each item is one of the [RsProgramTypeSid](#/components/schemas/RsProgramTypeSid) constants. A session pass is the three types `LIMIT`, `PASS` and
+            `DURATION` together.
+        -
+          name: a_shop_category
+          in: query
+          required: false
+          schema:
+            type:
+              - array
+              - 'null'
+            items:
+              type: string
+          description: |-
+            The keys of the store categories to show. `null` to show every store category.
+
+            Each item is the key of a store category of the business. The Purchase Options that are in no store category are
+            added by [ListApi::$is_shop_category_none](/Wl/Promotion/Editor/List.json).
+        -
+          name: i_page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100000
+            default: 1
+          description: 'The number of the page to read, the first page is 1.'
+        -
+          name: i_page_size
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 100
+            default: 25
+          description: 'The number of the Purchase Options on a page.'
+        -
+          name: id_sort
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Promotion.Editor.ListSortEnum'
+          description: 'The sort of the list. One of the [ListSortEnum](#/components/schemas/Wl.Promotion.Editor.ListSortEnum) cases.'
+        -
+          name: id_status
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Wl.Promotion.Editor.ListStatusEnum'
+          description: 'The status of the Purchase Options to show. One of the [ListStatusEnum](#/components/schemas/Wl.Promotion.Editor.ListStatusEnum) cases.'
+        -
+          name: is_shop_category_none
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            Whether the Purchase Options that are in no store category are shown in addition to the requested store
+            categories. It is the only filter by the store categories when
+            [ListApi::$a_shop_category](/Wl/Promotion/Editor/List.json) is `null`.
+        -
+          name: is_sort_desc
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: 'Whether the list is sorted from the last to the first.'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'The key of the business whose Purchase Options are listed.'
+        -
+          name: k_location
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            The key of the location whose Purchase Options are shown. `null` to show the Purchase Options of every location.
+
+            The Purchase Options that are not limited to any location are always shown.
+        -
+          name: text_search
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+            maxLength: 100
+          description: |-
+            The words to search in the titles of the Purchase Options, and the beginning of their barcodes. `null` to show
+            every Purchase Option.
+      x-instance-get-key: k_business
       x-rate-limit:
         -
           limit: 200000
@@ -86572,8 +86940,8 @@ paths:
                     format: int32
                     description: |-
                       How many of the selected tasks the request skipped: a task that someone removed after the staff member selected
-                      it, and, for the reminder, a task that has nobody assigned to it. `i_done` and `i_skip` together make the number
-                      of the selected tasks.
+                      it, for the reminder a task that has nobody assigned to it, and for the status alone a task that has the status
+                      already (nothing is changed in it). `i_done` and `i_skip` together make the number of the selected tasks.
                 required:
                   - i_done
                   - i_skip
@@ -86640,8 +87008,8 @@ paths:
                     format: int32
                     description: |-
                       How many of the selected tasks the request skipped: a task that someone removed after the staff member selected
-                      it, and, for the reminder, a task that has nobody assigned to it. `i_done` and `i_skip` together make the number
-                      of the selected tasks.
+                      it, for the reminder a task that has nobody assigned to it, and for the status alone a task that has the status
+                      already (nothing is changed in it). `i_done` and `i_skip` together make the number of the selected tasks.
                 required:
                   - i_done
                   - i_skip
@@ -86711,8 +87079,8 @@ paths:
                     format: int32
                     description: |-
                       How many of the selected tasks the request skipped: a task that someone removed after the staff member selected
-                      it, and, for the reminder, a task that has nobody assigned to it. `i_done` and `i_skip` together make the number
-                      of the selected tasks.
+                      it, for the reminder a task that has nobody assigned to it, and for the status alone a task that has the status
+                      already (nothing is changed in it). `i_done` and `i_skip` together make the number of the selected tasks.
                 required:
                   - i_done
                   - i_skip
@@ -152440,24 +152808,64 @@ components:
         - |-
           Quick Gift Card.
           Only one card of this type can be created in one business.
-    Wl.Promotion.Edit.Limit.Cycle.Sid:
+    Wl.Promotion.Editor.ListColumnEnum:
       type: integer
       format: int32
       description: |-
-        Attendance Restriction cycle type.
+        The optional columns of the list of Purchase Options, whose data is read only when it is asked.
+
+        The nine default columns and the status of a Purchase Option are always in a row, so they are not here.
+
+        Last used ID: 11.
 
         Values:
-        - 1 (`CALENDAR`): Attendance Restriction is applied at the start of the calendar cycle.
-        - 2 (`PAYMENT`): Attendance Restriction is applied at the start of the payment cycle.
+        - 1 (`BUY_LIMIT`): The limit of the purchases of one client.
+        - 8 (`CLIENT_GROUP`): The client groups that the Purchase Option is only for.
+        - 9 (`CLIENT_TYPE`): The client types that the Purchase Option is only for.
+        - 6 (`CREATE`): Who created the Purchase Option and when.
+        - 7 (`EDIT`): Who changed the Purchase Option last and when.
+        - 10 (`LOCATION`): The locations where the Purchase Option is sold.
+        - 2 (`PUBLISH`): The date when the Purchase Option is published.
+        - 3 (`RENEW`): Whether the Purchase Option renews itself.
+        - 11 (`SHOP_CATEGORY`): The store categories of the Purchase Option.
+        - 4 (`STATUS`): The planned date when the Purchase Option is switched off.
+        - 5 (`UNPUBLISH`): The date when the Purchase Option is unpublished.
       enum:
         - 1
+        - 8
+        - 9
+        - 6
+        - 7
+        - 10
         - 2
+        - 3
+        - 11
+        - 4
+        - 5
       x-enum-varnames:
-        - CALENDAR
-        - PAYMENT
+        - BUY_LIMIT
+        - CLIENT_GROUP
+        - CLIENT_TYPE
+        - CREATE
+        - EDIT
+        - LOCATION
+        - PUBLISH
+        - RENEW
+        - SHOP_CATEGORY
+        - STATUS
+        - UNPUBLISH
       x-enum-descriptions:
-        - 'Attendance Restriction is applied at the start of the calendar cycle.'
-        - 'Attendance Restriction is applied at the start of the payment cycle.'
+        - 'The limit of the purchases of one client.'
+        - 'The client groups that the Purchase Option is only for.'
+        - 'The client types that the Purchase Option is only for.'
+        - 'Who created the Purchase Option and when.'
+        - 'Who changed the Purchase Option last and when.'
+        - 'The locations where the Purchase Option is sold.'
+        - 'The date when the Purchase Option is published.'
+        - 'Whether the Purchase Option renews itself.'
+        - 'The store categories of the Purchase Option.'
+        - 'The planned date when the Purchase Option is switched off.'
+        - 'The date when the Purchase Option is unpublished.'
     RsProgramCategorySid:
       type: integer
       format: int32
@@ -152568,6 +152976,96 @@ components:
             <li>{@link \RsProgramSid::VISIT_MEMBERSHIP}</li>
             <li>{@link \RsProgramSid::VISIT_PASS}</li>
           </ul>
+    Wl.Promotion.Editor.ListSortEnum:
+      type: integer
+      format: int32
+      description: |-
+        The sorts of the list of Purchase Options.
+
+        Last used ID: 5.
+
+        Values:
+        - 3 (`LENGTH`): By the length of the Purchase Option: the unit of the duration, then its number.
+        - 1 (`NAME`): By the title of the Purchase Option.
+        - 5 (`ORDER`): By the order in which clients see the Purchase Options in the store.
+        - 2 (`PRICE`): By the price of the Purchase Option.
+
+          The order follows the price that is saved with the Purchase Option, as the old list does. A package shows the
+          sum of its components, so its place may differ from the price shown.
+        - 4 (`VISIT`): By the number of the visits that the Purchase Option includes.
+
+          The order follows the limit that is saved with the Purchase Option, as the old list does. A guest pass shows the
+          limit of its own settings, so its place may differ from the visits shown.
+      enum:
+        - 3
+        - 1
+        - 5
+        - 2
+        - 4
+      x-enum-varnames:
+        - LENGTH
+        - NAME
+        - ORDER
+        - PRICE
+        - VISIT
+      x-enum-descriptions:
+        - 'By the length of the Purchase Option: the unit of the duration, then its number.'
+        - 'By the title of the Purchase Option.'
+        - 'By the order in which clients see the Purchase Options in the store.'
+        - |-
+          By the price of the Purchase Option.
+
+          The order follows the price that is saved with the Purchase Option, as the old list does. A package shows the
+          sum of its components, so its place may differ from the price shown.
+        - |-
+          By the number of the visits that the Purchase Option includes.
+
+          The order follows the limit that is saved with the Purchase Option, as the old list does. A guest pass shows the
+          limit of its own settings, so its place may differ from the visits shown.
+      default: 1
+    Wl.Promotion.Editor.ListStatusEnum:
+      type: integer
+      format: int32
+      description: |-
+        The statuses by which the list of Purchase Options is filtered.
+
+        Last used ID: 3.
+
+        Values:
+        - 1 (`ACTIVE`): Active Purchase Options: switched on and not expired.
+        - 3 (`ALL`): Purchase Options of every status.
+        - 2 (`INACTIVE`): Inactive Purchase Options: switched off or expired.
+      enum:
+        - 1
+        - 3
+        - 2
+      x-enum-varnames:
+        - ACTIVE
+        - ALL
+        - INACTIVE
+      x-enum-descriptions:
+        - 'Active Purchase Options: switched on and not expired.'
+        - 'Purchase Options of every status.'
+        - 'Inactive Purchase Options: switched off or expired.'
+      default: 3
+    Wl.Promotion.Edit.Limit.Cycle.Sid:
+      type: integer
+      format: int32
+      description: |-
+        Attendance Restriction cycle type.
+
+        Values:
+        - 1 (`CALENDAR`): Attendance Restriction is applied at the start of the calendar cycle.
+        - 2 (`PAYMENT`): Attendance Restriction is applied at the start of the payment cycle.
+      enum:
+        - 1
+        - 2
+      x-enum-varnames:
+        - CALENDAR
+        - PAYMENT
+      x-enum-descriptions:
+        - 'Attendance Restriction is applied at the start of the calendar cycle.'
+        - 'Attendance Restriction is applied at the start of the payment cycle.'
     Wl.Schedule.Design.IntervalSid:
       type: integer
       format: int32
