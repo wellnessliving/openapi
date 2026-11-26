@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261125055732
+  version: 1.1.20261126041651
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -6075,6 +6075,25 @@ paths:
 
                                 Empty string, if no off-site location is used.
                                 `null` if field is not loaded.
+                            s_time_end:
+                              type: string
+                              description: |-
+                                End time of the scheduled sessions in `MySql` time format (`HH:MM:SS`).
+
+                                It is in the same time zone as `text_time`: the time zone of the location,
+                                or the time zone of the profile of the client when the business lets clients choose a time zone in the profile
+                                and [EventListApi::$uid](/Wl/Event/EventList.json) is passed.
+
+                                It is the start time plus the duration of the session, so it is earlier than
+                                `s_time_start` when the session ends after midnight.
+                            s_time_start:
+                              type: string
+                              description: |-
+                                Start time of the scheduled sessions in `MySql` time format (`HH:MM:SS`).
+
+                                It is in the same time zone as `text_time`: the time zone of the location,
+                                or the time zone of the profile of the client when the business lets clients choose a time zone in the profile
+                                and [EventListApi::$uid](/Wl/Event/EventList.json) is passed.
                             s_timezone_location:
                               type: string
                               description: |-
@@ -6102,6 +6121,8 @@ paths:
                             - k_class_period
                             - k_location
                             - k_resource_location
+                            - s_time_end
+                            - s_time_start
                             - s_timezone_location
                             - text_location
                             - text_room
@@ -43690,6 +43711,20 @@ paths:
                     type: string
                     format: date
                     description: 'The start date of the promotion. Only available if the item is a promotion.'
+                  dl_start_first:
+                    type:
+                      - string
+                      - 'null'
+                    format: date
+                    description: |-
+                      The local date in MySQL format when the purchase option first started, before any renewal.
+                      Only available if the item is a promotion.
+
+                      For a purchase option that was never renewed, this is the same as [PurchaseListElementApi::$dl_start](/Wl/Profile/PurchaseList/PurchaseListElement.json)
+                      unless its start date was moved later.
+
+                      `null` if the purchase option has not started yet (for example, a pass before its first visit) or if the item
+                      is not a promotion.
                   dt_cancel:
                     type: string
                     format: date-time
@@ -78903,7 +78938,8 @@ paths:
         of the classes and of the appointments are not listed. The newest attempt goes first, 100 attempts a page.
         The totals count the whole day. The attempts of the clients whom the staff member may not see (the scope of the
         clients of the staff member) are neither listed nor counted. Works in the session of a staff member with access
-        to the location and the privilege to see the profiles of the clients; no key of a kiosk is needed.
+        to the location and either the privilege to manage the profiles of the clients or the privilege to view the
+        details of the clients; no key of a kiosk is needed.
       tags:
         - Visits
       parameters:
@@ -79247,10 +79283,11 @@ paths:
           <li>the client is found: the key, the name and the photo of the client;</li>
           <li>no client that the staff member may see matches the value;</li>
           <li>the member ID of the client is inactive;</li>
-          <li>the dynamic barcode has expired;</li>
-          <li>the business uses QR codes, which the kiosk does not read: every scan gives this result.</li>
+          <li>the dynamic barcode has expired, or the 30 seconds of the QR code have passed;</li>
+          <li>the business uses QR codes, and the value contains `|` but is not a well-formed QR code.</li>
         </ul>
-        Only one client is returned: there is no list of the candidates.
+        At a business that uses QR codes, a value without `|` is found as at a business that does not use them. Only
+        one client is returned: there is no list of the candidates.
       tags:
         - Visits
       parameters:
@@ -79275,7 +79312,8 @@ paths:
                   description: |-
                     The scanned value: a member ID or a dynamic barcode, for example `100245`.
 
-                    The symbols that are not letters or digits are cut from both ends.
+                    When the business uses QR codes, also the QR code of the client, `text_barcode|tu_qr_issued|30`, for example
+                    `100245|1795000000|30`. The symbols that are not letters or digits are cut from both ends.
               required:
                 - k_business
                 - k_location
@@ -108915,6 +108953,12 @@ paths:
                         html_title:
                           type: string
                           description: 'The resource name.'
+                        i_quantity:
+                          type: integer
+                          format: int32
+                          description: |-
+                            The number of identical units of the asset. One booking takes one unit.
+                            The units booked at [AssetListApi::$dtl_date](/Wl/Appointment/Book/Asset/AssetList.json) are listed in [AssetListApi::$a_asset_busy](/Wl/Appointment/Book/Asset/AssetList.json).
                         id_deny_reason:
                           $ref: '#/components/schemas/Wl.Schedule.ClassView.DenyReasonSid'
                           description: |-
@@ -108958,6 +109002,7 @@ paths:
                         - html_age_restriction
                         - html_deny_reason
                         - html_title
+                        - i_quantity
                         - id_deny_reason
                         - id_service_require
                         - is_age_restricted
@@ -137620,7 +137665,9 @@ components:
 
         Values:
         - 4 (`DYNAMIC_EXPIRED`): The scanned value is a dynamic barcode of a client that has expired.
-        - 5 (`FORMAT_UNSUPPORTED`): The business uses QR codes for the member IDs, and the kiosk does not read them.
+
+          Also the result for the QR code of a client whose window of 30 seconds after its issue has passed.
+        - 5 (`FORMAT_UNSUPPORTED`): The business uses QR codes, and the scanned value contains `|` but is not a well-formed QR code of a client.
         - 1 (`FOUND`): The scanned value identifies an active client that the staff member may see.
         - 3 (`MEMBER_INACTIVE`): The scanned value identifies a client whose member ID is inactive.
         - 2 (`NOT_FOUND`): No client that the staff member may see matches the scanned value.
@@ -137637,8 +137684,11 @@ components:
         - MEMBER_INACTIVE
         - NOT_FOUND
       x-enum-descriptions:
-        - 'The scanned value is a dynamic barcode of a client that has expired.'
-        - 'The business uses QR codes for the member IDs, and the kiosk does not read them.'
+        - |-
+          The scanned value is a dynamic barcode of a client that has expired.
+
+          Also the result for the QR code of a client whose window of 30 seconds after its issue has passed.
+        - 'The business uses QR codes, and the scanned value contains `|` but is not a well-formed QR code of a client.'
         - 'The scanned value identifies an active client that the staff member may see.'
         - 'The scanned value identifies a client whose member ID is inactive.'
         - 'No client that the staff member may see matches the scanned value.'
