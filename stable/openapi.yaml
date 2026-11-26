@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261125172622
+  version: 1.1.20261126044557
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -61974,6 +61974,12 @@ paths:
         Changes the user's password after verifying the current one, enforcing complexity and
          length rules, and sends a password-change notification email. The old password check can
          be skipped by staff with the appropriate access level.
+
+        The password of another person is changed by staff only within the business
+         [EditPasswordApi::$k_business](/Wl/Profile/Edit/EditPassword.json), where the business allows staff to modify passwords and the person is a
+         client of this business only (in a franchise, of the franchisor and this franchisee only, and not a staff
+         member); without a business, only by an administrator of WellnessLiving. The password of an administrator is
+         changed by nobody but the administrator themself.
       tags:
         - Profile
       parameters:
