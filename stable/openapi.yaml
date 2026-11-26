@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261126073020
+  version: 1.1.20261126092601
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -60718,20 +60718,6 @@ paths:
 
             An empty value will return the system-wide fields.
         -
-          name: k_class_period
-          in: query
-          required: true
-          schema:
-            type: string
-          description: |-
-            Key of the session of a class or an event that the client is booking while the profile is saved.
-
-
-            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
-            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
-
-            Empty when the profile is not saved during the booking of a session.
-        -
           name: k_lead_source
           in: query
           required: false
@@ -60976,20 +60962,6 @@ paths:
             The key of the business you're editing.
 
             An empty value will return the system-wide fields.
-        -
-          name: k_class_period
-          in: query
-          required: true
-          schema:
-            type: string
-          description: |-
-            Key of the session of a class or an event that the client is booking while the profile is saved.
-
-
-            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
-            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
-
-            Empty when the profile is not saved during the booking of a session.
         -
           name: k_lead_source
           in: query
@@ -61595,20 +61567,6 @@ paths:
 
             An empty value will return the system-wide fields.
         -
-          name: k_class_period
-          in: query
-          required: true
-          schema:
-            type: string
-          description: |-
-            Key of the session of a class or an event that the client is booking while the profile is saved.
-
-
-            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
-            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
-
-            Empty when the profile is not saved during the booking of a session.
-        -
           name: k_lead_source
           in: query
           required: false
@@ -61853,20 +61811,6 @@ paths:
             The key of the business you're editing.
 
             An empty value will return the system-wide fields.
-        -
-          name: k_class_period
-          in: query
-          required: true
-          schema:
-            type: string
-          description: |-
-            Key of the session of a class or an event that the client is booking while the profile is saved.
-
-
-            When the session belongs to a class or an event with an age restriction, the Date of birth system field is
-            accepted and saved whatever its level for the entry point given by [EditApi::$id_register_source](/Wl/Profile/Edit/Edit.json).
-
-            Empty when the profile is not saved during the booking of a session.
         -
           name: k_lead_source
           in: query
