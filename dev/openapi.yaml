@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261127145124
+  version: 1.1.20261127163420
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -97743,7 +97743,7 @@ paths:
                       [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), `false` - otherwise.
 
                       The password of such a user can not be set when the user is added as a staff member of
-                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), so the form of a new staff member does not ask for it.
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json).
                   is_current_member:
                     type: boolean
                     description: 'If `true`, user is already a member of current business, `false` - otherwise.'
@@ -97949,7 +97949,7 @@ paths:
                       [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), `false` - otherwise.
 
                       The password of such a user can not be set when the user is added as a staff member of
-                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), so the form of a new staff member does not ask for it.
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json).
                   is_current_member:
                     type: boolean
                     description: 'If `true`, user is already a member of current business, `false` - otherwise.'
@@ -100627,6 +100627,8 @@ paths:
       description: |-
         Used in the backend settings editor to show the current enabled or disabled state of the reward
         program before the staff member makes a change. Always reads live data, bypassing the cache.
+
+        Anybody may read the state, a guest included: whether a business has a reward program is public information.
       tags:
         - Business
       parameters:
@@ -128483,6 +128485,10 @@ paths:
         The version of the codes the list is made from is posted together with the list: if another staff member has
         changed the codes in the meantime, the post is rejected with the error `code-version-outdated` instead of
         overwriting that change, see [VisitBillingCodeAssignApi::$s_code_version](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
+
+        While the business has the diagnostic codes turned off, a post that adds an ICD-10-CM diagnostic code the visit
+        does not have yet is rejected with the error `visit-icd-disabled` and nothing is saved, see
+        [VisitBillingCodeAssignApi::$a_text_code](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json). The diagnostic codes the visit already has may stay in the list.
       tags:
         - 'Billing Code'
       parameters:
@@ -128519,6 +128525,10 @@ paths:
                     has turned them on, or a temporary code for this visit only. A temporary code requires the access to create
                     temporary codes. The case of a value does not matter. The codes the visit has are returned in
                     [VisitBillingCodeAssignApi::$a_code](/Wl/Visit/Billing/Code/VisitBillingCodeAssign.json).
+
+                    While the business has the diagnostic codes turned off, a post that adds an ICD-10-CM diagnostic code the visit
+                    does not have yet is rejected with the error `visit-icd-disabled`, and nothing of the post is saved. The
+                    diagnostic codes the visit already has may stay in the list.
                   items:
                     type: string
                 s_code_version:
