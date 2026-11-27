@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261127040130
+  version: 1.1.20261127043739
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -116834,6 +116834,14 @@ paths:
                     description: |-
                       Shows, whether client was registered in the business: `true` if user was added to the business,
                       `false` if staff only received temporary access, because mandatory fields must be specified first.
+                  is_business_foreign:
+                    type: boolean
+                    description: |-
+                      If `true`, the user who has the specified email is a client or a staff member of a business other than
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), `false` - otherwise.
+
+                      The password of such a user can not be set when the user is added as a staff member of
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), so the form of a new staff member does not ask for it.
                   is_current_member:
                     type: boolean
                     description: 'If `true`, user is already a member of current business, `false` - otherwise.'
@@ -116861,6 +116869,7 @@ paths:
                   - a_business_member_key
                   - a_user
                   - is_added
+                  - is_business_foreign
                   - is_current_member
                   - is_limit
                   - is_password_set
@@ -117031,6 +117040,14 @@ paths:
                     description: |-
                       Shows, whether client was registered in the business: `true` if user was added to the business,
                       `false` if staff only received temporary access, because mandatory fields must be specified first.
+                  is_business_foreign:
+                    type: boolean
+                    description: |-
+                      If `true`, the user who has the specified email is a client or a staff member of a business other than
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), `false` - otherwise.
+
+                      The password of such a user can not be set when the user is added as a staff member of
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), so the form of a new staff member does not ask for it.
                   is_current_member:
                     type: boolean
                     description: 'If `true`, user is already a member of current business, `false` - otherwise.'
@@ -117058,6 +117075,7 @@ paths:
                   - a_business_member_key
                   - a_user
                   - is_added
+                  - is_business_foreign
                   - is_current_member
                   - is_limit
                   - is_password_set
@@ -133214,10 +133232,16 @@ paths:
                       type:
                         - string
                         - 'null'
-                      description: 'Business key.'
+                      description: |-
+                        Business key. 
+
+                        The value is not trusted: the business of the request, [PatternApi::$k_business](/Wl/Mail/Pattern/AutomatedMarketing/CustomTemplate/Pattern.json), is saved instead.
                     k_mail_pattern:
                       type: string
-                      description: 'Mail pattern key.'
+                      description: |-
+                        Mail pattern key. 
+
+                        Empty to create a new pattern. Otherwise it must be equal to [PatternApi::$k_mail_pattern](/Wl/Mail/Pattern/AutomatedMarketing/CustomTemplate/Pattern.json).
                     text_html:
                       type: string
                       description: 'HTML content of the email.'
