@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261127074639
+  version: 1.1.20261127090226
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -5455,12 +5455,10 @@ paths:
                             reminder.
                         k_business:
                           type: string
-                          description: 'Business key. Primary key in the RsBusinessSql table.'
+                          description: 'Business key.'
                         a_visit_list:
                           type: array
-                          description: |-
-                            Keys of the visits of the client on one day, the earliest first. Each is a primary key in the
-                            RsVisitSql table. See ServiceListGroup::visitListGet().
+                          description: 'Keys of the visits of the client on one day, the earliest first.'
                           items:
                             type: string
                       required:
@@ -51016,6 +51014,79 @@ paths:
           limit: 200000
           period: 3600
   /Wl/Lead/Stage/LeadStageUser.json:
+    get:
+      operationId: Wl.Lead.Stage.LeadStageUser.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  can_lead_stage_change:
+                    type: boolean
+                    description: |-
+                      Whether the current user may change the lead stage of the client.
+
+                      `true` if the user has the privilege to change the lead stage ([PrivilegeSid::LEAD_STAGE_CHANGE](#/components/schemas/Wl.Privilege.PrivilegeSid)) in
+                      the business, or is an administrator of the client profiles. `false` otherwise.
+                  k_lead_stage:
+                    type: string
+                    description: |-
+                      Key of the lead stage.
+
+                      When the stage is set, the stage to move the client into. When the stage is read, the stage the client is in
+                      now. A client without a stored stage, or with a stored stage which is not one of the stages of the business, is
+                      in the default stage of the business, the same stage as the profile of the client shows. An empty string only if
+                      the business has no stages.
+                required:
+                  - can_lead_stage_change
+                  - k_lead_stage
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Gets the lead stage of the client.'
+      description: |-
+        The current user must be allowed to view the profile of the client, as for the profile page of the client (the
+        privilege to view client profiles and the access to the client), and the client must be one whom the user may see
+        in this business: a client of the business, or a franchise client by the rules of the franchise. A client without a
+        stored stage which is not one of the stages of the business, is in the default stage of the business, and that
+        stage is returned. An empty string is returned only if the business has no stages.
+
+        Also tells whether the current user may change the stage of the client.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the client whose stage is read or set.'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
     post:
       operationId: Wl.Lead.Stage.LeadStageUser.post
       responses:
@@ -51057,7 +51128,7 @@ paths:
           required: true
           schema:
             type: string
-          description: 'Key of the client whose stage is set.'
+          description: 'Key of the client whose stage is read or set.'
       requestBody:
         required: true
         content:
@@ -51067,9 +51138,151 @@ paths:
               properties:
                 k_lead_stage:
                   type: string
-                  description: 'Key of the lead stage to move the client into.'
+                  description: |-
+                    Key of the lead stage.
+
+                    When the stage is set, the stage to move the client into. When the stage is read, the stage the client is in
+                    now. A client without a stored stage, or with a stored stage which is not one of the stages of the business, is
+                    in the default stage of the business, the same stage as the profile of the client shows. An empty string only if
+                    the business has no stages.
               required:
                 - k_lead_stage
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Lead/Stage/LeadStageImpact.json:
+    get:
+      operationId: Wl.Lead.Stage.LeadStageImpact.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_automation_start:
+                    type: array
+                    description: 'Automations the client is added to by the change.'
+                    items:
+                      type: object
+                      properties:
+                        k_automation:
+                          type: string
+                          description: 'Automation key.'
+                        text_description:
+                          type: string
+                          description: 'Description of the automation. Empty string if the automation has no description.'
+                        text_title:
+                          type: string
+                          description: 'Name of the automation.'
+                      required:
+                        - k_automation
+                        - text_description
+                        - text_title
+                  a_automation_stop:
+                    type: array
+                    description: 'Automations the client is removed from by the change.'
+                    items:
+                      type: object
+                      properties:
+                        k_automation:
+                          type: string
+                          description: 'Automation key.'
+                        text_description:
+                          type: string
+                          description: 'Description of the automation. Empty string if the automation has no description.'
+                        text_lead_stage_exit:
+                          type: string
+                          description: |-
+                            Name of the stage the automation moves the client into when the client leaves it. Empty string when the
+                            automation does not move clients anywhere, when the client is already in that stage after the change, or
+                            when the move is backward and the automation does not allow it.
+                        text_title:
+                          type: string
+                          description: 'Name of the automation.'
+                      required:
+                        - k_automation
+                        - text_description
+                        - text_lead_stage_exit
+                        - text_title
+                  id_lead_stage_type:
+                    $ref: '#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid'
+                    description: 'Type of the stage the client is moved into. One of [LeadStageTypeSid](#/components/schemas/Wl.Lead.Stage.LeadStageTypeSid) constants.'
+                  is_confirm:
+                    type: boolean
+                    description: |-
+                      Whether the change must be confirmed by the staff member.
+
+                      `true` if the change starts or stops an automation, or moves the client into a `Won` or `Lost` stage which
+                      is counted by the Lead Management report. `false` if the change has no such effect and can be saved at once.
+                  is_member_group:
+                    type: boolean
+                    description: |-
+                      Whether the business has client groups which convert their clients into a `Won` or `Lost` stage.
+
+                      Such groups never change a stage which a staff member set by hand, so the staff member may be told about it.
+                      Always `false` for a stage of another type, and for a business without the Marketing Suite subscription,
+                      because the groups do not convert clients then.
+                  text_name_first:
+                    type: string
+                    description: 'First name of the client, or the full name if the client has no first name.'
+                  text_title:
+                    type: string
+                    description: 'Name of the lead stage the client is moved into.'
+                required:
+                  - a_automation_start
+                  - a_automation_stop
+                  - id_lead_stage_type
+                  - is_confirm
+                  - is_member_group
+                  - text_name_first
+                  - text_title
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Finds out what moving the client into the lead stage is going to do.'
+      description: |-
+        The client must not be in the stage yet. The caller is expected to ask only about a stage the client is not in yet.
+        The client must be a member of the business, or a franchise client of it: a traveller or an enterprise client.
+        The access to the profile of the client is not checked, because the Lead Management report and the Recent Leads
+        widget call this check too, and a check of the profile could block a stage change that they allow now.
+      tags:
+        - Leads
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Business key.'
+        -
+          name: k_lead_stage
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the lead stage to move the client into.'
+        -
+          name: uid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 'Key of the client who is moved.'
       x-rate-limit:
         -
           limit: 200000
@@ -132883,6 +133096,77 @@ paths:
               - string
               - 'null'
           description: 'Statement primary key.'
+      x-instance-get-key: 'k_business,k_statement'
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Thoth/Report/SalesReport/Client/ClientStatementHistoryReport/ClientStatementHistoryPreview.json:
+    get:
+      operationId: Thoth.Report.SalesReport.Client.ClientStatementHistoryReport.ClientStatementHistoryPreview.get
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  html_statement:
+                    type: string
+                    description: |-
+                      The complete HTML document of the statement, to be shown in an isolated frame.
+
+                      The styles are inline, the logo is embedded as a data URI, and there are no scripts, so the document loads
+                      nothing from outside. The status badges of the transactions have no icon: they keep their colour and text.
+                required:
+                  - html_statement
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Returns the HTML of an account statement.'
+      description: |-
+        Checks that the statement belongs to the business and that the caller has access to the profile of the client,
+        then gives the statement as a complete HTML document for a preview in an isolated frame.
+      tags:
+        - Payments
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: k_business
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Business key. 
+
+            Required: `null` means that it was not passed, and the request is refused.
+        -
+          name: k_statement
+          in: query
+          required: false
+          schema:
+            type:
+              - string
+              - 'null'
+          description: |-
+            Statement key.
+
+
+            Required: `null` means that it was not passed, and the request is refused.
       x-instance-get-key: 'k_business,k_statement'
       x-rate-limit:
         -
