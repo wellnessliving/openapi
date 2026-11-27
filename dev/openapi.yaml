@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261127122539
+  version: 1.1.20261127134124
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -97003,11 +97003,27 @@ paths:
         When a search string is provided, returns clients whose name or email matches the query within the specified
         business. When the search string is empty, returns recently viewed clients. Each result includes the client's
         name, email, phone, member ID, and user key.
+
+        At a business with Dynamic ID the live dynamic barcode of a client is still matched first. While QUICK Auto
+        Check-In of the current staff member is on, nothing else is matched, unless
+        [ListApi::$is_auto_check_in_ignore](/Wl/Login/Search/StaffApp/List.json) is `true`.
       tags:
         - Login
       parameters:
         -
           $ref: '#/components/parameters/X-Error-Rules'
+        -
+          name: is_auto_check_in_ignore
+          in: query
+          required: true
+          schema:
+            type: boolean
+          description: |-
+            `true` - the search ignores the setting of QUICK Auto Check-In of the current staff member, so at a business with
+            Dynamic ID clients are found by name, email, phone or client ID, and not only by the live dynamic barcode.
+
+            `false` - the setting is followed: while QUICK Auto Check-In is on, a business with Dynamic ID finds a client by
+            the live dynamic barcode only.
         -
           name: is_franchisee_search_wide
           in: query
@@ -97028,7 +97044,11 @@ paths:
           required: true
           schema:
             type: string
-          description: 'The search string. Clients can be matched by name or email.'
+          description: |-
+            The search string. Clients can be matched by name or email.
+
+            At a business with Dynamic ID the live dynamic barcode of a client is still matched first, see
+            [ListApi::$is_auto_check_in_ignore](/Wl/Login/Search/StaffApp/List.json).
       x-instance-get-key: 'text_search,k_business,is_franchisee_search_wide'
       x-rate-limit:
         -
