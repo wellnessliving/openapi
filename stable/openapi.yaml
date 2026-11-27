@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261127102059
+  version: 1.1.20261127144015
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -94397,6 +94397,8 @@ paths:
       description: |-
         Used in the backend settings editor to show the current enabled or disabled state of the reward
         program before the staff member makes a change. Always reads live data, bypassing the cache.
+
+        Anybody may read the state, a guest included: whether a business has a reward program is public information.
       tags:
         - Business
       parameters:
@@ -116861,7 +116863,7 @@ paths:
                       [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), `false` - otherwise.
 
                       The password of such a user can not be set when the user is added as a staff member of
-                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), so the form of a new staff member does not ask for it.
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json).
                   is_current_member:
                     type: boolean
                     description: 'If `true`, user is already a member of current business, `false` - otherwise.'
@@ -117067,7 +117069,7 @@ paths:
                       [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), `false` - otherwise.
 
                       The password of such a user can not be set when the user is added as a staff member of
-                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), so the form of a new staff member does not ask for it.
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json).
                   is_current_member:
                     type: boolean
                     description: 'If `true`, user is already a member of current business, `false` - otherwise.'
