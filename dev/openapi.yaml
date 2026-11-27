@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'WellnessLiving API'
-  version: 1.1.20261127090226
+  version: 1.1.20261127122539
   contact:
     email: support@wellnessliving.com
     name: 'WellnessLiving Support'
@@ -33978,10 +33978,9 @@ paths:
                       The disclosure that the payer sees at the checkout next to the surcharge line (SAL-1411).
 
                       It is set only for a business that has the card surcharge on and is under the rule of the surcharge of Stripe (the
-                      country of the business and the switch of the feature, see
-                      SurchargeCardTypeResolver::localeList()). An empty string for any other business
-                      and any other processor: nothing is shown for them. The wording comes from WL-95032, which is not built, so for now it
-                      is `TEXT_SURCHARGE_DISCLOSURE_PLACEHOLDER`. It is a plain text, the widget escapes it.
+                      country of the business and the switch of the feature decide). An empty string for any other business and any other
+                      processor: nothing is shown for them. The wording comes from WL-95032, which is not built, so for now it is
+                      `TEXT_SURCHARGE_DISCLOSURE_PLACEHOLDER`. It is a plain text, the widget escapes it.
                 required:
                   - a_card_system
                   - a_method_staff
@@ -34560,10 +34559,9 @@ paths:
                       The disclosure that the payer sees at the checkout next to the surcharge line (SAL-1411).
 
                       It is set only for a business that has the card surcharge on and is under the rule of the surcharge of Stripe (the
-                      country of the business and the switch of the feature, see
-                      SurchargeCardTypeResolver::localeList()). An empty string for any other business
-                      and any other processor: nothing is shown for them. The wording comes from WL-95032, which is not built, so for now it
-                      is `TEXT_SURCHARGE_DISCLOSURE_PLACEHOLDER`. It is a plain text, the widget escapes it.
+                      country of the business and the switch of the feature decide). An empty string for any other business and any other
+                      processor: nothing is shown for them. The wording comes from WL-95032, which is not built, so for now it is
+                      `TEXT_SURCHARGE_DISCLOSURE_PLACEHOLDER`. It is a plain text, the widget escapes it.
                 required:
                   - a_card_system
                   - a_method_staff
@@ -97718,6 +97716,14 @@ paths:
                     description: |-
                       Shows, whether client was registered in the business: `true` if user was added to the business,
                       `false` if staff only received temporary access, because mandatory fields must be specified first.
+                  is_business_foreign:
+                    type: boolean
+                    description: |-
+                      If `true`, the user who has the specified email is a client or a staff member of a business other than
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), `false` - otherwise.
+
+                      The password of such a user can not be set when the user is added as a staff member of
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), so the form of a new staff member does not ask for it.
                   is_current_member:
                     type: boolean
                     description: 'If `true`, user is already a member of current business, `false` - otherwise.'
@@ -97745,6 +97751,7 @@ paths:
                   - a_business_member_key
                   - a_user
                   - is_added
+                  - is_business_foreign
                   - is_current_member
                   - is_limit
                   - is_password_set
@@ -97915,6 +97922,14 @@ paths:
                     description: |-
                       Shows, whether client was registered in the business: `true` if user was added to the business,
                       `false` if staff only received temporary access, because mandatory fields must be specified first.
+                  is_business_foreign:
+                    type: boolean
+                    description: |-
+                      If `true`, the user who has the specified email is a client or a staff member of a business other than
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), `false` - otherwise.
+
+                      The password of such a user can not be set when the user is added as a staff member of
+                      [EditEmailApi::$k_business](/Wl/Profile/Edit/Email/EditEmail.json), so the form of a new staff member does not ask for it.
                   is_current_member:
                     type: boolean
                     description: 'If `true`, user is already a member of current business, `false` - otherwise.'
@@ -97942,6 +97957,7 @@ paths:
                   - a_business_member_key
                   - a_user
                   - is_added
+                  - is_business_foreign
                   - is_current_member
                   - is_limit
                   - is_password_set
@@ -111327,6 +111343,139 @@ paths:
               required:
                 - a_set
       x-instance-get-key: k_business
+      x-rate-limit:
+        -
+          limit: 200000
+          period: 3600
+  /Wl/Classes/Period/Staff/Substitute.json:
+    post:
+      operationId: Wl.Classes.Period.Staff.Substitute.post
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  a_class_period:
+                    type: array
+                    description: |-
+                      Keys of the class periods that the call created or changed.
+
+                      The first key is [SubstituteApi::$k_class_period](/Wl/Classes/Period/Staff/Substitute.json), which holds only the given session after the call. The
+                      other keys are the class periods that the call created for the sessions of the series before and after the
+                      given session, where there are such sessions. Empty if the call changed nothing.
+                    items:
+                      type: string
+                  a_staff:
+                    type: array
+                    description: |-
+                      The instructors of the session.
+
+                      In the request, the full list of the instructors that the session must have: an instructor of the session who is
+                      not in the list is removed from the session. In the result, the instructors of the session after the call.
+
+                      Each element has the following structure:
+                    items:
+                      type: object
+                      properties:
+                        k_staff_pay:
+                          type:
+                            - string
+                            - 'null'
+                          description: |-
+                            Key of the pay rate of the instructor for the session. `null` if the session uses no pay rate of its own. The
+                            request may also send an empty string or leave this key out, which both mean `null`; the result always has
+                            this key.
+                        uid_staff:
+                          type: string
+                          description: 'Key of the user of the instructor.'
+                      required:
+                        - uid_staff
+                  is_change:
+                    type: boolean
+                    description: |-
+                      Whether the call changed the instructors of the session.
+
+                      `true` if the instructors were changed, `false` if the session already had the given instructors with the given
+                      pay rates.
+                required:
+                  - a_class_period
+                  - a_staff
+                  - is_change
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+      summary: 'Replaces the instructors of one session of a class or an event.'
+      description: |-
+        Sets the given instructors for the session of [SubstituteApi::$k_class_period](/Wl/Classes/Period/Staff/Substitute.json) that takes place at
+        [SubstituteApi::$dt_date_local](/Wl/Classes/Period/Staff/Substitute.json). The other sessions of the series keep their instructors: the series is
+        split around the date, so that the session gets a class period of its own, and the sessions before and after it
+        get new class periods. Every instructor must work for the business and teach the kind of the session, a class or
+        an event. The clients booked into the session and the instructors who are added or removed are notified. A call
+        with the instructors that the session already has changes nothing and notifies nobody.
+      tags:
+        - Classes
+      parameters:
+        -
+          $ref: '#/components/parameters/X-Error-Rules'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                a_staff:
+                  type: array
+                  description: |-
+                    The instructors of the session.
+
+                    In the request, the full list of the instructors that the session must have: an instructor of the session who is
+                    not in the list is removed from the session. In the result, the instructors of the session after the call.
+
+                    Each element has the following structure:
+                  items:
+                    type: object
+                    properties:
+                      k_staff_pay:
+                        type:
+                          - string
+                          - 'null'
+                        description: |-
+                          Key of the pay rate of the instructor for the session. `null` if the session uses no pay rate of its own. The
+                          request may also send an empty string or leave this key out, which both mean `null`; the result always has
+                          this key.
+                      uid_staff:
+                        type: string
+                        description: 'Key of the user of the instructor.'
+                    required:
+                      - uid_staff
+                dt_date_local:
+                  type: string
+                  format: date-time
+                  description: 'Local date and start time of one session of the series in MySQL format, for example `2026-12-03 14:00:00`.'
+                k_business:
+                  type: string
+                  description: 'Key of the business.'
+                k_class_period:
+                  type: string
+                  description: 'Key of the class period of the session.'
+              required:
+                - a_staff
+                - dt_date_local
+                - k_business
+                - k_class_period
       x-rate-limit:
         -
           limit: 200000
@@ -136139,10 +136288,16 @@ paths:
                       type:
                         - string
                         - 'null'
-                      description: 'Business key.'
+                      description: |-
+                        Business key. 
+
+                        The value is not trusted: the business of the request, [PatternApi::$k_business](/Wl/Mail/Pattern/AutomatedMarketing/CustomTemplate/Pattern.json), is saved instead.
                     k_mail_pattern:
                       type: string
-                      description: 'Mail pattern key.'
+                      description: |-
+                        Mail pattern key. 
+
+                        Empty to create a new pattern. Otherwise it must be equal to [PatternApi::$k_mail_pattern](/Wl/Mail/Pattern/AutomatedMarketing/CustomTemplate/Pattern.json).
                     text_html:
                       type: string
                       description: 'HTML content of the email.'
